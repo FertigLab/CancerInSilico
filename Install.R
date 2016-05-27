@@ -1,5 +1,7 @@
+path = "/home/tom/Biostats_Research/Git_Rpack/CellBasedModel"
+
 library(Rcpp)
-compileAttributes("/home/tom/Biostats_Research/Rpackage/CellModel")
-install.packages("/home/tom/Biostats_Research/Rpackage/CellModel",repos=NULL)
+compileAttributes(paste(path,"/Package/",sep=""))
+install.packages(paste(path,"/Package/",sep=""),repos=NULL)
 
 
