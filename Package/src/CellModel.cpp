@@ -5,28 +5,42 @@
 
 
 // [[Rcpp::export]]
-Rcpp::NumericMatrix CellModel(SEXP init_num, SEXP run_time, SEXP density) {
+Rcpp::NumericMatrix CellModel (
+
+  int initialNum,
+  int runTime,
+  double density = 0.05,
+  double meanGrowth = 0.15,
+  double varGrowth = 0.05,
+  double apoptosisRate = 0.0,
+  double maxMigration = 0.5,
+  double maxDeform = 0.075,
+  double maxRotate = 0.3,
+  double epsilon = 0.05,
+  double delta = 5
+
+) {
 
   Parameters* params = new Parameters();
 
-  params->SetInitialNumCells(Rcpp::as<int>(init_num));
 	params->SetMinRadius(1);
 	params->SetMaxRadius(pow(2,0.5) * params->GetMinRadius());
-	params->SetMeanGrowth(0.15);
-	params->SetVarGrowth(0.05);
-  params->SetDrugProportion(0.5);
-	params->SetMaxMigration(0.5);
-	params->SetMaxRotate(0.3);
-	params->SetMaxDeform(0.075);
-  params->SetApoptosisRate(0.0);
 	params->SetEnergyConstant(1);
-	params->SetResistanceEPSILON(0.05);
-	params->SetCompressionDELTA(5);
-  params->SetInitialDensity(Rcpp::as<float>(density));
+
+  params->SetInitialNumCells(initialNum);
+  params->SetInitialDensity(density);
+	params->SetMeanGrowth(meanGrowth);
+	params->SetVarGrowth(varGrowth);
+  params->SetApoptosisRate(apoptosisRate);
+	params->SetMaxMigration(maxMigration);
+	params->SetMaxDeform(maxDeform);
+	params->SetMaxRotate(maxRotate);
+	params->SetResistanceEPSILON(epsilon);
+	params->SetCompressionDELTA(delta);
 
   Simulation main_sim = Simulation(params);
 
-  main_sim.Run(Rcpp::as<int>(run_time));
+  main_sim.Run(runTime);
 
   Rcpp::NumericMatrix ret_val = main_sim.GetCellsAsMatrix();
 

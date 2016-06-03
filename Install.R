@@ -1,4 +1,4 @@
-path = "/home/tom/Biostats_Research/Git_Rpack/CellBasedModel"
+path = "/home/tom/Biostats_Research/CellModelPackageRepo/CellBasedModel"
 
 library(Rcpp)
 compileAttributes(paste(path,"/Package/",sep=""))
