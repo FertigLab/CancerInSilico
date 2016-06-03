@@ -10,13 +10,13 @@ class Simulation {
 
 private:
 
-  CellPopulation* m_cells;
+  CellPopulation m_cells;
   Parameters* m_param;
   
 public:
 
   Simulation(Parameters*);
-	~Simulation() {delete m_cells;}
+	~Simulation() {}
 
   void Run(int);
   Rcpp::NumericMatrix GetCellsAsMatrix();

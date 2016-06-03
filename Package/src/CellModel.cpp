@@ -44,8 +44,6 @@ Rcpp::NumericMatrix CellModel (
 
   Rcpp::NumericMatrix ret_val = main_sim.GetCellsAsMatrix();
 
-  delete params;
-  
   return ret_val;
 
 }

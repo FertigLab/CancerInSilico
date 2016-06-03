@@ -4,17 +4,17 @@
 Simulation::Simulation(Parameters* par) {
 
   m_param = par;  
-  m_cells = new CellPopulation(m_param, m_param->GetInitialNumCells(), m_param->GetInitialDensity());
+  m_cells = CellPopulation(m_param, m_param->GetInitialNumCells(), m_param->GetInitialDensity());
 
 }
 
 void Simulation::Run(int dur) {
 
-  m_cells->AddDrug();  
+  m_cells.AddDrug();
 
   for (int i = 0; i < dur; i++) {
 
-    m_cells->OneTimeStep();
+    m_cells.OneTimeStep();
     std::cout << i << std::endl;
 
   }  
@@ -23,6 +23,6 @@ void Simulation::Run(int dur) {
 
 Rcpp::NumericMatrix Simulation::GetCellsAsMatrix() {
 
-  return m_cells->GetPopulationAsMatrix();
+  return m_cells.GetPopulationAsMatrix();
 
 }
