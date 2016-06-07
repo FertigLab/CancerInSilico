@@ -1,5 +1,6 @@
 #include "Simulation.hpp"
 #include "Parameters.hpp"
+#include <Rcpp.h>
 
 Simulation::Simulation(Parameters* par) {
 
@@ -13,6 +14,8 @@ void Simulation::Run(int dur) {
   m_cells.AddDrug();
 
   for (int i = 0; i < dur; i++) {
+    
+    Rcpp::checkUserInterrupt();
 
     m_cells.OneTimeStep();
     std::cout << i << std::endl;

@@ -13,11 +13,11 @@ CellPopulation::CellPopulation(Parameters* par, unsigned int size, double densit
   m_param->InitializeRadiusSolver();
   
   double disk_radius = pow(size * pow(m_param->GetMinRadius(),2) / density, 0.5);
-  Cell* temp;
+  std::pair<double,double> new_loc;
 
   for (int i = 0; i < size; i++) {
 
-    std::pair<double,double> new_loc = GetRandomLocation(disk_radius);
+    new_loc = GetRandomLocation(disk_radius);
     m_population.push_back(new Cell(new_loc, m_param));   
     
   }
@@ -26,14 +26,11 @@ CellPopulation::CellPopulation(Parameters* par, unsigned int size, double densit
 
 CellPopulation::~CellPopulation() {
 
-  std::vector<Cell*>::iterator iter = m_population.begin();
-
-  for (; iter != m_population.end(); ++iter) {
+/*  for (unsigned int i = 0; i < m_population.size(); i++) {
     
-    delete *iter;
-
-  }
-
+    delete m_population[i];
+  
+  }*/
 
 }
 
@@ -78,7 +75,7 @@ void CellPopulation::OneTimeStep() {
   int sz = m_population.size();
   SpatialHash hash_map = SpatialHash(m_population);  
 
-  for (int i = 0; i < sz; i++) {
+  for (int i = 0; i < sz; ++i) {
 
     Update(hash_map);
 
@@ -90,7 +87,9 @@ void CellPopulation::OneTimeStep() {
 
 void CellPopulation::Update(SpatialHash& hash){
 
-  Cell* rand_cell = m_population[rand() % m_population.size()];
+  int ndx = floor(R::runif(0,m_population.size()));
+
+  Cell* rand_cell = m_population[ndx];
   UpdateNeighbors(rand_cell, hash); 
   AttemptTrial(rand_cell, hash);
   CheckMitosis();
@@ -98,8 +97,8 @@ void CellPopulation::Update(SpatialHash& hash){
 }
 
 void CellPopulation::UpdateNeighbors(Cell* cell, SpatialHash& hash) {
-
-  double dist, min_dist = std::numeric_limits<double>::max();
+/*
+  double dist, min_dist = m_param->GetMaxRadius();
   BucketIterator iter = hash.getCircularIterator(cell, 4);
   
   while (iter.Next()) {
@@ -118,8 +117,9 @@ void CellPopulation::UpdateNeighbors(Cell* cell, SpatialHash& hash) {
 
   }
 
+  std::cout << min_dist << std::endl;
   cell->SetMinCellDist(min_dist);
-
+*/
 }
 
 void CellPopulation::AttemptTrial(Cell* cell, SpatialHash& hash) {

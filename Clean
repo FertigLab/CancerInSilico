@@ -1,0 +1,4 @@
+#!/bin/bash
+
+rm -f ./Package/src/*.o
+rm -f ./Package/src/*.so

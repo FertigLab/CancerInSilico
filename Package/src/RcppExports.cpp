@@ -6,23 +6,14 @@
 using namespace Rcpp;
 
 // CellModel
-Rcpp::NumericMatrix CellModel(int initialNum, int runTime, double density, double meanGrowth, double varGrowth, double apoptosisRate, double maxMigration, double maxDeform, double maxRotate, double epsilon, double delta);
-RcppExport SEXP CellModel_CellModel(SEXP initialNumSEXP, SEXP runTimeSEXP, SEXP densitySEXP, SEXP meanGrowthSEXP, SEXP varGrowthSEXP, SEXP apoptosisRateSEXP, SEXP maxMigrationSEXP, SEXP maxDeformSEXP, SEXP maxRotateSEXP, SEXP epsilonSEXP, SEXP deltaSEXP) {
+Rcpp::NumericMatrix CellModel(int initialNum, int runTime);
+RcppExport SEXP CellModel_CellModel(SEXP initialNumSEXP, SEXP runTimeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< int >::type initialNum(initialNumSEXP);
     Rcpp::traits::input_parameter< int >::type runTime(runTimeSEXP);
-    Rcpp::traits::input_parameter< double >::type density(densitySEXP);
-    Rcpp::traits::input_parameter< double >::type meanGrowth(meanGrowthSEXP);
-    Rcpp::traits::input_parameter< double >::type varGrowth(varGrowthSEXP);
-    Rcpp::traits::input_parameter< double >::type apoptosisRate(apoptosisRateSEXP);
-    Rcpp::traits::input_parameter< double >::type maxMigration(maxMigrationSEXP);
-    Rcpp::traits::input_parameter< double >::type maxDeform(maxDeformSEXP);
-    Rcpp::traits::input_parameter< double >::type maxRotate(maxRotateSEXP);
-    Rcpp::traits::input_parameter< double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< double >::type delta(deltaSEXP);
-    __result = Rcpp::wrap(CellModel(initialNum, runTime, density, meanGrowth, varGrowth, apoptosisRate, maxMigration, maxDeform, maxRotate, epsilon, delta));
+    __result = Rcpp::wrap(CellModel(initialNum, runTime));
     return __result;
 END_RCPP
 }

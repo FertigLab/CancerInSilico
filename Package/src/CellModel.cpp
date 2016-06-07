@@ -5,21 +5,22 @@
 
 
 // [[Rcpp::export]]
-Rcpp::NumericMatrix CellModel (
+Rcpp::NumericMatrix CellModel(
 
   int initialNum,
-  int runTime,
-  double density = 0.05,
-  double meanGrowth = 0.15,
-  double varGrowth = 0.05,
-  double apoptosisRate = 0.0,
-  double maxMigration = 0.5,
-  double maxDeform = 0.075,
-  double maxRotate = 0.3,
-  double epsilon = 0.05,
-  double delta = 5
+  int runTime
 
 ) {
+
+  double density = 0.05;
+  double meanGrowth = 0.15;
+  double varGrowth = 0.0;
+  double apoptosisRate = 0.0;
+  double maxMigration = 0.5;
+  double maxDeform = 0.075;
+  double maxRotate = 0.3;
+  double epsilon = 0.05;
+  double delta = 5.0;
 
   Parameters* params = new Parameters();
 
@@ -43,6 +44,8 @@ Rcpp::NumericMatrix CellModel (
   main_sim.Run(runTime);
 
   Rcpp::NumericMatrix ret_val = main_sim.GetCellsAsMatrix();
+
+  delete params;
 
   return ret_val;
 

@@ -68,7 +68,8 @@ void Cell::Migration() {
 
 void Cell::Growth() {
   
-  double max_growth = std::min(m_min_cell_dist, 0.01 + m_param->GetMaxRadius() - m_radius);
+  //double max_growth = std::min(m_min_cell_dist, 0.01 + m_param->GetMaxRadius() - m_radius);
+  double max_growth = 0.01 + m_param->GetMaxRadius() - m_radius;
   double growth = R::runif(0,std::min(m_growth_rate,max_growth));
   m_radius += growth;
   
@@ -112,6 +113,7 @@ Cell* Cell::Divide() {
   m_coordinates = std::make_pair(c1_x, c1_y);
   m_axis.first = 0;
   m_axis.second = 0;
+  m_radius = m_param->GetMinRadius();
   m_ready_to_divide = false;
 	m_in_mitosis = false;
   return new Cell(std::make_pair(c2_x, c2_y), m_param, m_growth_rate);
