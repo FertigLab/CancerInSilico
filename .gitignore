@@ -29,3 +29,6 @@
 
 *~
 .Rhistory
+Package/..Rcheck/*
+*.gz
+*.rds

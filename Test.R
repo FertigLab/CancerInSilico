@@ -1,7 +1,7 @@
 library(CellModel)
-#CellModel(10,10)
+CellModel(10,50)
 CellModel(1,10)
-#CellModel(5,5)
-#CellModel(2,50)
-
-
+CellModel(100,10,0.3)
+CellModel(10,10,meanGrowth=0.3,varGrowth=0)
+CellModel(10,10,meanGrowth=0.1,varGrowth=0.1)
+CellModel(1,100,maxMigration=0)

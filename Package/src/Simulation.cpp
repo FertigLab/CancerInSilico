@@ -17,8 +17,13 @@ void Simulation::Run(int dur) {
     
     Rcpp::checkUserInterrupt();
 
+    if (i % 10 == 0) {
+      
+      Rprintf("time = %d\n",i);
+
+    }
+
     m_cells.OneTimeStep();
-    std::cout << i << std::endl;
 
   }  
 

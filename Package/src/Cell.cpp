@@ -5,6 +5,7 @@
 
 #include "Cell.hpp"
 
+//used only for the initial population of cells
 Cell::Cell(std::pair<double, double> coor, Parameters* par) {
 
   m_param = par;
@@ -12,12 +13,13 @@ Cell::Cell(std::pair<double, double> coor, Parameters* par) {
   m_in_mitosis = false;
   m_ready_to_divide = false;  
   m_axis = std::make_pair(0.0, 0.0);
-  m_radius = m_param->GetMinRadius();
-  m_min_cell_dist = (m_param->GetMaxRadius() - m_radius) / 3;
+  m_radius = R::runif(m_param->GetMinRadius(), m_param->GetMaxRadius());
+  //m_min_cell_dist = (m_param->GetMaxRadius() - m_radius) / 3;
   m_growth_rate = m_param->GetMeanGrowth();
 
 }
 
+//used only for daughter cells
 Cell::Cell(std::pair<double, double> coor, Parameters* par, double gr_rate) {
 
   m_param = par;
@@ -26,7 +28,7 @@ Cell::Cell(std::pair<double, double> coor, Parameters* par, double gr_rate) {
   m_ready_to_divide = false;  
   m_axis = std::make_pair(0.0, 0.0);
   m_radius = m_param->GetMinRadius();
-  m_min_cell_dist = (m_param->GetMaxRadius() - m_radius) / 3;
+  //m_min_cell_dist = (m_param->GetMaxRadius() - m_radius) / 3;
   m_growth_rate = gr_rate;
 
 }
