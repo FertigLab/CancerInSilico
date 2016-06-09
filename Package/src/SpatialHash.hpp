@@ -40,6 +40,9 @@ public:
   ~SpatialHash();
 
   void PlaceInBucket(Cell*);
+  void DeleteFromBucket(Cell*);
+  void Update(Cell*);
+
   Cell* GetRandomCell();
   int size();
 

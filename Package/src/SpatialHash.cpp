@@ -1,5 +1,6 @@
 #include "SpatialHash.hpp"
-#include <iostream>
+
+#include <algorithm>
 
 SpatialHash::SpatialHash(std::vector<Cell*>& cell_list) {
 
@@ -53,6 +54,28 @@ void SpatialHash::PlaceInBucket(Cell* cell) {
 
   m_buckets[bucket_id].push_back(cell);
   
+}
+
+void SpatialHash::DeleteFromBucket(Cell* cell) {
+
+  Point bucket_id = GetBucket(cell);
+
+  std::vector<Cell*>::iterator p = std::find(m_buckets[bucket_id].begin(),
+    m_buckets[bucket_id].end(), cell);
+
+  if (p == m_buckets[bucket_id].end()) {
+    //throw error
+  } else {
+    m_buckets[bucket_id].erase(p);
+  }
+
+}
+
+void SpatialHash::Update(Cell* cell) {
+   
+  DeleteFromBucket(cell);
+  PlaceInBucket(cell);
+
 }
 
 int SpatialHash::size() {
