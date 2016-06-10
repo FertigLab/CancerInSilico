@@ -1,7 +1,14 @@
-runModel <- function(initialNum, runTime, density) {
+runModel <- function(initialNum, runTime, density = 0.05,
+                     meanGrowth = 0.15, varGrowth = 0.0, maxMigration = 0.5,
+                     maxDeform = 0.075, maxRotate = 0.3, epsilon = 0.05,
+                     delta = 5.0)
+{
   
-  data <- CellModel(initialNum, runTime, density)
-  cellMat <- new("cellMatrix", data)
+  output <- CellModel(initialNum, runTime, density, meanGrowth,
+                    varGrowth, maxMigration, maxDeform, maxRotate,
+                    epsilon, delta)
+  
+  cellMat <- new("cellMatrix", output)
   
   return(cellMat)
   

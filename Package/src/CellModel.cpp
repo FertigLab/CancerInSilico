@@ -9,19 +9,20 @@ Rcpp::NumericMatrix CellModel(
 
   int initialNum,
   int runTime,
-  double density = 0.05,
-  double meanGrowth = 0.15,
-  double varGrowth = 0.0,
-  double apoptosisRate = 0.0,
-  double maxMigration = 0.5,
-  double maxDeform = 0.075,
-  double maxRotate = 0.3,
-  double epsilon = 0.05,
-  double delta = 5.0
+  double density,
+  double meanGrowth,
+  double varGrowth,
+  double maxMigration,
+  double maxDeform,
+  double maxRotate,
+  double epsilon,
+  double delta
 
 ) {
 
   Parameters* params = new Parameters();
+
+  double apoptosisRate = 0.0;
 
 	params->SetMinRadius(1);
 	params->SetMaxRadius(pow(2,0.5) * params->GetMinRadius());
