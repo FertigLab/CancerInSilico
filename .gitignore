@@ -36,4 +36,10 @@ Package.Rcheck/*
 
 /Install.R
 
+*.swp
+*.bat
+stuff/**
+*.swo
+
+
 
