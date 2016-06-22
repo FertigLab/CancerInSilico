@@ -35,11 +35,10 @@ Package/..Rcheck/*
 Package.Rcheck/*
 
 /Install.R
+/TestRun.R
 
 *.swp
 *.bat
 stuff/**
 *.swo
-
-
 
