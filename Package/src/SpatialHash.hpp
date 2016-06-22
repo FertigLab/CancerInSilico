@@ -8,6 +8,7 @@
 #include <utility>
 #include <Rcpp.h>
 #include <boost/unordered_map.hpp>
+#include <boost/functional/hash.hpp>
 
 #include "Cell.hpp"
 
@@ -52,28 +53,14 @@ struct ihash
 
   std::size_t operator() (const Point& p) const {
 
-    return (51 + std::hash<int>()(p.x)) * 51 + std::hash<int>()(p.y);
+    boost::hash<int> int_hash;
+    return (51 + int_hash(p.x)) * 51 + int_hash(p.y);
 
   }
 
 };
 
 typedef boost::unordered_map<Point, Cell*, ihash, iequal_to> bh_map;
-
-/*namespace std {
-
-  template<>
-  struct hash<Point> {
-
-    std::size_t operator()(const Point& p) const {
-
-      return (51 + std::hash<int>()(p.x)) * 51 + std::hash<int>()(p.y);
-
-    }
-
-  };
-
-}*/
 
 class SpatialIterator;
 
@@ -158,7 +145,6 @@ public:
       while (y < pt.y + del_y) {
 
         Point p = {x,y};
-
         p = m_hash->Hash(p);
 
         if (m_hash->m_hash_map.count(p) > 0 && m_hash->Hash(pt) != p) {
