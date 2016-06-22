@@ -7,13 +7,28 @@ setGeneric("createActivePlot", function(mat,time)
 setMethod("createActivePlot", "cellMatrix",
   function(mat,time)
     {
-
+    radii = seq(3,ncol(mat),6)
+    numCells = sum(mat[time,radii]>0)
+    
+    #Information of cells based on Matrix Values (Used in createActivePlot)
+    
+    xcoords = seq(1,(numCells-1)*7,6)
+    ycoords = xcoords + 1
+    radii = ycoords + 1
+    axis_len = radii + 1
+    axis_ang = axis_len + 1
+    
+    mn = min(min(mat[,xcoords]),min(mat[,ycoords])) - 2
+    mx = max(max(mat[,xcoords]),max(mat[,ycoords])) + 2
+    
+    #Opens new device to put plot into
     dev.new()
     dev.set(which = 1)
-    dev.next(which = dev.cur())
-    plot(c(mn,mx),c(mn,mx),type="n")
+    
+    interaction.plot(c(mn,mx),c(mn,mx),type="n")
+    text(20,20,labels = "test")
+    
     #How Many Cells are Alive
-
     for (n in xcoords) {
       #Currently Assuming All Cells are Alive (No Cell Death)
       x_1 =  mat[time,n] + (- 0.5 * mat[time,n+3] + mat[time,n+2]) * cos(mat[time,n+4])
@@ -25,4 +40,4 @@ setMethod("createActivePlot", "cellMatrix",
     }
     
   }
-  )
+)
