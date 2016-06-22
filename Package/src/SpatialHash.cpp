@@ -78,7 +78,16 @@ exists in m_cell_list but not m_hash_map
 void SpatialHash::Insert(Cell* cell) {
 
   m_cell_list.push_back(cell);
-  AddKey(cell);
+
+  try {
+  
+    AddKey(cell);
+
+  } catch (std::exception& e) {
+
+    throw std::invalid_argument("can't add: key already mapped (new cell)");
+
+  }
 
 }
   
