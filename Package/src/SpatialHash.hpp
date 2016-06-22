@@ -1,3 +1,5 @@
+// [[Rcpp::depends(BH)]]
+
 #ifndef SPATIAL_HASH_HPP
 #define SPATIAL_HASH_HPP
 
