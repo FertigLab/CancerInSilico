@@ -1,11 +1,14 @@
+// [[Rcpp::depends(BH)]]
+
 #ifndef SPATIAL_HASH_HPP
 #define SPATIAL_HASH_HPP
 
 #include <vector>
 #include <cmath>
-#include <unordered_map>
 #include <utility>
 #include <Rcpp.h>
+#include <boost/unordered_map.hpp>
+#include <boost/functional/hash.hpp>
 
 #include "Cell.hpp"
 
@@ -34,20 +37,30 @@ typedef struct point {
 
 } Point;
 
-namespace std {
+struct iequal_to
+  : std::binary_function<Point, Point, bool> {
 
-  template<>
-  struct hash<Point> {
+  bool operator() (const Point& p1, const Point& p2) const {
 
-    std::size_t operator()(const Point& p) const {
+    return p1.x == p2.x && p1.y == p2.y;
 
-      return (51 + std::hash<int>()(p.x)) * 51 + std::hash<int>()(p.y);
+  }
 
-    }
+};
 
-  };
+struct ihash
+  : std::unary_function<Point, std::size_t> {
 
-}
+  std::size_t operator() (const Point& p) const {
+
+    boost::hash<int> int_hash;
+    return (51 + int_hash(p.x)) * 51 + int_hash(p.y);
+
+  }
+
+};
+
+typedef boost::unordered_map<Point, Cell*, ihash, iequal_to> bh_map;
 
 class SpatialIterator;
 
@@ -55,7 +68,7 @@ class SpatialHash {
 
 private:
 
-  std::unordered_map<Point, Cell*> m_hash_map;
+  bh_map m_hash_map;
   std::vector<Cell*> m_cell_list;
 
   double m_bucket_size, m_bucket_tol;
@@ -132,7 +145,6 @@ public:
       while (y < pt.y + del_y) {
 
         Point p = {x,y};
-
         p = m_hash->Hash(p);
 
         if (m_hash->m_hash_map.count(p) > 0 && m_hash->Hash(pt) != p) {
