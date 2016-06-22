@@ -1,7 +1,7 @@
-path = "/home/tom/Biostats_Research/CellModelPackageRepo/CellBasedModel"
+path = "E:/Repository/CellBasedModel"
 
 library(Rcpp)
 compileAttributes(paste(path,"/Package/",sep=""))
-install.packages(paste(path,"/Package/",sep=""),repos=NULL)
+install.packages(paste(path,"/Package/",sep=""),repos=NULL,type="binary")
 
 
