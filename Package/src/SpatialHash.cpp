@@ -1,128 +1,146 @@
+#include <Rcpp.h>
+#include <stdexcept>
+#include <cmath>
+
 #include "SpatialHash.hpp"
 
-#include <algorithm>
+SpatialHash::SpatialHash(double min_cell_radius) {
 
-SpatialHash::SpatialHash(std::vector<Cell*>& cell_list) {
-
-  m_bucket_size = 0.5;
-
-  std::vector<Cell*>::iterator iter = cell_list.begin();
-
-  for (; iter != cell_list.end(); ++iter) {
-    
-    PlaceInBucket(*iter);
-
-  }
-
+  m_bucket_tol = 0.01;  
+  m_bucket_size = pow(2,0.5) * min_cell_radius / 2 - m_bucket_tol;
+  
 }
 
-SpatialHash::~SpatialHash() {}
-
-Point SpatialHash::GetBucket(Cell* cell) {
+Point SpatialHash::Hash(Cell* cell) {
 
   Point pt;  
   pt.x = cell->GetCoord().first;
   pt.y = cell->GetCoord().second;
     
-  return GetBucket(pt);
+  return Hash(pt);
   
 }
 
-Point SpatialHash::GetBucket(Point a) {
+Point SpatialHash::Hash(Point a) {
 
   Point center;
 
-  center.x = floor(abs(a.x) / m_bucket_size) - m_bucket_size / 2;
+  center.x = m_bucket_size * floor(fabs(a.x) / m_bucket_size)
+              + m_bucket_size / 2;
   if (a.x < 0) {center.x *= -1;}
 
-  center.y = floor(abs(a.y) / m_bucket_size) - m_bucket_size / 2;
+  center.y = m_bucket_size * floor(fabs(a.y) / m_bucket_size)
+              + m_bucket_size / 2;
   if (a.y < 0) {center.y *= -1;}
 
   return center;
 
 }
 
-void SpatialHash::PlaceInBucket(Cell* cell) {
-  
-  Point bucket_id = GetBucket(cell);
+//adds key to hash map
+void SpatialHash::AddKey(Cell* cell) {
 
-  if (m_buckets.count(bucket_id) == 0) {
+  Point key_val = Hash(cell);
 
-    m_buckets[bucket_id] = std::vector<Cell*>();
+  if (m_hash_map.count(key_val) == 0) {
 
-  }
+    m_hash_map.insert({key_val, cell});
 
-  m_buckets[bucket_id].push_back(cell);
-  
-}
-
-void SpatialHash::DeleteFromBucket(Cell* cell) {
-
-  Point bucket_id = GetBucket(cell);
-
-  std::vector<Cell*>::iterator p = std::find(m_buckets[bucket_id].begin(),
-    m_buckets[bucket_id].end(), cell);
-
-  if (p == m_buckets[bucket_id].end()) {
-    //throw error
   } else {
-    m_buckets[bucket_id].erase(p);
+
+    throw std::invalid_argument("can't add: key already mapped");
+
+  }
+
+}
+  
+//removes key from hash map
+void SpatialHash::RemoveKey(Cell* cell) {
+
+  Point key_val = Hash(cell);
+  
+  if (m_hash_map.count(key_val) > 0) {
+
+    m_hash_map.erase(key_val);
+    
+  } else {
+
+    throw std::invalid_argument("can't remove: key is not mapped");
+
+  }
+    
+}
+
+/** inserts cell into hash map
+-does not catch the following error: cell already 
+exists in m_cell_list but not m_hash_map
+*/
+void SpatialHash::Insert(Cell* cell) {
+
+  m_cell_list.push_back(cell);
+  AddKey(cell);
+
+}
+  
+//permanently deletes cell
+void SpatialHash::Delete(Cell* cell) {
+
+  std::vector<Cell*>::iterator it = 
+    std::find(m_cell_list.begin(), m_cell_list.end(), cell);
+  
+  if (it != m_cell_list.end()) {
+
+    m_cell_list.erase(it);
+    RemoveKey(cell);
+
+  } else {
+
+    throw std::invalid_argument("can't delete: cell does not exist");
+
   }
 
 }
 
-void SpatialHash::Update(Cell* cell) {
-   
-  DeleteFromBucket(cell);
-  PlaceInBucket(cell);
+//re-hash cell in case it moved to new region
+void SpatialHash::Update(Cell& orig_cell, Cell& new_cell) {
+
+  RemoveKey(&orig_cell);
+  AddKey(&new_cell);
 
 }
 
 int SpatialHash::size() {
   
-  int sum = 0;
-  std::map<Point,std::vector<Cell*> >::iterator iter = m_buckets.begin();
+  if (m_hash_map.size() != m_cell_list.size()) {
 
-  for (; iter != m_buckets.end(); ++iter) {
-
-    sum += iter->second.size();
+    throw std::runtime_error("hash map sizes out of sync");
 
   }
 
-  return sum;
+  return m_hash_map.size();
 
 }
 
 Cell* SpatialHash::GetRandomCell() {
 
-  int ndx = rand() % size();
-
-  std::map<Point,std::vector<Cell*> >::iterator iter = m_buckets.begin();
-
-  for (; iter != m_buckets.end(); ++iter) {
-
-    if (ndx < iter->second.size()) {
-
-      return iter->second[ndx];
-
-    } else {
-
-      ndx -= iter->second.size();
-
-    }
-
-  }
+  int ndx = floor(R::runif(0,size()));
+  return m_cell_list[ndx];
 
 }
 
-BucketIterator SpatialHash::getCircularIterator(Cell* cell, double radius) {
+SpatialIterator SpatialHash::getCircularIterator(Cell* cell, double radius) {
 
   Point pt;
   pt.x = cell->GetCoord().first;
   pt.y = cell->GetCoord().second;
 
-  return BucketIterator(this, pt, radius);
+  return SpatialIterator(this, pt, radius);
 
 }
 
+SpatialIterator SpatialHash::getFullIterator() {
+
+  return SpatialIterator(this);
+
+}
 

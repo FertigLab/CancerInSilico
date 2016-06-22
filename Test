@@ -1,0 +1,4 @@
+#!/bin/bash
+
+R CMD check --no-codoc --no-manual --no-vignettes --no-examples ./Package
+[ -f ./Package.Rcheck/tests/testthat.Rout.fail ] && cat ./Package.Rcheck/tests/testthat.Rout.fail

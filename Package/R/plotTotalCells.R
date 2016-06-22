@@ -12,7 +12,7 @@ setMethod("plotTotalCells", "cellMatrix",
       total_cells[t] = sum(mat[t,radii]>0)
     }
   
-    plot(total_cells)
+    plot(total_cells,type="l")
   }
 
 )

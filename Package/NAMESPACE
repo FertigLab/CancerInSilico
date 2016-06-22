@@ -1,3 +1,6 @@
 useDynLib(CellModel)
 exportPattern("^[[:alpha:]]+")
 importFrom(Rcpp, evalCpp)
+importFrom(graphics, plot)
+importFrom(methods, new)
+importFrom(stats, density)

@@ -1,27 +1,27 @@
 #include <cmath>
 #include <cstdlib>
-
 #include <Rcpp.h>
-#include "CellPopulation.hpp"
-#include "Cell.hpp"
 
-#include <iostream>
+#include "CellPopulation.hpp"
+#include "SpatialHash.hpp"
+#include "Cell.hpp"
 
 CellPopulation::CellPopulation(Parameters* par, unsigned int size, double density) {
 
   m_param = par;
   m_param->InitializeRadiusSolver();
+  m_population = SpatialHash(m_param->GetMinRadius());
   
   double disk_radius = pow(size * pow(m_param->GetMinRadius(),2) / density, 0.5);
   std::pair<double,double> new_loc;
 
-  for (int i = 0; i < size; i++) {
+  for (unsigned int i = 0; i < size; i++) {
 
     new_loc = GetRandomLocation(disk_radius);
-    m_population.push_back(new Cell(new_loc, m_param));   
+    m_population.Insert(new Cell(new_loc, m_param));   
     
   }
- 
+
 }
 
 CellPopulation::~CellPopulation() {
@@ -53,12 +53,12 @@ std::pair<double,double> CellPopulation::GetRandomLocation(double rad) {
 
 bool CellPopulation::ValidCellPlacement(double x, double y) {
 
-  std::vector<Cell*>::iterator iter = m_population.begin();
+  SpatialIterator iter = m_population.getFullIterator();
 
-  for (; iter != m_population.end(); ++iter) {
+  while (iter.Next()) {
 
     Cell temp (std::make_pair(x,y), m_param);
-    if ((*iter)->CellDistance(temp) < 0) {
+    if (iter.getCell()->CellDistance(temp) < 0) {
 
       return false;
 
@@ -73,11 +73,10 @@ bool CellPopulation::ValidCellPlacement(double x, double y) {
 void CellPopulation::OneTimeStep() {
 
   int sz = m_population.size();
-  SpatialHash hash_map = SpatialHash(m_population);  
 
   for (int i = 0; i < sz; ++i) {
 
-    Update(hash_map);
+    Update();
 
   }
   
@@ -85,56 +84,41 @@ void CellPopulation::OneTimeStep() {
 
 }
 
-void CellPopulation::Update(SpatialHash& hash){
+void CellPopulation::Update() {
 
-  int ndx = floor(R::runif(0,m_population.size()));
+  Cell* rand_cell = m_population.GetRandomCell();
 
-  Cell* rand_cell = m_population[ndx];
-  UpdateNeighbors(rand_cell, hash); 
-  AttemptTrial(rand_cell, hash);
+  AttemptTrial(rand_cell);
   CheckMitosis();
 
 }
 
-void CellPopulation::UpdateNeighbors(Cell* cell, SpatialHash& hash) {
-/*
-  double dist, min_dist = m_param->GetMaxRadius();
-  BucketIterator iter = hash.getCircularIterator(cell, 4);
+
+void CellPopulation::AttemptTrial(Cell* cell) {
   
-  while (iter.Next()) {
-    
-    if (*(iter.getCell()) != *cell) {    
-      
-      dist = cell->CellDistance(*(iter.getCell()));
+  double pre_interaction = CalculateTotalInteraction(cell);  
+  
+  Cell orig = *cell;
 
-      if (dist < min_dist) {
+  try {
+  
+    m_population.Update(orig, cell->DoTrial());
 
-        min_dist = dist;
+  } catch (std::exception& e) {
 
-      }
-
-    }
+    *cell = orig;
+    m_population.AddKey(cell);
 
   }
 
-  std::cout << min_dist << std::endl;
-  cell->SetMinCellDist(min_dist);
-*/
-}
-
-void CellPopulation::AttemptTrial(Cell* cell, SpatialHash& hash) {
-  
-  Cell temp = *cell;
- 
-  double pre_interaction = CalculateTotalInteraction(cell, hash);  
-  cell->DoTrial();
-	double post_interaction = CalculateTotalInteraction(cell, hash);
+  double post_interaction = CalculateTotalInteraction(cell);
   
   if (post_interaction == std::numeric_limits<double>::max()
         || !AcceptTrial(post_interaction - pre_interaction)) {
-
-    *cell = temp;
-
+    
+    m_population.Update(*cell, orig);
+    *cell = orig;
+    
   }
 
 }
@@ -155,10 +139,10 @@ bool CellPopulation::AcceptTrial(double delta_interaction) {
 
 }
 
-double CellPopulation::CalculateTotalInteraction(Cell* cell, SpatialHash& hash) {
+double CellPopulation::CalculateTotalInteraction(Cell* cell) {
   
   double inter, sum = 0.0;  
-  BucketIterator iter = hash.getCircularIterator(cell, m_param->GetCompressionDELTA() + 1);
+  SpatialIterator iter = m_population.getCircularIterator(cell, m_param->GetCompressionDELTA() + 1);
   
   while (iter.Next()) {
 
@@ -200,34 +184,45 @@ double CellPopulation::CalculateInteraction(Cell* a, Cell* b) {
 
 void CellPopulation::CheckMitosis() {
 
-  int sz = m_population.size();
+  std::vector<Cell*> dividing_cells;
+  SpatialIterator iter = m_population.getFullIterator();  
 
-  for (unsigned int i = 0; i < sz; ++i) {
+  while (iter.Next()) {
 
-    if (m_population[i]->ReadyToDivide()) {
+    if (iter.getCell()->ReadyToDivide()) {
 
-			m_population.push_back(m_population[i]->Divide());
+			dividing_cells.push_back(iter.getCell());
 
 		}
 
 	}
+
+  for (unsigned int i = 0; i < dividing_cells.size(); ++i) {
+
+    Cell temp = *dividing_cells[i];
+    m_population.Insert(dividing_cells[i]->Divide());
+    m_population.Update(temp, *dividing_cells[i]);
+
+  }
 
 }
 
 void CellPopulation::RecordPopulation() {
 
   std::vector<double> current_pop;
-  std::vector<Cell*>::iterator iter = m_population.begin();
+  SpatialIterator iter = m_population.getFullIterator();
 
-  for (; iter != m_population.end(); ++iter) {
+  Cell* temp;
 
-		std::pair<double, double> crd = (*iter)->GetCoord();
-    current_pop.push_back(crd.first);		
-    current_pop.push_back(crd.second);
-    current_pop.push_back((*iter)->GetRadius());
-    current_pop.push_back((*iter)->GetAxisLength());
-    current_pop.push_back((*iter)->GetAxisAngle());
-    current_pop.push_back((*iter)->GetGrowth());
+  while (iter.Next()) {
+
+    temp = iter.getCell();
+    current_pop.push_back(temp->GetCoord().first);		
+    current_pop.push_back(temp->GetCoord().second);
+    current_pop.push_back(temp->GetRadius());
+    current_pop.push_back(temp->GetAxisLength());
+    current_pop.push_back(temp->GetAxisAngle());
+    current_pop.push_back(temp->GetGrowth());
     
   }
   
@@ -238,7 +233,7 @@ void CellPopulation::RecordPopulation() {
 Rcpp::NumericMatrix CellPopulation::GetPopulationAsMatrix() {
 
   int num_rows = m_population_record.size();
-  int num_cols = 0;
+  unsigned int num_cols = 0;
 
   for (int i = 0; i < num_rows; i++) {
     
@@ -254,7 +249,7 @@ Rcpp::NumericMatrix CellPopulation::GetPopulationAsMatrix() {
 
   for (int i = 0; i < num_rows; i++) {
 
-    for (int j = 0; j < m_population_record[i].size(); j++) {
+    for (unsigned int j = 0; j < m_population_record[i].size(); j++) {
 
       ret_val(i,j) = m_population_record[i][j];
 
@@ -269,17 +264,22 @@ Rcpp::NumericMatrix CellPopulation::GetPopulationAsMatrix() {
 void CellPopulation::AddDrug() {
   
   double rand;
-  std::vector<Cell*>::iterator iter = m_population.begin();
+  SpatialIterator iter = m_population.getFullIterator();
 
-  for (; iter != m_population.end(); ++iter) {
+  while (iter.Next()) {
 
     rand = R::rnorm(m_param->GetMeanGrowth(), m_param->GetVarGrowth());
-    (*iter)->SetGrowth(std::max(rand,0.02));
+    iter.getCell()->SetGrowth(std::max(rand,0.02));
 
   }
 
 }
 
+int CellPopulation::size() {
+
+  return m_population.size();
+
+}
 
 
 

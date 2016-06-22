@@ -20,12 +20,16 @@ void Simulation::Run(int dur) {
     if (i % 10 == 0) {
       
       Rprintf("time = %d\n",i);
+      Rprintf("size = %d\n",m_cells.size());
 
     }
 
     m_cells.OneTimeStep();
 
   }  
+
+  Rprintf("time = %d\n",dur);
+  Rprintf("size = %d\n",m_cells.size());
 
 }
 

@@ -32,3 +32,4 @@
 Package/..Rcheck/*
 *.gz
 *.rds
+Package.Rcheck/*

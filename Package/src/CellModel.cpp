@@ -3,7 +3,6 @@
 
 #include <Rcpp.h>
 
-
 // [[Rcpp::export]]
 Rcpp::NumericMatrix CellModel(
 

@@ -4,9 +4,9 @@ runModel <- function(initialNum, runTime, density = 0.05,
                      delta = 5.0)
 {
   
-  output <- CellModel(initialNum, runTime, density, meanGrowth,
+  output <- tryCatch(CellModel(initialNum, runTime, density, meanGrowth,
                     varGrowth, maxMigration, maxDeform, maxRotate,
-                    epsilon, delta)
+                    epsilon, delta), error=print)
   
   cellMat <- new("cellMatrix", output)
   

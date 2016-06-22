@@ -14,7 +14,6 @@ Cell::Cell(std::pair<double, double> coor, Parameters* par) {
   m_ready_to_divide = false;  
   m_axis = std::make_pair(0.0, 0.0);
   m_radius = R::runif(m_param->GetMinRadius(), m_param->GetMaxRadius());
-  //m_min_cell_dist = (m_param->GetMaxRadius() - m_radius) / 3;
   m_growth_rate = m_param->GetMeanGrowth();
 
 }
@@ -28,12 +27,11 @@ Cell::Cell(std::pair<double, double> coor, Parameters* par, double gr_rate) {
   m_ready_to_divide = false;  
   m_axis = std::make_pair(0.0, 0.0);
   m_radius = m_param->GetMinRadius();
-  //m_min_cell_dist = (m_param->GetMaxRadius() - m_radius) / 3;
   m_growth_rate = gr_rate;
 
 }
 
-void Cell::DoTrial() {
+Cell& Cell::DoTrial() {
 
   double unif = R::runif(0,1);
 
@@ -56,13 +54,16 @@ void Cell::DoTrial() {
     }
 
   }
+
+  return *this;
+
 }
  
 void Cell::Migration() {
   
-  double length = R::runif(0,m_param->GetMaxMigration());
+  double length = m_param->GetMaxMigration() * pow(R::runif(0,1),0.5);
   double direction = R::runif(0,2 * M_PI);
-  
+
   m_coordinates.first += length * cos(direction);
   m_coordinates.second += length * sin(direction);
 
@@ -70,15 +71,16 @@ void Cell::Migration() {
 
 void Cell::Growth() {
   
-  //double max_growth = std::min(m_min_cell_dist, 0.01 + m_param->GetMaxRadius() - m_radius);
   double max_growth = 0.01 + m_param->GetMaxRadius() - m_radius;
   double growth = R::runif(0,std::min(m_growth_rate,max_growth));
   m_radius += growth;
   
   if (m_radius >= m_param->GetMaxRadius()) {
+
     m_radius = m_param->GetMaxRadius();  
     m_axis.first = 2 * m_radius;  
     m_in_mitosis = true;
+
   }
 
 }
@@ -164,18 +166,6 @@ double Cell::GetGrowth() {
 
 }
 
-void Cell::SetMinCellDist(double d) {
-
-  m_min_cell_dist = d;
-
-}
-
-double Cell::GetMinCellDist() {
-
-  return m_min_cell_dist;
-
-}
-
 double Cell::CellDistance(Cell &other) {
 
   std::vector<double> centers;
@@ -240,14 +230,4 @@ double Cell::CellDistance(Cell &other) {
 
 } 
 
-void Cell::SetID(int id) {
 
-  m_bucket_id = id;
-
-}
-
-int Cell::GetID() {
-
-  return m_bucket_id;
-
-}

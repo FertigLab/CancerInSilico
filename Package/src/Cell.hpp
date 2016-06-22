@@ -19,21 +19,19 @@ private:
   double m_growth_rate;
   double m_min_cell_dist;
   std::pair<double, double> m_axis; //(length, angle)
-  std::vector<Cell*> m_neighbors;
-
-  int m_bucket_id;
 
 public:
 
   Cell(std::pair<double, double>, Parameters*);
   Cell(std::pair<double, double>, Parameters*, double);
 
-  void DoTrial();
+  Cell& DoTrial();
   void Migration();
   void Growth();
   void Rotation();
   void Deformation();
   bool ReadyToDivide();
+
 	std::pair<double, double> GetCoord();
 	double GetRadius();
   double GetAxisLength();
@@ -41,12 +39,8 @@ public:
   Cell* Divide();
   void SetGrowth(double);
   double GetGrowth();
-  double GetMinCellDist();
-  void SetMinCellDist(double);
-  void UpdateNeighbors();
+
   double CellDistance(Cell&);
-  void SetID(int);
-  int GetID();
 
   bool operator!=(const Cell& b) const {
     return m_coordinates != b.m_coordinates;

@@ -14,7 +14,9 @@ class CellPopulation {
 private:
 
   Parameters* m_param;
-  std::vector<Cell*> m_population;
+  
+  SpatialHash m_population;
+
   std::vector<std::vector<double> > m_population_record;
 
 public:
@@ -26,16 +28,18 @@ public:
   std::pair<double,double> GetRandomLocation(double);
   bool ValidCellPlacement(double,double);
   void OneTimeStep();
-  void Update(SpatialHash&);
-  void AttemptTrial(Cell*, SpatialHash&);
+  void Update();
+  void AttemptTrial(Cell*);
   bool AcceptTrial(double);
-  double CalculateTotalInteraction(Cell*, SpatialHash&);
+  double CalculateTotalInteraction(Cell*);
   double CalculateInteraction(Cell*,Cell*);
   void CheckMitosis();
 	void RecordPopulation();
-  void UpdateNeighbors(Cell*, SpatialHash&);
+  void UpdateNeighbors(Cell*);
   Rcpp::NumericMatrix GetPopulationAsMatrix();
   void AddDrug();
+
+  int size();
 
 };
 

@@ -1,13 +1,13 @@
 #ifndef SPATIAL_HASH_HPP
-#define SPATIAL_HASH
-
-#include "Cell.hpp"
+#define SPATIAL_HASH_HPP
 
 #include <vector>
 #include <cmath>
-#include <cstdlib>
-#include <iostream>
-#include <map>
+#include <unordered_map>
+#include <utility>
+#include <Rcpp.h>
+
+#include "Cell.hpp"
 
 typedef struct point {
 
@@ -15,68 +15,132 @@ typedef struct point {
   double y;
 
   bool operator<(const struct point& other) const {
+
     return pow(x,2) + pow(y,2) < pow(other.x,2) + pow(other.y,2);
+
+  }
+
+  bool operator==(const struct point& other) const {
+
+    return x == other.x && y == other.y;
+
+  }
+
+  bool operator!=(const struct point& other) const {
+
+    return x != other.x || y != other.y;
+
   }
 
 } Point;
 
-class BucketIterator;
+namespace std {
+
+  template<>
+  struct hash<Point> {
+
+    std::size_t operator()(const Point& p) const {
+
+      return (51 + std::hash<int>()(p.x)) * 51 + std::hash<int>()(p.y);
+
+    }
+
+  };
+
+}
+
+class SpatialIterator;
 
 class SpatialHash {
 
 private:
 
-  std::map<Point, std::vector<Cell*> > m_buckets;
-  double m_bucket_size;
+  std::unordered_map<Point, Cell*> m_hash_map;
+  std::vector<Cell*> m_cell_list;
 
-  Point GetBucket(Cell*);
-  Point GetBucket(Point);
+  double m_bucket_size, m_bucket_tol;
+
+  Point Hash(Cell*);
+  Point Hash(Point);
+
+  void RemoveKey(Cell*);
 
 public:
 
-  friend class BucketIterator;
+  friend class SpatialIterator;
+  friend class TestSpatialHash;
 
-  SpatialHash(std::vector<Cell*>&);
-  ~SpatialHash();
+  SpatialHash(double);
+  SpatialHash() {}
+  ~SpatialHash() {}
 
-  void PlaceInBucket(Cell*);
-  void DeleteFromBucket(Cell*);
-  void Update(Cell*);
+  void AddKey(Cell*);
+  void Insert(Cell*);
+  void Delete(Cell*);
+  //TODO: weird how this is called with cell refs
+  void Update(Cell&, Cell&);
 
   Cell* GetRandomCell();
   int size();
 
-  BucketIterator getCircularIterator(Cell*,double);
+  SpatialIterator getCircularIterator(Cell*,double);
+  SpatialIterator getFullIterator();
 
 };
 
-class BucketIterator {
+class SpatialIterator {
 
 private:
 
-  SpatialHash* hash_map;
-  Point bucket;
-  int index;
-  std::vector<Point> ids;
+  SpatialHash* m_hash;
+  
+  std::vector<Point> search_points;
+  signed int index;
 
 public:
 
-  BucketIterator(SpatialHash* hash, Point pt, double radius) {
+  friend class TestSpatialIterator;
 
-    hash_map = hash;
-    double y, x = pt.x - radius;
+  SpatialIterator(SpatialHash* hash) {
+  
+    m_hash = hash;
+    std::vector<Cell*>::iterator iter = m_hash->m_cell_list.begin();
+    
+    for (; iter != m_hash->m_cell_list.end(); ++iter) {
 
-    while (x < pt.x + radius + hash->m_bucket_size) {
+      search_points.push_back(m_hash->Hash(*iter));
 
-      y = pt.y - radius;
+    }
 
-      while (y < pt.y + radius + hash->m_bucket_size) {
+    index = -1;
+    
+  }
 
-        Point p = {x, y};
-        p = hash_map->GetBucket(p);
-        if (hash_map->m_buckets.count(p) > 0) {
-          ids.push_back(p);
+  SpatialIterator(SpatialHash* hash, Point pt, double radius) {
+
+    m_hash = hash;
+    double max_rad = 2 * (m_hash->m_bucket_size + m_hash->m_bucket_tol);
+    radius += max_rad;
+    double x = pt.x - radius;
+    double del_y, y;
+
+    while (x < pt.x + radius) {
+
+      del_y = pow(pow(radius,2) - pow(abs(x) - abs(pt.x), 2),0.5);
+      y = pt.y - del_y;
+    
+      while (y < pt.y + del_y) {
+
+        Point p = {x,y};
+
+        p = m_hash->Hash(p);
+
+        if (m_hash->m_hash_map.count(p) > 0 && m_hash->Hash(pt) != p) {
+  
+          search_points.push_back(p);
+
         }
+
         y += hash->m_bucket_size;
 
       }
@@ -85,52 +149,30 @@ public:
 
     }
           
-    if (!ids.empty()) {bucket = ids.back();}
     index = -1;
 
   }
 
   bool Next() {
 
-    if (ids.empty()) {
-
-      return false;
-  
-    } else if (index < hash_map->m_buckets[bucket].size() - 1) {
-
+    //may not be neccesary to have the first condition
+    if ((!search_points.empty() && index < 0)
+        || ((unsigned) (index + 1) < search_points.size())) {
+    
       ++index;
       return true;
 
-    } else if (ids.size() == 1) {
-
-      return false;      
-
     } else {
 
-      do {
-
-        index = 0;
-        ids.pop_back();
-
-        if (ids.empty()) {
-
-          return false;
-
-        }
-
-        bucket = ids.back();
-
-      } while (hash_map->m_buckets[bucket].empty());
-
-      return true;
+      return false;
 
     }
 
   }
-
+       
   Cell* getCell() {
 
-    return hash_map->m_buckets[bucket][index];
+    return m_hash->m_hash_map[search_points[index]];
     
   }
 
