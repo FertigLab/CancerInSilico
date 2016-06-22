@@ -33,3 +33,10 @@ Package/..Rcheck/*
 *.gz
 *.rds
 Package.Rcheck/*
+/Install.R
+
+
+*.swp
+*.bat
+stuff/**
+*.swo

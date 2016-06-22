@@ -1,7 +1,0 @@
-path = "E:/Repository/CellBasedModel"
-
-library(Rcpp)
-compileAttributes(paste(path,"/Package/",sep=""))
-install.packages(paste(path,"/Package/",sep=""),repos=NULL,type="binary")
-
-
