@@ -1,1 +1,0 @@
-setClass("cellMatrix", representation("matrix"))
