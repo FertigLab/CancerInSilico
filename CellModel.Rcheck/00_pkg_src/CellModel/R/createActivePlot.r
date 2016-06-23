@@ -25,7 +25,7 @@ setMethod("createActivePlot", "cellMatrix",
     dev.new()
     dev.set(which = 1)
     
-    plot(c(mn,mx),c(mn,mx),type="n")
+    interaction.plot(c(mn,mx),c(mn,mx),type="n")
     text(20,20,labels = "test")
     
     #How Many Cells are Alive

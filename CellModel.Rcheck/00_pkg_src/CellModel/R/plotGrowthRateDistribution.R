@@ -1,0 +1,14 @@
+setGeneric("plotGrowthRateDistribution", function(mat, time)
+  standardGeneric("plotGrowthRateDistribution"))
+
+setMethod("plotGrowthRateDistribution", "cellMatrix",
+          
+  function(mat, time) {
+
+    radii = seq(3,ncol(mat),6)
+    gr_rates = radii[mat[time,radii]>0] + 3
+    plot(density(mat[time,gr_rates]))
+
+  }
+          
+)
