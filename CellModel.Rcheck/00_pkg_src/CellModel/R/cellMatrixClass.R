@@ -1,0 +1,1 @@
+setClass("cellMatrix", representation("matrix"))
