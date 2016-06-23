@@ -4,26 +4,18 @@ runModel <- function(initialNum, runTime, density = 0.05,
                      delta = 5.0, outIncrement = 10, randSeed = 0)
 {
   
-# output = tryCatch({
-# 
-#   CellModel(initialNum, runTime, density, meanGrowth,
-#     varGrowth, maxMigration, maxDeform, maxRotate,
-#     epsilon, delta, outIncrement)
-# 
-# }, warning = function(cond) {
-# 
-#   return(NA)
-# 
-# }, error = function(cond) {
-# 
-#   stop()
-#   return(NA)
-#    
-# })
+ output = tryCatch({
+ 
+   CellModel(initialNum, runTime, density, meanGrowth,
+     varGrowth, maxMigration, maxDeform, maxRotate,
+     epsilon, delta, outIncrement, randSeed)
+ 
+ }, error = function(cond) {
 
-  output <- tryCatch(CellModel(initialNum, runTime, density, meanGrowth,
-    varGrowth, maxMigration, maxDeform, maxRotate,
-    epsilon, delta, outIncrement, randSeed), error = print)
+   message(cond)
+   cat('\n')
+    
+ })
   
   cellMat <- new("cellMatrix", output)
 

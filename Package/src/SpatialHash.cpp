@@ -3,6 +3,7 @@
 #include <cmath>
 
 #include "SpatialHash.hpp"
+#include "ExceptionHandling.hpp"
 
 SpatialHash::SpatialHash(double min_cell_radius) {
 
@@ -83,10 +84,9 @@ void SpatialHash::Insert(Cell* cell) {
   
     AddKey(cell);
 
-  } catch (std::exception& e) {
+  } catch (std::invalid_argument& e) {
 
-    Rcpp::stop("can't add: key already mapped (new cell)");
-    //throw std::invalid_argument("can't add: key already mapped (new cell)\n");
+    RCPP_STOP_TRACE("can't insert cell: key already mapped");
 
   }
 
@@ -115,18 +115,7 @@ void SpatialHash::Delete(Cell* cell) {
 void SpatialHash::Update(Cell& orig_cell, Cell& new_cell) {
 
   RemoveKey(&orig_cell);
-
-  try {
-  
-    AddKey(&new_cell);
-
-  } catch (std::exception& e) {
-
-    Rcpp::stop("can't add: key already mapped (updated cell)");
-    //throw std::invalid_argument("can't add: key already mapped (new cell)\n");
-
-  }
-
+  AddKey(&new_cell);
 
 }
 
