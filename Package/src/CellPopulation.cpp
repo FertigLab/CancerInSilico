@@ -100,17 +100,22 @@ void CellPopulation::AttemptTrial(Cell* cell) {
   
   Cell orig = *cell;
 
-  try {
-  
-    m_population.Update(orig, cell->DoTrial());
+  SpatialIterator iter = m_population.getCircularIterator(cell, m_param->GetMinRadius() * 4);
 
-  } catch (std::invalid_argument& e) {
+  cell->DoTrial();
 
-    *cell = orig;
-    m_population.AddKey(cell);
+  while (iter.Next()) {
+
+    if (cell->CellDistance(*iter.getCell()) < 0) {
+
+      *cell = orig;
+
+    }
 
   }
 
+  m_population.Update(orig, *cell);
+  
   double post_interaction = CalculateTotalInteraction(cell);
   
   if (post_interaction == std::numeric_limits<double>::max()

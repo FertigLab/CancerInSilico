@@ -14,6 +14,7 @@ runModel <- function(initialNum, runTime, density = 0.05,
 
    message(cond)
    cat('\n')
+   stop()
     
  })
   

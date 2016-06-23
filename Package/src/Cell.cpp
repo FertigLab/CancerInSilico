@@ -49,7 +49,7 @@ Cell& Cell::DoTrial() {
       Migration();
     } else if (unif <= 0.666) {
       Rotation();
-    } else {
+    } else if (!m_ready_to_divide) {
       Deformation();
     }
 
@@ -110,10 +110,12 @@ void Cell::Deformation() {
 Cell* Cell::Divide() {
 
   double c1_x, c1_y, c2_x, c2_y;
-  c1_x = m_coordinates.first + (-0.5 * m_axis.first + m_radius) * cos(m_axis.second);
-  c1_y = m_coordinates.second + (-0.5 * m_axis.first + m_radius) * sin(m_axis.second);
-  c2_x = m_coordinates.first + (0.5 * m_axis.first - m_radius) * cos(m_axis.second);
-  c2_y = m_coordinates.second + (0.5 * m_axis.first - m_radius) * sin(m_axis.second);
+
+  c1_x = m_coordinates.first - m_radius * cos(m_axis.second);
+  c1_y = m_coordinates.second - m_radius * sin(m_axis.second);
+  c2_x = m_coordinates.first + m_radius * cos(m_axis.second);
+  c2_y = m_coordinates.second + m_radius * sin(m_axis.second);
+
   m_coordinates = std::make_pair(c1_x, c1_y);
   m_axis.first = 0;
   m_axis.second = 0;
