@@ -9,7 +9,7 @@ Simulation::Simulation(Parameters* par) {
 
 }
 
-void Simulation::Run(int dur) {
+void Simulation::Run(int dur, int out_incr) {
 
   m_cells.AddDrug();
 
@@ -17,7 +17,7 @@ void Simulation::Run(int dur) {
     
     Rcpp::checkUserInterrupt();
 
-    if (i % 10 == 0) {
+    if (i % out_incr == 0) {
       
       Rprintf("time = %d\n",i);
       Rprintf("size = %d\n",m_cells.size());

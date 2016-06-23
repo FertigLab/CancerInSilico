@@ -18,7 +18,7 @@ public:
   Simulation(Parameters*);
 	~Simulation() {}
 
-  void Run(int);
+  void Run(int, int);
   Rcpp::NumericMatrix GetCellsAsMatrix();
 
 };

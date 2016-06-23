@@ -15,7 +15,8 @@ Rcpp::NumericMatrix CellModel(
   double maxDeform,
   double maxRotate,
   double epsilon,
-  double delta
+  double delta,
+  int outIncrement
 
 ) {
 
@@ -40,7 +41,7 @@ Rcpp::NumericMatrix CellModel(
 
   Simulation main_sim = Simulation(params);
 
-  main_sim.Run(runTime);
+  main_sim.Run(runTime, outIncrement);
 
   Rcpp::NumericMatrix ret_val = main_sim.GetCellsAsMatrix();
 
