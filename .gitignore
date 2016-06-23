@@ -49,6 +49,7 @@ cmdtest.R
 *.csv
 
 **.Rcheck/
+**.RData
 
 
 
