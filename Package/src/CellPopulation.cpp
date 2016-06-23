@@ -104,7 +104,7 @@ void CellPopulation::AttemptTrial(Cell* cell) {
   
     m_population.Update(orig, cell->DoTrial());
 
-  } catch (std::exception& e) {
+  } catch (std::invalid_argument& e) {
 
     *cell = orig;
     m_population.AddKey(cell);

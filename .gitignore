@@ -35,13 +35,18 @@ Package/..Rcheck/*
 Package.Rcheck/*
 
 /Install.R
+/TestRun.R
 
 *.swp
 *.bat
 stuff/**
 *.swo
+
 *.txt
 time*
 cmdtest.bat
 cmdtest.R
 *.csv
+
+
+

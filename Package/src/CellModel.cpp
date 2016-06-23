@@ -15,9 +15,15 @@ Rcpp::NumericMatrix CellModel(
   double maxDeform,
   double maxRotate,
   double epsilon,
-  double delta
+  double delta,
+  int outIncrement,
+  int randSeed
 
 ) {
+
+  Rcpp::Environment baseEnv("package:base");
+  Rcpp::Function setSeed = baseEnv["set.seed"];
+  setSeed(randSeed);
 
   Parameters* params = new Parameters();
 
@@ -40,7 +46,7 @@ Rcpp::NumericMatrix CellModel(
 
   Simulation main_sim = Simulation(params);
 
-  main_sim.Run(runTime);
+  main_sim.Run(runTime, outIncrement);
 
   Rcpp::NumericMatrix ret_val = main_sim.GetCellsAsMatrix();
 

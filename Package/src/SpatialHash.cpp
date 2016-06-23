@@ -48,7 +48,7 @@ void SpatialHash::AddKey(Cell* cell) {
 
   } else {
 
-    throw std::invalid_argument("can't add: key already mapped");
+    throw std::invalid_argument("can't add: key already mapped\n");
 
   }
 
@@ -65,7 +65,7 @@ void SpatialHash::RemoveKey(Cell* cell) {
     
   } else {
 
-    throw std::invalid_argument("can't remove: key is not mapped");
+    throw std::invalid_argument("can't remove: key is not mapped\n");
 
   }
     
@@ -78,7 +78,17 @@ exists in m_cell_list but not m_hash_map
 void SpatialHash::Insert(Cell* cell) {
 
   m_cell_list.push_back(cell);
-  AddKey(cell);
+
+  try {
+  
+    AddKey(cell);
+
+  } catch (std::exception& e) {
+
+    Rcpp::stop("can't add: key already mapped (new cell)");
+    //throw std::invalid_argument("can't add: key already mapped (new cell)\n");
+
+  }
 
 }
   
@@ -95,7 +105,7 @@ void SpatialHash::Delete(Cell* cell) {
 
   } else {
 
-    throw std::invalid_argument("can't delete: cell does not exist");
+    throw std::invalid_argument("can't delete: cell does not exist\n");
 
   }
 
@@ -105,7 +115,18 @@ void SpatialHash::Delete(Cell* cell) {
 void SpatialHash::Update(Cell& orig_cell, Cell& new_cell) {
 
   RemoveKey(&orig_cell);
-  AddKey(&new_cell);
+
+  try {
+  
+    AddKey(&new_cell);
+
+  } catch (std::exception& e) {
+
+    Rcpp::stop("can't add: key already mapped (updated cell)");
+    //throw std::invalid_argument("can't add: key already mapped (new cell)\n");
+
+  }
+
 
 }
 
@@ -113,7 +134,7 @@ int SpatialHash::size() {
   
   if (m_hash_map.size() != m_cell_list.size()) {
 
-    throw std::runtime_error("hash map sizes out of sync");
+    throw std::invalid_argument("hash map sizes out of sync\n");
 
   }
 
