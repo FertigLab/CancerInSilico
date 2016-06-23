@@ -1,11 +1,13 @@
+// [[Rcpp::depends(BH)]]
+
 #include "Cell.hpp"
 #include "SpatialHash.hpp"
 #include "Parameters.hpp"
 
 #include <vector>
-#include <unordered_map>
 #include <testthat.h>
 #include <Rcpp.h>
+#include <boost/unordered_map.hpp>
 
 #define _APPROX(x) Approx(x).epsilon(0.01)
 
@@ -29,7 +31,7 @@ public:
 
   }
 
-  std::unordered_map<Point, Cell*>* GetHashMap() {
+  bh_map* GetHashMap() {
 
     return &(hash->m_hash_map);
   
@@ -86,7 +88,7 @@ CATCH_TEST_CASE("Test Spatial Hash") {
 
     SpatialHash hash = SpatialHash(1);
     TestSpatialHash test_hash = TestSpatialHash(&hash);
-    std::unordered_map<Point, Cell*>* cell_map = test_hash.GetHashMap();
+    bh_map* cell_map = test_hash.GetHashMap();
     std::vector<Cell*>* cell_list = test_hash.GetCellList();    
 
     CATCH_REQUIRE(test_hash.GetBucketSize() == _APPROX(0.697));
@@ -125,7 +127,7 @@ CATCH_TEST_CASE("Test Spatial Hash") {
       CATCH_REQUIRE(cell_map->count(pt_1) == 1);
       CATCH_REQUIRE(cell_map->at(pt_2) == &cell_2);
 
-      std::unordered_map<Point,Cell*>::const_iterator it = cell_map->find(pt_3);
+      bh_map::const_iterator it = cell_map->find(pt_3);
       CATCH_REQUIRE(it != cell_map->end());
 
     }

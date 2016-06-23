@@ -28,8 +28,17 @@
 *.app
 
 *~
-.Rhistory
+**/.Rhistory
 Package/..Rcheck/*
 *.gz
 *.rds
 Package.Rcheck/*
+
+/Install.R
+/TestRun.R
+
+*.swp
+*.bat
+stuff/**
+*.swo
+
