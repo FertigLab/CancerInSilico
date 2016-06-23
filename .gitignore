@@ -48,5 +48,7 @@ cmdtest.bat
 cmdtest.R
 *.csv
 
+**.Rcheck/
+
 
 
