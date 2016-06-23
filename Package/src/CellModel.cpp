@@ -16,9 +16,14 @@ Rcpp::NumericMatrix CellModel(
   double maxRotate,
   double epsilon,
   double delta,
-  int outIncrement
+  int outIncrement,
+  int randSeed
 
 ) {
+
+  Rcpp::Environment baseEnv("package:base");
+  Rcpp::Function setSeed = baseEnv["set.seed"];
+  setSeed(randSeed);
 
   Parameters* params = new Parameters();
 
