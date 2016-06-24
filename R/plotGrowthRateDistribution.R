@@ -1,3 +1,9 @@
+#'\code{plotGrowthRateDistribution} Plots a distribution of the growth rates
+#'of all the cells
+#'
+#'
+#'@param 
+
 setGeneric("plotGrowthRateDistribution", function(mat, time)
   standardGeneric("plotGrowthRateDistribution"))
 
