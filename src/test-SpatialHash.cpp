@@ -9,7 +9,7 @@
 #include <Rcpp.h>
 #include <boost/unordered_map.hpp>
 
-#define _APPROX(x) Approx(x).epsilon(0.01)
+#define TEST_APPROX(x) Approx(x).epsilon(0.01)
 
 class TestSpatialHash {
 
@@ -91,7 +91,7 @@ CATCH_TEST_CASE("Test Spatial Hash") {
     bh_map* cell_map = test_hash.GetHashMap();
     std::vector<Cell*>* cell_list = test_hash.GetCellList();    
 
-    CATCH_REQUIRE(test_hash.GetBucketSize() == _APPROX(0.697));
+    CATCH_REQUIRE(test_hash.GetBucketSize() == TEST_APPROX(0.697));
 
     Cell cell_1 = Cell(std::make_pair(0,0), &params, 0);
     Cell cell_2 = Cell(std::make_pair(3,0), &params, 0);
@@ -107,14 +107,14 @@ CATCH_TEST_CASE("Test Spatial Hash") {
  
     CATCH_SECTION("hash cells to points") {
 
-      CATCH_REQUIRE(pt_1.x == _APPROX(0.348));
-      CATCH_REQUIRE(pt_1.y == _APPROX(0.348));
+      CATCH_REQUIRE(pt_1.x == TEST_APPROX(0.348));
+      CATCH_REQUIRE(pt_1.y == TEST_APPROX(0.348));
 
-      CATCH_REQUIRE(pt_2.x == _APPROX(3.137));
-      CATCH_REQUIRE(pt_2.y == _APPROX(0.348));
+      CATCH_REQUIRE(pt_2.x == TEST_APPROX(3.137));
+      CATCH_REQUIRE(pt_2.y == TEST_APPROX(0.348));
 
-      CATCH_REQUIRE(pt_3.x == _APPROX(-7.319));
-      CATCH_REQUIRE(pt_3.y == _APPROX(-1.743));
+      CATCH_REQUIRE(pt_3.x == TEST_APPROX(-7.319));
+      CATCH_REQUIRE(pt_3.y == TEST_APPROX(-1.743));
 
     }
 
