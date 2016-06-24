@@ -1,17 +1,22 @@
-#' Creates a Cell Matrix based on certain simulated variables
+#' \code{runModel} Creates a Cell Matrix based on certain simulated variables
 #' 
-#' @param initialNum A number greater than 0
-#' @param runTime A number greater than 0
-#' @param density 
-#' @param meanGrowth 
+#' 
+#' @param initialNum A number representing initial number of cells
+#' @param runTime A number representing max number of timesteps
+#' @param density A decimal for density of cells
+#' @param meanGrowth A decimal representing mean growth rate of cells
 #' @param varGrowth 
 #' @param maxMigration 
 #' @param maxDeform 
 #' @param maxRotate 
 #' @param epsilon 
-#' @param delta
-#' @param outIncrement
-#' @param randseed 
+#' @param delta 
+#' @param outIncrement A number representing increments 
+#'  between timesteps
+#' @param randseed A seed for the random number generator
+#' @examples 
+#' runModel(100,100)
+#' @export
 
 runModel <- function(initialNum, runTime, density = 0.05,
                      meanGrowth = 0.15, varGrowth = 0.0, maxMigration = 0.5,
