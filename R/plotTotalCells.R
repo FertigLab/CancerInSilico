@@ -1,6 +1,11 @@
 #'\code{plotTotalCells}Plots all
 #'
 #'@param mat 
+#'\code{plotTotalCells} Plots the total number of cells vs time
+#'
+#'
+#'@param mat A Cell Matrix
+#'@export
 
 setGeneric("plotTotalCells", function(mat)
             standardGeneric("plotTotalCells"))
