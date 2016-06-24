@@ -1,6 +1,3 @@
-#'\code{plotTotalCells}Plots all
-#'
-#'@param mat 
 #'\code{plotTotalCells} Plots the total number of cells vs time
 #'
 #'
