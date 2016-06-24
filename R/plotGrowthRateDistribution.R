@@ -2,7 +2,9 @@
 #'of all the cells
 #'
 #'
-#'@param 
+#'@param mat A Cell Matrix
+#'@param time The time of interest for the growth rates
+#'@export
 
 setGeneric("plotGrowthRateDistribution", function(mat, time)
   standardGeneric("plotGrowthRateDistribution"))

@@ -1,4 +1,19 @@
-
+#'\code{runModel} Runs the model
+#'
+#'
+#'@param initialNum how many cells initially
+#'@param runTime how long the simulation runs
+#'@param density the density the cells are seeded at
+#'@param meanGrowth mean growth rate of cells
+#'@param varGrowth the variance of the growth rate (assumed normal)
+#'@param maxMigration farthest a cell can move in a single update
+#'@param maxDeform most a cell can deform in a single update
+#'@param maxRotate most a cell can rotate in a single update
+#'@param epsilon model specific parameter
+#'@param delta model specific parameter
+#'@param outIncrement time increment to print status at
+#'@param randSeed seed for the model
+#'@export
 
 runModel <- function(initialNum, runTime, density = 0.05,
                      meanGrowth = 0.15, varGrowth = 0.0, maxMigration = 0.5,
