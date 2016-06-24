@@ -7,7 +7,7 @@
 setGeneric("plotGrowthRateDistribution", function(mat, time)
   standardGeneric("plotGrowthRateDistribution"))
 
-setMethod("plotGrowthRateDistribution", "cellMatrix",
+setMethod("plotGrowthRateDistribution", "CellMatrix",
           
   function(mat, time) {
 

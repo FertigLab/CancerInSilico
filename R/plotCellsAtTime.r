@@ -11,7 +11,7 @@
 setGeneric("plotCellsAtTime", function(mat,time)
   standardGeneric("plotCellsAtTime"))
 
-setMethod("plotCellsAtTime", "cellMatrix",
+setMethod("plotCellsAtTime", "CellMatrix",
   function(mat,time)
     {
     radii = seq(3,ncol(mat),6)

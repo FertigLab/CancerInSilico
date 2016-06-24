@@ -19,7 +19,7 @@ runModel <- function(initialNum, runTime, density = 0.05,
     
  })
   
-  cellMat <- new("cellMatrix", output)
+  cellMat <- new("CellMatrix", output)
 
   return(cellMat)
   

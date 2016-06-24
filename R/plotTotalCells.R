@@ -1,7 +1,7 @@
 setGeneric("plotTotalCells", function(mat)
             standardGeneric("plotTotalCells"))
 
-setMethod("plotTotalCells", "cellMatrix",
+setMethod("plotTotalCells", "CellMatrix",
 
   function(mat) {
   
