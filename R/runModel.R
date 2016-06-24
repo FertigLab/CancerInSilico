@@ -33,7 +33,7 @@ runModel <- function(initialNum, runTime, density = 0.05,
  
  }, error = function(cond) {
 
-   message(cond,'\n')
+   message(cond, '\n')
    stop()
     
  })

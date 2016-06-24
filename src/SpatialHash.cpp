@@ -45,7 +45,7 @@ void SpatialHash::AddKey(Cell* cell) {
 
   if (m_hash_map.count(key_val) == 0) {
 
-    m_hash_map.insert(std::make_pair<Point, Cell*>(key_val, cell));
+    m_hash_map.insert(std::pair<Point, Cell*>(key_val, cell));
 
   } else {
 
