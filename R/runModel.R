@@ -16,7 +16,6 @@
 #' @param randseed A seed for the random number generator
 #' @examples 
 #' runModel(100,100)
-#' runModel(2567, 21, 0.01, 0.03, 0.02, outIncrement = 5)
 #' @export
 
 runModel <- function(initialNum, runTime, density = 0.05,
