@@ -1,16 +1,24 @@
-setGeneric("createActivePlot", function(mat,time)
-  standardGeneric("createActivePlot"))
+#'\code{plotMatrixAtTime} Plots a cell matrix at a certain point in time
+#'
+#'
+#'@param mat A Cell Matrix
+#'@param time The timestep at which to plot the matrix. Must be below
+#' the specified max amount of timesteps
+#'@example
+#'plotMatrixAtTime(runModel(1000, 100), 69)
+#'plotMatrixAtTime(runModel(123151,1231), 762)
+#'@export
 
+setGeneric("plotMatrixAtTime", function(mat,time)
+  standardGeneric("plotMatrixAtTime"))
 
-
-
-setMethod("createActivePlot", "cellMatrix",
+setMethod("plotMatrixAtTime", "cellMatrix",
   function(mat,time)
     {
     radii = seq(3,ncol(mat),6)
     numCells = sum(mat[time,radii]>0)
     
-    #Information of cells based on Matrix Values (Used in createActivePlot)
+    #Information of cells based on Matrix Values (Used in plotMatrixAtTime)
     
     xcoords = seq(1,(numCells-1)*7,6)
     ycoords = xcoords + 1
