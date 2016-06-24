@@ -1,3 +1,5 @@
+#ifndef _WIN32
+
 #include <execinfo.h> 
 
 #ifndef EXCEPTION_HANDLING_HPP
@@ -13,5 +15,7 @@ inline void RCPP_STOP_TRACE(std::string message) {
   Rcpp::stop(message);
 
 }
+
+#endif
 
 #endif
