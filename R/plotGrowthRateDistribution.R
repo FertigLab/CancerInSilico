@@ -2,7 +2,9 @@
 #'of all the cells
 #'
 #'
-#'@param 
+#'@param mat
+#'@param time
+#'@export
 
 setGeneric("plotGrowthRateDistribution", function(mat, time)
   standardGeneric("plotGrowthRateDistribution"))

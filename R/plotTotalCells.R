@@ -1,3 +1,7 @@
+#'\code{plotTotalCells}Plots all
+#'
+#'@param mat 
+
 setGeneric("plotTotalCells", function(mat)
             standardGeneric("plotTotalCells"))
 

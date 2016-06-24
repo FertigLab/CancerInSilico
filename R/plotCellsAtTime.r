@@ -1,11 +1,9 @@
-#'\code{plotCellsAtTime} Plots a CellMatrix at a certain point in time
+#'\code{plotCellsAtTime} Plots a Cell Matrix at a certain point in time
 #'
 #'
 #'@param mat A Cell Matrix
 #'@param time The timestep at which to plot the matrix. Must be below
 #' the specified max amount of timesteps
-#'@example
-#'plotCellsAtTime(runModel(24, 23), 21)
 #'@export
 
 setGeneric("plotCellsAtTime", function(mat,time)
