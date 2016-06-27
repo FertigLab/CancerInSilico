@@ -11,35 +11,35 @@
 
 class CellPopulation {
 
-private:
+  private:
 
-  Parameters* m_param;
-  
-  SpatialHash m_population;
+    Parameters *m_param;
 
-  std::vector<std::vector<double> > m_population_record;
+    SpatialHash m_population;
 
-public:
+    std::vector<std::vector<double> > m_population_record;
 
-  CellPopulation() {}
-	~CellPopulation();
-  CellPopulation(Parameters*, unsigned int, double);
-  
-  std::pair<double,double> GetRandomLocation(double);
-  bool ValidCellPlacement(double,double);
-  void OneTimeStep();
-  void Update();
-  void AttemptTrial(Cell*);
-  bool AcceptTrial(double);
-  double CalculateTotalInteraction(Cell*);
-  double CalculateInteraction(Cell*,Cell*);
-  void CheckMitosis();
-	void RecordPopulation();
-  void UpdateNeighbors(Cell*);
-  Rcpp::NumericMatrix GetPopulationAsMatrix();
-  void AddDrug();
+  public:
 
-  int size();
+    CellPopulation() {}
+    ~CellPopulation();
+    CellPopulation(Parameters *, unsigned int, double);
+
+    std::pair<double, double> GetRandomLocation(double);
+    bool ValidCellPlacement(double, double);
+    void OneTimeStep();
+    void Update();
+    void AttemptTrial(Cell *);
+    bool AcceptTrial(double);
+    double CalculateTotalInteraction(Cell *);
+    double CalculateInteraction(Cell *, Cell *);
+    void CheckMitosis();
+    void RecordPopulation();
+    void UpdateNeighbors(Cell *);
+    Rcpp::NumericMatrix GetPopulationAsMatrix();
+    void AddDrug();
+
+    int size();
 
 };
 
