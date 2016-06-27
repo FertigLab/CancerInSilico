@@ -2,6 +2,8 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 CellModel <- function(initialNum, runTime, density, meanGrowth, varGrowth, maxMigration, maxDeform, maxRotate, epsilon, delta, outIncrement, randSeed) {
+
     .Call('CellModel_CellModel', PACKAGE = 'CellModel', initialNum, runTime, density, meanGrowth, varGrowth, maxMigration, maxDeform, maxRotate, epsilon, delta, outIncrement, randSeed)
+
 }
 
