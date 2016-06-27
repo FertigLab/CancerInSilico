@@ -12,5 +12,9 @@
 #' @docType package
 #' @name CellModel
 #' @importFrom Rcpp evalCpp
+#' @importFrom grDevices dev.new dev.set
+#' @importFrom graphics plot text
+#' @importFrom methods new
+#' @importFrom stats density
 #' @useDynLib CellModel
 NULL

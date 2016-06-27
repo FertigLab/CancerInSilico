@@ -10,7 +10,7 @@
 #include <boost/unordered_map.hpp>
 #include <boost/functional/hash.hpp>
 
-#include "Cell.hpp"
+#include "Cell.h"
 
 typedef struct point {
 

@@ -1,8 +1,8 @@
 #ifndef SIMULATION_HPP
 #define SIMULATION_HPP
 
-#include "CellPopulation.hpp"
-#include "Parameters.hpp"
+#include "CellPopulation.h"
+#include "Parameters.h"
 
 #include <Rcpp.h>
 

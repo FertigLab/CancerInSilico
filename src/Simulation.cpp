@@ -1,5 +1,5 @@
-#include "Simulation.hpp"
-#include "Parameters.hpp"
+#include "Simulation.h"
+#include "Parameters.h"
 #include <Rcpp.h>
 
 Simulation::Simulation(Parameters* par) {

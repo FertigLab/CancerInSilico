@@ -9,9 +9,17 @@
 setGeneric("plotCellsAtTime", function(mat,time)
   standardGeneric("plotCellsAtTime"))
 
+#'\code{plotCellsAtTime} Plots a CellMatrix at a certain point in time
+#'
+#'
+#'@param mat A Cell Matrix
+#'@param time The timestep at which to plot the matrix. Must be below
+#' the specified max amount of timesteps
+#'@export
+
 setMethod("plotCellsAtTime", "CellMatrix",
-  function(mat,time)
-    {
+  function(mat,time)  {
+
     radii = seq(3,ncol(mat),6)
     numCells = sum(mat[time,radii]>0)
     
@@ -40,8 +48,8 @@ setMethod("plotCellsAtTime", "CellMatrix",
       y_1 =  mat[time,n+1] + (- 0.5 * mat[time,n+3] + mat[time,n+2]) * sin(mat[time,n+4])
       x_2 =  mat[time,n] + (0.5 * mat[time,n+3] - mat[time,n+2]) * cos(mat[time,n+4])
       y_2 =  mat[time,n+1] + (0.5 * mat[time,n+3] - mat[time,n+2]) * sin(mat[time,n+4])
-      AddCircle(x_1,y_1,mat[time,n+2])
-      AddCircle(x_2,y_2,mat[time,n+2])
+      DrawCircle(x_1,y_1,mat[time,n+2])
+      DrawCircle(x_2,y_2,mat[time,n+2])
     }
     
   }

@@ -1,8 +1,8 @@
 // [[Rcpp::depends(BH)]]
 
-#include "Cell.hpp"
-#include "SpatialHash.hpp"
-#include "Parameters.hpp"
+#include "Cell.h"
+#include "SpatialHash.h"
+#include "Parameters.h"
 
 #include <vector>
 #include <testthat.h>

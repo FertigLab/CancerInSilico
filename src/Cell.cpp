@@ -3,7 +3,7 @@
 #include <iostream>
 #include <Rcpp.h>
 
-#include "Cell.hpp"
+#include "Cell.h"
 
 //used only for the initial population of cells
 Cell::Cell(std::pair<double, double> coor, Parameters* par) {

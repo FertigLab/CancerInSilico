@@ -2,8 +2,8 @@
 #include <stdexcept>
 #include <cmath>
 
-#include "SpatialHash.hpp"
-#include "ExceptionHandling.hpp"
+#include "SpatialHash.h"
+#include "ExceptionHandling.h"
 
 SpatialHash::SpatialHash(double min_cell_radius) {
 

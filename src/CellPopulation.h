@@ -5,9 +5,9 @@
 #include <vector>
 #include <cmath>
 
-#include "Parameters.hpp"
-#include "Cell.hpp"
-#include "SpatialHash.hpp"
+#include "Parameters.h"
+#include "Cell.h"
+#include "SpatialHash.h"
 
 class CellPopulation {
 

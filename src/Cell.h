@@ -4,7 +4,7 @@
 #include <utility>
 #include <vector>
 
-#include "Parameters.hpp" 
+#include "Parameters.h" 
 
 class Cell {
 

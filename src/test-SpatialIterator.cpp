@@ -1,6 +1,6 @@
-#include "Cell.hpp"
-#include "SpatialHash.hpp"
-#include "Parameters.hpp"
+#include "Cell.h"
+#include "SpatialHash.h"
+#include "Parameters.h"
 
 #include <Rcpp.h>
 #include <testthat.h>

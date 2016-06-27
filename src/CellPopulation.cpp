@@ -2,9 +2,9 @@
 #include <cstdlib>
 #include <Rcpp.h>
 
-#include "CellPopulation.hpp"
-#include "SpatialHash.hpp"
-#include "Cell.hpp"
+#include "CellPopulation.h"
+#include "SpatialHash.h"
+#include "Cell.h"
 
 CellPopulation::CellPopulation(Parameters* par, unsigned int size, double density) {
 

@@ -1,5 +1,5 @@
-#include "Parameters.hpp"
-#include "Simulation.hpp"
+#include "Parameters.h"
+#include "Simulation.h"
 
 #include <Rcpp.h>
 
