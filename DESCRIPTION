@@ -1,16 +1,26 @@
 Package: CellModel
 Type: Package
-Title: What the package does (short line)
+Title: Simulates cell growth.
 Version: 0.99.0
-Date: 2016-03-07
-Author: Your Name
-Maintainer: Your Name <your@email.com>
+Date: 2016-06-01
+Author:
+    Thomas D. Sherman,
+    Elana J. Fertig
+Maintainer: 
+    Thomas D. Sherman <tsherma4@jhu.edu>,
+    Elana J. Fertig <ejfertig@jhmi.edu>
 Description: This package simulates cell growth.
 License: GPL (>= 2)
 Imports:
     Rcpp (>= 0.12.3),
-    methods
-LinkingTo: Rcpp, testthat, BH
+    methods,
+    grDevices,
+    graphics,
+    stats
+LinkingTo:
+    Rcpp,
+    testthat,
+    BH
 Suggests:
     testthat
 RoxygenNote: 5.0.1
