@@ -16,5 +16,5 @@
 #' @importFrom graphics plot text
 #' @importFrom methods new
 #' @importFrom stats density
-#' @useDynLib CellModel
+#' @useDynLib CellModel, .registration = TRUE
 NULL

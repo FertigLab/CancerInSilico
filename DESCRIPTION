@@ -1,6 +1,6 @@
 Package: CellModel
 Type: Package
-Title: Simulates cell growth.
+Title: Off-Lattice Cell-Based Monte Carlo Simulation
 Version: 0.99.0
 Date: 2016-06-01
 Author:

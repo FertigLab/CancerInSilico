@@ -45,3 +45,13 @@ Rcpp::NumericMatrix CellModel(
     return ret_val;
 }
 
+static R_CallMethodDef callMethods[] =  {
+    {"CellModel", (DL_FUNC) &CellModel, 12},
+    {NULL, NULL, 0}
+};
+
+void R_init_CellModel(DllInfo *info) {
+    R_registerRoutines(info, NULL, callMethods, NULL, NULL);
+}
+
+
