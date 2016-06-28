@@ -23,4 +23,5 @@ LinkingTo:
     BH
 Suggests:
     testthat
+biocViews: MathematicalBiology
 RoxygenNote: 5.0.1
