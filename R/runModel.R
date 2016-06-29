@@ -21,21 +21,21 @@ runModel <- function(initialNum, runTime, density = 0.05,
                      delta = 5.0, outIncrement = 10, randSeed = 0)
 {
   
- output = tryCatch({
- 
+ # output = tryCatch({
+ # 
    CellModel(initialNum, runTime, density, meanGrowth,
      varGrowth, maxMigration, maxDeform, maxRotate,
      epsilon, delta, outIncrement, randSeed)
- 
- }, error = function(cond) {
-
-   message(cond, '\n')
-   stop()
-    
- })
-  
-  cellMat <- new("CellMatrix", output)
-
-  return(cellMat)
-  
+ # 
+ # }, error = function(cond) {
+ # 
+ #   message(cond, '\n')
+ #   stop()
+ # 
+ # })
+ #  
+ #  cellMat <- new("CellMatrix", output)
+ # 
+ #  return(cellMat)
+ #  
 }
