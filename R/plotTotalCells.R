@@ -5,20 +5,23 @@
 #'@export
 
 setGeneric("plotTotalCells", function(mat)
-            standardGeneric("plotTotalCells"))
+    standardGeneric("plotTotalCells"))
 
 setMethod("plotTotalCells", "CellMatrix",
 
-  function(mat) {
-  
-    total_cells = c()
-    radii = seq(3,ncol(mat),6)
-  
-    for (t in 1:nrow(mat)) {
-      total_cells[t] = sum(mat[t,radii]>0)
+    function(mat) {
+
+        total_cells = c()
+        radii = seq(3,ncol(mat),6)
+
+        for (t in 1:nrow(mat)) {
+
+            total_cells[t] = sum(mat[t,radii]>0)
+
+        }
+
+        plot(total_cells,type="l")
+
     }
-  
-    plot(total_cells,type="l")
-  }
 
 )
