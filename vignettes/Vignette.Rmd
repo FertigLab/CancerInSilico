@@ -1,0 +1,26 @@
+---
+title: "Off-Lattice Cell-Based Monte Carlo Simulation"
+author: "Elana J. Fertig, Thomas Sherman"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Off-Lattice Cell-Based Monte Carlo Simulation}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+This vignette summarizes the uses and formats of the provided functions. Most of this information is available throughout the R documentation provided. This is an appendix which brings together all the provided information, to one place.
+
+##Introduction
+
+Off-Lattice Cell-Based Monte Carlo (OCMC) is a simulation based off previous data that enables the modeling of cell growth. The OCMC package is implemented in C++, and compiled and integrated into R using the Rcpp package. 
+
+##Getting Started
+
+```{r}
+# Runs the Model
+runModel <- function(initialNum, runTime, density = 0.05,
+                    meanGrowth = 0.15, varGrowth = 0.0, maxMigration = 0.5,
+                    maxDeform = 0.075, maxRotate = 0.3, epsilon = 0.05,
+                    delta = 5.0, outIncrement = 10, randSeed = 0)
+runModel(10,10)
+```

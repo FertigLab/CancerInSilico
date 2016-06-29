@@ -21,7 +21,7 @@ setMethod("plotCellsAtTime", "CellMatrix",
         radii = ycoords + 1
         axis_len = radii + 1
         axis_ang = axis_len + 1
-        #theta <- seq(0,2*pi,length=200)
+        
         mn = min(min(mat[,xcoords]),min(mat[,ycoords])) - 2
         mx = max(max(mat[,xcoords]),max(mat[,ycoords])) + 2
 
@@ -30,7 +30,7 @@ setMethod("plotCellsAtTime", "CellMatrix",
         dev.set(which = 1)
 
         plot(c(mn,mx),c(mn,mx),type="n")
-
+        theta <- seq(0,2*pi,length=200)
         #Currently Assuming All Cells are Alive (No Cell Death)
         for (n in xcoords) {
 
@@ -44,9 +44,10 @@ setMethod("plotCellsAtTime", "CellMatrix",
                     sin(mat[time,n+4])
 
             
-            #plot(x_1 + mat[time,n+2] * cos(theta),y_1 + mat[time,n+2] * sin(theta),type="l",new=FALSE)
-            DrawCircle(x_1,y_1,mat[time,n+2])
-            DrawCircle(x_2,y_2,mat[time,n+2])
+            lines(x_1 + mat[time,n+2] * cos(theta),y_1 + mat[time,n+2] * sin(theta),type="l",new=FALSE)
+            lines(x_2 + mat[time,n+2] * cos(theta),y_2 + mat[time,n+2] * sin(theta),type="l",new=FALSE)
+            # DrawCircle(x_1,y_1,mat[time,n+2])
+            # DrawCircle(x_2,y_2,mat[time,n+2])
 
         }
 
