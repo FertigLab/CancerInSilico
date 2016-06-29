@@ -33,7 +33,13 @@ runModel(initialNum, runTime, density = 0.05, meanGrowth = 0.15,
 
 \item{randSeed}{seed for the model}
 }
+\value{
+A CellMatrix containing all info from the model run
+}
 \description{
 \code{runModel} Runs the model
+}
+\examples{
+runModel(100,10)
 }
 

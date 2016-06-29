@@ -3,8 +3,8 @@
 \docType{methods}
 \name{plotGrowthRateDistribution,CellMatrix-method}
 \alias{plotGrowthRateDistribution,CellMatrix-method}
-\title{\code{plotGrowthRateDistribution} Plots a distribution of the growth rates
-of all the cells}
+\title{\code{plotGrowthRateDistribution} Plots a distribution of the growth
+     rates of all the cells}
 \usage{
 \S4method{plotGrowthRateDistribution}{CellMatrix}(mat, time)
 }
@@ -13,8 +13,11 @@ of all the cells}
 
 \item{time}{The time of interest for the growth rates}
 }
+\value{
+Plots the distribution of growth rates at time
+}
 \description{
-\code{plotGrowthRateDistribution} Plots a distribution of the growth rates
-of all the cells
+\code{plotGrowthRateDistribution} Plots a distribution of the growth
+     rates of all the cells
 }
 

@@ -1,8 +1,10 @@
-#'\code{plotTotalCells} Plots the total number of cells vs time
+#' \code{plotTotalCells} Plots the total number of cells vs time
 #'
-#'
-#'@param mat A Cell Matrix
-#'@export
+#' @param mat A Cell Matrix
+#' @return Plots the size of the cell population over time
+#' @examples
+#' plotTotalCells(runModel(10,100))
+#' @export
 
 setGeneric("plotTotalCells", function(mat)
     standardGeneric("plotTotalCells"))
