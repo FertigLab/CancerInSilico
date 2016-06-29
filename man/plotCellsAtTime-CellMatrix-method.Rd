@@ -8,10 +8,13 @@
 \S4method{plotCellsAtTime}{CellMatrix}(mat, time)
 }
 \arguments{
-\item{mat}{A Cell Matrix}
+\item{mat}{A Cell Model object}
 
 \item{time}{The timestep at which to plot the matrix. Must be below
 the specified max amount of timesteps}
+}
+\value{
+Plot a visual representation of cells at time
 }
 \description{
 \code{plotCellsAtTime} Plots a CellMatrix at a certain point in time

@@ -9,7 +9,13 @@ plotTotalCells(mat)
 \arguments{
 \item{mat}{A Cell Matrix}
 }
+\value{
+Plots the size of the cell population over time
+}
 \description{
 \code{plotTotalCells} Plots the total number of cells vs time
+}
+\examples{
+plotTotalCells(runModel(10,100))
 }
 

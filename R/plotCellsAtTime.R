@@ -1,21 +1,24 @@
-#'\code{plotCellsAtTime} Plots a CellMatrix at a certain point in time
+#' \code{plotCellsAtTime} Plots a CellMatrix at a certain point in time
 #'
-#'
-#'@param mat A Cell Matrix
-#'@param time The timestep at which to plot the matrix. Must be below
+#' @param mat A Cell Matrix
+#' @param time The timestep at which to plot the matrix. Must be below
 #' the specified max amount of timesteps
-#'@export
+#' @return Plot a visual representation of cells at time
+#' @examples
+#' plotCellsAtTime(runModel(100,10),5)
+#' @export
 
 setGeneric("plotCellsAtTime", function(mat,time)
     standardGeneric("plotCellsAtTime"))
 
-#'\code{plotCellsAtTime} Plots a CellMatrix at a certain point in time
+#' \code{plotCellsAtTime} Plots a CellMatrix at a certain point in time
 #'
 #'
-#'@param mat A Cell Matrix
-#'@param time The timestep at which to plot the matrix. Must be below
-#' the specified max amount of timesteps
-#'@export
+#' @param mat A Cell Model object
+#' @param time The timestep at which to plot the matrix. Must be below
+#'      the specified max amount of timesteps
+#' @return Plot a visual representation of cells at time
+#' @export
 
 setMethod("plotCellsAtTime", "CellMatrix",
 
@@ -24,7 +27,7 @@ setMethod("plotCellsAtTime", "CellMatrix",
         radii = seq(3,ncol(mat),6)
         numCells = sum(mat[time,radii]>0)
 
-        xcoords = seq(1,(numCells-1)*7,6)
+        xcoords = seq(1,numCells * 6,6)
         ycoords = xcoords + 1
         radii = ycoords + 1
         axis_len = radii + 1
@@ -38,7 +41,6 @@ setMethod("plotCellsAtTime", "CellMatrix",
         dev.set(which = 1)
 
         plot(c(mn,mx),c(mn,mx),type="n")
-        text(20,20,labels = "test")
 
         #Currently Assuming All Cells are Alive (No Cell Death)
         for (n in xcoords) {
@@ -51,9 +53,6 @@ setMethod("plotCellsAtTime", "CellMatrix",
                     cos(mat[time,n+4])
             y_2 =  mat[time,n+1] + (0.5 * mat[time,n+3] - mat[time,n+2]) *
                     sin(mat[time,n+4])
-
-            DrawCircle(x_1,y_1,mat[time,n+2])
-            DrawCircle(x_2,y_2,mat[time,n+2])
 
         }
 

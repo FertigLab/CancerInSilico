@@ -2,8 +2,8 @@
 % Please edit documentation in R/plotGrowthRateDistribution.R
 \name{plotGrowthRateDistribution}
 \alias{plotGrowthRateDistribution}
-\title{\code{plotGrowthRateDistribution} Plots a distribution of the growth rates
-of all the cells}
+\title{\code{plotGrowthRateDistribution} Plots a distribution of the growth
+     rates of all the cells}
 \usage{
 plotGrowthRateDistribution(mat, time)
 }
@@ -12,8 +12,14 @@ plotGrowthRateDistribution(mat, time)
 
 \item{time}{The time of interest for the growth rates}
 }
+\value{
+Plots the distribution of growth rates at time
+}
 \description{
-\code{plotGrowthRateDistribution} Plots a distribution of the growth rates
-of all the cells
+\code{plotGrowthRateDistribution} Plots a distribution of the growth
+     rates of all the cells
+}
+\examples{
+plotGrowthRateDistribution(runModel(100,10),10)
 }
 
