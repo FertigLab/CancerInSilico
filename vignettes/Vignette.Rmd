@@ -14,8 +14,15 @@ This vignette summarizes the uses and formats of the provided functions. Most of
 
 Off-Lattice Cell-Based Monte Carlo (OCMC) is a simulation based off previous data that enables the modeling of cell growth. The OCMC package is implemented in C++, and compiled and integrated into R using the Rcpp package. 
 
+##Installation
+
+
+
 ##Getting Started
 
+In this section, we will describe the main function and its uses.
+
+The following function, "runModel" will be the main and most basic function that will be run in the usage of this package. Below is the syntax of the function, only requiring two of its many parameters in order to create a model. An example of the proper syntax is provided below:
 ```{r}
 # Runs the Model
 runModel <- function(initialNum, runTime, density = 0.05,
@@ -24,3 +31,6 @@ runModel <- function(initialNum, runTime, density = 0.05,
                     delta = 5.0, outIncrement = 10, randSeed = 0)
 runModel(10,10)
 ```
+Upon running this function, a CellMatrix will be printed along with the time and its intervals of that are used. 
+
+Each parameter will simulate a certain variable in cell growth

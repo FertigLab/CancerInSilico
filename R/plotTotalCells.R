@@ -9,16 +9,6 @@
 setGeneric("plotTotalCells", function(mat)
     standardGeneric("plotTotalCells"))
 
-<<<<<<< HEAD
-=======
-#' \code{plotTotalCells} Plots the total number of cells vs time
-#'
-#'
-#' @param mat A Cell Matrix
-#' @return Plots the size of the cell population over time
-#' @export
-
->>>>>>> 1f571cc86bdbc85a7bd5f5e6d24cf291a11c89a3
 setMethod("plotTotalCells", "CellMatrix",
 
     function(mat) {

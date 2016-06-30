@@ -12,7 +12,7 @@
 
 <meta name="author" content="Elana J. Fertig, Thomas Sherman" />
 
-<meta name="date" content="2016-06-29" />
+<meta name="date" content="2016-06-30" />
 
 <title>Off-Lattice Cell-Based Monte Carlo Simulation</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Off-Lattice Cell-Based Monte Carlo Simulation</h1>
 <h4 class="author"><em>Elana J. Fertig, Thomas Sherman</em></h4>
-<h4 class="date"><em>2016-06-29</em></h4>
+<h4 class="date"><em>2016-06-30</em></h4>
 
 
 
@@ -79,14 +79,20 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h2>Introduction</h2>
 <p>Off-Lattice Cell-Based Monte Carlo (OCMC) is a simulation based off previous data that enables the modeling of cell growth. The OCMC package is implemented in C++, and compiled and integrated into R using the Rcpp package.</p>
 </div>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+</div>
 <div id="getting-started" class="section level2">
 <h2>Getting Started</h2>
+<p>In this section, we will describe the main function and its uses.</p>
+<p>The following function, “runModel” will be the main and most basic function that will be run in the usage of this package. Below is the syntax of the function, only requiring two of its many parameters in order to create a model. An example of the proper syntax is provided below:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Runs the Model</span>
 runModel &lt;-<span class="st"> </span>function(initialNum, runTime, <span class="dt">density =</span> <span class="fl">0.05</span>,
                     <span class="dt">meanGrowth =</span> <span class="fl">0.15</span>, <span class="dt">varGrowth =</span> <span class="fl">0.0</span>, <span class="dt">maxMigration =</span> <span class="fl">0.5</span>,
                     <span class="dt">maxDeform =</span> <span class="fl">0.075</span>, <span class="dt">maxRotate =</span> <span class="fl">0.3</span>, <span class="dt">epsilon =</span> <span class="fl">0.05</span>,
                     <span class="dt">delta =</span> <span class="fl">5.0</span>, <span class="dt">outIncrement =</span> <span class="dv">10</span>, <span class="dt">randSeed =</span> <span class="dv">0</span>)
 <span class="kw">runModel</span>(<span class="dv">10</span>,<span class="dv">10</span>)</code></pre></div>
+<p>Upon running this function, a CellMatrix will be printed along with the time and its intervals of that are used.</p>
 </div>
 
 
