@@ -16,7 +16,9 @@ Off-Lattice Cell-Based Monte Carlo (OCMC) is a simulation based off previous dat
 
 ##Installation
 
+source("http://www.bioconductor.org/biocLite.R")
 
+biocLite("CellModel")
 
 ##Getting Started
 
@@ -31,6 +33,20 @@ runModel <- function(initialNum, runTime, density = 0.05,
                     delta = 5.0, outIncrement = 10, randSeed = 0)
 runModel(10,10)
 ```
-Upon running this function, a CellMatrix will be printed along with the time and its intervals of that are used. 
 
-Each parameter will simulate a certain variable in cell growth
+Each parameter will simulate a certain variable in cell growth:
+
+* initialNum: the number of initial cells that will start in the model
+* runTime: how long the model will run for
+* density: the density the cells are seeded at
+* meanGrowth: mean growth rate of cells
+* varGrowth: the variance of the growth rate (assumed normal)
+* maxMigration: farthest a cell can move in a single update
+* maxDeform: most a cell can deform in a single update
+* maxRotate: most a cell can rotate in a single update
+* epsilon: model specific parameter
+* delta: model specific parameter
+* outIncrement: time increment to print status at
+* randSeed: seed for the model
+
+Upon running this function, a CellModel object will be created, along with the printing of the time, and interval specified by "runTime" and "outIncrement" respectively.

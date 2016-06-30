@@ -77,10 +77,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>This vignette summarizes the uses and formats of the provided functions. Most of this information is available throughout the R documentation provided. This is an appendix which brings together all the provided information, to one place.</p>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>Off-Lattice Cell-Based Monte Carlo (OCMC) is a simulation based off previous data that enables the modeling of cell growth. The OCMC package is implemented in C++, and compiled and integrated into R using the Rcpp package.</p>
-</div>
-<div id="installation" class="section level2">
-<h2>Installation</h2>
+<p>Off-Lattice Cell-Based Monte Carlo (OCMC) is a simulation based off previous data that enables the modeling of cell growth. The OCMC package is implemented in C++, and compiled and integrated into R using the Rcpp package. asdas ##Installation</p>
+<p>source(“<a href="http://www.bioconductor.org/biocLite.R" class="uri">http://www.bioconductor.org/biocLite.R</a>”)</p>
+<p>biocLite(“CellModel”)</p>
 </div>
 <div id="getting-started" class="section level2">
 <h2>Getting Started</h2>
@@ -92,7 +91,22 @@ runModel &lt;-<span class="st"> </span>function(initialNum, runTime, <span class
                     <span class="dt">maxDeform =</span> <span class="fl">0.075</span>, <span class="dt">maxRotate =</span> <span class="fl">0.3</span>, <span class="dt">epsilon =</span> <span class="fl">0.05</span>,
                     <span class="dt">delta =</span> <span class="fl">5.0</span>, <span class="dt">outIncrement =</span> <span class="dv">10</span>, <span class="dt">randSeed =</span> <span class="dv">0</span>)
 <span class="kw">runModel</span>(<span class="dv">10</span>,<span class="dv">10</span>)</code></pre></div>
-<p>Upon running this function, a CellMatrix will be printed along with the time and its intervals of that are used.</p>
+<p>Each parameter will simulate a certain variable in cell growth:</p>
+<ul>
+<li>initialNum: the number of initial cells that will start in the model</li>
+<li>runTime: how long the model will run for</li>
+<li>density: the density the cells are seeded at</li>
+<li>meanGrowth: mean growth rate of cells</li>
+<li>varGrowth: the variance of the growth rate (assumed normal)</li>
+<li>maxMigration: farthest a cell can move in a single update</li>
+<li>maxDeform: most a cell can deform in a single update</li>
+<li>maxRotate: most a cell can rotate in a single update</li>
+<li>epsilon: model specific parameter</li>
+<li>delta: model specific parameter</li>
+<li>outIncrement: time increment to print status at</li>
+<li>randSeed: seed for the model</li>
+</ul>
+<p>Upon running this function, a CellModel object will be created, along with the printing of the time, and interval specified by “runTime” and “outIncrement” respectively.</p>
 </div>
 
 
