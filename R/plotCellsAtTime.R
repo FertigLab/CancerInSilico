@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #'\code{plotCellsAtTime} Plots a Cell Matrix at a certain point in time
+=======
+#' \code{plotCellsAtTime} Plots a CellMatrix at a certain point in time
+>>>>>>> 1f571cc86bdbc85a7bd5f5e6d24cf291a11c89a3
 #'
 #' @param mat A Cell Matrix
 #' @param time The timestep at which to plot the matrix. Must be below
@@ -11,6 +15,18 @@
 setGeneric("plotCellsAtTime", function(mat,time)
     standardGeneric("plotCellsAtTime"))
 
+<<<<<<< HEAD
+=======
+#' \code{plotCellsAtTime} Plots a CellMatrix at a certain point in time
+#'
+#'
+#' @param mat A Cell Model object
+#' @param time The timestep at which to plot the matrix. Must be below
+#'      the specified max amount of timesteps
+#' @return Plot a visual representation of cells at time
+#' @export
+
+>>>>>>> 1f571cc86bdbc85a7bd5f5e6d24cf291a11c89a3
 setMethod("plotCellsAtTime", "CellMatrix",
 
     function(mat,time)  {
@@ -32,7 +48,11 @@ setMethod("plotCellsAtTime", "CellMatrix",
         dev.set(which = 1)
 
         plot(c(mn,mx),c(mn,mx),type="n")
+<<<<<<< HEAD
         theta <- seq(0,2*pi,length=200)
+=======
+
+>>>>>>> 1f571cc86bdbc85a7bd5f5e6d24cf291a11c89a3
         #Currently Assuming All Cells are Alive (No Cell Death)
         for (n in xcoords) {
 
@@ -45,12 +65,15 @@ setMethod("plotCellsAtTime", "CellMatrix",
             y_2 =  mat[time,n+1] + (0.5 * mat[time,n+3] - mat[time,n+2]) *
                     sin(mat[time,n+4])
 
+<<<<<<< HEAD
 
             lines(x_1 + mat[time,n+2] * cos(theta),y_1 + mat[time,n+2] * sin(theta),type="l",new=FALSE)
             lines(x_2 + mat[time,n+2] * cos(theta),y_2 + mat[time,n+2] * sin(theta),type="l",new=FALSE)
             # DrawCircle(x_1,y_1,mat[time,n+2])
             # DrawCircle(x_2,y_2,mat[time,n+2])
 
+=======
+>>>>>>> 1f571cc86bdbc85a7bd5f5e6d24cf291a11c89a3
         }
 
     }
