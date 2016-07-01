@@ -18,7 +18,7 @@ setMethod("plotGrowthRateDistribution", "CellMatrix",
 
         radii = seq(3,ncol(mat),6)
         gr_rates = radii[mat[time,radii]>0] + 3
-        plot(density(mat[time,gr_rates]))
+        plot(density(mat[time,gr_rates]),main=paste("Plot of Growth Rate Distribution at Time",time))
 
     }
           

@@ -1,4 +1,4 @@
-#' \code{plotCellsAtTime} Plots a CellMatrix at a certain point in time
+#' \code{plotCellsAtTime} Plots a CellModel at a certain point in time
 #'
 #' @param mat A Cell Model object
 #' @param time The timestep at which to plot the matrix. Must be below
@@ -29,7 +29,7 @@ setMethod("plotCellsAtTime", "CellMatrix",
         dev.new()
         dev.set(which = 1)
 
-        plot(c(mn,mx),c(mn,mx),type="n")
+        plot(c(mn,mx),c(mn,mx),main=paste("Plot of CellModel At Time",time),type="n")
         theta <- seq(0,2*pi,length=200)
 
         #Currently Assuming All Cells are Alive (No Cell Death)

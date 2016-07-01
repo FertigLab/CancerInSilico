@@ -1,6 +1,6 @@
 ---
 title: "Off-Lattice Cell-Based Monte Carlo Simulation"
-author: "Elana J. Fertig, Thomas Sherman"
+author: "Thomas Sherman, Raymond Cheng, Elana J. Fertig"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -22,9 +22,11 @@ biocLite("CellModel")
 
 ##Getting Started
 
-In this section, we will describe the main function and its uses.
+In this section, we will first describe the main function and its uses. Then we will describe the rest of the functions after the main model is created.
 
-The following function, "runModel" will be the main and most basic function that will be run in the usage of this package. Below is the syntax of the function, only requiring two of its many parameters in order to create a model. An example of the proper syntax is provided below:
+######runModel
+
+The following function, "runModel" will be the main and most basic function that will be run in the usage of this package. Below is the syntax of the function, only requiring two of its many arguments in order to create a model. An example of the proper syntax is provided below:
 ```{r}
 # Runs the Model
 runModel <- function(initialNum, runTime, density = 0.05,
@@ -34,7 +36,7 @@ runModel <- function(initialNum, runTime, density = 0.05,
 runModel(10,10)
 ```
 
-Each parameter will simulate a certain variable in cell growth:
+Each argument will simulate a certain variable in cell growth:
 
 * initialNum: the number of initial cells that will start in the model
 * runTime: how long the model will run for
@@ -47,6 +49,55 @@ Each parameter will simulate a certain variable in cell growth:
 * epsilon: model specific parameter
 * delta: model specific parameter
 * outIncrement: time increment to print status at
-* randSeed: seed for the model
+* randSeed: "randomness" seed for the model
 
 Upon running this function, a CellModel object will be created, along with the printing of the time, and interval specified by "runTime" and "outIncrement" respectively.
+
+
+Once this function is called and stored into a variable, the other functions can be used as there is no default "CellModel" object provided for the other functions.
+
+###Additional Functions
+Many of the functions that will be used to analyze the CellModel, can only be done so when one is created and will generally require only two arguments to be passed to it:
+
+* mat: A CellModel object
+* time: The Time of Interest
+
+This is because analyzing the data created from the CellModel requires plotting an aspect of the cells to a point in time.
+
+There is one exception as the "plotTotalCells" function is the only one that requires one argument, the "mat" argument.
+
+######getDensity
+This function allows the user to retrieve the density of the cells at any given time within the maximum time the model was allowed to run. The determining of the density of the cells at certain points, allows for the potential relationships of the cells to be determined at intervals, such as the attraction or repulsion of the cells due to high density or proximity to one another at intervals of 10 timesteps. 
+
+```
+# sample
+library(CellModel)
+data <- runModel(100,100)
+getDensity(data,60)
+
+# output
+[1] 0.06039155
+```
+
+######plotGrowthRateDistribution
+This function is a key in visualizing the growth rates of the CellModel as time increases or discerning it at certain time points. The visualization of growth rates is important as it allows for showing when the cell population is growing slower or faster at certain times. Also higher growth rates generally indicate more activity within the cell which can occur for many reasons, which needs to be modeled as it can influence other biological processes.
+
+![](plotGrowthRateDistribution.png)
+
+######plotCellsAtTime
+This function allows the user to visualize the cells by plotting each individual cell on a Cartesian Plane to view possible CellGrowth and movement of the cells. This will allow a user to see how the model is progressing at certain times or intervals.
+
+![](plotCellsAtTime.png)
+
+######plotTotalCells
+This function is to plot the increasing amount of cells vs time. As more cells are created, the rate at which cells are created should also increase, and this will allow a visual representation of that.
+
+![](plotTotalCells.png)
+
+
+##Feedback
+
+Please send any feedback to tsherma4@jhu.edu or ejfertig@jhmi.edu
+
+##Acknowledgements
+
