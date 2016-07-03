@@ -25,31 +25,63 @@ setMethod("plotCellsAtTime", "CellMatrix",
         mn = min(min(mat[,xcoords]),min(mat[,ycoords])) - 2
         mx = max(max(mat[,xcoords]),max(mat[,ycoords])) + 2
 
+        
         #Opens new device to put plot into
         dev.new()
         dev.set(which = 1)
 
-        plot(c(mn,mx),c(mn,mx),main=paste("Plot of CellModel At Time",time),type="n")
-        theta <- seq(0,2*pi,length=200)
-
+        
+        testcase = "abcdefghij"
+        theta = seq(0,2*pi,length=200)
+        read = " "
         #Currently Assuming All Cells are Alive (No Cell Death)
-        for (n in xcoords) {
-
-            x_1 =  mat[time,n] + (- 0.5 * mat[time,n+3] + mat[time,n+2]) *
-                    cos(mat[time,n+4])
-            y_1 =  mat[time,n+1] + (- 0.5 * mat[time,n+3] + mat[time,n+2]) *
-                    sin(mat[time,n+4])
-            x_2 =  mat[time,n] + (0.5 * mat[time,n+3] - mat[time,n+2]) *
-                    cos(mat[time,n+4])
-            y_2 =  mat[time,n+1] + (0.5 * mat[time,n+3] - mat[time,n+2]) *
-                    sin(mat[time,n+4])
-            
-            lines(x_1 + mat[time,n+2] * cos(theta),y_1 + mat[time,n+2] * sin(theta),type="l",new=FALSE)
-            lines(x_2 + mat[time,n+2] * cos(theta),y_2 + mat[time,n+2] * sin(theta),type="l",new=FALSE)
-            # DrawCircle(x_1,y_1,mat[time,n+2])
-            # DrawCircle(x_2,y_2,mat[time,n+2])
+        while(time <= nrow(data)) {
+          if(identical(read,"q")){
+            dev.off()
+            break
+          }
+          else if(identical(read,"summary")){
+            print(test)
+          }
+          else if(suppressWarnings(identical(as.numeric(read),as.numeric(testcase)) == FALSE)){
+            time = as.numeric(read)
+          }
+          else if(identical(read,"b")){
+            print(time)
+            time = time - 1
+          }
+          else if(identical(read,"n")){
+            print(time)
+            time = time + 1
+          }
+          else{
+            print("Enter a valid command.")
+          }
+          if(time > nrow(data)){
+            print("Time out of bound")
+            dev.off()
+            break
+          }
+          plot(c(mn,mx),c(mn,mx),main=paste("Plot of CellModel At Time",time),type="n")
+          test = sum(mat[time,radii]>0)  
+          for (n in xcoords) {
+    
+              x_1 =  mat[time,n] + (- 0.5 * mat[time,n+3] + mat[time,n+2]) *
+                      cos(mat[time,n+4])
+              y_1 =  mat[time,n+1] + (- 0.5 * mat[time,n+3] + mat[time,n+2]) *
+                      sin(mat[time,n+4])
+              x_2 =  mat[time,n] + (0.5 * mat[time,n+3] - mat[time,n+2]) *
+                      cos(mat[time,n+4])
+              y_2 =  mat[time,n+1] + (0.5 * mat[time,n+3] - mat[time,n+2]) *
+                      sin(mat[time,n+4])
+              
+              lines(x_1 + mat[time,n+2] * cos(theta),y_1 + mat[time,n+2] * sin(theta),type="l",new=FALSE)
+              lines(x_2 + mat[time,n+2] * cos(theta),y_2 + mat[time,n+2] * sin(theta),type="l",new=FALSE)
+              # DrawCircle(x_1,y_1,mat[time,n+2])
+              # DrawCircle(x_2,y_2,mat[time,n+2])
+          }
+            read = readline()
         }
-
-    }
+      }
 
 )
