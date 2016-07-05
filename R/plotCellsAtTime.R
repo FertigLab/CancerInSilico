@@ -28,6 +28,7 @@ setMethod("plotCellsAtTime", "CellMatrix",
         
         #Opens new device to put plot into
         dev.new()
+        #dev.next(which = dev.cur())
         dev.set(which = 1)
 
         
@@ -40,24 +41,38 @@ setMethod("plotCellsAtTime", "CellMatrix",
             dev.off()
             break
           }
-          else if(identical(read,"summary")){
-            print(test)
+          else if(identical(read,"summ")){
+            print(paste("Number of Cells at time",time,"=",test))
           }
           else if(suppressWarnings(identical(as.numeric(read),as.numeric(testcase)) == FALSE)){
             time = as.numeric(read)
           }
-          else if(identical(read,"b")){
-            print(time)
-            time = time - 1
+          else if(identical(substring(read,1,1),"b")){
+            temp = 1
+            if(identical(substring(gsub(" ","",read),2,3),"-j")){
+              temp = as.numeric(substring(gsub(" ","",read),4))
+              time = time - temp
+            }
+            else{
+              print(time)
+              time = time - temp
+            }
           }
-          else if(identical(read,"n")){
-            print(time)
-            time = time + 1
+          else if(identical(substring(read,1,1),"n")){
+            temp = 1
+            if(identical(substring(gsub(" ","",read),2,3),"-j")){
+              temp = as.numeric(substring(gsub(" ","",read),4))
+              time = time + temp
+            }
+            else{
+              print(time)
+              time = time + temp
+            }
           }
           else{
             print("Enter a valid command.")
           }
-          if(time > nrow(data)){
+          if(time > nrow(data) | time < 0){
             print("Time out of bound")
             dev.off()
             break
