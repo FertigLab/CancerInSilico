@@ -56,7 +56,7 @@ Upon running this function, a CellModel object will be created, along with the p
 
 Once this function is called and stored into a variable, the other functions can be used as there is no default "CellModel" object provided for the other functions.
 
-###Additional Functions
+##Additional Functions
 Many of the functions that will be used to analyze the CellModel, can only be done so when one is created and will generally require only two arguments to be passed to it:
 
 * mat: A CellModel object
@@ -69,6 +69,7 @@ There is one exception as the "plotTotalCells" function is the only one that req
 ######getDensity
 This function allows the user to retrieve the density of the cells at any given time within the maximum time the model was allowed to run. The determining of the density of the cells at certain points, allows for the potential relationships of the cells to be determined at intervals, such as the attraction or repulsion of the cells due to high density or proximity to one another at intervals of 10 timesteps. 
 
+Density is also important in the cell model as a higher density will generally signify that a cell population has reached a possible critical point in which would be dangerous in a biological system.
 ```
 # sample
 library(CellModel)
@@ -76,21 +77,43 @@ data <- runModel(100,100)
 getDensity(data,60)
 
 # output
-[1] 0.06039155
+#[1] 0.06039155
 ```
 
 ######plotGrowthRateDistribution
-This function is a key in visualizing the growth rates of the CellModel as time increases or discerning it at certain time points. The visualization of growth rates is important as it allows for showing when the cell population is growing slower or faster at certain times. Also higher growth rates generally indicate more activity within the cell which can occur for many reasons, which needs to be modeled as it can influence other biological processes.
+This function is a key in visualizing the growth rates of the CellModel as time increases or discerning it at certain time points. The visualization of growth rates is important as it allows for showing when the cell population is growing slower or faster at certain times. 
+
+Generally in the model, a higher growth rates generally indicate more activity within the cell which can occur for many reasons, which needs to be modeled as it can influence other biological processes.
 
 ![](plotGrowthRateDistribution.png)
 
-######plotCellsAtTime
+The graph above is an example of the output from the function. The x-axis is the range of growth rates that were developed in the model. The distribution curve is a normal curve based on the dataset at the time provided by the user. 
+
+######plotCellsAtTime and plotInteractive
 This function allows the user to visualize the cells by plotting each individual cell on a Cartesian Plane to view possible CellGrowth and movement of the cells. This will allow a user to see how the model is progressing at certain times or intervals.
+
+The provision of visualizing a change in the graph at any point or at certain timepoints allows comparison between why certain aspects in the model happen. For example at certain timesteps it appears that the density is lower than expected. However the model shows the cells spreading out instead of the tight formation that could be examined in the first timestep.
 
 ![](plotCellsAtTime.png)
 
+Above is an example plot of the cell model at time 60. The axes for the entire plot, are in a simple Cartesian plan. It allows for a better designation of where the cells are and which are the ones of interest. Within the example, cells undergoing mitosis or cell division can be viewed, and can be easily seen properly undergoing the process.
+
+In addition to the graphing portion, the function, "plotInteractive", calls upon "plotCellsAtTime", and allows for command-line-like arguments to be taken into it that enable it to be manually iterated through each timestep. The following are the current "commands" that can be inputted, along with their functionaility:
+
+* summ = total amount of cells
+    + d = density of the time
+    + g = average growth rate at time
+* b <t=1> = back "t" timestep(s)
+* n <t=1> = forward "t" timestep(s)
+* t <t> = set time of plot to "t"
+* q = quit out of the function
+
+The graph shown previously is the exact same for "plotInteractive" due to "plotCellsAtTime" being part of the function. However, the console-like commands enable the user to more easily change and create intervals at which to view the model. Additionally it provides a few summarizing features such as viewing the average growth rate of the model at the specified time or allowing for the density to be viewed without having to exit the function.
+
 ######plotTotalCells
 This function is to plot the increasing amount of cells vs time. As more cells are created, the rate at which cells are created should also increase, and this will allow a visual representation of that.
+
+Through the visualization the total cells over time, comparisons can be made between the density and growth rates which are received from other functions at the respective time. 
 
 ![](plotTotalCells.png)
 
@@ -100,4 +123,8 @@ This function is to plot the increasing amount of cells vs time. As more cells a
 Please send any feedback to tsherma4@jhu.edu or ejfertig@jhmi.edu
 
 ##Acknowledgements
+
+
+
+##References
 
