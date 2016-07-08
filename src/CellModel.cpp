@@ -20,13 +20,15 @@ Rcpp::NumericMatrix CellModel(
     int randSeed
 
 ) {
+
     Rcpp::Environment baseEnv("package:base");
     Rcpp::Function setSeed = baseEnv["set.seed"];
     setSeed(randSeed);
-    Parameters *params = new Parameters();
+
+    Parameters *params = new Parameters(pow(2,0.5));
+
     double apoptosisRate = 0.0;
-    params->SetMinRadius(1);
-    params->SetMaxRadius(pow(2, 0.5) * params->GetMinRadius());
+
     params->SetEnergyConstant(1);
     params->SetInitialNumCells(initialNum);
     params->SetInitialDensity(density);
@@ -38,11 +40,14 @@ Rcpp::NumericMatrix CellModel(
     params->SetMaxRotate(maxRotate);
     params->SetResistanceEPSILON(epsilon);
     params->SetCompressionDELTA(delta);
+
     Simulation main_sim = Simulation(params);
     main_sim.Run(runTime, outIncrement);
     Rcpp::NumericMatrix ret_val = main_sim.GetCellsAsMatrix();
+
     delete params;
     return ret_val;
+
 }
 
 

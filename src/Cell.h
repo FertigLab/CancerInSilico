@@ -1,9 +1,7 @@
 #ifndef CELL_HPP
 #define CELL_HPP
 
-#include <utility>
-#include <vector>
-
+#include "Point.h"
 #include "Parameters.h"
 
 class Cell {
@@ -12,44 +10,57 @@ class Cell {
 
     Parameters *m_param;
 
-    std::pair<double, double> m_coordinates;
+    Point m_coordinates;
     double m_radius;
     bool m_ready_to_divide;
     bool m_in_mitosis;
     double m_growth_rate;
-    double m_min_cell_dist;
-    std::pair<double, double> m_axis; //(length, angle)
+	double m_axis_len, m_axis_ang;
 
   public:
 
-    Cell(std::pair<double, double>, Parameters *);
-    Cell(std::pair<double, double>, Parameters *, double);
+	Cell(const Cell&);
+    Cell(Point, Parameters*);
+	Cell(Point, Parameters*, double);
 
-    Cell &DoTrial();
+    void DoTrial();
     void Migration();
     void Growth();
     void Rotation();
     void Deformation();
-    bool ReadyToDivide();
 
-    std::pair<double, double> GetCoord();
-    double GetRadius();
-    double GetAxisLength();
-    double GetAxisAngle();
-    Cell *Divide();
+    Point GetCoord() const;
+    double GetRadius() const;
+    double GetAxisLength() const;
+    double GetAxisAngle() const;
     void SetGrowth(double);
-    double GetGrowth();
+    double GetGrowth() const;
+    bool ReadyToDivide() const;
 
-    double CellDistance(Cell &);
+ 	Cell Divide();
 
-    bool operator!=(const Cell &b) const {
+    double CellDistance(const Cell&) const;
+
+    bool operator!=(const Cell& b) const {
         return m_coordinates != b.m_coordinates;
     }
 
-    bool operator==(const Cell &b) const {
+    bool operator==(const Cell& b) const {
         return m_coordinates == b.m_coordinates;
     }
 
+    void operator=(const Cell& other) {
+
+		m_param = other.m_param;
+		m_coordinates = other.m_coordinates;
+		m_in_mitosis = other.m_in_mitosis;
+		m_ready_to_divide = other.m_ready_to_divide;
+		m_axis_len = other.m_axis_len;
+		m_axis_ang = other.m_axis_ang;
+		m_radius = other.m_radius;
+		m_growth_rate = other.m_growth_rate;
+
+    }
 
 };
 

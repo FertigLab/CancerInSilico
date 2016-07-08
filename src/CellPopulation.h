@@ -3,43 +3,48 @@
 
 #include <Rcpp.h>
 #include <vector>
-#include <cmath>
 
+#include "Point.h"
 #include "Parameters.h"
 #include "Cell.h"
 #include "SpatialHash.h"
 
 class CellPopulation {
 
-  private:
+friend class TestCellPopulation;
 
-    Parameters *m_param;
+private:
 
-    SpatialHash m_population;
+	Parameters *m_param;
 
-    std::vector<std::vector<double> > m_population_record;
+	SpatialHash<Cell> m_population;
 
-  public:
+	std::vector<std::vector<double> > m_population_record;
 
-    CellPopulation() {}
-    ~CellPopulation();
-    CellPopulation(Parameters *, unsigned int, double);
+public:
 
-    std::pair<double, double> GetRandomLocation(double);
-    bool ValidCellPlacement(double, double);
-    void OneTimeStep();
-    void Update();
-    void AttemptTrial(Cell *);
-    bool AcceptTrial(double);
-    double CalculateTotalInteraction(Cell *);
-    double CalculateInteraction(Cell *, Cell *);
-    void CheckMitosis();
-    void RecordPopulation();
-    void UpdateNeighbors(Cell *);
-    Rcpp::NumericMatrix GetPopulationAsMatrix();
-    void AddDrug();
+	~CellPopulation();
 
-    int size();
+	CellPopulation(Parameters *, unsigned int, double);
+
+	Point GetRandomLocation(double);
+	bool ValidCellPlacement(Point);
+
+	void OneTimeStep();
+	void Update();
+
+	void AttemptTrial(Cell *);
+	bool AcceptTrial(double);
+	double CalculateTotalInteraction(Cell *);
+	double CalculateInteraction(Cell *, Cell *);
+
+	void CheckMitosis(Cell*);
+	void AddDrug();
+
+	void RecordPopulation();
+	Rcpp::NumericMatrix GetPopulationAsMatrix();
+
+	int size();
 
 };
 
