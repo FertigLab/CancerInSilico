@@ -15,7 +15,7 @@ setGeneric("plotInteractive", function(mat,time)
 setMethod("plotInteractive", "CellMatrix",
           
           function(mat,time){
-            while(time <= nrow(data)) {
+            while(time <= nrow(mat)) {
               radii = seq(3,ncol(mat),6)
               grrate = seq(6,ncol(mat),6)
               plotCellsAtTime(mat,time)
@@ -68,7 +68,7 @@ setMethod("plotInteractive", "CellMatrix",
               else{
                 cat("Enter a valid command. Type \"h\" for further help")
               }
-              if(time > nrow(data) | time <= 0){
+              if(time > nrow(mat) | time <= 0){
                 print("Time out of bound")
                 graphics.off()
                 break
