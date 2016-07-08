@@ -1,6 +1,6 @@
 #' \code{plotTotalCells} Plots the total number of cells vs time
 #'
-#' @param mat A Cell Matrix
+#' @param mat A CellModel
 #' @return Plots the size of the cell population over time
 #' @examples
 #' plotTotalCells(runModel(10,100))
@@ -8,13 +8,6 @@
 
 setGeneric("plotTotalCells", function(mat)
     standardGeneric("plotTotalCells"))
-
-#' \code{plotTotalCells} Plots the total number of cells vs time
-#'
-#'
-#' @param mat A Cell Matrix
-#' @return Plots the size of the cell population over time
-#' @export
 
 setMethod("plotTotalCells", "CellMatrix",
 
@@ -29,7 +22,7 @@ setMethod("plotTotalCells", "CellMatrix",
 
         }
 
-        plot(total_cells,type="l")
+        plot(total_cells,main="Plot of Total Cells vs Time",type="l")
 
     }
 

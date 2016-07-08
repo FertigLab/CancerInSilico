@@ -2,12 +2,12 @@
 % Please edit documentation in R/plotCellsAtTime.R
 \name{plotCellsAtTime}
 \alias{plotCellsAtTime}
-\title{\code{plotCellsAtTime} Plots a CellMatrix at a certain point in time}
+\title{\code{plotCellsAtTime} Plots a CellModel at a certain point in time}
 \usage{
 plotCellsAtTime(mat, time)
 }
 \arguments{
-\item{mat}{A Cell Matrix}
+\item{mat}{A Cell Model object}
 
 \item{time}{The timestep at which to plot the matrix. Must be below
 the specified max amount of timesteps}
@@ -16,9 +16,6 @@ the specified max amount of timesteps}
 Plot a visual representation of cells at time
 }
 \description{
-\code{plotCellsAtTime} Plots a CellMatrix at a certain point in time
-}
-\examples{
-plotCellsAtTime(runModel(100,10),5)
+\code{plotCellsAtTime} Plots a CellModel at a certain point in time
 }
 

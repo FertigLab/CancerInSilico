@@ -22,6 +22,10 @@ LinkingTo:
     testthat,
     BH
 Suggests:
-    testthat
+    testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder:
+    knitr
 biocViews: MathematicalBiology
 RoxygenNote: 5.0.1
