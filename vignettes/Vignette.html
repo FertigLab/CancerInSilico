@@ -12,7 +12,7 @@
 
 <meta name="author" content="Thomas Sherman, Raymond Cheng, Elana J. Fertig" />
 
-<meta name="date" content="2016-07-06" />
+<meta name="date" content="2016-07-07" />
 
 <title>Off-Lattice Cell-Based Monte Carlo Simulation</title>
 
@@ -70,11 +70,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Off-Lattice Cell-Based Monte Carlo Simulation</h1>
 <h4 class="author"><em>Thomas Sherman, Raymond Cheng, Elana J. Fertig</em></h4>
-<h4 class="date"><em>2016-07-06</em></h4>
+<h4 class="date"><em>2016-07-07</em></h4>
 
 
 
-<p>This vignette summarizes the uses and formats of the provided functions. Most of this information is available throughout the R documentation provided. This is an appendix which brings together all the provided information, to one place.</p>
+<p>11 This vignette summarizes the uses and formats of the provided functions. Most of this information is available throughout the R documentation provided. This is an appendix which brings together all the provided information, to one place.</p>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
 <p>Off-Lattice Cell-Based Monte Carlo (OCMC) is a simulation based off previous data that enables the modeling of cell growth. The OCMC package is implemented in C++, and compiled and integrated into R using the Rcpp package.</p>
@@ -127,7 +127,6 @@ runModel &lt;-<span class="st"> </span>function(initialNum, runTime, <span class
 <div id="getdensity" class="section level6">
 <h6>getDensity</h6>
 <p>This function allows the user to retrieve the density of the cells at any given time within the maximum time the model was allowed to run. The determining of the density of the cells at certain points, allows for the potential relationships of the cells to be determined at intervals, such as the attraction or repulsion of the cells due to high density or proximity to one another at intervals of 10 timesteps.</p>
-<p>Density is also important in the cell model as a higher density will generally signify that a cell population has reached a possible critical point in which would be dangerous in a biological system.</p>
 <pre><code># sample
 library(CellModel)
 data &lt;- runModel(100,100)
@@ -135,6 +134,7 @@ getDensity(data,60)
 
 # output
 #[1] 0.06039155</code></pre>
+<p>Density of a cell population is important because when it reachesa certain critical value, factors such as cell growth rate and cellular division begin to slow down or become harmful to each cell. At certain points cells will die, however when there is not enough “room” cells are destroyed or become similar to a tumorous group of cells.</p>
 </div>
 <div id="plotgrowthratedistribution" class="section level6">
 <h6>plotGrowthRateDistribution</h6>
@@ -185,6 +185,23 @@ getDensity(data,60)
 </div>
 <div id="acknowledgements" class="section level2">
 <h2>Acknowledgements</h2>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2>References</h2>
+<div id="refs" class="references">
+<div id="ref-DRASDO20031163">
+<p>Drasdo, D, and S Höhme. 2003. “Modeling and Simulation of Tumor Development, Treatment, and Control Individual-Based Approaches to Birth and Death in Avascu1ar Tumors.” <em>Mathematical and Computer Modelling</em> 37 (11): 1163–75. doi:<a href="https://doi.org/http://dx.doi.org/10.1016/S0895-7177(03)00128-6">http://dx.doi.org/10.1016/S0895-7177(03)00128-6</a>.</p>
+</div>
+<div id="ref-PhysRevE.52.6635">
+<p>Drasdo, D., R. Kree, and J. S. McCaskill. 1995. “Monte Carlo Approach to Tissue-Cell Populations.” <em>Phys. Rev. E</em> 52 (6). American Physical Society: 6635–57. doi:<a href="https://doi.org/10.1103/PhysRevE.52.6635">10.1103/PhysRevE.52.6635</a>.</p>
+</div>
+<div id="ref-Fertig2014">
+<p>Fertig, Elana J., Genevieve Stein-O’Brien, Andrew Jaffe, and Carlo Colantuoni. 2014. “Pattern Identification in Time-Course Gene Expression Data with the Cogaps Matrix Factorization.” In <em>Gene Function Analysis</em>, edited by F. Michael Ochs, 87–112. Totowa, NJ: Humana Press. doi:<a href="https://doi.org/10.1007/978-1-62703-721-1_6">10.1007/978-1-62703-721-1_6</a>.</p>
+</div>
+<div id="ref-Hill2016">
+<p>Hill, Steven M., Laura M. Heiser, Thomas Cokelaer, Michael Unger, Nicole K. Nesser, Daniel E. Carlin, Yang Zhang, et al. 2016. “Inferring Causal Molecular Networks: Empirical Assessment Through a Community-Based Effort.” <em>Nat Meth</em> 13 (4). Nature Publishing Group, a division of Macmillan Publishers Limited. All Rights Reserved.: 310–18. <a href="http://dx.doi.org/10.1038/nmeth.3773" class="uri">http://dx.doi.org/10.1038/nmeth.3773</a>.</p>
+</div>
+</div>
 </div>
 
 

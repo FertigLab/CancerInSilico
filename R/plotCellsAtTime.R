@@ -1,6 +1,6 @@
 #' \code{plotCellsAtTime} Plots a CellModel at a certain point in time
 #'
-#' @param mat A Cell Model object
+#' @param mat A CellModel object
 #' @param time The timestep at which to plot the matrix. Must be below
 #'      the specified max amount of timesteps
 #' @return Plot a visual representation of cells at time
