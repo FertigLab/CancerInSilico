@@ -108,7 +108,8 @@ void CellPopulation::AttemptTrial(Cell *cell) {
     Cell orig = *cell;
     cell->DoTrial();
 
-	double max_search = std::max(m_param->GetMaxMigration(), m_param->GetMaxRadius());
+//	double max_search = std::max(m_param->GetMaxMigration(), m_param->GetMaxRadius());
+	double max_search = 5;
 
 	SpatialHash<Cell>::circular_iterator iter
 		= m_population.begin(orig.GetCoord(), max_search);
