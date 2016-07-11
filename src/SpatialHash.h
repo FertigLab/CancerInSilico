@@ -166,6 +166,7 @@ public:
 
             full_iterator ret_iter = *this;
             ++m_iter;
+			
             return ret_iter;
 
         }
@@ -231,12 +232,14 @@ public:
 
     full_iterator begin() {
 
+		size();
 		return full_iterator(m_value_list.begin());
 
 	}
 
     full_iterator end() {
 
+		size();
 		return full_iterator(m_value_list.end());
 
 	}

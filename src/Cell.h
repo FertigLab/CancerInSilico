@@ -30,6 +30,7 @@ class Cell {
     void Deformation();
 
     Point GetCoord() const;
+    void SetCoord(Point);
     double GetRadius() const;
     double GetAxisLength() const;
     double GetAxisAngle() const;

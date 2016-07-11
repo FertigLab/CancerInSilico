@@ -13,11 +13,14 @@ CellPopulation::CellPopulation(Parameters *par, unsigned int size, double densit
 
     for (unsigned int i = 0; i < size; i++) {
 
-        new_loc = GetRandomLocation(disk_radius);
-		temp = new Cell(new_loc, m_param);
+		temp = new Cell(Point(0,0), m_param);
+        GetRandomLocation(temp, disk_radius);
         m_population.Insert(temp->GetCoord(), temp);
+        Rcpp::checkUserInterrupt();
 
     }
+
+	RecordPopulation();
 
 }
 
@@ -32,7 +35,7 @@ CellPopulation::~CellPopulation() {
 
 }
 
-Point CellPopulation::GetRandomLocation(double rad) {
+Point CellPopulation::GetRandomLocation(Cell* cell, double rad) {
 
     double dist, ang, x, y;
 
@@ -42,20 +45,21 @@ Point CellPopulation::GetRandomLocation(double rad) {
         ang = R::runif(0, 2 * M_PI);
         x = rad * pow(dist, 0.5) * cos(ang);
         y = rad * pow(dist, 0.5) * sin(ang);
+		cell->SetCoord(Point(x,y));
 
-    } while (!ValidCellPlacement(Point(x,y)));
+    } while (!ValidCellPlacement(cell));
 
     return Point(x, y);
 
 }
 
-bool CellPopulation::ValidCellPlacement(Point pt) {
+bool CellPopulation::ValidCellPlacement(Cell* cell) {
 
     SpatialHash<Cell>::full_iterator iter = m_population.begin();
 
 	for (; iter != m_population.end(); ++iter) {
 
-        if ((*iter).CellDistance(Cell(pt, m_param)) < 0) {
+        if ((*iter).CellDistance(*cell) < 0) {
 
             return false;
 
