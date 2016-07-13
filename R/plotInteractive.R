@@ -69,4 +69,5 @@ setMethod("plotInteractive", "CellModel",
 			}
 		}
 	}
+ 
 )

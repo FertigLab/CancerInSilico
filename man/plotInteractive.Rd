@@ -7,7 +7,11 @@
 plotInteractive(model, time = 1)
 }
 \arguments{
+<<<<<<< HEAD
 \item{model}{A CellModel}
+=======
+\item{mat}{A CellModel object}
+>>>>>>> c9cea553bae792e710af1ccbef8b1ac9c7754d26
 
 \item{time}{The timestep at which to plot the matrix. Must be below
 the specified max amount of timesteps}
