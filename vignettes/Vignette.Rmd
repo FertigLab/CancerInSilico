@@ -64,12 +64,12 @@ Once this function is called and stored into a variable, the other functions can
 ##Additional Functions
 Many of the functions that will be used to analyze the CellModel, can only be done so when one is created and will generally require only two arguments to be passed to it:
 
-* mat: A CellModel object
+* model: A CellModel object
 * time: The Time of Interest
 
 This is because analyzing the data created from the CellModel requires plotting an aspect of the cells to a point in time.
 
-There is one exception as the "plotTotalCells" function is the only one that requires one argument, the "mat" argument.
+There is one exception as the "plotTotalCells" function is the only one that requires one argument, the "model" argument.
 
 #####getDensity
 This function allows the user to retrieve the density of the cells at any given time within the maximum time the model was allowed to run. The determining of the density of the cells at certain points, allows for the potential relationships of the cells to be determined at intervals, such as the attraction or repulsion of the cells due to high density or proximity to one another at intervals of 10 timesteps. 

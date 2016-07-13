@@ -21,11 +21,11 @@ setMethod("plotTotalCells", "CellModel",
     function(model) {
 
         total_cells = c()
-        radii = seq(3,ncol(mat),6)
+        radii = seq(3,ncol(model),6)
 
-        for (t in 1:nrow(mat)) {
+        for (t in 1:nrow(model)) {
 
-            total_cells[t] = sum(mat[t,radii]>0)
+            total_cells[t] = sum(model[t,radii]>0)
 
         }
 
