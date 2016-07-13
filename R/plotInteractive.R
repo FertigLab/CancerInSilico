@@ -7,6 +7,7 @@
 #' takes in command-line-like inputs as well
 #' see "plotCellsAtTime and plotInteractive" in vignette for
 #' command prompt inputs.
+#' @export
 
 setGeneric("plotInteractive", function(model,time = 1)
   standardGeneric("plotInteractive"))
@@ -62,7 +63,6 @@ setMethod("plotInteractive", "CellModel",
 											
 					},
 					{
-						graphics.off()
 						break
 					},
 					{
