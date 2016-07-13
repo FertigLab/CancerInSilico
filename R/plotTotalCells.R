@@ -22,7 +22,7 @@ setMethod("plotTotalCells", "CellMatrix",
 
         }
 
-        plot(total_cells,main="Plot of Total Cells vs Time",type="l")
+        plot(total_cells,main="Plot of Total Cells vs Time",xlab = "Time",ylab = "Number of Cells",type="l")
 
     }
 

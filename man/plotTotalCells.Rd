@@ -7,7 +7,7 @@
 plotTotalCells(mat)
 }
 \arguments{
-\item{mat}{A Cell Matrix}
+\item{mat}{A CellModel}
 }
 \value{
 Plots the size of the cell population over time

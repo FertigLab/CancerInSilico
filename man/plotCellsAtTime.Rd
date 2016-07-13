@@ -7,7 +7,7 @@
 plotCellsAtTime(mat, time)
 }
 \arguments{
-\item{mat}{A Cell Model object}
+\item{mat}{A CellModel object}
 
 \item{time}{The timestep at which to plot the matrix. Must be below
 the specified max amount of timesteps}

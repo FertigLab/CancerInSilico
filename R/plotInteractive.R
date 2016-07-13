@@ -70,7 +70,7 @@ setMethod("plotInteractive", "CellMatrix",
               }
               if(time > nrow(mat) | time <= 0){
                 print("Time out of bound")
-                graphics.off()
+                #graphics.off()
                 break
               }
             }

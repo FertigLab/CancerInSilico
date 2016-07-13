@@ -35,7 +35,7 @@ setMethod("plotCellsAtTime", "CellMatrix",
         dev.set(which = 4)
         
         theta = seq(0,2*pi,length=20)
-        plot(c(mn,mx),c(mn,mx),main=paste("Plot of CellModel At Time",time),type="n")
+        plot(c(mn,mx),c(mn,mx),main=paste("Plot of CellModel At Time",time),xlab = "X-Coordinates",ylab = "Y-Coordinates",type="n")
           
         for (n in xcoords) {
   

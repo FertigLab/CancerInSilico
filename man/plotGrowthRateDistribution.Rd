@@ -8,7 +8,7 @@
 plotGrowthRateDistribution(mat, time)
 }
 \arguments{
-\item{mat}{A Cell Matrix}
+\item{mat}{A CellModel}
 
 \item{time}{The time of interest for the growth rates}
 }
