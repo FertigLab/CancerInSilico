@@ -27,6 +27,7 @@ public:
     
 			m_hash = hash;
 			m_center = center;
+			m_radius = radius;
             construct_box(radius + 4.0);
 
             m_current.x = m_box.left - m_hash->m_bucket_size;
@@ -71,7 +72,13 @@ public:
 
         bool operator!=(const circular_iterator& other) const {
 
-            return other.m_current != m_current;
+			if (!(m_center == other.m_center && m_radius == other.m_radius)) {
+
+				RCPP_STOP_TRACE("comparison between incompatible circular iterators");
+
+			} 
+	        
+			return other.m_current != m_current;
 
         }
 
@@ -99,6 +106,7 @@ public:
         SpatialHash<T>* m_hash;
         Point m_current;
 		Point m_center;
+		double m_radius;
 
         void construct_box(double radius) {
             
@@ -158,6 +166,7 @@ public:
 
             full_iterator ret_iter = *this;
             ++m_iter;
+			
             return ret_iter;
 
         }
@@ -223,12 +232,14 @@ public:
 
     full_iterator begin() {
 
+		size();
 		return full_iterator(m_value_list.begin());
 
 	}
 
     full_iterator end() {
 
+		size();
 		return full_iterator(m_value_list.end());
 
 	}

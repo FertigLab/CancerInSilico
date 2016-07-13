@@ -27,8 +27,8 @@ public:
 
 	CellPopulation(Parameters *, unsigned int, double);
 
-	Point GetRandomLocation(double);
-	bool ValidCellPlacement(Point);
+	Point GetRandomLocation(Cell*, double);
+	bool ValidCellPlacement(Cell*);
 
 	void OneTimeStep();
 	void Update();

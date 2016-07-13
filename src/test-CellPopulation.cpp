@@ -89,12 +89,14 @@ CATCH_TEST_CASE("Test Cell Population") {
 
 	Point existing_loc;
 	CATCH_REQUIRE_NOTHROW(existing_loc = rand_cell->GetCoord());
+	Cell temp = Cell(existing_loc, params);
 
 	CATCH_SECTION("Test ValidCellPlacement") {
 
-		CATCH_REQUIRE(!pop.ValidCellPlacement(existing_loc));
+		CATCH_REQUIRE(!pop.ValidCellPlacement(&temp));
 		existing_loc.x += 1.99;
-		CATCH_REQUIRE(!pop.ValidCellPlacement(existing_loc));
+		temp.SetCoord(existing_loc);
+		CATCH_REQUIRE(!pop.ValidCellPlacement(&temp));
 
 	}
 
@@ -145,7 +147,29 @@ CATCH_TEST_CASE("Test Cell Population") {
 
 	CATCH_SECTION("Test OneTimeStep") {
 
-		CATCH_REQUIRE_NOTHROW(pop.OneTimeStep());
+		for (unsigned int i = 0; i < 100; ++i) {
+
+			CATCH_REQUIRE_NOTHROW(pop.OneTimeStep());
+
+		}
+
+		SpatialHash<Cell>::full_iterator iter1 = test_pop.hash->begin();
+		SpatialHash<Cell>::full_iterator iter2 = test_pop.hash->begin();
+		
+		for (; iter1 != test_pop.hash->end(); ++iter1) {
+
+			for (; iter2 != test_pop.hash->end(); ++iter2) {
+
+				if (*iter1 != *iter2) {
+
+					CATCH_REQUIRE((*iter1).CellDistance(*iter2) > 0);
+
+				}
+
+
+			}
+
+		}
 
 	}
 

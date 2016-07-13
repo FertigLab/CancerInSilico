@@ -68,7 +68,7 @@ setMethod("plotInteractive", "CellMatrix",
               else{
                 cat("Enter a valid command. Type \"h\" for further help")
               }
-              if(time > nrow(data) | time <= 0){
+              if(time > nrow(mat) | time <= 0){
                 print("Time out of bound")
                 graphics.off()
                 break
