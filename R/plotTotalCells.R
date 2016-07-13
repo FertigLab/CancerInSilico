@@ -4,6 +4,7 @@
 #' @return Plots the size of the cell population over time
 #' @examples
 #' plotTotalCells(runModel(10,100))
+#' @export
 
 setGeneric("plotTotalCells", function(model)
     standardGeneric("plotTotalCells"))
