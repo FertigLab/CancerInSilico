@@ -4,9 +4,8 @@
 #' @return Plots the size of the cell population over time
 #' @examples
 #' plotTotalCells(runModel(10,100))
-#' @export
 
-setGeneric("plotTotalCells", function(mat)
+setGeneric("plotTotalCells", function(model)
     standardGeneric("plotTotalCells"))
 
 #' \code{plotTotalCells} Plots the total number of cells vs time
@@ -19,7 +18,7 @@ setGeneric("plotTotalCells", function(mat)
 
 setMethod("plotTotalCells", "CellModel",
 
-    function(mat) {
+    function(model) {
 
         total_cells = c()
         radii = seq(3,ncol(mat),6)

@@ -4,7 +4,7 @@
 \alias{plotTotalCells}
 \title{\code{plotTotalCells} Plots the total number of cells vs time}
 \usage{
-plotTotalCells(mat)
+plotTotalCells(model)
 }
 \arguments{
 \item{mat}{A CellModel}
