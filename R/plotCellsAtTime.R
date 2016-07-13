@@ -8,6 +8,13 @@
 setGeneric("plotCellsAtTime", function(model,time)
     standardGeneric("plotCellsAtTime"))
 
+#' \code{plotCellsAtTime} Plots a CellModel at a certain point in time
+#'
+#' @param model A CellModel
+#' @param time The timestep at which to plot the modelrix.
+#' @return Plot a visual representation of cells at time
+#' @export
+
 setMethod("plotCellsAtTime", "CellModel",
 
 	function(model,time)  {

@@ -11,6 +11,17 @@
 
 setGeneric("plotInteractive", function(model,time = 1)
   standardGeneric("plotInteractive"))
+#' \code{plotInteractive} Plots a CellModel at a certain point in time
+#'
+#' @param model A CellModel
+#' @param time The timestep at which to plot the matrix. Must be below
+#'      the specified max amount of timesteps
+#' @return Plot a visual representation of cells that 
+#' takes in command-line-like inputs as well
+#' see "plotCellsAtTime and plotInteractive" in vignette for
+#' command prompt inputs.
+#' @export
+
 
 setMethod("plotInteractive", "CellModel",
           

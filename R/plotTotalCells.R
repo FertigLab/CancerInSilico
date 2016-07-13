@@ -1,13 +1,21 @@
 #' \code{plotTotalCells} Plots the total number of cells vs time
 #'
 #' @param model A CellModel
-#' @return plots the total number of cells over time
+#' @return Plots the size of the cell population over time
 #' @examples
 #' plotTotalCells(runModel(10,100))
 #' @export
 
 setGeneric("plotTotalCells", function(model)
     standardGeneric("plotTotalCells"))
+
+#' \code{plotTotalCells} Plots the total number of cells vs time
+#'
+#' @param model A CellModel
+#' @return Plots the size of the cell population over time
+#' @examples
+#' plotTotalCells(runModel(10,100))
+#' @export
 
 setMethod("plotTotalCells", "CellModel",
 
@@ -22,7 +30,7 @@ setMethod("plotTotalCells", "CellModel",
 
         }
 
-        plot(total_cells,main="Total Cells",type="l",xlab="Time",ylab="Total Cells")
+        plot(total_cells,main="Plot of Total Cells vs Time",xlab = "Time",ylab = "Number of Cells",type="l")
 
     }
 
