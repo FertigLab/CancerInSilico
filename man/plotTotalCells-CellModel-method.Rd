@@ -8,7 +8,7 @@
 \S4method{plotTotalCells}{CellModel}(model)
 }
 \arguments{
-\item{mat}{A CellModel}
+\item{model}{A CellModel}
 }
 \value{
 Plots the size of the cell population over time
