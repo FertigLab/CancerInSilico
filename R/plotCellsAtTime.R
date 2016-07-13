@@ -36,9 +36,8 @@ setMethod("plotCellsAtTime", "CellMatrix",
         
         theta = seq(0,2*pi,length=20)
         plot(c(mn,mx),c(mn,mx),main=paste("Plot of CellModel At Time",time),xlab = "X-Coordinates",ylab = "Y-Coordinates",type="n")
-          
         for (n in xcoords) {
-  
+            
             x_1 =  mat[time,n] + (0.5 * mat[time,n+3] - mat[time,n+2]) *
                     cos(mat[time,n+4])
             y_1 =  mat[time,n+1] + (0.5 * mat[time,n+3] - mat[time,n+2]) *
@@ -47,6 +46,9 @@ setMethod("plotCellsAtTime", "CellMatrix",
                     cos(mat[time,n+4])
             y_2 =  mat[time,n+1] - (0.5 * mat[time,n+3] - mat[time,n+2]) *
                     sin(mat[time,n+4])
+            if(n == 1){
+              
+            }
             
             lines(x_1 + mat[time,n+2] * cos(theta),y_1 + mat[time,n+2] * sin(theta),type="l",new=FALSE)
             lines(x_2 + mat[time,n+2] * cos(theta),y_2 + mat[time,n+2] * sin(theta),type="l",new=FALSE)
