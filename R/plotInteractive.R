@@ -52,7 +52,6 @@ setMethod("plotInteractive", "CellModel",
 											
 					},
 					{
-						graphics.off()
 						break
 					},
 					{

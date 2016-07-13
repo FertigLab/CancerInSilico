@@ -12,7 +12,6 @@
 #' @docType package
 #' @name CellModel
 #' @importFrom Rcpp evalCpp
-#' @importFrom grDevices dev.new dev.set
 #' @importFrom graphics plot text lines points symbols
 #' @importFrom methods new
 #' @importFrom stats density
