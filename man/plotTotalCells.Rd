@@ -4,13 +4,17 @@
 \alias{plotTotalCells}
 \title{\code{plotTotalCells} Plots the total number of cells vs time}
 \usage{
-plotTotalCells(mat)
+plotTotalCells(model)
 }
 \arguments{
+<<<<<<< HEAD
+\item{model}{A CellModel}
+=======
 \item{mat}{A CellModel}
+>>>>>>> c9cea553bae792e710af1ccbef8b1ac9c7754d26
 }
 \value{
-Plots the size of the cell population over time
+plots the total number of cells over time
 }
 \description{
 \code{plotTotalCells} Plots the total number of cells vs time

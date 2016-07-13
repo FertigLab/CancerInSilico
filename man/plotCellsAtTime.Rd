@@ -4,13 +4,16 @@
 \alias{plotCellsAtTime}
 \title{\code{plotCellsAtTime} Plots a CellModel at a certain point in time}
 \usage{
-plotCellsAtTime(mat, time)
+plotCellsAtTime(model, time)
 }
 \arguments{
+<<<<<<< HEAD
+\item{model}{A CellModel}
+=======
 \item{mat}{A CellModel object}
+>>>>>>> c9cea553bae792e710af1ccbef8b1ac9c7754d26
 
-\item{time}{The timestep at which to plot the matrix. Must be below
-the specified max amount of timesteps}
+\item{time}{The timestep at which to plot the modelrix.}
 }
 \value{
 Plot a visual representation of cells at time
