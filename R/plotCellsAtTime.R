@@ -1,58 +1,39 @@
 #' \code{plotCellsAtTime} Plots a CellModel at a certain point in time
 #'
-#' @param mat A CellModel object
-#' @param time The timestep at which to plot the matrix. Must be below
-#'      the specified max amount of timesteps
+#' @param model A CellModel
+#' @param time The timestep at which to plot the modelrix.
 #' @return Plot a visual representation of cells at time
 #' @export
 
-setGeneric("plotCellsAtTime", function(mat,time)
+setGeneric("plotCellsAtTime", function(model,time)
     standardGeneric("plotCellsAtTime"))
 
-setMethod("plotCellsAtTime", "CellMatrix",
+setMethod("plotCellsAtTime", "CellModel",
 
-    function(mat,time)  {
+	function(model,time)  {
 
-        radii = seq(3,ncol(mat),6)
-        #Currently Assuming All Cells are Alive (No Cell Death)
-        numCells = sum(mat[time,radii]>0)
-
-        xcoords = seq(1,numCells * 6,6)
-        ycoords = xcoords + 1
-        radii = ycoords + 1
-        axis_len = radii + 1
-        axis_ang = axis_len + 1
+        radii <- seq(3,ncol(model),6)
         
-        mn = min(min(mat[,xcoords]),min(mat[,ycoords])) - 2
-        mx = max(max(mat[,xcoords]),max(mat[,ycoords])) + 2
+        numCells <- sum(model[time,radii]>0)
 
-        #Opens new device to put plot into if no plot exists already
+        xcoords <- seq(1,numCells * 6,6)
         
-        if(identical(dev.list(),NULL) == TRUE){
-          dev.new()
-          dev.set(which = 1)
-        }
-        dev.set(which = 4)
-        
-        theta = seq(0,2*pi,length=20)
-        plot(c(mn,mx),c(mn,mx),main=paste("Plot of CellModel At Time",time),type="n")
+        mn <- min(min(model[,xcoords]),min(model[,xcoords+1])) - 2
+        mx <- max(max(model[,xcoords]),max(model[,xcoords+1])) + 2
+
+        plot(c(mn,mx),c(mn,mx),main=paste("Plot of CellModel At Time",time),type="n",asp=1)
           
-        for (n in xcoords) {
-  
-            x_1 =  mat[time,n] + (0.5 * mat[time,n+3] - mat[time,n+2]) *
-                    cos(mat[time,n+4])
-            y_1 =  mat[time,n+1] + (0.5 * mat[time,n+3] - mat[time,n+2]) *
-                    sin(mat[time,n+4])
-            x_2 =  mat[time,n] - (0.5 * mat[time,n+3] - mat[time,n+2]) *
-                    cos(mat[time,n+4])
-            y_2 =  mat[time,n+1] - (0.5 * mat[time,n+3] - mat[time,n+2]) *
-                    sin(mat[time,n+4])
-            
-            lines(x_1 + mat[time,n+2] * cos(theta),y_1 + mat[time,n+2] * sin(theta),type="l",new=FALSE)
-            lines(x_2 + mat[time,n+2] * cos(theta),y_2 + mat[time,n+2] * sin(theta),type="l",new=FALSE)
+		x_1 <- model[time,xcoords] + (0.5 * model[time,xcoords+3] - model[time,xcoords+2]) * cos(model[time,xcoords+4])
+	    x_2 <- model[time,xcoords] - (0.5 * model[time,xcoords+3] - model[time,xcoords+2]) * cos(model[time,xcoords+4])
+	    y_1 <- model[time,xcoords+1] + (0.5 * model[time,xcoords+3] - model[time,xcoords+2]) * sin(model[time,xcoords+4])
+	    y_2 <- model[time,xcoords+1] - (0.5 * model[time,xcoords+3] - model[time,xcoords+2]) * sin(model[time,xcoords+4])
 
-        }
-        
-      }
+	    x <- c(x_1,x_2)
+	    y <- c(y_1,y_2)
+	    rad <- c(model[time,xcoords+2], model[time,xcoords+2])
+	    
+	    symbols(x,y, circles=rad, inches=F, add=T)
+   
+  }
 
 )

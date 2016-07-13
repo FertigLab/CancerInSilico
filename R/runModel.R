@@ -13,7 +13,7 @@
 #' @param delta model specific parameter
 #' @param outIncrement time increment to print status at
 #' @param randSeed seed for the model
-#' @return A CellMatrix containing all info from the model run
+#' @return A CellModel containing all info from the model run
 #' @examples
 #' runModel(100,10)
 #' @export
@@ -38,8 +38,8 @@ runModel <- function(initialNum, runTime, density = 0.05,
 
     })
 
-    cellMat <- new("CellMatrix", output)
+    cellMod <- new("CellModel", output)
 
-    return(cellMat)
+    return(cellMod)
 
 }

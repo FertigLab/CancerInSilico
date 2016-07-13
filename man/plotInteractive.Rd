@@ -4,10 +4,10 @@
 \alias{plotInteractive}
 \title{\code{plotInteractive} Plots a CellModel at a certain point in time}
 \usage{
-plotInteractive(mat, time)
+plotInteractive(model, time = 1)
 }
 \arguments{
-\item{mat}{A Cell Model object}
+\item{model}{A CellModel}
 
 \item{time}{The timestep at which to plot the matrix. Must be below
 the specified max amount of timesteps}
@@ -15,6 +15,8 @@ the specified max amount of timesteps}
 \value{
 Plot a visual representation of cells that 
 takes in command-line-like inputs as well
+see "plotCellsAtTime and plotInteractive" in vignette for
+command prompt inputs.
 }
 \description{
 \code{plotInteractive} Plots a CellModel at a certain point in time

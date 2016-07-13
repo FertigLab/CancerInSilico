@@ -1,30 +1,28 @@
 #' \code{getDensity} Gets the density of cells at a given time
 #'
-#' @param mat A Cell Model object
+#' @param model A Cell Model
 #' @param time The time of interest
-#' @return The density of cells at that time
+#' @return The density of cells at that time (not quite the same as confluency)
 #' @examples
 #' getDensity(runModel(100,10),5)
 #' @export
 
-setGeneric("getDensity", function(mat,time)
+setGeneric("getDensity", function(model,time)
   standardGeneric("getDensity"))
 
-setMethod("getDensity", "CellMatrix",
+setMethod("getDensity", "CellModel",
 
-    function(mat,time) {
-      radii <- seq(3,ncol(mat),6)
-      xcoords <- seq(1,ncol(mat),6)
-      ycoords <- seq(2,ncol(mat),6)
-      #farthest distance from (0,0) of cell
-      d <- max(mat[time,xcoords])**2 + max(mat[time,ycoords])**2
-      border <- 1;
+    function(model,time) {
       
-      while(d > border^2){
-        border <- border + 1
-      }
-      dens <- (sum(pi * mat[time,radii] ** 2))/(pi*border**2)
-      return(dens)
+      radii <- seq(3,ncol(model),6)
+      xcoords <- seq(1,ncol(model),6)
+      ycoords <- seq(2,ncol(model),6)
+      
+      #farthest distance from (0,0) of cell
+      d <- max(sqrt(model[time,xcoords]**2 + model[time,ycoords]**2))
+               
+      return(sum(model[time,radii] ** 2) / (d ^ 2))
+      
     }
     
 )

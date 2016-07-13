@@ -4,15 +4,15 @@
 \alias{getDensity}
 \title{\code{getDensity} Gets the density of cells at a given time}
 \usage{
-getDensity(mat, time)
+getDensity(model, time)
 }
 \arguments{
-\item{mat}{A Cell Model object}
+\item{model}{A Cell Model}
 
 \item{time}{The time of interest}
 }
 \value{
-The density of cells at that time
+The density of cells at that time (not quite the same as confluency)
 }
 \description{
 \code{getDensity} Gets the density of cells at a given time
