@@ -5,10 +5,18 @@
 #' @return The density of cells at that time (not quite the same as confluency)
 #' @examples
 #' getDensity(runModel(100,10),5)
-#' @export
 
 setGeneric("getDensity", function(model,time)
   standardGeneric("getDensity"))
+
+#' \code{getDensity} Gets the density of cells at a given time
+#'
+#' @param model A Cell Model
+#' @param time The time of interest
+#' @return The density of cells at that time (not quite the same as confluency)
+#' @examples
+#' getDensity(runModel(100,10),5)
+#' @export
 
 setMethod("getDensity", "CellModel",
 
