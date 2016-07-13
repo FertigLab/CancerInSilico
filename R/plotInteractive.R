@@ -15,7 +15,7 @@ setGeneric("plotInteractive", function(mat,time)
 setMethod("plotInteractive", "CellMatrix",
           
           function(mat,time){
-            while(time <= nrow(data)) {
+            while(time <= nrow(mat)) {
               radii = seq(3,ncol(mat),6)
               grrate = seq(6,ncol(mat),6)
               plotCellsAtTime(mat,time)
