@@ -38,8 +38,8 @@ runModel <- function(initialNum, runTime, density = 0.05,
 
     })
 
-    cellMod <- new("CellModel", output)
+    cellMat <- new("CellModel", output)
 
-    return(cellMod)
+    return(cellMat)
 
 }

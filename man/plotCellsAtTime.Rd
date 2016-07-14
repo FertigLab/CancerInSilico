@@ -17,4 +17,7 @@ Plot a visual representation of cells at time
 \description{
 \code{plotCellsAtTime} Plots a CellModel at a certain point in time
 }
+\examples{
+plotCellsAtTime(runModel(10,100),60)
+}
 
