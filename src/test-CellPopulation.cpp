@@ -70,7 +70,8 @@ CATCH_TEST_CASE("Test Cell Population") {
 
 	CATCH_SECTION("Test AddDrug") {
 
-		CATCH_REQUIRE_NOTHROW(pop.AddDrug());
+		std::vector<double> growth (100,0.0);
+		CATCH_REQUIRE_NOTHROW(pop.AddDrug(growth));
 
 	}
 
