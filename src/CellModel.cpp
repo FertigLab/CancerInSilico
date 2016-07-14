@@ -9,8 +9,6 @@ Rcpp::NumericMatrix CellModel(
     int initialNum,
     int runTime,
     double density,
-    double meanGrowth,
-    double varGrowth,
     double maxMigration,
     double maxDeform,
     double maxRotate,
@@ -18,7 +16,8 @@ Rcpp::NumericMatrix CellModel(
     double delta,
     int outIncrement,
     int randSeed,
-	Rcpp::NumericVector growthRates
+	Rcpp::NumericVector growthRates,
+	bool inheritGrowth
 
 ) {
 
@@ -40,14 +39,13 @@ Rcpp::NumericMatrix CellModel(
     params->SetEnergyConstant(1);
     params->SetInitialNumCells(initialNum);
     params->SetInitialDensity(density);
-    params->SetMeanGrowth(meanGrowth);
-    params->SetVarGrowth(varGrowth);
     params->SetApoptosisRate(apoptosisRate);
     params->SetMaxMigration(maxMigration);
     params->SetMaxDeform(maxDeform);
     params->SetMaxRotate(maxRotate);
     params->SetResistanceEPSILON(epsilon);
     params->SetCompressionDELTA(delta);
+	params->SetInheritGrowth(inheritGrowth);
 
     Simulation main_sim = Simulation(params);
     main_sim.Run(runTime, outIncrement, gr_rates);

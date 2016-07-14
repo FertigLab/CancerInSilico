@@ -46,8 +46,6 @@ CATCH_TEST_CASE("Test Cell Population") {
     Parameters *params = new Parameters(pow(2,0.5));
 
     params->SetEnergyConstant(1);
-    params->SetMeanGrowth(0.1);
-    params->SetVarGrowth(0.0);
     params->SetMaxMigration(1.0);
     params->SetMaxDeform(0.15);
     params->SetMaxRotate(2.0);

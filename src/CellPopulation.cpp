@@ -94,9 +94,20 @@ void CellPopulation::Update() {
 void CellPopulation::CheckMitosis(Cell* cell) {
 
 	if (cell->ReadyToDivide()) {
-	
+
+		double gr_rate;	
+		if (m_param->InheritGrowth()) {
+
+			gr_rate = cell->GetGrowth();
+
+		} else {
+
+			gr_rate = m_population.GetRandomValue()->GetGrowth();
+
+		}
+
 		Point old_key = cell->GetCoord();
-		Cell* daughter_cell = new Cell(cell->Divide());
+		Cell* daughter_cell = new Cell(cell->Divide(), gr_rate);
 		m_population.Insert(daughter_cell->GetCoord(), daughter_cell);
 		m_population.Update(old_key, cell->GetCoord());
 
