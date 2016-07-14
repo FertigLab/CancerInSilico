@@ -5,6 +5,7 @@ Version: 0.99.0
 Date: 2016-06-01
 Author:
     Thomas D. Sherman,
+    Raymond Cheng,
     Elana J. Fertig
 Maintainer: 
     Thomas D. Sherman <tsherma4@jhu.edu>,
@@ -17,6 +18,9 @@ Imports:
     grDevices,
     graphics,
     stats
+Depends:
+    Rcpp,
+    testthat
 LinkingTo:
     Rcpp,
     testthat,

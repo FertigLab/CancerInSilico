@@ -43,7 +43,7 @@ setMethod("plotCellsAtTime", "CellModel",
     y <- c(y_1,y_2)
     rad <- c(model[time,xcoords+2], model[time,xcoords+2])
     
-    symbols(x,y, circles=rad, inches=F, add=T)
+    symbols(x,y, circles=rad, inches=FALSE, add=TRUE)
    
   }
 
