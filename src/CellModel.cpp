@@ -17,9 +17,17 @@ Rcpp::NumericMatrix CellModel(
     double epsilon,
     double delta,
     int outIncrement,
-    int randSeed
+    int randSeed,
+	Rcpp::NumericVector growthRates
 
 ) {
+
+	std::vector<double> gr_rates;
+	for (unsigned int i = 0; i < growthRates.length(); ++i) {
+	
+		gr_rates.push_back(growthRates[i]);
+
+	}		
 
     Rcpp::Environment baseEnv("package:base");
     Rcpp::Function setSeed = baseEnv["set.seed"];
@@ -42,7 +50,7 @@ Rcpp::NumericMatrix CellModel(
     params->SetCompressionDELTA(delta);
 
     Simulation main_sim = Simulation(params);
-    main_sim.Run(runTime, outIncrement);
+    main_sim.Run(runTime, outIncrement, gr_rates);
     Rcpp::NumericMatrix ret_val = main_sim.GetCellsAsMatrix();
 
     delete params;

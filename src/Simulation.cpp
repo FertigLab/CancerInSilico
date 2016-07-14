@@ -15,9 +15,10 @@ Simulation::~Simulation() {
 
 }
 
-void Simulation::Run(int dur, int out_incr) {
+void Simulation::Run(int dur, int out_incr, std::vector<double>& gr_rates) {
 
-    m_cells->AddDrug();
+    m_cells->AddDrug(gr_rates);
+	m_cells->RecordPopulation();
 
     for (int i = 0; i < dur; i++) {
 

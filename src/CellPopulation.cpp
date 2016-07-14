@@ -20,8 +20,6 @@ CellPopulation::CellPopulation(Parameters *par, unsigned int size, double densit
 
     }
 
-	RecordPopulation();
-
 }
 
 CellPopulation::~CellPopulation() {
@@ -209,15 +207,15 @@ double CellPopulation::CalculateInteraction(Cell* a, Cell* b) {
 }
 
 
-void CellPopulation::AddDrug() {
+void CellPopulation::AddDrug(std::vector<double>& gr_rates) {
 
-    double rand;
 	SpatialHash<Cell>::full_iterator iter = m_population.begin();
 
 	for (; iter != m_population.end(); ++iter) {
 
-        rand = R::rnorm(m_param->GetMeanGrowth(), m_param->GetVarGrowth());
-        (*iter).SetGrowth(std::max(rand, 0.02));
+		if (gr_rates.back() < 0) {gr_rates.back() = 0;}
+        (*iter).SetGrowth(gr_rates.back());
+		gr_rates.pop_back();
 
     }
 

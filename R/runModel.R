@@ -21,15 +21,18 @@
 runModel <- function(initialNum, runTime, density = 0.05,
                     meanGrowth = 0.15, varGrowth = 0.0, maxMigration = 0.5,
                     maxDeform = 0.075, maxRotate = 0.3, epsilon = 0.05,
-                    delta = 5.0, outIncrement = 10, randSeed = 0)
+                    delta = 5.0, outIncrement = 10, randSeed = 0,
+					growthRates = runif(initialNum, 0.05,0.25))
 
 {
   
+	if (density > 0.4) {stop()}
+
     output = tryCatch({
 
         CellModel(initialNum, runTime, density, meanGrowth,
         varGrowth, maxMigration, maxDeform, maxRotate,
-        epsilon, delta, outIncrement, randSeed)
+        epsilon, delta, outIncrement, randSeed, growthRates)
 
     }, error = function(cond) {
 

@@ -13,7 +13,7 @@ Cell::Cell(Point coord, Parameters* par) {
 	m_axis_ang = 0;
     m_radius = R::runif(1, m_param->GetMaxRadius());
     m_axis_len = 2 * m_radius;
-    m_growth_rate = m_param->GetMeanGrowth();
+    m_growth_rate = 0;
 
 }
 

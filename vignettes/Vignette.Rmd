@@ -1,6 +1,6 @@
 ---
 title: "Off-Lattice Cell-Based Monte Carlo Simulation"
-author: "Thomas Sherman, Raymond Cheng, Elana J. Fertig"
+author: "Thomas D. Sherman, Raymond Cheng, Elana J. Fertig"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 bibliography: References.bib
@@ -34,10 +34,12 @@ In this section, we will first describe the main function and its uses. Then we 
 The following function, "runModel" will be the main and most basic function that will be run in the usage of this package. Below is the syntax of the function, only requiring two of its many arguments in order to create a model. An example of the proper syntax is provided below:
 ```{r}
 # Runs the Model
-runModel <- function(initialNum, runTime, density = 0.05,
-                    meanGrowth = 0.15, varGrowth = 0.0, maxMigration = 0.5,
-                    maxDeform = 0.075, maxRotate = 0.3, epsilon = 0.05,
-                    delta = 5.0, outIncrement = 10, randSeed = 0)
+# runModel <- function(initialNum, runTime, density = 0.05,
+#                    meanGrowth = 0.15, varGrowth = 0.0, maxMigration = 0.5,
+#                    maxDeform = 0.075, maxRotate = 0.3, epsilon = 0.05,
+#                    delta = 5.0, outIncrement = 10, randSeed = 0)
+
+library(CellModel)
 runModel(10,10)
 ```
 
@@ -74,14 +76,12 @@ There is one exception as the "plotTotalCells" function is the only one that req
 #####getDensity
 This function allows the user to retrieve the density of the cells at any given time within the maximum time the model was allowed to run. The determining of the density of the cells at certain points, allows for the potential relationships of the cells to be determined at intervals, such as the attraction or repulsion of the cells due to high density or proximity to one another at intervals of 10 timesteps. 
 
-```
+```{r}
 # sample
 library(CellModel)
 data <- runModel(100,100)
-getDensity(data,60)
+getDensity(data,100)
 
-# output
-#[1] 0.06039155
 ```
 Density of a cell population is important because when it reachesa certain critical value, factors such as cell growth rate and cellular division begin to slow down or become harmful to each cell. At certain points cells will die, however when there is not enough "room" cells are destroyed or become similar to a tumorous group of cells.
 
