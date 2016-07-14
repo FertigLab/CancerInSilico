@@ -5,7 +5,7 @@
 #' @examples
 #' plotTotalCells(runModel(10,100))
 #' @export
-
+#' 
 setGeneric("plotTotalCells", function(model)
     standardGeneric("plotTotalCells"))
 

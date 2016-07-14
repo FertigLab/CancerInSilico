@@ -3,6 +3,8 @@
 #' @param model A CellModel
 #' @param time The timestep at which to plot the modelrix.
 #' @return Plot a visual representation of cells at time
+#' @examples
+#' plotCellsAtTime(runModel(10,100),60)
 #' @export
 
 setGeneric("plotCellsAtTime", function(model,time)
@@ -13,6 +15,8 @@ setGeneric("plotCellsAtTime", function(model,time)
 #' @param model A CellModel
 #' @param time The timestep at which to plot the modelrix.
 #' @return Plot a visual representation of cells at time
+#' @examples
+#' plotCellsAtTime(runModel(10,100),60)
 #' @export
 
 setMethod("plotCellsAtTime", "CellModel",

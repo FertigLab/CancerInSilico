@@ -11,6 +11,7 @@
 
 setGeneric("plotInteractive", function(model,time = 1)
   standardGeneric("plotInteractive"))
+
 #' \code{plotInteractive} Plots a CellModel at a certain point in time
 #'
 #' @param model A CellModel
