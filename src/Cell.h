@@ -19,7 +19,7 @@ class Cell {
 
   public:
 
-	Cell(const Cell&);
+	Cell(const Cell&, double);
     Cell(Point, Parameters*);
 	Cell(Point, Parameters*, double);
 

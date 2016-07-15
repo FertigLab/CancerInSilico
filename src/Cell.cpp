@@ -32,7 +32,7 @@ Cell::Cell(Point coord, Parameters* par, double gr_rate) {
 }
 
 //should only be called for daughter cells
-Cell::Cell(const Cell& other) {
+Cell::Cell(const Cell& other, double gr_rate) {
 
     m_param = other.m_param;
     m_coordinates = other.m_coordinates;
@@ -41,7 +41,7 @@ Cell::Cell(const Cell& other) {
     m_axis_len = other.m_axis_len;
 	m_axis_ang = other.m_axis_ang;
     m_radius = other.m_radius;
-    m_growth_rate = other.m_growth_rate;
+    m_growth_rate = gr_rate;
 
 }
 

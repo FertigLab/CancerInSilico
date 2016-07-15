@@ -11,8 +11,6 @@ CATCH_TEST_CASE("Test Cell") {
 
 	Parameters params = Parameters(pow(2,0.5));
 
-	params.SetMeanGrowth(0.03);
-	params.SetVarGrowth(0.0);
 	params.SetMaxMigration(0.3);
 	params.SetMaxRotate(2.0);
 	params.SetMaxDeform(0.1);

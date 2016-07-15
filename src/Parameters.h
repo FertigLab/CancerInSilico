@@ -12,7 +12,6 @@ class Parameters {
 
     int m_initial_num_cells;
     double m_duration;
-    double m_mean_growth, m_var_growth;
     double m_drug_prop;
     double m_max_migration, m_max_rotate, m_max_deform;
     double m_apoptosis_rate;
@@ -20,6 +19,7 @@ class Parameters {
     double m_epsilon, m_delta;
     double m_init_density;
 	double m_max_radius;
+	bool m_inherit_growth;
 
 	std::vector<double> m_slow_solver;
 	std::vector<double> m_fast_solver;
@@ -40,8 +40,6 @@ class Parameters {
     //Setters
     void SetInitialNumCells(int n) { m_initial_num_cells = n;}
     void SetDuration(double dur) { m_duration = dur;}
-    void SetMeanGrowth(double mean) { m_mean_growth = mean;}
-    void SetVarGrowth(double var) { m_var_growth = var;}
     void SetDrugProportion(double p) { m_drug_prop = p;}
     void SetMaxMigration(double mig) { m_max_migration = mig;}
     void SetMaxRotate(double rot) { m_max_rotate = rot;}
@@ -51,12 +49,11 @@ class Parameters {
     void SetResistanceEPSILON(double ep) { m_epsilon = ep;}
     void SetCompressionDELTA(double dt) { m_delta = dt;}
     void SetInitialDensity(double den) { m_init_density = den;}
+	void SetInheritGrowth(bool gr) { m_inherit_growth = gr;}
 
     //Getters
     int GetInitialNumCells() { return m_initial_num_cells;}
     double GetDuration() { return m_duration;}
-    double GetMeanGrowth() { return m_mean_growth;}
-    double GetVarGrowth() { return m_var_growth;}
     double GetDrugProportion() { return m_drug_prop;}
     double GetMaxMigration() { return m_max_migration;}
     double GetMaxRotate() { return m_max_rotate;}
@@ -67,6 +64,7 @@ class Parameters {
     double GetCompressionDELTA() { return m_delta;}
     double GetInitialDensity() { return m_init_density;}
 	double GetMaxRadius() { return m_max_radius;}
+	bool InheritGrowth() { return m_inherit_growth;}
 
     double GetTheta(double);
 

@@ -4,9 +4,10 @@
 \alias{runModel}
 \title{\code{runModel} Runs the model}
 \usage{
-runModel(initialNum, runTime, density = 0.05, meanGrowth = 0.15,
-  varGrowth = 0, maxMigration = 0.5, maxDeform = 0.075, maxRotate = 0.3,
-  epsilon = 0.05, delta = 5, outIncrement = 10, randSeed = 0)
+runModel(initialNum, runTime, density = 0.05, maxMigration = 0.5,
+  maxDeform = 0.075, maxRotate = 0.3, epsilon = 0.05, delta = 5,
+  outIncrement = 10, randSeed = 0, growthRates = runif(initialNum, 0.05,
+  0.25))
 }
 \arguments{
 \item{initialNum}{how many cells initially}
@@ -14,10 +15,6 @@ runModel(initialNum, runTime, density = 0.05, meanGrowth = 0.15,
 \item{runTime}{how long the simulation runs}
 
 \item{density}{the density the cells are seeded at}
-
-\item{meanGrowth}{mean growth rate of cells}
-
-\item{varGrowth}{the variance of the growth rate (assumed normal)}
 
 \item{maxMigration}{farthest a cell can move in a single update}
 
@@ -32,6 +29,10 @@ runModel(initialNum, runTime, density = 0.05, meanGrowth = 0.15,
 \item{outIncrement}{time increment to print status at}
 
 \item{randSeed}{seed for the model}
+
+\item{meanGrowth}{mean growth rate of cells}
+
+\item{varGrowth}{the variance of the growth rate (assumed normal)}
 }
 \value{
 A CellModel containing all info from the model run
