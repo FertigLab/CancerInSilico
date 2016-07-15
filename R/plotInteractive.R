@@ -28,57 +28,49 @@ setMethod("plotInteractive", "CellModel",
           
     function(model, time = 1) {
 
-    	while (time <= nrow(model)) {
-          
-			plotCellsAtTime(model,time)
-
-			read = readline()
-			place = unlist(gregexpr(" ",read))[1]
-
-			if (place == -1) {
-
-				place = nchar(read)
-
-			}
-
-			cmd = gsub(" ","",substring(read,1,place))
-			arg_num = suppressWarnings(as.numeric(gsub(" ","",substring(read,place,nchar(read)))))
-			cmds <- c("n","b","t","s","q","h")
-
-			if (is.na(arg_num)) {
-
-				arg_num <- 1
-
-			}
-
-			if ((cmd %in% cmds)) {
-		
-				switch (match(cmd,cmds),
-
-					{time = time + arg_num},
-					{time = time - arg_num},
-					{time = arg_num},
-					{
-						cat("Cell Density = ", getDensity(model,time), "\n")
-						cat("Number of Cells = ", length(getGrowthRateDistribution(model,time)), "\n")
-											
-					},
-					{
-						break
-					},
-					{
-						
-						cat("Basic Commands: \n b = back one timestep \n n = forward one timestep \n s = summary of cells \n q = quit \"console\"\n h = basic command help\n")
-					}
-
-				)
-
-			} else {
-
-				cat("Enter a valid command. Type \"h\" for further help\n")
-
-			}
-		}
-	}
+        while (time <= nrow(model)) {
+              
+            plotCellsAtTime(model,time)
+    
+            read = readline()
+            place = unlist(gregexpr(" ",read))[1]
+    
+            if (place == -1) {
+    	        place = nchar(read)
+            }
+    
+            cmd = gsub(" ","",substring(read,1,place))
+            arg_num = suppressWarnings(as.numeric(gsub(" ","",substring(read,place,nchar(read)))))
+            cmds <- c("n","b","t","s","q","h")
+    
+            if (is.na(arg_num)) {
+    	        arg_num <- 1
+            }
+    
+    		if ((cmd %in% cmds)) {
+    	
+    			switch (match(cmd,cmds),
+            
+                    {time = time + arg_num},
+                    {time = time - arg_num},
+                    {time = arg_num},
+                    {
+                    cat("Cell Density = ", getDensity(model,time), "\n")
+        						cat("Number of Cells = ", length(getGrowthRateDistribution(model,time)), "\n")
+                    },
+                    {
+                    graphics.off()
+                    break
+                    },
+                    {
+                    cat("Basic Commands: \n b = back one timestep \n n = forward one timestep \n s = summary of cells \n q = quit \"console\"\n h = basic command help\n")
+                    }
+    			)
+            }
+            else{
+                cat("Enter a valid command. Type \"h\" for further help\n")
+    		}
+	    }
+    }
  
 )

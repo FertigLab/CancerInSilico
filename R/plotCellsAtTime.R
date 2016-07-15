@@ -34,7 +34,7 @@ setMethod("plotCellsAtTime", "CellModel",
 
     plot(c(mn,mx),c(mn,mx),main=paste("Plot of CellModel At Time",time),type="n",asp=1)
           
-		x_1 <- model[time,xcoords] + (0.5 * model[time,xcoords+3] - model[time,xcoords+2]) * cos(model[time,xcoords+4])
+    x_1 <- model[time,xcoords] + (0.5 * model[time,xcoords+3] - model[time,xcoords+2]) * cos(model[time,xcoords+4])
     x_2 <- model[time,xcoords] - (0.5 * model[time,xcoords+3] - model[time,xcoords+2]) * cos(model[time,xcoords+4])
     y_1 <- model[time,xcoords+1] + (0.5 * model[time,xcoords+3] - model[time,xcoords+2]) * sin(model[time,xcoords+4])
     y_2 <- model[time,xcoords+1] - (0.5 * model[time,xcoords+3] - model[time,xcoords+2]) * sin(model[time,xcoords+4])
