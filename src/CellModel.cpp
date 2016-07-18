@@ -46,9 +46,10 @@ Rcpp::NumericMatrix CellModel(
     params->SetResistanceEPSILON(epsilon);
     params->SetCompressionDELTA(delta);
 	params->SetInheritGrowth(inheritGrowth);
+	params->StoreGrowthRates(gr_rates);
 
     Simulation main_sim = Simulation(params);
-    main_sim.Run(runTime, outIncrement, gr_rates);
+    main_sim.Run(runTime, outIncrement);
     Rcpp::NumericMatrix ret_val = main_sim.GetCellsAsMatrix();
 
     delete params;

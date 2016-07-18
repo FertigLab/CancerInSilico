@@ -217,16 +217,13 @@ double CellPopulation::CalculateInteraction(Cell* a, Cell* b) {
 
 }
 
-
-void CellPopulation::AddDrug(std::vector<double>& gr_rates) {
+void CellPopulation::AddDrug() {
 
 	SpatialHash<Cell>::full_iterator iter = m_population.begin();
 
 	for (; iter != m_population.end(); ++iter) {
 
-		if (gr_rates.back() < 0) {gr_rates.back() = 0;}
-        (*iter).SetGrowth(gr_rates.back());
-		gr_rates.pop_back();
+		(*iter).SetGrowth(m_param->GetRandomGrowthRate());
 
     }
 

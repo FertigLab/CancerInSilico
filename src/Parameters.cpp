@@ -1,4 +1,5 @@
 #include <cmath>
+#include <Rcpp.h>
 
 #include "ExceptionHandling.h"
 #include "Parameters.h"
@@ -81,3 +82,8 @@ int Parameters::HashRadius(double rad) {
 
 }
 
+double Parameters::GetRandomGrowthRate() {
+
+	return growth_rates[floor(R::runif(0, growth_rates.size()))];
+
+}
