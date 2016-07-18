@@ -4,10 +4,10 @@
 \alias{runModel}
 \title{\code{runModel} Runs the model}
 \usage{
-runModel(initialNum, runTime, density = 0.05, maxMigration = 0.5,
-  maxDeform = 0.075, maxRotate = 0.3, epsilon = 0.05, delta = 5,
-  outIncrement = 10, randSeed = 0, growthRates = runif(initialNum, 0.05,
-  0.25))
+runModel(initialNum, runTime, density = 0.01, maxMigration = 0.75,
+  maxDeform = 0.1, maxRotate = 0.8, epsilon = 0.05, delta = 5,
+  outIncrement = 10, randSeed = 0, growthRates = rep(0.1, initialNum),
+  inheritGrowth = F)
 }
 \arguments{
 \item{initialNum}{how many cells initially}

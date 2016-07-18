@@ -28,7 +28,7 @@ setMethod("plotCellsAtTime", "CellModel",
     numCells <- sum(model[time,radii]>0)
 
     xcoords <- seq(1,numCells * 6,6)
-    
+
     mn <- min(min(model[,xcoords]),min(model[,xcoords+1])) - 2
     mx <- max(max(model[,xcoords]),max(model[,xcoords+1])) + 2
 
@@ -38,12 +38,12 @@ setMethod("plotCellsAtTime", "CellModel",
     x_2 <- model[time,xcoords] - (0.5 * model[time,xcoords+3] - model[time,xcoords+2]) * cos(model[time,xcoords+4])
     y_1 <- model[time,xcoords+1] + (0.5 * model[time,xcoords+3] - model[time,xcoords+2]) * sin(model[time,xcoords+4])
     y_2 <- model[time,xcoords+1] - (0.5 * model[time,xcoords+3] - model[time,xcoords+2]) * sin(model[time,xcoords+4])
-
+    
     x <- c(x_1,x_2)
     y <- c(y_1,y_2)
     rad <- c(model[time,xcoords+2], model[time,xcoords+2])
     
-    symbols(x,y, circles=rad, inches=FALSE, add=TRUE)
+    symbols(x,y, circles=rad, inches=FALSE, add=TRUE, bg="bisque4", fg="bisque4")
    
   }
 
