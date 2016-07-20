@@ -18,12 +18,18 @@
 #' runModel(100,10)
 #' @export
 
-runModel <- function(initialNum, runTime, density = 0.05,
-                    maxMigration = 0.5, maxDeform = 0.075,
-					maxRotate = 0.3, epsilon = 0.05,
-                    delta = 5.0, outIncrement = 10, randSeed = 0,
-					growthRates = rep(0.1,initialNum),
-					inheritGrowth = F)
+runModel <- function(initialNum,
+                     runTime,
+                     density = 0.01,
+                     maxMigration = 0.75,
+                     maxDeform = 0.1,
+                     maxRotate = 0.8,
+                     epsilon = 0.05,
+                     delta = 5.0,
+                     outIncrement = 10,
+                     randSeed = 0,
+                     growthRates = rep(0.1,initialNum),
+                     inheritGrowth = F)
 
 {
   

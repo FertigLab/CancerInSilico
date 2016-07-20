@@ -4,6 +4,7 @@
 #ifdef DEBUG
 
 #include <execinfo.h>
+#include <unistd.h>
 #include <Rcpp.h>
 
 inline void RCPP_STOP_TRACE(std::string message) {

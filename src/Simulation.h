@@ -18,7 +18,7 @@ class Simulation {
     Simulation(Parameters*);
 	~Simulation();
 
-    void Run(int, int, std::vector<double>&);
+    void Run(int, int);
     Rcpp::NumericMatrix GetCellsAsMatrix();
 
 };

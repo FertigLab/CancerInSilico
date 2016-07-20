@@ -66,10 +66,18 @@ CATCH_TEST_CASE("Test Cell Population") {
 
 	}
 
-	CATCH_SECTION("Test AddDrug") {
+	params->StoreGrowthRates(std::vector<double> (100,0.1));
+	CATCH_REQUIRE_NOTHROW(pop.AddDrug());	
 
-		std::vector<double> growth (100,0.0);
-		CATCH_REQUIRE_NOTHROW(pop.AddDrug(growth));
+	CATCH_SECTION("Test Add Drug") {
+
+		SpatialHash<Cell>::full_iterator iter = test_pop.hash->begin();
+				
+		for (; iter != test_pop.hash->end(); ++iter) {
+		
+			CATCH_REQUIRE((*iter).GetGrowth() == 0.1);
+
+		}
 
 	}
 

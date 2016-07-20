@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <testthat.h>
+#include <Rcpp.h>
 
 class Parameters {
 
@@ -23,6 +24,7 @@ class Parameters {
 
 	std::vector<double> m_slow_solver;
 	std::vector<double> m_fast_solver;
+	std::vector<double> growth_rates;
 
     void InitializeRadiusSolver();
 	void InitSlowSolver();
@@ -50,6 +52,7 @@ class Parameters {
     void SetCompressionDELTA(double dt) { m_delta = dt;}
     void SetInitialDensity(double den) { m_init_density = den;}
 	void SetInheritGrowth(bool gr) { m_inherit_growth = gr;}
+	void StoreGrowthRates(std::vector<double> gr) { growth_rates = gr;}
 
     //Getters
     int GetInitialNumCells() { return m_initial_num_cells;}
@@ -66,6 +69,7 @@ class Parameters {
 	double GetMaxRadius() { return m_max_radius;}
 	bool InheritGrowth() { return m_inherit_growth;}
 
+	double GetRandomGrowthRate();
     double GetTheta(double);
 
 };

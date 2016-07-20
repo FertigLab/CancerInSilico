@@ -39,7 +39,7 @@ public:
 	double CalculateInteraction(Cell *, Cell *);
 
 	void CheckMitosis(Cell*);
-	void AddDrug(std::vector<double>&);
+	void AddDrug();
 
 	void RecordPopulation();
 	Rcpp::NumericMatrix GetPopulationAsMatrix();
