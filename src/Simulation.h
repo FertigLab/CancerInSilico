@@ -15,10 +15,10 @@ class Simulation {
 
   public:
 
-    Simulation(Parameters*);
+    Simulation(Parameters*, int, double);
 	~Simulation();
 
-    void Run(int, int);
+    void Run(int, int, double);
     Rcpp::NumericMatrix GetCellsAsMatrix();
 
 };

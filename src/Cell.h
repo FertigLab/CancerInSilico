@@ -23,8 +23,8 @@ class Cell {
     Cell(Point, Parameters*);
 	Cell(Point, Parameters*, double);
 
-    void DoTrial();
-    void Migration();
+    bool DoTrial(); //return true if growth
+    void Translation();
     void Growth();
     void Rotation();
     void Deformation();

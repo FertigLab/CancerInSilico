@@ -45,8 +45,7 @@ CATCH_TEST_CASE("Test Cell Population") {
 
     Parameters *params = new Parameters(pow(2,0.5));
 
-    params->SetEnergyConstant(1);
-    params->SetMaxMigration(1.0);
+    params->SetMaxTranslation(1.0);
     params->SetMaxDeform(0.15);
     params->SetMaxRotate(2.0);
     params->SetResistanceEPSILON(0.05);
@@ -66,7 +65,7 @@ CATCH_TEST_CASE("Test Cell Population") {
 
 	}
 
-	params->StoreGrowthRates(std::vector<double> (100,0.1));
+	params->StoreGrowthDistribution(std::vector<double> (100,0.1));
 	CATCH_REQUIRE_NOTHROW(pop.AddDrug());	
 
 	CATCH_SECTION("Test Add Drug") {

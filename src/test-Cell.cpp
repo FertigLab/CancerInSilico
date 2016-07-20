@@ -11,7 +11,7 @@ CATCH_TEST_CASE("Test Cell") {
 
 	Parameters params = Parameters(pow(2,0.5));
 
-	params.SetMaxMigration(0.3);
+	params.SetMaxTranslation(0.3);
 	params.SetMaxRotate(2.0);
 	params.SetMaxDeform(0.1);
 
@@ -67,8 +67,8 @@ CATCH_TEST_CASE("Test Cell") {
 
 	CATCH_SECTION("test cell movement") {
 
-		cells[0].Migration();
-		cells[1].Migration();
+		cells[0].Translation();
+		cells[1].Translation();
 
 	}
 
@@ -105,9 +105,9 @@ CATCH_TEST_CASE("Test Cell") {
 
 	}
 
-	params.SetMaxMigration(2.0);
-	cells[0].Migration();
-	cells[1].Migration();
+	params.SetMaxTranslation(2.0);
+	cells[0].Translation();
+	cells[1].Translation();
 
 	CATCH_SECTION("test dividing cell movement") {
 

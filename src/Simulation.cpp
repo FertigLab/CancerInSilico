@@ -2,10 +2,10 @@
 #include "Parameters.h"
 #include <Rcpp.h>
 
-Simulation::Simulation(Parameters *par) {
+Simulation::Simulation(Parameters *par, int init_num, double den) {
 
     m_param = par;
-    m_cells = new CellPopulation(m_param, m_param->GetInitialNumCells(), m_param->GetInitialDensity());
+    m_cells = new CellPopulation(m_param, init_num, den);
 
 }
 
@@ -15,27 +15,29 @@ Simulation::~Simulation() {
 
 }
 
-void Simulation::Run(int dur, int out_incr) {
+void Simulation::Run(int MCsteps, int out_incr, double time_incr) {
 
-    m_cells->AddDrug();
+	double time = 0.0;
 	m_cells->RecordPopulation();
-
-    for (int i = 0; i < dur; i++) {
+	
+    for (int i = 0; i < MCsteps; i++) {
 
         Rcpp::checkUserInterrupt();
 
         if (i % out_incr == 0) {
 
-            Rprintf("time = %d\n", i);
+            Rprintf("time = %.2f\n", time);
             Rprintf("size = %d\n", m_cells->size());
 
         }
 
         m_cells->OneTimeStep();
+		time += time_incr;
+		m_cells->RecordPopulation();
 
     }
 
-    Rprintf("time = %d\n", dur);
+    Rprintf("time = %.2f\n", time);
     Rprintf("size = %d\n", m_cells->size());
 
 }

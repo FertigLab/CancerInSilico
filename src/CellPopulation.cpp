@@ -20,6 +20,18 @@ CellPopulation::CellPopulation(Parameters *par, unsigned int size, double densit
 
     }
 
+	AddDrug();
+
+	int seed_time = size * m_param->GetNG() * 0.7 * (0.414 / m_param->GetMaxGrowth()) * (0.414 / m_param->GetMaxDeform());
+	Cell* rand_cell;
+
+	for (int i = 0; i < seed_time; ++i) {
+
+	    rand_cell = m_population.GetRandomValue();
+    	AttemptTrial(rand_cell);
+
+	}
+
 }
 
 CellPopulation::~CellPopulation() {
@@ -79,8 +91,6 @@ void CellPopulation::OneTimeStep() {
 
     }
 
-    RecordPopulation();
-
 }
 
 void CellPopulation::Update() {
@@ -102,7 +112,7 @@ void CellPopulation::CheckMitosis(Cell* cell) {
 
 		} else {
 
-			gr_rate = m_population.GetRandomValue()->GetGrowth();
+			gr_rate = m_param->GetRandomGrowthRate();
 
 		}
 
@@ -119,9 +129,9 @@ void CellPopulation::AttemptTrial(Cell *cell) {
 
     double pre_interaction = CalculateTotalInteraction(cell);
     Cell orig = *cell;
-    cell->DoTrial();
+    bool growth = cell->DoTrial();
 
-	double max_search = std::max(m_param->GetMaxMigration(), m_param->GetMaxRadius());
+	double max_search = std::max(m_param->GetMaxTranslation(), m_param->GetMaxRadius());
 
 	SpatialHash<Cell>::circular_iterator iter
 		= m_population.begin(orig.GetCoord(), max_search);
@@ -138,16 +148,24 @@ void CellPopulation::AttemptTrial(Cell *cell) {
 	}
 
     m_population.Update(orig.GetCoord(), cell->GetCoord());
+	
+	if (growth) {
+		
+		return;
 
-    double post_interaction = CalculateTotalInteraction(cell);
+	} else {
 
-    if (post_interaction == std::numeric_limits<double>::max()
-            || !AcceptTrial(post_interaction - pre_interaction)) {
+		double post_interaction = CalculateTotalInteraction(cell);
 
-        m_population.Update(cell->GetCoord(), orig.GetCoord());
-        *cell = orig;
+		if (post_interaction == std::numeric_limits<double>::max()
+		        || !AcceptTrial(post_interaction - pre_interaction)) {
 
-    }
+		    m_population.Update(cell->GetCoord(), orig.GetCoord());
+		    *cell = orig;
+
+		}
+	
+	}
 
 }
 
@@ -160,7 +178,7 @@ bool CellPopulation::AcceptTrial(double delta_interaction) {
     } else {
 
         double unif = R::runif(0, 1);
-        double prob = exp(-1 * delta_interaction / m_param->GetEnergyConstant());
+        double prob = exp(-1 * delta_interaction);
         return unif < prob;
 
     }
@@ -210,7 +228,7 @@ double CellPopulation::CalculateInteraction(Cell* a, Cell* b) {
 
     } else {
 
-        double part = pow(2 * dist / m_param->GetCompressionDELTA(), 2);
+        double part = pow(2 * dist / m_param->GetCompressionDELTA() - 1, 2);
         return m_param->GetResistanceEPSILON() * (part - 1);
 
     }

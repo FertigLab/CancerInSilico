@@ -1,5 +1,6 @@
 #include <cmath>
 #include <Rcpp.h>
+#include <algorithm>
 
 #include "ExceptionHandling.h"
 #include "Parameters.h"
@@ -84,6 +85,12 @@ int Parameters::HashRadius(double rad) {
 
 double Parameters::GetRandomGrowthRate() {
 
-	return growth_rates[floor(R::runif(0, growth_rates.size()))];
+	return m_growth_dist[floor(R::runif(0, m_growth_dist.size()))];
+
+}
+
+double Parameters::GetMaxGrowth() {
+
+	return *std::max_element(m_growth_dist.begin(), m_growth_dist.end());
 
 }
