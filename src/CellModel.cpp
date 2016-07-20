@@ -7,9 +7,9 @@
 Rcpp::NumericMatrix CellModel(
 
     int initialNum,
-    int runTime,
+    int numMCSteps,
     double density,
-    double maxMigration,
+    double maxTranslation,
     double maxDeform,
     double maxRotate,
     double epsilon,
@@ -17,7 +17,9 @@ Rcpp::NumericMatrix CellModel(
     int outIncrement,
     int randSeed,
 	Rcpp::NumericVector growthRates,
-	bool inheritGrowth
+	bool inheritGrowth,
+	double nG,
+	double timeIncrement
 
 ) {
 
@@ -34,22 +36,17 @@ Rcpp::NumericMatrix CellModel(
 
     Parameters *params = new Parameters(pow(2,0.5));
 
-    double apoptosisRate = 0.0;
-
-    params->SetEnergyConstant(1);
-    params->SetInitialNumCells(initialNum);
-    params->SetInitialDensity(density);
-    params->SetApoptosisRate(apoptosisRate);
-    params->SetMaxMigration(maxMigration);
+    params->SetMaxTranslation(maxTranslation);
     params->SetMaxDeform(maxDeform);
     params->SetMaxRotate(maxRotate);
     params->SetResistanceEPSILON(epsilon);
     params->SetCompressionDELTA(delta);
+	params->StoreGrowthDistribution(gr_rates);
 	params->SetInheritGrowth(inheritGrowth);
-	params->StoreGrowthRates(gr_rates);
+	params->SetNG(nG);
 
-    Simulation main_sim = Simulation(params);
-    main_sim.Run(runTime, outIncrement);
+    Simulation main_sim = Simulation(params, initialNum, density);
+    main_sim.Run(numMCSteps, outIncrement, timeIncrement);
     Rcpp::NumericMatrix ret_val = main_sim.GetCellsAsMatrix();
 
     delete params;

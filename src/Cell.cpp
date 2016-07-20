@@ -11,7 +11,7 @@ Cell::Cell(Point coord, Parameters* par) {
     m_in_mitosis = false;
     m_ready_to_divide = false;
 	m_axis_ang = 0;
-    m_radius = R::runif(1, m_param->GetMaxRadius());
+    m_radius = 1;
     m_axis_len = 2 * m_radius;
     m_growth_rate = 0;
 
@@ -62,28 +62,32 @@ Cell Cell::Divide() {
 
 }
 
-void Cell::DoTrial() {
+bool Cell::DoTrial() {
 
     double unif = R::runif(0, 1);
+	double nG = m_param->GetNG();
+	bool growth = false;
 
     if (!m_in_mitosis) { //Interphase
 
-        if (unif <= 0.5) { Migration();}
-        else { Growth();}
+        if (unif <= (1.0 / (nG + 1.0))) { growth = true; Growth();}
+        else { Translation();}
 
     } else { //Mitosis
 
-        if (unif <= 0.333) { Migration();}
-		else if (unif <= 0.666) { Rotation();}
-		else if (!m_ready_to_divide) { Deformation();}
+        if (unif <= (1.0 / (nG + 1.0))) { growth = true; Deformation();}
+		else if ((nG + 1.0) * unif <= 1.0 + nG / 2.0) { Rotation();}
+		else if (!m_ready_to_divide) { Translation();}
 
     }
 
+	return growth;
+
 }
 
-void Cell::Migration() {
+void Cell::Translation() {
 
-    double length = m_param->GetMaxMigration() * pow(R::runif(0, 1), 0.5);
+    double length = m_param->GetMaxTranslation() * pow(R::runif(0, 1), 0.5);
     double direction = R::runif(0, 2 * M_PI);
     m_coordinates.x += length * cos(direction);
     m_coordinates.y += length * sin(direction);

@@ -1,0 +1,59 @@
+---
+title: "Drug Sensitivity Simulation"
+author: "Thomas D. Sherman"
+date: "`r doc_date()`"
+package: "`r pkg_ver('CellModel')`"
+vignette: >
+  %\VignetteIndexEntry{Drug Sensitivity Simulation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+output: 
+  BiocStyle::html_document
+---
+
+# Introduction
+
+The main objective of the CellModel package is to provide R implementations of a broad class of cell-based models (Szabo) and provide a single, consistent interface to execute the models. The currrent version of CellModel contains a basic, off-lattice model of cell growth. This model is based off of (Drasdo, 2003). 
+
+# Basic Simulation
+
+## Parameter Overview
+
+no scale
+yes time
+
+R parameters
+- initial cells
+- run time (hr)
+- cell cycle time distribution (hr) (min 4 hr)
+- random seed
+- inherit growth (T/F)
+- output increment
+- time increment
+- seeding density
+
+C parameters
+- initial cells
+- # of MC steps
+- max growth
+- max translation
+- max rotation
+- potential strength (epsilon)
+- random seed
+- inherit growth (T/F)
+- output increment
+- seeding density
+
+- time increment (hr) (fixed)
+- potential range (delta) (fixed at 0.5)
+- average number of translation/rotation per growth/deformation (fixed at 8)
+
+- effective energy (fixed in model at 1?)
+
+## Simple Run
+
+# Simulating Drug Response
+
+## Simple Case
+
+## Advanced Case

@@ -21,26 +21,42 @@
 runModel <- function(initialNum,
                      runTime,
                      density = 0.01,
-                     maxMigration = 0.75,
-                     maxDeform = 0.1,
-                     maxRotate = 0.8,
-                     epsilon = 0.05,
-                     delta = 5.0,
-                     outIncrement = 10,
-                     randSeed = 0,
-                     growthRates = rep(0.1,initialNum),
-                     inheritGrowth = F)
-
+					 cycleTimeDist = 12,
+					 inheritGrowth = F,
+					 timeIncrement = 0.25,
+					 outputIncrement = 40,
+				     randSeed = 0)
+ 						
 {
+
+	if (density > 0.4) {
+		
+		message("density too high to seed efficiently\n")
+		stop()
+
+	}
+
+	nG <- 10
   
-	if (density > 0.4) {stop()}
-	if (length(growthRates) != initialNum) {stop()}
+	if (timeIncrement > cycleTimeDist / (2 * nG)) {
+
+		timeIncrement <- cycleTimeDist / (2 * nG)
+	
+	}
+
+	mcSteps <- ceiling(runTime / timeIncrement)
+	grRates <- (sqrt(2) - 1) * timeIncrement * 2 * nG / cycleTimeDist
+	maxTranslation <- mean(grRates) / 5
+	maxRotate <- 10 * mean(grRates) / 11  
+	epsilon <- 0.88
+	delta <- 0.5
+	maxDeform <- (sqrt(2) - 1) / 5
 
     output = tryCatch({
 
-        CellModel(initialNum, runTime, density, maxMigration,
-		maxDeform, maxRotate, epsilon, delta, outIncrement,
-		randSeed, growthRates, inheritGrowth)
+        CellModel(initialNum, mcSteps, density, maxTranslation,
+		maxDeform, maxRotate, epsilon, delta, outputIncrement,
+		randSeed, grRates, inheritGrowth, nG, timeIncrement)
 
     }, error = function(cond) {
 
