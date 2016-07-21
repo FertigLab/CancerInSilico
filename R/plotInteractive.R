@@ -28,7 +28,7 @@ setMethod("plotInteractive", "CellModel",
           
     function(model, time = 0) {
 
-        while (time <= nrow(model@cells)) {
+        while (time <= length(model@cells)) {
             temptime = model@parameters[2] * 4 + 1
             
             plotCellsAtTime(model,time)

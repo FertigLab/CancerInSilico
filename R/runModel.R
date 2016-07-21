@@ -8,6 +8,7 @@
 #' @param timeIncrement time length of a step in the model, based on the hour
 #' @param outputIncrement time increment to print status at
 #' @param randSeed seed for the model
+#' @param epsilon epsilon model specific parameter
 #' @return A CellModel containing all info from the model run
 #' @examples
 #' runModel(100,10)
