@@ -2,16 +2,11 @@
 #'
 #'
 #' @param initialNum how many cells initially
-#' @param runTime how long the simulation runs
+#' @param runTime how long the simulation represents in realtime
 #' @param density the density the cells are seeded at
-#' @param meanGrowth mean growth rate of cells
-#' @param varGrowth the variance of the growth rate (assumed normal)
-#' @param maxMigration farthest a cell can move in a single update
-#' @param maxDeform most a cell can deform in a single update
-#' @param maxRotate most a cell can rotate in a single update
-#' @param epsilon model specific parameter
-#' @param delta model specific parameter
-#' @param outIncrement time increment to print status at
+#' @param cycleTimeDist cycle time distribution
+#' @param timeIncrement time length of a step in the model, based on the hour
+#' @param outputIncrement time increment to print status at
 #' @param randSeed seed for the model
 #' @return A CellModel containing all info from the model run
 #' @examples
@@ -66,7 +61,7 @@ runModel <- function(initialNum,
 
     })
 
-    cellMat <- new("CellModel", output)
+    cellMat <- new("CellModel",cells = output,parameters = c(initialNum,runTime,cycleTimeDist,inheritGrowth,timeIncrement,outputIncrement,randSeed))
 
     return(cellMat)
 

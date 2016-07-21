@@ -26,10 +26,11 @@ setGeneric("plotInteractive", function(model,time = 1)
 
 setMethod("plotInteractive", "CellModel",
           
-    function(model, time = 1) {
+    function(model, time = 0) {
 
-        while (time <= nrow(model)) {
-              
+        while (time <= nrow(model@cells)) {
+            temptime = model@parameters[2] * 4 + 1
+            
             plotCellsAtTime(model,time)
     
             read = readline()
@@ -44,7 +45,7 @@ setMethod("plotInteractive", "CellModel",
             cmds <- c("n","b","t","s","q","h")
     
             if (is.na(arg_num)) {
-    	        arg_num <- 1
+    	        arg_num <- (temptime-1)/100 + 1
             }
     
     		if ((cmd %in% cmds)) {
@@ -69,7 +70,7 @@ setMethod("plotInteractive", "CellModel",
             }
             else{
                 cat("Enter a valid command. Type \"h\" for further help\n")
-    		}
+            }
 	    }
     }
  

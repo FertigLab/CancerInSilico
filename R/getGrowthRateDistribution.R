@@ -25,9 +25,9 @@ setMethod("getGrowthRateDistribution", "CellModel",
 
     function(model, time) {
 
-        radii = seq(3,ncol(model),6)
-        gr_rates = radii[model[time,radii]>0] + 3
-        return(model[time,gr_rates])
+        radii = seq(3,ncol(model@cells),6)
+        gr_rates = radii[model@cells[time/model@parameters[5] + 1,radii]>0] + 3
+        return(model@cells[time/model@parameters[5] + 1,gr_rates])
 
     }
           
