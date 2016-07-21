@@ -4,7 +4,7 @@
 #include <Rcpp.h>
 
 // [[Rcpp::export]]
-Rcpp::NumericMatrix CellModel(
+Rcpp::List CellModel(
 
     int initialNum,
     int numMCSteps,
@@ -47,7 +47,7 @@ Rcpp::NumericMatrix CellModel(
 
     Simulation main_sim = Simulation(params, initialNum, density);
     main_sim.Run(numMCSteps, outIncrement, timeIncrement);
-    Rcpp::NumericMatrix ret_val = main_sim.GetCellsAsMatrix();
+    Rcpp::List ret_val = main_sim.GetCellsAsList();
 
     delete params;
     return ret_val;

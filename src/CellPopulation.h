@@ -43,7 +43,7 @@ public:
 	void SeedCells();
 
 	void RecordPopulation();
-	Rcpp::NumericMatrix GetPopulationAsMatrix();
+	Rcpp::List GetPopulationAsList();
 
 	int size();
 

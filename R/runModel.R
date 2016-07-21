@@ -48,13 +48,13 @@ runModel <- function(initialNum,
 
 	maxDeform <- 2 * max(grRates)
 
-    output = tryCatch({
+    output <- tryCatch({
 
         CellModel(initialNum, mcSteps, density, maxTranslation,
 		maxDeform, maxRotate, epsilon, delta, outputIncrement,
 		randSeed, grRates, inheritGrowth, nG, timeIncrement)
 
-    }, error = function(cond) {
+    }, error <- function(cond) {
 
         message(cond, '\n')
         stop()

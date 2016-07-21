@@ -6,7 +6,7 @@
 \usage{
 runModel(initialNum, runTime, density = 0.01, cycleTimeDist = 12,
   inheritGrowth = F, timeIncrement = 0.25, outputIncrement = 40,
-  randSeed = 0)
+  randSeed = 0, epsilon = 0.88)
 }
 \arguments{
 \item{initialNum}{how many cells initially}
@@ -19,9 +19,9 @@ runModel(initialNum, runTime, density = 0.01, cycleTimeDist = 12,
 
 \item{timeIncrement}{time length of a step in the model, based on the hour}
 
-\item{randSeed}{seed for the model}
+\item{outputIncrement}{time increment to print status at}
 
-\item{outIncrement}{time increment to print status at}
+\item{randSeed}{seed for the model}
 }
 \value{
 A CellModel containing all info from the model run

@@ -12,13 +12,13 @@
 
 typedef struct test_object {
 
-	Point coord;
-	int value;
+    Point coord;
+    int value;
 
-	test_object(Point c, int v) {
-		coord = c;
-		value = v;
-	}
+    test_object(Point c, int v) {
+        coord = c;
+        value = v;
+    }
 
 } TestObject;
 
@@ -168,11 +168,11 @@ CATCH_TEST_CASE("Test Spatial Hash and its components") {
         Point orig_1 = obj_1.coord;
         Point orig_2 = obj_2.coord;
 
-	    obj_1.coord.x = -43.1;
-		obj_1.coord.y = 0.02;
+        obj_1.coord.x = -43.1;
+        obj_1.coord.y = 0.02;
 
-	    obj_2.coord.x = 12.2;
-		obj_2.coord.y = -4.87;
+        obj_2.coord.x = 12.2;
+        obj_2.coord.y = -4.87;
 
         Point new_1 = test_hash.TestHash(obj_1);
         Point new_2 = test_hash.TestHash(obj_2);
@@ -207,7 +207,7 @@ CATCH_TEST_CASE("Test Spatial Hash and its components") {
         CATCH_SECTION("get random object") {
 
             TestObject *p_obj;
-			CATCH_REQUIRE(hash.size() == 3);
+            CATCH_REQUIRE(hash.size() == 3);
             CATCH_REQUIRE_NOTHROW(p_obj = hash.GetRandomValue());
             CATCH_REQUIRE_NOTHROW(hash.Delete(p_obj->coord,p_obj));
 
@@ -215,117 +215,117 @@ CATCH_TEST_CASE("Test Spatial Hash and its components") {
 
     }
 
-	CATCH_SECTION("Test SpatialHash Iterator") {
+    CATCH_SECTION("Test SpatialHash Iterator") {
 
-		SpatialHash<TestObject> hash = SpatialHash<TestObject>(1.0);
-	    SpatialHash<TestObject>::full_iterator full_iter = hash.begin();
+        SpatialHash<TestObject> hash = SpatialHash<TestObject>(1.0);
+        SpatialHash<TestObject>::full_iterator full_iter = hash.begin();
 
-		CATCH_SECTION("Test empty iterator") {
+        CATCH_SECTION("Test empty iterator") {
 
-			full_iter == hash.end();
-			CATCH_REQUIRE_NOTHROW(TestObject temp = *full_iter);
+            full_iter == hash.end();
+            CATCH_REQUIRE_NOTHROW(TestObject temp = *full_iter);
 
-		}
+        }
 
-		TestObject* first = new TestObject(Point(0,0),0);
-		CATCH_REQUIRE_NOTHROW(hash.Insert(first->coord, first));
+        TestObject* first = new TestObject(Point(0,0),0);
+        CATCH_REQUIRE_NOTHROW(hash.Insert(first->coord, first));
 
-		SpatialHash<TestObject>::circular_iterator circ_iter = hash.begin(first->coord, 0);
-		full_iter = hash.begin();
-		
-		CATCH_SECTION("Test single object iterator: initialization") {
+        SpatialHash<TestObject>::circular_iterator circ_iter = hash.begin(first->coord, 0);
+        full_iter = hash.begin();
+        
+        CATCH_SECTION("Test single object iterator: initialization") {
 
-			CATCH_REQUIRE(full_iter != hash.end());
-			CATCH_REQUIRE(circ_iter == hash.end(first->coord, 0));
+            CATCH_REQUIRE(full_iter != hash.end());
+            CATCH_REQUIRE(circ_iter == hash.end(first->coord, 0));
 
-		}
+        }
 
-		CATCH_SECTION("Test single object iterator: pre-increment") {
-	
-	    	CATCH_REQUIRE(++full_iter == hash.end());
+        CATCH_SECTION("Test single object iterator: pre-increment") {
+    
+            CATCH_REQUIRE(++full_iter == hash.end());
 
-		}
-		
-		CATCH_SECTION("Test single object iterator: post-increment") {
-	
-	    	CATCH_REQUIRE(full_iter++ != hash.end());
-	    	CATCH_REQUIRE(full_iter == hash.end());
+        }
+        
+        CATCH_SECTION("Test single object iterator: post-increment") {
+    
+            CATCH_REQUIRE(full_iter++ != hash.end());
+            CATCH_REQUIRE(full_iter == hash.end());
 
-		}
+        }
 
-		double rad = 2.01, ang;
-		TestObject* t;
+        double rad = 2.01, ang;
+        TestObject* t;
 
-		for (unsigned int i = 1; i <= 10; i++) {
+        for (unsigned int i = 1; i <= 10; i++) {
 
-			ang = R::runif(0, 2 * M_PI);			
-			t = new TestObject(Point(rad * cos(ang), rad * sin(ang)), i);
-			rad += 2.01;
-			CATCH_REQUIRE_NOTHROW(hash.Insert(t->coord, t));
+            ang = R::runif(0, 2 * M_PI);            
+            t = new TestObject(Point(rad * cos(ang), rad * sin(ang)), i);
+            rad += 2.01;
+            CATCH_REQUIRE_NOTHROW(hash.Insert(t->coord, t));
 
-		}
+        }
 
-		full_iter = hash.begin();
+        full_iter = hash.begin();
 
-		CATCH_SECTION("Test 10 object iterator - full iterator") {
+        CATCH_SECTION("Test 10 object iterator - full iterator") {
 
-			int count = 0;
-			for (; full_iter != hash.end(); ++full_iter) {
+            int count = 0;
+            for (; full_iter != hash.end(); ++full_iter) {
 
-				count++;
-				CATCH_REQUIRE_NOTHROW(*full_iter);
-				CATCH_REQUIRE_NOTHROW(&full_iter);
+                count++;
+                CATCH_REQUIRE_NOTHROW(*full_iter);
+                CATCH_REQUIRE_NOTHROW(&full_iter);
 
-			}
-			CATCH_REQUIRE(count == 11);
+            }
+            CATCH_REQUIRE(count == 11);
 
-		}
+        }
 
-		CATCH_SECTION("Test 10 object iterator - circular iterator") {
+        CATCH_SECTION("Test 10 object iterator - circular iterator") {
 
-			int count = 0;
-			circ_iter = hash.begin(first->coord, 2.1);
-			for (; circ_iter != hash.end(first->coord, 2.1); ++circ_iter) {
+            int count = 0;
+            circ_iter = hash.begin(first->coord, 2.1);
+            for (; circ_iter != hash.end(first->coord, 2.1); ++circ_iter) {
 
-				count++;
-				CATCH_REQUIRE_NOTHROW(*circ_iter);
-				CATCH_REQUIRE_NOTHROW(&circ_iter);
+                count++;
+                CATCH_REQUIRE_NOTHROW(*circ_iter);
+                CATCH_REQUIRE_NOTHROW(&circ_iter);
 
-			}
-			CATCH_REQUIRE(count >= 1);
+            }
+            CATCH_REQUIRE(count >= 1);
 
-			count = 0;
-			circ_iter = hash.begin(first->coord, 4.1);
-			for (; circ_iter != hash.end(first->coord, 4.1); ++circ_iter) {
+            count = 0;
+            circ_iter = hash.begin(first->coord, 4.1);
+            for (; circ_iter != hash.end(first->coord, 4.1); ++circ_iter) {
 
-				count++;
-				CATCH_REQUIRE_NOTHROW(*circ_iter);
-				CATCH_REQUIRE_NOTHROW(&circ_iter);
+                count++;
+                CATCH_REQUIRE_NOTHROW(*circ_iter);
+                CATCH_REQUIRE_NOTHROW(&circ_iter);
 
-			}
-			CATCH_REQUIRE(count >= 2);
+            }
+            CATCH_REQUIRE(count >= 2);
 
-			count = 0;
-			circ_iter = hash.begin(first->coord, 20.2);
-			for (; circ_iter != hash.end(first->coord, 20.2); ++circ_iter) {
+            count = 0;
+            circ_iter = hash.begin(first->coord, 20.2);
+            for (; circ_iter != hash.end(first->coord, 20.2); ++circ_iter) {
 
-				count++;
-				CATCH_REQUIRE_NOTHROW(*circ_iter);
-				CATCH_REQUIRE_NOTHROW(&circ_iter);
+                count++;
+                CATCH_REQUIRE_NOTHROW(*circ_iter);
+                CATCH_REQUIRE_NOTHROW(&circ_iter);
 
-			}
-			CATCH_REQUIRE(count == 10);
-		
-		}
+            }
+            CATCH_REQUIRE(count == 10);
+        
+        }
 
-		SpatialHash<TestObject>::full_iterator del_iter = hash.begin();
-		for (; del_iter != hash.end(); ++del_iter) {
+        SpatialHash<TestObject>::full_iterator del_iter = hash.begin();
+        for (; del_iter != hash.end(); ++del_iter) {
 
-			delete &del_iter;			
-	
-		}
+            delete &del_iter;            
+    
+        }
 
-	}
+    }
 
 }
 

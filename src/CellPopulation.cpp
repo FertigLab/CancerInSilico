@@ -288,9 +288,11 @@ void CellPopulation::RecordPopulation() {
 
 }
 
-Rcpp::NumericMatrix CellPopulation::GetPopulationAsMatrix() {
+Rcpp::List CellPopulation::GetPopulationAsList() {
 
-    int num_rows = m_population_record.size();
+	return Rcpp::wrap(m_population_record);
+
+/*    int num_rows = m_population_record.size();
     unsigned int num_cols = 0;
 
     for (int i = 0; i < num_rows; i++) {
@@ -315,7 +317,7 @@ Rcpp::NumericMatrix CellPopulation::GetPopulationAsMatrix() {
 
     }
 
-    return ret_val;
+    return ret_val;*/
 
 }
 

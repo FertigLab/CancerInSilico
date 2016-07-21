@@ -25,15 +25,15 @@ public:
 
         circular_iterator(SpatialHash<T>* hash, Point& center, double radius, bool end = false) {
     
-			m_hash = hash;
-			m_center = center;
-			m_radius = radius;
+            m_hash = hash;
+            m_center = center;
+            m_radius = radius;
             construct_box(radius + 4.0);
 
             m_current.x = m_box.left - m_hash->m_bucket_size;
             m_current.y = m_box.bottom;
-			advance_to_next();
-			if (end) { goto_end();}
+            advance_to_next();
+            if (end) { goto_end();}
 
         }
 
@@ -58,11 +58,11 @@ public:
 
         }
 
-		T* operator&() {
+        T* operator&() {
 
-			return m_hash->m_hash_map[m_current];
+            return m_hash->m_hash_map[m_current];
 
-		}
+        }
 
         bool operator==(const circular_iterator& other) const {
 
@@ -72,13 +72,13 @@ public:
 
         bool operator!=(const circular_iterator& other) const {
 
-			if (!(m_center == other.m_center && m_radius == other.m_radius)) {
+            if (!(m_center == other.m_center && m_radius == other.m_radius)) {
 
-				RCPP_STOP_TRACE("comparison between incompatible circular iterators");
+                RCPP_STOP_TRACE("comparison between incompatible circular iterators");
 
-			} 
-	        
-			return other.m_current != m_current;
+            } 
+            
+            return other.m_current != m_current;
 
         }
 
@@ -89,11 +89,11 @@ public:
 
         }
 
-		Point& location() {
+        Point& location() {
 
-			return m_current;
-	
-		}
+            return m_current;
+    
+        }
     
     private:
     
@@ -105,8 +105,8 @@ public:
 
         SpatialHash<T>* m_hash;
         Point m_current;
-		Point m_center;
-		double m_radius;
+        Point m_center;
+        double m_radius;
 
         void construct_box(double radius) {
             
@@ -121,32 +121,32 @@ public:
 
             m_center.y += 2 * radius;
             m_box.top = m_hash->Hash(m_center).y;            
-			
-			m_center.x -= radius;
-			m_center.y -= radius;
+            
+            m_center.x -= radius;
+            m_center.y -= radius;
 
         }
 
         void advance_to_next() {
 
-			do {
-            	
-				if (m_current.x > m_box.right + m_hash->m_bucket_size/2) {
-
-					break;
-				}
-
-				m_current.y -= m_hash->m_bucket_size;
-            	if (m_current.y < m_box.bottom) {
+            do {
                 
-                	m_current.y = m_box.top;
-                	m_current.x += m_hash->m_bucket_size;
+                if (m_current.x > m_box.right + m_hash->m_bucket_size/2) {
 
-            	}
-				m_current = m_hash->Hash(m_current);
-	
-			} while (m_hash->m_hash_map.count(m_current) == 0
-						|| m_current == m_hash->Hash(m_center));
+                    break;
+                }
+
+                m_current.y -= m_hash->m_bucket_size;
+                if (m_current.y < m_box.bottom) {
+                
+                    m_current.y = m_box.top;
+                    m_current.x += m_hash->m_bucket_size;
+
+                }
+                m_current = m_hash->Hash(m_current);
+    
+            } while (m_hash->m_hash_map.count(m_current) == 0
+                        || m_current == m_hash->Hash(m_center));
 
         }
 
@@ -156,7 +156,7 @@ public:
 
     public:
 
-		full_iterator(typename std::vector<T*>::iterator iter) {
+        full_iterator(typename std::vector<T*>::iterator iter) {
 
             m_iter = iter;
 
@@ -166,7 +166,7 @@ public:
 
             full_iterator ret_iter = *this;
             ++m_iter;
-			
+            
             return ret_iter;
 
         }
@@ -184,11 +184,11 @@ public:
 
         }
 
-		T* operator&() {
+        T* operator&() {
 
-			return *m_iter;
+            return *m_iter;
 
-		}
+        }
 
         bool operator==(const full_iterator& other) {
 
@@ -220,29 +220,29 @@ public:
 
     circular_iterator begin(Point center, double radius) {
 
-		return circular_iterator(this, center, radius);
+        return circular_iterator(this, center, radius);
 
-	}
+    }
 
     circular_iterator end(Point center, double radius) {
 
-		return circular_iterator(this, center, radius, true);
+        return circular_iterator(this, center, radius, true);
 
-	}
+    }
 
     full_iterator begin() {
 
-		size();
-		return full_iterator(m_value_list.begin());
+        size();
+        return full_iterator(m_value_list.begin());
 
-	}
+    }
 
     full_iterator end() {
 
-		size();
-		return full_iterator(m_value_list.end());
+        size();
+        return full_iterator(m_value_list.end());
 
-	}
+    }
 
 private:
 
@@ -345,8 +345,8 @@ void SpatialHash<T>::Delete(Point pt, T* val) {
 
     if (it != m_value_list.end()) {
 
-		*it = m_value_list.back();
-		m_value_list.pop_back();
+        *it = m_value_list.back();
+        m_value_list.pop_back();
         RemoveKey(pt);
 
     } else {
@@ -362,7 +362,7 @@ void SpatialHash<T>::Delete(Point pt, T* val) {
 template <class T>
 void SpatialHash<T>::Update(Point old_pt, Point new_pt) {
 
-	T* val = m_hash_map.at(Hash(old_pt));
+    T* val = m_hash_map.at(Hash(old_pt));
     RemoveKey(old_pt);
     AddKey(new_pt, val);
 

@@ -42,8 +42,8 @@ void Simulation::Run(int MCsteps, int out_incr, double time_incr) {
 
 }
 
-Rcpp::NumericMatrix Simulation::GetCellsAsMatrix() {
+Rcpp::List Simulation::GetCellsAsList() {
 
-    return m_cells->GetPopulationAsMatrix();
+    return m_cells->GetPopulationAsList();
 
 }
