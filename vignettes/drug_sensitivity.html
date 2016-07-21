@@ -8,9 +8,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
-<meta name="author" content="Thomas D. Sherman" />
+<meta name="author" content="Thomas D. Sherman, Raymond Cheng" />
 
-<meta name="date" content="2016-07-19" />
+<meta name="date" content="2016-07-21" />
 
 <title>Drug Sensitivity Simulation</title>
 
@@ -50,8 +50,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <div id="header">
 <h1 class="title">Drug Sensitivity Simulation</h1>
-<h4 class="author"><em>Thomas D. Sherman</em></h4>
-<h4 class="date"><em>19 July 2016</em></h4>
+<h4 class="author"><em>Thomas D. Sherman, Raymond Cheng</em></h4>
+<h4 class="date"><em>21 July 2016</em></h4>
 </div>
 <h4 class="package">Package version: <span style="font-weight: normal">CellModel 0.99.0</span></h4>
 
@@ -61,7 +61,9 @@ document.addEventListener("DOMContentLoaded", function() {
 <li><a href="#introduction"><span class="toc-section-number">1</span> Introduction</a></li>
 <li><a href="#basic-simulation"><span class="toc-section-number">2</span> Basic Simulation</a><ul>
 <li><a href="#parameter-overview"><span class="toc-section-number">2.1</span> Parameter Overview</a></li>
-<li><a href="#simple-run"><span class="toc-section-number">2.2</span> Simple Run</a></li>
+<li><a href="#parameter-details"><span class="toc-section-number">2.2</span> Parameter Details</a></li>
+<li><a href="#simple-run"><span class="toc-section-number">2.3</span> Simple Run</a></li>
+<li><a href="#output-analysis"><span class="toc-section-number">2.4</span> Output Analysis</a></li>
 </ul></li>
 <li><a href="#simulating-drug-response"><span class="toc-section-number">3</span> Simulating Drug Response</a><ul>
 <li><a href="#simple-case"><span class="toc-section-number">3.1</span> Simple Case</a></li>
@@ -72,15 +74,111 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <div id="introduction" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<p>The main objective of the CellModel package is to provide R implementations of a broad class of cell-based models (Szabo) and provide a single, consistent interface to use the models.</p>
+<p>The main objective of the <em>CellModel</em> package is to provide R implementations of a broad class of cell-based models (Szabo) and provide a single, consistent interface to execute the models. The currrent version of CellModel contains a basic, off-lattice model of cell growth. This model is based off the work in (Drasdo, 2003). This model was chosen to be implemented first since it is a very basic model that provides enough infastructure to test some simple ideas related to drug response and resistance.</p>
 </div>
 <div id="basic-simulation" class="section level1">
 <h1><span class="header-section-number">2</span> Basic Simulation</h1>
+<p>The main function in the package is <em>runModel</em>, which can be called with only two parameters - inital number of cells and number of hours to run the simulation (in terms of model time). <em>runModel</em> returns a <em>CellModel</em> object which contains two fields - cells and parameters. While the simulation runs it periodically displays the current time in the model (hr) and the number of cells.</p>
+<pre class="r"><code>basic_sim &lt;- runModel(10,24)</code></pre>
+<pre><code>## time = 0.00
+## size = 10
+## time = 10.00
+## size = 11
+## time = 20.00
+## size = 13
+## time = 24.00
+## size = 14</code></pre>
+<p>The <em>cells</em> field is a list containing vectors of information about the cells at each timestep.</p>
+<pre class="r"><code>basic_sim@cells[[1]]</code></pre>
+<pre><code>##  [1]  -2.91332965  29.80284736   1.19968412   2.00000000   0.00000000
+##  [6]   0.08629449 -17.30452766  -8.52509368   1.20443150   2.00000000
+## [11]   0.00000000   0.08629449   9.00928052  28.75831453   1.34270925
+## [16]   2.00000000   0.00000000   0.08629449  28.18038543 -10.21056128
+## [21]   1.32898492   2.00000000   0.00000000   0.08629449 -17.70099838
+## [26] -18.64061289   1.29977089   2.00000000   0.00000000   0.08629449
+## [31]   2.14672603   7.56160286   1.34004709   2.00000000   0.00000000
+## [36]   0.08629449  -5.12167421 -12.26071800   1.32430137   2.00000000
+## [41]   0.00000000   0.08629449   2.43697642 -19.44646148   1.21941703
+## [46]   2.00000000   0.00000000   0.08629449  -4.50774932 -21.84901458
+## [51]   1.00966410   3.83502742   2.99852493   0.08629449 -22.96329704
+## [56]  21.55442144   1.28693881   2.00000000   0.00000000   0.08629449</code></pre>
+<p>This is raw data that is not meant to be interacted with directly. Instead use the package functions to extract useful information from the simulation.</p>
+<p>The parameters field contains a vector of parameters.</p>
+<pre class="r"><code>basic_sim@parameters</code></pre>
+<pre><code>## [1] 10.00 24.00  0.01 12.00  0.00  0.25 40.00  0.00  0.88</code></pre>
+<p>Although the parameters can be retrieved this way it is preferrable to use <em>getParameters</em>.</p>
+<pre class="r"><code>CellModel::getParameters(basic_sim)</code></pre>
+<pre><code>## $initialNum
+## [1] 10
+## 
+## $runTime
+## [1] 24
+## 
+## $density
+## [1] 0.01
+## 
+## $cycleTimeDist
+## [1] 12
+## 
+## $inheritGrowth
+## [1] 0
+## 
+## $timeIncrement
+## [1] 0.25
+## 
+## $outputIncrement
+## [1] 40
+## 
+## $randSeed
+## [1] 0
+## 
+## $epsilon
+## [1] 0.88</code></pre>
 <div id="parameter-overview" class="section level2">
 <h2><span class="header-section-number">2.1</span> Parameter Overview</h2>
+<p>There are 9 parameters for <em>runModel</em>, although only the first two need to be provided (initialNum, runTime).</p>
+<p><em>initialNum</em> - the number of cells in the simulation at time zero<br /><em>runTime</em> - the number of simulated hours in the run<br /><em>density</em> - the initial density of the cells<br /><em>cycleTimeDist</em> - the distribution of cell-cycle length (hrs)<br /><em>inheritGrowth</em> - T/F for whether cells inherit cell-cycle length from parent<br /><em>timeIncrement</em> - the number of simulated hours for each MC step<br /><em>outputIncrement</em> - the number of MC steps between each display of time, size<br /><em>randSeed</em> - the random seed used for the simulation<br /><em>epsilon</em> - model specific parameter from Drasdo, 2003</p>
+</div>
+<div id="parameter-details" class="section level2">
+<h2><span class="header-section-number">2.2</span> Parameter Details</h2>
+<p><em>initialNum</em>, <em>density</em></p>
+<p>The cells are initially seeded randomly throughout a circle, whose radius is calculated based on the density parameter. <em>density</em> in this case is defined as the ratio of the total area of the cells and the area of the circle. Providing a <em>density</em> higher than 0.1 will result in an error, since the program cannot efficiently seed cells that close together. Cells are seeded randomly throughout the cell-cycle.</p>
+<p><em>runTime</em>, <em>cycleTimeDist</em>, <em>timeIncrement</em>, <em>outputIncrement</em></p>
+<p>The model does not have a length scale so the dimensions of the cells are arbitrary, but it does have a time scale. The value passed in <em>cycleTimeDist</em> is the average length (in terms of simulation hours) of the cell-cycle for a cell in isolation. <em>runTime</em> is the number of simulation hours the model runs for. If a vector is passed in <em>cycleTimeDist</em> then it is treated as a distribution of times and each cell is assigned a random value (uniform) from this vector when it is born. <em>timeIncrement</em> is the amount of time (hours) that passes during each MC step of the simulation. Note that if <em>timeIncrement</em> is too large to accurately simulate the model (given the other parameters) then it will automatically be set to an appropiate value. <em>outputIncrement</em> specifices how many MC steps are in between each display in the console. Thus, <em>outputIncrement</em> * <em>timeIncrement</em> will be the hours in between each display.</p>
+<p><em>inheritGrowth</em></p>
+<p>Cells have the option of inheriting the cycle-length from their parent or sampling from <em>cycleTimeDist</em> when they are born. This allows for “growth” rates to be affected in a heritable way. This functionality is explored more in section 3.</p>
+<p><em>epsilon</em></p>
+<p>This is a model specific parameter. For a more detailed explanation see Draso, 2003. Note that the effective energy F_T is set to 1 is this version of the model.</p>
+<p><em>randSeed</em></p>
+<p>The user can pass in a random seed of their choosing. All random samples in the model will be affected by this seed. The default seed is 0.</p>
 </div>
 <div id="simple-run" class="section level2">
-<h2><span class="header-section-number">2.2</span> Simple Run</h2>
+<h2><span class="header-section-number">2.3</span> Simple Run</h2>
+<p>The following is essentially the most basic use of the model. It will be used to demonstrate the package functions available.</p>
+<pre class="r"><code>simple_run &lt;- runModel(initialNum = 10,
+                       runTime = 72,
+                       density = 0.1,
+                       cycleTimeDist = rnorm(1000,10,1),
+                       inheritGrowth = F,
+                       timeIncrement = 0.1,
+                       outputIncrement = 144,
+                       randSeed = 0,
+                       epsilon = 2)</code></pre>
+<pre><code>## time = 0.00
+## size = 10
+## time = 14.40
+## size = 15
+## time = 28.80
+## size = 21
+## time = 43.20
+## size = 23
+## time = 57.60
+## size = 32
+## time = 72.00
+## size = 36</code></pre>
+</div>
+<div id="output-analysis" class="section level2">
+<h2><span class="header-section-number">2.4</span> Output Analysis</h2>
 </div>
 </div>
 <div id="simulating-drug-response" class="section level1">

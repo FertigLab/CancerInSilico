@@ -292,32 +292,5 @@ Rcpp::List CellPopulation::GetPopulationAsList() {
 
 	return Rcpp::wrap(m_population_record);
 
-/*    int num_rows = m_population_record.size();
-    unsigned int num_cols = 0;
-
-    for (int i = 0; i < num_rows; i++) {
- 
-       if (m_population_record[i].size() > num_cols) {
-
-            num_cols = m_population_record[i].size();
-
-        }
-
-    }
-
-    Rcpp::NumericMatrix ret_val(num_rows, num_cols);
-
-    for (int i = 0; i < num_rows; i++) {
-
-        for (unsigned int j = 0; j < m_population_record[i].size(); j++) {
-
-            ret_val(i, j) = m_population_record[i][j];
-
-        }
-
-    }
-
-    return ret_val;*/
-
 }
 

@@ -1,6 +1,6 @@
 ---
 title: "Drug Sensitivity Simulation"
-author: "Thomas D. Sherman"
+author: "Thomas D. Sherman, Raymond Cheng"
 date: "`r doc_date()`"
 package: "`r pkg_ver('CellModel')`"
 vignette: >
@@ -11,46 +11,100 @@ output:
   BiocStyle::html_document
 ---
 
+```{r include=FALSE, cache=FALSE}
+library(CellModel)
+```
+
 # Introduction
 
-The main objective of the CellModel package is to provide R implementations of a broad class of cell-based models (Szabo) and provide a single, consistent interface to execute the models. The currrent version of CellModel contains a basic, off-lattice model of cell growth. This model is based off the work in (Drasdo, 2003). 
+The main objective of the *CellModel* package is to provide R implementations of a broad class of cell-based models (Szabo) and provide a single, consistent interface to execute the models. The currrent version of CellModel contains a basic, off-lattice model of cell growth. This model is based off the work in (Drasdo, 2003). This model was chosen to be implemented first since it is a very basic model that provides enough infastructure to test some simple ideas related to drug response and resistance.
 
 # Basic Simulation
 
+The main function in the package is *runModel*, which can be called with only two parameters - inital number of cells and number of hours to run the simulation (in terms of model time). *runModel* returns a *CellModel* object which contains two fields - cells and parameters. While the simulation runs it periodically displays the current time in the model (hr) and the number of cells.
+
+```{r}
+basic_sim <- runModel(10,24)
+```
+
+The *cells* field is a list containing vectors of information about the cells at each timestep.
+
+```{r}
+basic_sim@cells[[1]]
+```
+
+This is raw data that is not meant to be interacted with directly. Instead use the package functions to extract useful information from the simulation.
+
+The parameters field contains a vector of parameters.
+
+```{r}
+basic_sim@parameters
+```
+
+Although the parameters can be retrieved this way it is preferrable to use *getParameters*.
+
+```{r}
+CellModel::getParameters(basic_sim)
+```
+
 ## Parameter Overview
 
-no scale
-yes time
+There are 9 parameters for *runModel*, although only the first two need to be provided (initialNum, runTime).
 
-R parameters
-- initial cells
-- run time (hr)
-- cell cycle time distribution (hr) (min 4 hr)
-- random seed
-- inherit growth (T/F)
-- output increment
-- time increment
-- seeding density
+*initialNum* - the number of cells in the simulation at time zero  
+*runTime* - the number of simulated hours in the run  
+*density* - the initial density of the cells  
+*cycleTimeDist* - the distribution of cell-cycle length (hrs)  
+*inheritGrowth* - T/F for whether cells inherit cell-cycle length from parent  
+*timeIncrement* - the number of simulated hours for each MC step  
+*outputIncrement* - the number of MC steps between each display of time, size  
+*randSeed* - the random seed used for the simulation  
+*epsilon* - model specific parameter from Drasdo, 2003
 
-C parameters
-- initial cells
-- # of MC steps
-- max growth
-- max translation
-- max rotation
-- potential strength (epsilon)
-- random seed
-- inherit growth (T/F)
-- output increment
-- seeding density
+## Parameter Details
 
-- time increment (hr) (fixed)
-- potential range (delta) (fixed at 0.5)
-- average number of translation/rotation per growth/deformation (fixed at 8)
+*initialNum*, *density*
 
-- effective energy (fixed in model at 1?)
+The cells are initially seeded randomly throughout a circle, whose radius is calculated based on the density parameter. *density* in this case is defined as
+the ratio of the total area of the cells and the area of the circle. Providing a *density* higher than 0.1 will result in an error, since the program cannot efficiently seed cells that close together. Cells are seeded randomly throughout the cell-cycle.
+
+*runTime*, *cycleTimeDist*, *timeIncrement*, *outputIncrement*
+
+The model does not have a length scale so the dimensions of the cells are arbitrary, but it does have a time scale. The value passed in *cycleTimeDist* is the average length (in terms of simulation hours) of the cell-cycle for a cell in isolation. *runTime* is the number of simulation hours the model runs for. If a vector is passed in *cycleTimeDist* then it is treated as a distribution of times and each cell is assigned a random value (uniform) from this vector when it is born. *timeIncrement* is the amount of time (hours) that passes during each MC step of the simulation. Note that if *timeIncrement* is too large to accurately simulate the model (given the other parameters) then it will automatically be set to an appropiate value. *outputIncrement* specifices how many MC steps are in between each display in the console. Thus, *outputIncrement* * *timeIncrement* will be the hours in between each display.
+
+*inheritGrowth*
+
+Cells have the option of inheriting the cycle-length from their parent or sampling from *cycleTimeDist* when they are born. This allows for "growth" rates to be affected in a heritable way. This functionality is explored more in section 3.
+
+*epsilon*
+
+This is a model specific parameter. For a more detailed explanation see Draso, 2003. Note that the effective energy F_T is set to 1 is this version of the model.
+
+*randSeed*
+
+The user can pass in a random seed of their choosing. All random samples in the model will be affected by this seed. The default seed is 0.
 
 ## Simple Run
+
+The following is essentially the most basic use of the model. It will be used to demonstrate the package functions available.
+
+```{r}
+simple_run <- runModel(initialNum = 10,
+                       runTime = 72,
+                       density = 0.1,
+                       cycleTimeDist = rnorm(1000,10,1),
+                       inheritGrowth = F,
+                       timeIncrement = 0.1,
+                       outputIncrement = 144,
+                       randSeed = 0,
+                       epsilon = 2)
+```
+
+## Output Analysis
+
+There are several functions used to get relevant information from the *CellModel* object. It is not recommended to pull data directly from the *cells* field as this is just the raw data from the simulation.
+
+*getTotalCells*
 
 # Simulating Drug Response
 

@@ -61,7 +61,7 @@ runModel <- function(initialNum,
 
     })
 
-    cellMat <- new("CellModel",cells = output,parameters = c(initialNum,runTime,cycleTimeDist,inheritGrowth,timeIncrement,outputIncrement,randSeed))
+    cellMat <- new("CellModel",cells = output,parameters = c(initialNum,runTime,density,cycleTimeDist,inheritGrowth,timeIncrement,outputIncrement,randSeed,epsilon))
 
     return(cellMat)
 
