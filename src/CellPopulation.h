@@ -39,7 +39,8 @@ public:
 	double CalculateInteraction(Cell *, Cell *);
 
 	void CheckMitosis(Cell*);
-	void AddDrug();
+	void SetGrowthRates();
+	void SeedCells();
 
 	void RecordPopulation();
 	Rcpp::NumericMatrix GetPopulationAsMatrix();

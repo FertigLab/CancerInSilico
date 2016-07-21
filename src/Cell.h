@@ -32,11 +32,13 @@ class Cell {
     Point GetCoord() const;
     void SetCoord(Point);
     double GetRadius() const;
+	void SetRadius(double);
     double GetAxisLength() const;
     double GetAxisAngle() const;
     void SetGrowth(double);
     double GetGrowth() const;
     bool ReadyToDivide() const;
+	void EnterRandomPointOfMitosis();
 
  	Cell Divide();
 

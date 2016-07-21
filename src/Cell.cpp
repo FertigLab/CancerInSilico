@@ -159,6 +159,12 @@ double Cell::GetRadius() const {
 
 }
 
+void Cell::SetRadius(double rad) {
+
+	m_radius = rad;
+
+}
+
 double Cell::GetAxisLength() const {
 
     return m_axis_len;
@@ -181,6 +187,15 @@ double Cell::GetGrowth() const {
 
     return m_growth_rate;
 
+}
+
+void Cell::EnterRandomPointOfMitosis() {
+
+	m_in_mitosis = true;
+	m_radius = R::runif(1,m_param->GetMaxRadius());
+	m_axis_len = 2 * m_radius * (1 + cos(m_param->GetTheta(m_radius) / 2));
+	m_axis_ang = R::runif(0,2 * M_PI);
+	
 }
 
 double Cell::CellDistance(const Cell& other) const {

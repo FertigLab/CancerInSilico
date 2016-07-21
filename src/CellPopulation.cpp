@@ -11,6 +11,7 @@ CellPopulation::CellPopulation(Parameters *par, unsigned int size, double densit
     Point new_loc;
 	Cell* temp;
 
+	//create cells
     for (unsigned int i = 0; i < size; i++) {
 
 		temp = new Cell(Point(0,0), m_param);
@@ -20,17 +21,8 @@ CellPopulation::CellPopulation(Parameters *par, unsigned int size, double densit
 
     }
 
-	AddDrug();
-
-	int seed_time = size * m_param->GetNG() * 0.7 * (0.414 / m_param->GetMaxGrowth()) * (0.414 / m_param->GetMaxDeform());
-	Cell* rand_cell;
-
-	for (int i = 0; i < seed_time; ++i) {
-
-	    rand_cell = m_population.GetRandomValue();
-    	AttemptTrial(rand_cell);
-
-	}
+	SetGrowthRates();
+	SeedCells();
 
 }
 
@@ -69,7 +61,7 @@ bool CellPopulation::ValidCellPlacement(Cell* cell) {
 
 	for (; iter != m_population.end(); ++iter) {
 
-        if ((*iter).CellDistance(*cell) < 0) {
+        if ((*iter).CellDistance(*cell) < 2) {
 
             return false;
 
@@ -78,6 +70,40 @@ bool CellPopulation::ValidCellPlacement(Cell* cell) {
     }
 
     return true;
+
+}
+
+void CellPopulation::SetGrowthRates() {
+
+	SpatialHash<Cell>::full_iterator iter = m_population.begin();
+
+	for (; iter != m_population.end(); ++iter) {
+
+		(*iter).SetGrowth(m_param->GetRandomGrowthRate());
+
+    }
+
+}
+
+void CellPopulation::SeedCells() {
+
+	double cycle_time, unif;
+	SpatialHash<Cell>::full_iterator iter = m_population.begin();
+	for (; iter != m_population.end(); ++iter) {
+
+		unif = R::runif(0,1);
+		
+		if (unif < 0.75) { //interphase
+
+			(*iter).SetRadius(R::runif(1,m_param->GetMaxRadius()));
+	
+		} else { //mitosis
+
+			(*iter).EnterRandomPointOfMitosis();
+
+		}
+
+	}
 
 }
 
@@ -230,18 +256,6 @@ double CellPopulation::CalculateInteraction(Cell* a, Cell* b) {
 
         double part = pow(2 * dist / m_param->GetCompressionDELTA() - 1, 2);
         return m_param->GetResistanceEPSILON() * (part - 1);
-
-    }
-
-}
-
-void CellPopulation::AddDrug() {
-
-	SpatialHash<Cell>::full_iterator iter = m_population.begin();
-
-	for (; iter != m_population.end(); ++iter) {
-
-		(*iter).SetGrowth(m_param->GetRandomGrowthRate());
 
     }
 

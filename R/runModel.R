@@ -25,11 +25,12 @@ runModel <- function(initialNum,
 					 inheritGrowth = F,
 					 timeIncrement = 0.25,
 					 outputIncrement = 40,
-				     randSeed = 0)
+				     randSeed = 0,
+					 epsilon = 0.88)
  						
 {
 
-	if (density > 0.4) {
+	if (density > 0.1) {
 		
 		message("density too high to seed efficiently\n")
 		stop()
@@ -37,20 +38,20 @@ runModel <- function(initialNum,
 	}
 
 	nG <- 10
+	delta <- 0.5
   
-	if (timeIncrement > cycleTimeDist / (2 * nG)) {
+	if (timeIncrement > 5 * delta * min(cycleTimeDist) / ((sqrt(2) - 1) * nG)) {
 
-		timeIncrement <- cycleTimeDist / (2 * nG)
+		timeIncrement <- 5 * delta * min(cycleTimeDist) / ((sqrt(2) - 1) * nG)
 	
 	}
 
 	mcSteps <- ceiling(runTime / timeIncrement)
-	grRates <- (sqrt(2) - 1) * timeIncrement * 2 * nG / cycleTimeDist
-	maxTranslation <- mean(grRates) / 5
-	maxRotate <- 10 * mean(grRates) / 11  
-	epsilon <- 0.88
-	delta <- 0.5
-	maxDeform <- (sqrt(2) - 1) / 5
+	grRates <- (sqrt(2) - 1) * timeIncrement * nG / cycleTimeDist
+	maxTranslation <- mean(grRates)
+	maxRotate <- 3 * mean(grRates)
+
+	maxDeform <- 2 * max(grRates)
 
     output = tryCatch({
 

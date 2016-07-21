@@ -13,7 +13,7 @@ output:
 
 # Introduction
 
-The main objective of the CellModel package is to provide R implementations of a broad class of cell-based models (Szabo) and provide a single, consistent interface to execute the models. The currrent version of CellModel contains a basic, off-lattice model of cell growth. This model is based off of (Drasdo, 2003). 
+The main objective of the CellModel package is to provide R implementations of a broad class of cell-based models (Szabo) and provide a single, consistent interface to execute the models. The currrent version of CellModel contains a basic, off-lattice model of cell growth. This model is based off the work in (Drasdo, 2003). 
 
 # Basic Simulation
 
