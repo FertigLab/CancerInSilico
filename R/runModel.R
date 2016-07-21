@@ -54,7 +54,7 @@ runModel <- function(initialNum,
 		maxDeform, maxRotate, epsilon, delta, outputIncrement,
 		randSeed, grRates, inheritGrowth, nG, timeIncrement)
 
-    }, error <- function(cond) {
+    }, error = function(cond) {
 
         message(cond, '\n')
         stop()
