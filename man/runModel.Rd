@@ -22,6 +22,8 @@ runModel(initialNum, runTime, density = 0.01, cycleTimeDist = 12,
 \item{outputIncrement}{time increment to print status at}
 
 \item{randSeed}{seed for the model}
+
+\item{epsilon}{epsilon model specific parameter}
 }
 \value{
 A CellModel containing all info from the model run
