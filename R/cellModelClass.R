@@ -2,4 +2,4 @@
 #'
 #'@export
 
-setClass("CellModel", representation("matrix"))
+setClass("CellModel", representation(cells = "matrix",parameters = "numeric"))

@@ -5,31 +5,21 @@
 \title{\code{runModel} Runs the model}
 \usage{
 runModel(initialNum, runTime, density = 0.01, cycleTimeDist = 12,
-  inheritGrowth = F, timeIncrement = 0.25, outputIncrement = 10 *
-  timeIncrement, randSeed = 0)
+  inheritGrowth = F, timeIncrement = 0.25, outputIncrement = 40,
+  randSeed = 0)
 }
 \arguments{
 \item{initialNum}{how many cells initially}
 
-\item{runTime}{how long the simulation runs}
+\item{runTime}{how long the simulation represents in realtime}
 
 \item{density}{the density the cells are seeded at}
 
+\item{cycleTimeDist}{cycle time distribution}
+
+\item{timeIncrement}{time length of a step in the model, based on the hour}
+
 \item{randSeed}{seed for the model}
-
-\item{meanGrowth}{mean growth rate of cells}
-
-\item{varGrowth}{the variance of the growth rate (assumed normal)}
-
-\item{maxMigration}{farthest a cell can move in a single update}
-
-\item{maxDeform}{most a cell can deform in a single update}
-
-\item{maxRotate}{most a cell can rotate in a single update}
-
-\item{epsilon}{model specific parameter}
-
-\item{delta}{model specific parameter}
 
 \item{outIncrement}{time increment to print status at}
 }
