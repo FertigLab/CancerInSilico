@@ -6,7 +6,7 @@
 \usage{
 runModel(initialNum, runTime, density = 0.01, cycleLengthDist = 12,
   inheritGrowth = F, timeIncrement = 0.25, outputIncrement = 40,
-  randSeed = 0, epsilon = 0.88)
+  randSeed = 0, epsilon = 4)
 }
 \arguments{
 \item{initialNum}{how many cells initially}
@@ -15,6 +15,10 @@ runModel(initialNum, runTime, density = 0.01, cycleLengthDist = 12,
 
 \item{density}{the density the cells are seeded at}
 
+\item{cycleLengthDist}{cycle time distribution}
+
+\item{inheritGrowth}{check if cells inherit growth patterns upon division}
+
 \item{timeIncrement}{time length of a step in the model, based on the hour}
 
 \item{outputIncrement}{time increment to print status at}
@@ -22,8 +26,6 @@ runModel(initialNum, runTime, density = 0.01, cycleLengthDist = 12,
 \item{randSeed}{seed for the model}
 
 \item{epsilon}{epsilon model specific parameter}
-
-\item{cycleTimeDist}{cycle time distribution}
 }
 \value{
 A CellModel containing all info from the model run
