@@ -25,9 +25,9 @@ setMethod("getGrowthRateDistribution", "CellModel",
 
     function(model, time) {
 
-        gr_rates = seq(6,length(model@cells[[time/model@parameters[5]+1]]),6)
+        gr_rates = seq(6,length(model@cells[[time/model@parameters[6]+1]]),6)
         #gr_rates = gr_rates[!gr_rates %in% NA]
-        return(model@cells[[time/model@parameters[5] + 1]][gr_rates])
+        return(model@cells[[time/model@parameters[6] + 1]][gr_rates])
 
     }
           

@@ -22,11 +22,11 @@ setGeneric("plotCellsAtTime", function(model,time)
 setMethod("plotCellsAtTime", "CellModel",
 
 	function(model,time)  {
-	    modtime <- (time / model@parameters[5]) + 1
+	    modtime <- (time / model@parameters[6]) + 1
         
         numCells <- length(model@cells[[modtime]])/6
     
-        xcoords <- seq(1,numCells * 6,6)
+        xcoords <- seq(1,length(model@cells[[modtime]]),6) 
     
         mn <- min(min(model@cells[[modtime]][xcoords]),min(model@cells[[modtime]][xcoords+1])) - 2
         mx <- max(max(model@cells[[modtime]][xcoords]),max(model@cells[[modtime]][xcoords+1])) + 2

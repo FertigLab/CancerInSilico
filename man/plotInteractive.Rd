@@ -4,7 +4,7 @@
 \alias{plotInteractive}
 \title{\code{plotInteractive} Plots a CellModel at a certain point in time}
 \usage{
-plotInteractive(model, time = 1)
+plotInteractive(model, time = 0)
 }
 \arguments{
 \item{model}{A CellModel}

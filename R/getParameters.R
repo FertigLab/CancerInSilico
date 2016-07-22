@@ -5,7 +5,6 @@
 #' @examples
 #' getParameters(runModel(10,100))
 #' @export
-#' 
 
 setGeneric("getParameters", function(model)
     standardGeneric("getParameters"))
@@ -17,7 +16,6 @@ setGeneric("getParameters", function(model)
 #' @examples
 #' getParameters(runModel(10,100))
 #' @export
-#' 
 
 setMethod("getParameters", "CellModel",
 
