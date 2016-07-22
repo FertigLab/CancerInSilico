@@ -194,11 +194,11 @@ adv_case <- runModel(100,200,0.001,cycleLengthDist=cycle_dist,outputIncrement=12
 Note that in order to reproduce results exactly, it is neccesary to set the seed before generating *cycle_dist* since *randSeed* only sets the seed internal to the model.
 
 ```{r}
-plot(density(getGrowthRateDistribution(adv_case,1)))
-plot(density(getGrowthRateDistribution(adv_case,200)))
+plot(density(getCycleLengthDistribution(adv_case,1)))
+plot(density(getCycleLengthDistribution(adv_case,200)))
 
-mean(getGrowthRateDistribution(adv_case,1))
-mean(getGrowthRateDistribution(adv_case,200))
+mean(getCycleLengthDistribution(adv_case,1))
+mean(getCycleLengthDistribution(adv_case,200))
 ```
 
 Here we notice that at time __ we finally saw a significant change in the distribution.
