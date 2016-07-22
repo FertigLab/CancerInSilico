@@ -4,7 +4,8 @@
 #' @param initialNum how many cells initially
 #' @param runTime how long the simulation represents in realtime
 #' @param density the density the cells are seeded at
-#' @param cycleTimeDist cycle time distribution
+#' @param cycleLengthDist cycle time distribution
+#' @param inheritGrowth whether or not daughter cells have the same cycle-length as parents
 #' @param timeIncrement time length of a step in the model, based on the hour
 #' @param outputIncrement time increment to print status at
 #' @param randSeed seed for the model
