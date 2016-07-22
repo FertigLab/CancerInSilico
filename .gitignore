@@ -43,7 +43,6 @@ stuff/**
 *.swo
 
 *.txt
-time*
 cmdtest.bat
 cmdtest.R
 *.csv
