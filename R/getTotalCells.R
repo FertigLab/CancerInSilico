@@ -22,13 +22,16 @@ setMethod("getTotalCells", "CellModel",
     function(model) {
 
         total_cells = c()
-        radii = seq(3,length(model@cells[[length(model@cells)]]),6)
+
         for (t in 1:length(model@cells)) {
-            cellsatt = model@cells[[t]][radii]
-            cellsatt = sum(length(cellsatt[!cellsatt %in% NA]))
-            total_cells[t] = cellsatt
+
+            radii = seq(3, length(model@cells[[t]]), 6)
+            total_cells[t] = sum(model@cells[[t]][radii] > 0)
+
         }
+
 		return(total_cells)
+
     }
 
 )

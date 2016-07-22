@@ -17,43 +17,35 @@
 runModel <- function(initialNum,
                      runTime,
                      density = 0.01,
-					 cycleTimeDist = 12,
-					 inheritGrowth = F,
-					 timeIncrement = 0.25,
-					 outputIncrement = 40,
-				     randSeed = 0,
-					 epsilon = 0.88)
- 						
+                     cycleLengthDist = 12,
+                     inheritGrowth = F,
+                     timeIncrement = 0.25,
+                     outputIncrement = 40,
+                     randSeed = 0,
+                     epsilon = 4)
+                         
 {
 
-	if (density > 0.1) {
-		
-		message("density too high to seed efficiently\n")
-		stop()
+    if (density > 0.1) {
+        
+        message("density too high to seed efficiently\n")
+        stop()
 
-	}
+    }
 
-	nG <- 10
-	delta <- 0.5
-  
-	if (timeIncrement > 5 * delta * min(cycleTimeDist) / ((sqrt(2) - 1) * nG)) {
-
-		timeIncrement <- 5 * delta * min(cycleTimeDist) / ((sqrt(2) - 1) * nG)
-	
-	}
-
-	mcSteps <- ceiling(runTime / timeIncrement)
-	grRates <- (sqrt(2) - 1) * timeIncrement * nG / cycleTimeDist
-	maxTranslation <- mean(grRates)
-	maxRotate <- 3 * mean(grRates)
-
-	maxDeform <- 2 * max(grRates)
+    nG <- 10
+    delta <- 0.5
+    grRates <- 3 * (sqrt(2) - 1) * timeIncrement * nG / cycleLengthDist
+    mcSteps <- ceiling(runTime / timeIncrement)
+    maxTranslation <- mean(grRates)
+    maxRotate <- 3 * mean(grRates)
+    maxDeform <- 2 * max(grRates)
 
     output <- tryCatch({
 
         CellModel(initialNum, mcSteps, density, maxTranslation,
-		maxDeform, maxRotate, epsilon, delta, outputIncrement,
-		randSeed, grRates, inheritGrowth, nG, timeIncrement)
+        maxDeform, maxRotate, epsilon, delta, outputIncrement,
+        randSeed, grRates, inheritGrowth, nG, timeIncrement)
 
     }, error = function(cond) {
 
@@ -62,7 +54,7 @@ runModel <- function(initialNum,
 
     })
 
-    cellMat <- new("CellModel",cells = output,parameters = c(initialNum,runTime,density,cycleTimeDist,inheritGrowth,timeIncrement,outputIncrement,randSeed,epsilon))
+    cellMat <- new("CellModel",cells = output,parameters = c(initialNum,runTime,density,mean(cycleLengthDist),inheritGrowth,timeIncrement,outputIncrement,randSeed,epsilon))
 
     return(cellMat)
 
