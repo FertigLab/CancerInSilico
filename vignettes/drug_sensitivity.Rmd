@@ -129,7 +129,7 @@ plot(density(cyc_len), main="Time 0",xlab="Cycle Length")
 ```{r}
 den <- c()
 for (i in 0:72) {
-  den[i] <- getDensity(simple_run,i)
+  den[i+1] <- getDensity(simple_run,i)
 }
 plot(0:72,den,type="l",xlab="time",ylab="cell density")
 ```
@@ -183,15 +183,26 @@ Here the red line is for the simulation where cycle times are inherited, and the
 
 ## Advanced Case
 
-In this simulation, we assume the drug does not have a binary effect on the cycle time, but rather effects the cycle according to some distribution. The question here would
+In this simulation, we assume the drug does not have a binary effect on the cycle time, but rather effects the cycle according to some distribution. The question here would be how long it takes for a significant change in the distribution to occur.
+
 ```{r}
-adv_case <- runModel(100,200,0.001,growthRates=8 + 8 * rbeta(10000,1,3),outputIncrement=120,inheritGrowth=T)
-
-plot(density(getGrowthRateDistribution(run4,1)))
-plot(density(getGrowthRateDistribution(run4,200)))
-
-mean(getGrowthRateDistribution(run4,1))
-mean(getGrowthRateDistribution(run4,200))
+set.seed(0)
+cycle_dist <- 8 + 16 * rbeta(10000,2,4)
+adv_case <- runModel(100,200,0.001,cycleLengthDist=cycle_dist,outputIncrement=120,inheritGrowth=T)
 ```
+
+Note that in order to reproduce results exactly, it is neccesary to set the seed before generating *cycle_dist* since *randSeed* only sets the seed internal to the model.
+
+```{r}
+plot(density(getCycleLengthDistribution(adv_case,1)))
+plot(density(getCycleLengthDistribution(adv_case,200)))
+
+mean(getCycleLengthDistribution(adv_case,1))
+mean(getCycleLengthDistribution(adv_case,200))
+```
+
+Here we notice that at time __ we finally saw a significant change in the distribution.
+
+This general framework allows for detailed analysis on the effect of heritable changes in the "growth rate" of a cell.
 
 ## References
