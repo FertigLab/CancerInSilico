@@ -22,16 +22,18 @@ setGeneric("getDensity", function(model,time)
 setMethod("getDensity", "CellModel",
 
     function(model,time) {
-      
-      radii <- seq(3,length(model@cells[[time/model@parameters[5] + 1]]),6)
-      xcoords <- seq(1,length(model@cells[[time/model@parameters[5] + 1]]),6)
-      ycoords <- seq(2,length(model@cells[[time/model@parameters[5] + 1]]),6)
-      
-      #farthest distance from (0,0) of cell
-      d <- max(sqrt(model@cells[[time/model@parameters[5] + 1]][xcoords]**2 + model@cells[[time/model@parameters[5] +1]][ycoords]**2))
-               
-      return(sum(model@cells[[(time/model@parameters[5]) + 1]][radii] ** 2) / (d ^ 2))
-      
-    }
+
+    row <- timeToRow(model,time)
+    xcoords <- seq(1,length(model@cells[[row]]),6)
+    ycoords <- xcoords + 1
+    radii <- xcoords + 2
+    
+
+    #farthest distance from (0,0) of cell
+    d <- max(sqrt(model@cells[[row]][xcoords]**2 + model@cells[[row]][ycoords]**2))
+       
+    return(sum(model@cells[[row]][radii] ** 2) / (d ^ 2))
+
+}
     
 )
