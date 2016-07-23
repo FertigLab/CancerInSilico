@@ -4,55 +4,56 @@
 #include <Rcpp.h>
 
 // [[Rcpp::export]]
-Rcpp::NumericMatrix CellModel(
+Rcpp::List CellModel(
 
-  int initialNum,
-  int runTime,
-  double density,
-  double meanGrowth,
-  double varGrowth,
-  double maxMigration,
-  double maxDeform,
-  double maxRotate,
-  double epsilon,
-  double delta,
-  int outIncrement,
-  int randSeed
+    int initialNum,
+    int numMCSteps,
+    double density,
+    double maxTranslation,
+    double maxDeform,
+    double maxRotate,
+    double epsilon,
+    double delta,
+    int outIncrement,
+    int randSeed,
+	Rcpp::NumericVector growthRates,
+	bool inheritGrowth,
+	double nG,
+	double timeIncrement
 
 ) {
 
-  Rcpp::Environment baseEnv("package:base");
-  Rcpp::Function setSeed = baseEnv["set.seed"];
-  setSeed(randSeed);
+	std::vector<double> gr_rates;
+	for (unsigned int i = 0; i < growthRates.length(); ++i) {
+	
+		gr_rates.push_back(growthRates[i]);
 
-  Parameters* params = new Parameters();
+	}		
 
-  double apoptosisRate = 0.0;
+    Rcpp::Environment baseEnv("package:base");
+    Rcpp::Function setSeed = baseEnv["set.seed"];
+    setSeed(randSeed);
 
-	params->SetMinRadius(1);
-	params->SetMaxRadius(pow(2,0.5) * params->GetMinRadius());
-	params->SetEnergyConstant(1);
+    Parameters *params = new Parameters(pow(2,0.5));
 
-  params->SetInitialNumCells(initialNum);
-  params->SetInitialDensity(density);
-	params->SetMeanGrowth(meanGrowth);
-	params->SetVarGrowth(varGrowth);
-  params->SetApoptosisRate(apoptosisRate);
-	params->SetMaxMigration(maxMigration);
-	params->SetMaxDeform(maxDeform);
-	params->SetMaxRotate(maxRotate);
-	params->SetResistanceEPSILON(epsilon);
-	params->SetCompressionDELTA(delta);
+    params->SetMaxTranslation(maxTranslation);
+    params->SetMaxDeform(maxDeform);
+    params->SetMaxRotate(maxRotate);
+    params->SetResistanceEPSILON(epsilon);
+    params->SetCompressionDELTA(delta);
+	params->StoreGrowthDistribution(gr_rates);
+	params->SetInheritGrowth(inheritGrowth);
+	params->SetNG(nG);
 
-  Simulation main_sim = Simulation(params);
+    Simulation main_sim = Simulation(params, initialNum, density);
+    main_sim.Run(numMCSteps, outIncrement, timeIncrement);
+    Rcpp::List ret_val = main_sim.GetCellsAsList();
 
-  main_sim.Run(runTime, outIncrement);
-
-  Rcpp::NumericMatrix ret_val = main_sim.GetCellsAsMatrix();
-
-  delete params;
-
-  return ret_val;
+    delete params;
+    return ret_val;
 
 }
+
+
+
 

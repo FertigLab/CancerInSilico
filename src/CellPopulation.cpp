@@ -1,292 +1,296 @@
 #include <cmath>
-#include <cstdlib>
 #include <Rcpp.h>
 
 #include "CellPopulation.h"
-#include "SpatialHash.h"
-#include "Cell.h"
 
-CellPopulation::CellPopulation(Parameters* par, unsigned int size, double density) {
+CellPopulation::CellPopulation(Parameters *par, unsigned int size, double density) {
 
-  m_param = par;
-  m_param->InitializeRadiusSolver();
-  m_population = SpatialHash(m_param->GetMinRadius());
-  
-  double disk_radius = pow(size * pow(m_param->GetMinRadius(),2) / density, 0.5);
-  std::pair<double,double> new_loc;
+    m_param = par;
+    m_population = SpatialHash<Cell>(1.0);
+    double disk_radius = pow(size / density, 0.5);
+    Point new_loc;
+	Cell* temp;
 
-  for (unsigned int i = 0; i < size; i++) {
+	//create cells
+    for (unsigned int i = 0; i < size; i++) {
 
-    new_loc = GetRandomLocation(disk_radius);
-    m_population.Insert(new Cell(new_loc, m_param));   
-    
-  }
+		temp = new Cell(Point(0,0), m_param);
+        GetRandomLocation(temp, disk_radius);
+        m_population.Insert(temp->GetCoord(), temp);
+        Rcpp::checkUserInterrupt();
+
+    }
+
+	SetGrowthRates();
+	SeedCells();
 
 }
 
 CellPopulation::~CellPopulation() {
+	
+	SpatialHash<Cell>::full_iterator iter = m_population.begin();
+    for (; iter != m_population.end(); ++iter) {
 
-/*  for (unsigned int i = 0; i < m_population.size(); i++) {
-    
-    delete m_population[i];
-  
-  }*/
-
-}
-
-std::pair<double,double> CellPopulation::GetRandomLocation(double rad) {
-
-  double dist,ang,x,y;
-
-  do {
-    
-    dist = R::runif(0,1);  
-    ang = R::runif(0,2 * M_PI);  
-    x = rad * pow(dist,0.5) * cos(ang);
-    y = rad * pow(dist,0.5) * sin(ang);
-
-  } while (!ValidCellPlacement(x,y));
-
-  return std::make_pair(x,y);
-
-}
-
-bool CellPopulation::ValidCellPlacement(double x, double y) {
-
-  SpatialIterator iter = m_population.getFullIterator();
-
-  while (iter.Next()) {
-
-    Cell temp (std::make_pair(x,y), m_param);
-    if (iter.getCell()->CellDistance(temp) < 0) {
-
-      return false;
+        delete &iter;
 
     }
 
-  }
+}
 
-  return true;
+Point CellPopulation::GetRandomLocation(Cell* cell, double rad) {
+
+    double dist, ang, x, y;
+
+    do {
+
+        dist = R::runif(0, 1);
+        ang = R::runif(0, 2 * M_PI);
+        x = rad * pow(dist, 0.5) * cos(ang);
+        y = rad * pow(dist, 0.5) * sin(ang);
+		cell->SetCoord(Point(x,y));
+
+    } while (!ValidCellPlacement(cell));
+
+    return Point(x, y);
 
 }
 
-void CellPopulation::OneTimeStep() {
+bool CellPopulation::ValidCellPlacement(Cell* cell) {
 
-  int sz = m_population.size();
+    SpatialHash<Cell>::full_iterator iter = m_population.begin();
 
-  for (int i = 0; i < sz; ++i) {
+	for (; iter != m_population.end(); ++iter) {
 
-    Update();
+        if ((*iter).CellDistance(*cell) < 2) {
 
-  }
-  
-	RecordPopulation();
+            return false;
 
-}
-
-void CellPopulation::Update() {
-
-  Cell* rand_cell = m_population.GetRandomCell();
-
-  AttemptTrial(rand_cell);
-  CheckMitosis();
-
-}
-
-
-void CellPopulation::AttemptTrial(Cell* cell) {
-  
-  double pre_interaction = CalculateTotalInteraction(cell);  
-  
-  Cell orig = *cell;
-
-  SpatialIterator iter = m_population.getCircularIterator(cell, m_param->GetMinRadius() * 4);
-
-  cell->DoTrial();
-
-  while (iter.Next()) {
-
-    if (cell->CellDistance(*iter.getCell()) < 0) {
-
-      *cell = orig;
+        }
 
     }
-
-  }
-
-  m_population.Update(orig, *cell);
-  
-  double post_interaction = CalculateTotalInteraction(cell);
-  
-  if (post_interaction == std::numeric_limits<double>::max()
-        || !AcceptTrial(post_interaction - pre_interaction)) {
-    
-    m_population.Update(*cell, orig);
-    *cell = orig;
-    
-  }
-
-}
-
-bool CellPopulation::AcceptTrial(double delta_interaction) {
-  
-  if (delta_interaction <= 0.0) {
 
     return true;
 
-  } else {
-
-    double unif = R::runif(0,1);
-    double prob = exp(-1 * delta_interaction / m_param->GetEnergyConstant());
-    return unif < prob;
-
-	}
-
 }
 
-double CellPopulation::CalculateTotalInteraction(Cell* cell) {
-  
-  double inter, sum = 0.0;  
-  SpatialIterator iter = m_population.getCircularIterator(cell, m_param->GetCompressionDELTA() + 1);
-  
-  while (iter.Next()) {
+void CellPopulation::SetGrowthRates() {
 
-    if (*(iter.getCell()) != *cell) {
+	SpatialHash<Cell>::full_iterator iter = m_population.begin();
 
-      inter = CalculateInteraction(iter.getCell(), cell);
-			if (inter == std::numeric_limits<double>::max()) {return inter;}
-      sum += inter;
+	for (; iter != m_population.end(); ++iter) {
+
+		(*iter).SetGrowth(m_param->GetRandomGrowthRate());
 
     }
 
-  }
-  
-  return sum;
-
 }
 
-double CellPopulation::CalculateInteraction(Cell* a, Cell* b) {
+void CellPopulation::SeedCells() {
 
-  double dist = a->CellDistance(*b);
+	double cycle_time, unif;
+	SpatialHash<Cell>::full_iterator iter = m_population.begin();
+	for (; iter != m_population.end(); ++iter) {
 
-  if (dist > m_param->GetCompressionDELTA()) {  
+		unif = R::runif(0,1);
+		
+		if (unif < 0.75) { //interphase
 
-    return 0.0;
+			(*iter).SetRadius(R::runif(1,m_param->GetMaxRadius()));
+	
+		} else { //mitosis
 
-  } else if (dist < 0) {
-
-		return std::numeric_limits<double>::max();
-
-  } else {
-
-    double part = pow(2 * dist / m_param->GetCompressionDELTA(),2);
-    return m_param->GetResistanceEPSILON() * (part - 1);
-
-  }
-
-}
-
-
-void CellPopulation::CheckMitosis() {
-
-  std::vector<Cell*> dividing_cells;
-  SpatialIterator iter = m_population.getFullIterator();  
-
-  while (iter.Next()) {
-
-    if (iter.getCell()->ReadyToDivide()) {
-
-			dividing_cells.push_back(iter.getCell());
+			(*iter).EnterRandomPointOfMitosis();
 
 		}
 
 	}
 
-  for (unsigned int i = 0; i < dividing_cells.size(); ++i) {
-
-    Cell temp = *dividing_cells[i];
-    m_population.Insert(dividing_cells[i]->Divide());
-    m_population.Update(temp, *dividing_cells[i]);
-
-  }
-
 }
 
-void CellPopulation::RecordPopulation() {
+void CellPopulation::OneTimeStep() {
 
-  std::vector<double> current_pop;
-  SpatialIterator iter = m_population.getFullIterator();
+    int sz = m_population.size();
 
-  Cell* temp;
+    for (int i = 0; i < sz; ++i) {
 
-  while (iter.Next()) {
-
-    temp = iter.getCell();
-    current_pop.push_back(temp->GetCoord().first);		
-    current_pop.push_back(temp->GetCoord().second);
-    current_pop.push_back(temp->GetRadius());
-    current_pop.push_back(temp->GetAxisLength());
-    current_pop.push_back(temp->GetAxisAngle());
-    current_pop.push_back(temp->GetGrowth());
-    
-  }
-  
-  m_population_record.push_back(current_pop);
-
-}
-
-Rcpp::NumericMatrix CellPopulation::GetPopulationAsMatrix() {
-
-  int num_rows = m_population_record.size();
-  unsigned int num_cols = 0;
-
-  for (int i = 0; i < num_rows; i++) {
-    
-    if (m_population_record[i].size() > num_cols) {
-
-      num_cols = m_population_record[i].size();
+        Update();
 
     }
 
-  }
-  
-  Rcpp::NumericMatrix ret_val(num_rows, num_cols);
+}
 
-  for (int i = 0; i < num_rows; i++) {
+void CellPopulation::Update() {
 
-    for (unsigned int j = 0; j < m_population_record[i].size(); j++) {
-
-      ret_val(i,j) = m_population_record[i][j];
-
-    }
-
-  }
-
-  return ret_val;
+    Cell* rand_cell = m_population.GetRandomValue();
+    AttemptTrial(rand_cell);
+	CheckMitosis(rand_cell);
 
 }
 
-void CellPopulation::AddDrug() {
-  
-  double rand;
-  SpatialIterator iter = m_population.getFullIterator();
+void CellPopulation::CheckMitosis(Cell* cell) {
 
-  while (iter.Next()) {
+	if (cell->ReadyToDivide()) {
 
-    rand = R::rnorm(m_param->GetMeanGrowth(), m_param->GetVarGrowth());
-    iter.getCell()->SetGrowth(std::max(rand,0.02));
+		double gr_rate;	
+		if (m_param->InheritGrowth()) {
 
-  }
+			gr_rate = cell->GetGrowth();
+
+		} else {
+
+			gr_rate = m_param->GetRandomGrowthRate();
+
+		}
+
+		Point old_key = cell->GetCoord();
+		Cell* daughter_cell = new Cell(cell->Divide(), gr_rate);
+		m_population.Insert(daughter_cell->GetCoord(), daughter_cell);
+		m_population.Update(old_key, cell->GetCoord());
+
+	}
+
+}
+
+void CellPopulation::AttemptTrial(Cell *cell) {
+
+    double pre_interaction = CalculateTotalInteraction(cell);
+    Cell orig = *cell;
+    bool growth = cell->DoTrial();
+
+	double max_search = std::max(m_param->GetMaxTranslation(), m_param->GetMaxRadius());
+
+	SpatialHash<Cell>::circular_iterator iter
+		= m_population.begin(orig.GetCoord(), max_search);
+
+
+	for (; iter != m_population.end(orig.GetCoord(), max_search); ++iter) {
+
+		if ((*iter).CellDistance(*cell) < 0) {
+
+			*cell = orig;
+
+		}
+
+	}
+
+    m_population.Update(orig.GetCoord(), cell->GetCoord());
+	
+	if (growth) {
+		
+		return;
+
+	} else {
+
+		double post_interaction = CalculateTotalInteraction(cell);
+
+		if (post_interaction == std::numeric_limits<double>::max()
+		        || !AcceptTrial(post_interaction - pre_interaction)) {
+
+		    m_population.Update(cell->GetCoord(), orig.GetCoord());
+		    *cell = orig;
+
+		}
+	
+	}
+
+}
+
+bool CellPopulation::AcceptTrial(double delta_interaction) {
+
+    if (delta_interaction <= 0.0) {
+
+        return true;
+
+    } else {
+
+        double unif = R::runif(0, 1);
+        double prob = exp(-1 * delta_interaction);
+        return unif < prob;
+
+    }
+
+}
+
+double CellPopulation::CalculateTotalInteraction(Cell *cell) {
+
+    double inter, sum = 0.0;
+
+	SpatialHash<Cell>::circular_iterator iter
+		= m_population.begin(cell->GetCoord(), m_param->GetCompressionDELTA() + 1);
+
+	for (; iter != m_population.end(cell->GetCoord(), m_param->GetCompressionDELTA() + 1); ++iter) {
+
+        if (&iter != cell) {
+
+            inter = CalculateInteraction(&iter, cell);
+
+            if (inter == std::numeric_limits<double>::max()) {
+
+                return inter;
+
+            }
+
+            sum += inter;
+
+        }
+
+    }
+
+    return sum;
+
+}
+
+double CellPopulation::CalculateInteraction(Cell* a, Cell* b) {
+
+    double dist = a->CellDistance(*b);
+
+    if (dist > m_param->GetCompressionDELTA()) {
+
+        return 0.0;
+
+    } else if (dist < 0) { //should never be called
+
+        return std::numeric_limits<double>::max();
+
+    } else {
+
+        double part = pow(2 * dist / m_param->GetCompressionDELTA() - 1, 2);
+        return m_param->GetResistanceEPSILON() * (part - 1);
+
+    }
 
 }
 
 int CellPopulation::size() {
 
-  return m_population.size();
+    return m_population.size();
 
 }
 
+void CellPopulation::RecordPopulation() {
 
+    std::vector<double> current_pop;
+	SpatialHash<Cell>::full_iterator iter = m_population.begin();
+    Cell *temp;
 
+	for (; iter != m_population.end(); ++iter) {
 
+        current_pop.push_back((*iter).GetCoord().x);
+        current_pop.push_back((*iter).GetCoord().y);
+        current_pop.push_back((*iter).GetRadius());
+        current_pop.push_back((*iter).GetAxisLength());
+        current_pop.push_back((*iter).GetAxisAngle());
+        current_pop.push_back((*iter).GetGrowth());
+
+    }
+
+    m_population_record.push_back(current_pop);
+
+}
+
+Rcpp::List CellPopulation::GetPopulationAsList() {
+
+	return Rcpp::wrap(m_population_record);
+
+}
 

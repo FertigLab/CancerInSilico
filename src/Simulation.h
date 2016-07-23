@@ -8,18 +8,18 @@
 
 class Simulation {
 
-private:
+  private:
 
-  CellPopulation m_cells;
-  Parameters* m_param;
-  
-public:
+    CellPopulation* m_cells;
+    Parameters* m_param;
 
-  Simulation(Parameters*);
-	~Simulation() {}
+  public:
 
-  void Run(int, int);
-  Rcpp::NumericMatrix GetCellsAsMatrix();
+    Simulation(Parameters*, int, double);
+    ~Simulation();
+
+    void Run(int, int, double);
+    Rcpp::List GetCellsAsList();
 
 };
 

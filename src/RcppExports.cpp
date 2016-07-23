@@ -6,24 +6,26 @@
 using namespace Rcpp;
 
 // CellModel
-Rcpp::NumericMatrix CellModel(int initialNum, int runTime, double density, double meanGrowth, double varGrowth, double maxMigration, double maxDeform, double maxRotate, double epsilon, double delta, int outIncrement, int randSeed);
-RcppExport SEXP CellModel_CellModel(SEXP initialNumSEXP, SEXP runTimeSEXP, SEXP densitySEXP, SEXP meanGrowthSEXP, SEXP varGrowthSEXP, SEXP maxMigrationSEXP, SEXP maxDeformSEXP, SEXP maxRotateSEXP, SEXP epsilonSEXP, SEXP deltaSEXP, SEXP outIncrementSEXP, SEXP randSeedSEXP) {
+Rcpp::List CellModel(int initialNum, int numMCSteps, double density, double maxTranslation, double maxDeform, double maxRotate, double epsilon, double delta, int outIncrement, int randSeed, Rcpp::NumericVector growthRates, bool inheritGrowth, double nG, double timeIncrement);
+RcppExport SEXP CellModel_CellModel(SEXP initialNumSEXP, SEXP numMCStepsSEXP, SEXP densitySEXP, SEXP maxTranslationSEXP, SEXP maxDeformSEXP, SEXP maxRotateSEXP, SEXP epsilonSEXP, SEXP deltaSEXP, SEXP outIncrementSEXP, SEXP randSeedSEXP, SEXP growthRatesSEXP, SEXP inheritGrowthSEXP, SEXP nGSEXP, SEXP timeIncrementSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< int >::type initialNum(initialNumSEXP);
-    Rcpp::traits::input_parameter< int >::type runTime(runTimeSEXP);
+    Rcpp::traits::input_parameter< int >::type numMCSteps(numMCStepsSEXP);
     Rcpp::traits::input_parameter< double >::type density(densitySEXP);
-    Rcpp::traits::input_parameter< double >::type meanGrowth(meanGrowthSEXP);
-    Rcpp::traits::input_parameter< double >::type varGrowth(varGrowthSEXP);
-    Rcpp::traits::input_parameter< double >::type maxMigration(maxMigrationSEXP);
+    Rcpp::traits::input_parameter< double >::type maxTranslation(maxTranslationSEXP);
     Rcpp::traits::input_parameter< double >::type maxDeform(maxDeformSEXP);
     Rcpp::traits::input_parameter< double >::type maxRotate(maxRotateSEXP);
     Rcpp::traits::input_parameter< double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< double >::type delta(deltaSEXP);
     Rcpp::traits::input_parameter< int >::type outIncrement(outIncrementSEXP);
     Rcpp::traits::input_parameter< int >::type randSeed(randSeedSEXP);
-    __result = Rcpp::wrap(CellModel(initialNum, runTime, density, meanGrowth, varGrowth, maxMigration, maxDeform, maxRotate, epsilon, delta, outIncrement, randSeed));
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type growthRates(growthRatesSEXP);
+    Rcpp::traits::input_parameter< bool >::type inheritGrowth(inheritGrowthSEXP);
+    Rcpp::traits::input_parameter< double >::type nG(nGSEXP);
+    Rcpp::traits::input_parameter< double >::type timeIncrement(timeIncrementSEXP);
+    __result = Rcpp::wrap(CellModel(initialNum, numMCSteps, density, maxTranslation, maxDeform, maxRotate, epsilon, delta, outIncrement, randSeed, growthRates, inheritGrowth, nG, timeIncrement));
     return __result;
 END_RCPP
 }

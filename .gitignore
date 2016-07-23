@@ -43,7 +43,6 @@ stuff/**
 *.swo
 
 *.txt
-time*
 cmdtest.bat
 cmdtest.R
 *.csv
@@ -52,4 +51,6 @@ cmdtest.R
 **.RData
 
 *.log
+*.Rhistory
+*.html
 

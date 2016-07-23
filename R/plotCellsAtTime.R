@@ -1,56 +1,54 @@
-#'\code{plotCellsAtTime} Plots a CellMatrix at a certain point in time
+#' \code{plotCellsAtTime} Plots a CellModel at a certain point in time
 #'
+#' @param model A CellModel
+#' @param time The timestep at which to plot the modelrix.
+#' @return Plot a visual representation of cells at time
+#' @examples
+#' plotCellsAtTime(runModel(10,100),60)
+#' @export
+
+setGeneric("plotCellsAtTime", function(model,time)
+    standardGeneric("plotCellsAtTime"))
+
+#' \code{plotCellsAtTime} Plots a CellModel at a certain point in time
 #'
-#'@param mat A Cell Matrix
-#'@param time The timestep at which to plot the matrix. Must be below
-#' the specified max amount of timesteps
-#'@export
+#' @param model A CellModel
+#' @param time The timestep at which to plot the modelrix.
+#' @return Plot a visual representation of cells at time
+#' @examples
+#' plotCellsAtTime(runModel(10,100),60)
+#' @export
 
-setGeneric("plotCellsAtTime", function(mat,time)
-  standardGeneric("plotCellsAtTime"))
+setMethod("plotCellsAtTime", "CellModel",
 
-#'\code{plotCellsAtTime} Plots a CellMatrix at a certain point in time
-#'
-#'
-#'@param mat A Cell Matrix
-#'@param time The timestep at which to plot the matrix. Must be below
-#' the specified max amount of timesteps
-#'@export
+	function(model,time)  {
 
-setMethod("plotCellsAtTime", "CellMatrix",
-  function(mat,time)  {
-
-    radii = seq(3,ncol(mat),6)
-    numCells = sum(mat[time,radii]>0)
+    	row <- timeToRow(model,time)
+        
+        numCells <- length(model@cells[[row]]) / 6
     
-    #Information of cells based on Matrix Values (Used in plotCellsAtTime)
+        xcoords <- seq(1,numCells * 6,6)
+        ycoords <- xcoords + 1
+        radii <- xcoords + 2
+        axis_len <- xcoords + 3
+        axis_ang <- xcoords + 4
     
-    xcoords = seq(1,(numCells-1)*7,6)
-    ycoords = xcoords + 1
-    radii = ycoords + 1
-    axis_len = radii + 1
-    axis_ang = axis_len + 1
-    
-    mn = min(min(mat[,xcoords]),min(mat[,ycoords])) - 2
-    mx = max(max(mat[,xcoords]),max(mat[,ycoords])) + 2
-    
-    #Opens new device to put plot into
-    dev.new()
-    dev.set(which = 1)
-    
-    plot(c(mn,mx),c(mn,mx),type="n")
-    text(20,20,labels = "test")
-    
-    #How Many Cells are Alive
-    for (n in xcoords) {
-      #Currently Assuming All Cells are Alive (No Cell Death)
-      x_1 =  mat[time,n] + (- 0.5 * mat[time,n+3] + mat[time,n+2]) * cos(mat[time,n+4])
-      y_1 =  mat[time,n+1] + (- 0.5 * mat[time,n+3] + mat[time,n+2]) * sin(mat[time,n+4])
-      x_2 =  mat[time,n] + (0.5 * mat[time,n+3] - mat[time,n+2]) * cos(mat[time,n+4])
-      y_2 =  mat[time,n+1] + (0.5 * mat[time,n+3] - mat[time,n+2]) * sin(mat[time,n+4])
-      DrawCircle(x_1,y_1,mat[time,n+2])
-      DrawCircle(x_2,y_2,mat[time,n+2])
-    }
-    
+        mn <- min(min(model@cells[[row]][xcoords]),min(model@cells[[row]][ycoords])) - 2
+        mx <- max(max(model@cells[[row]][xcoords]),max(model@cells[[row]][ycoords])) + 2
+        
+        plot(c(mn,mx),c(mn,mx),main=paste("Plot of CellModel At Time",time),xlab = "",ylab="",type="n",asp=1)
+              
+        x_1 <- model@cells[[row]][xcoords] + (0.5 * model@cells[[row]][axis_len] - model@cells[[row]][radii]) * cos(model@cells[[row]][axis_ang])
+        x_2 <- model@cells[[row]][xcoords] - (0.5 * model@cells[[row]][axis_len] - model@cells[[row]][radii]) * cos(model@cells[[row]][axis_ang])
+        y_1 <- model@cells[[row]][ycoords] + (0.5 * model@cells[[row]][axis_len] - model@cells[[row]][radii]) * sin(model@cells[[row]][axis_ang])
+        y_2 <- model@cells[[row]][ycoords] - (0.5 * model@cells[[row]][axis_len] - model@cells[[row]][radii]) * sin(model@cells[[row]][axis_ang])
+        
+        x <- c(x_1,x_2)
+        y <- c(y_1,y_2)
+        rad <- c(model@cells[[row]][radii], model@cells[[row]][radii])
+        
+        symbols(x,y, circles=rad, inches=FALSE, add=TRUE, bg="bisque4", fg="bisque4")
+   
   }
+
 )

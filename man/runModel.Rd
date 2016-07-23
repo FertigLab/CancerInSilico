@@ -4,36 +4,34 @@
 \alias{runModel}
 \title{\code{runModel} Runs the model}
 \usage{
-runModel(initialNum, runTime, density = 0.05, meanGrowth = 0.15,
-  varGrowth = 0, maxMigration = 0.5, maxDeform = 0.075, maxRotate = 0.3,
-  epsilon = 0.05, delta = 5, outIncrement = 10, randSeed = 0)
+runModel(initialNum, runTime, density = 0.01, cycleLengthDist = 12,
+  inheritGrowth = F, timeIncrement = 0.25, outputIncrement = 40,
+  randSeed = 0, epsilon = 0.88)
 }
 \arguments{
 \item{initialNum}{how many cells initially}
 
-\item{runTime}{how long the simulation runs}
+\item{runTime}{how long the simulation represents in realtime}
 
 \item{density}{the density the cells are seeded at}
 
-\item{meanGrowth}{mean growth rate of cells}
+\item{timeIncrement}{time length of a step in the model, based on the hour}
 
-\item{varGrowth}{the variance of the growth rate (assumed normal)}
-
-\item{maxMigration}{farthest a cell can move in a single update}
-
-\item{maxDeform}{most a cell can deform in a single update}
-
-\item{maxRotate}{most a cell can rotate in a single update}
-
-\item{epsilon}{model specific parameter}
-
-\item{delta}{model specific parameter}
-
-\item{outIncrement}{time increment to print status at}
+\item{outputIncrement}{time increment to print status at}
 
 \item{randSeed}{seed for the model}
+
+\item{epsilon}{epsilon model specific parameter}
+
+\item{cycleTimeDist}{cycle time distribution}
+}
+\value{
+A CellModel containing all info from the model run
 }
 \description{
 \code{runModel} Runs the model
+}
+\examples{
+runModel(100,10)
 }
 

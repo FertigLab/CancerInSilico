@@ -1,235 +1,250 @@
-#include <cstdlib>
 #include <cmath>
-#include <iostream>
 #include <Rcpp.h>
 
 #include "Cell.h"
 
 //used only for the initial population of cells
-Cell::Cell(std::pair<double, double> coor, Parameters* par) {
+Cell::Cell(Point coord, Parameters* par) {
 
-  m_param = par;
-  m_coordinates = coor;
-  m_in_mitosis = false;
-  m_ready_to_divide = false;  
-  m_axis = std::make_pair(0.0, 0.0);
-  m_radius = R::runif(m_param->GetMinRadius(), m_param->GetMaxRadius());
-  m_growth_rate = m_param->GetMeanGrowth();
+    m_param = par;
+    m_coordinates = coord;
+    m_in_mitosis = false;
+    m_ready_to_divide = false;
+    m_axis_ang = 0;
+    m_radius = 1;
+    m_axis_len = 2 * m_radius;
+    m_growth_rate = 0;
 
 }
 
 //used only for daughter cells
-Cell::Cell(std::pair<double, double> coor, Parameters* par, double gr_rate) {
+Cell::Cell(Point coord, Parameters* par, double gr_rate) {
 
-  m_param = par;
-  m_coordinates = coor;
-  m_in_mitosis = false;
-  m_ready_to_divide = false;  
-  m_axis = std::make_pair(0.0, 0.0);
-  m_radius = m_param->GetMinRadius();
-  m_growth_rate = gr_rate;
+    m_param = par;
+    m_coordinates = coord;
+    m_in_mitosis = false;
+    m_ready_to_divide = false;
+    m_axis_len = 2;
+    m_axis_ang = 0;
+    m_radius = 1;
+    m_growth_rate = gr_rate;
+
+}
+
+//should only be called for daughter cells
+Cell::Cell(const Cell& other, double gr_rate) {
+
+    m_param = other.m_param;
+    m_coordinates = other.m_coordinates;
+    m_in_mitosis = other.m_in_mitosis;
+    m_ready_to_divide = other.m_ready_to_divide;
+    m_axis_len = other.m_axis_len;
+    m_axis_ang = other.m_axis_ang;
+    m_radius = other.m_radius;
+    m_growth_rate = gr_rate;
 
 }
 
-Cell& Cell::DoTrial() {
+Cell Cell::Divide() {
 
-  double unif = R::runif(0,1);
+    double x = m_coordinates.x - cos(m_axis_ang);
+    double y = m_coordinates.y - sin(m_axis_ang);
 
-  if (!m_in_mitosis) { //Interphase
+    m_coordinates.x += cos(m_axis_ang);
+    m_coordinates.y += sin(m_axis_ang);
+    m_axis_len = 2;
+    m_axis_ang = 0;
+    m_radius = 1;
+    m_ready_to_divide = false;
+    m_in_mitosis = false;
 
-    if (unif <= 0.5) {
-      Migration();
-    } else {
-      Growth();
-    }
-
-  } else { //Mitosis
-
-    if (unif <= 0.333) {
-      Migration();
-    } else if (unif <= 0.666) {
-      Rotation();
-    } else if (!m_ready_to_divide) {
-      Deformation();
-    }
-
-  }
-
-  return *this;
+    return Cell(Point(x,y), m_param, m_growth_rate);
 
 }
- 
-void Cell::Migration() {
-  
-  double length = m_param->GetMaxMigration() * pow(R::runif(0,1),0.5);
-  double direction = R::runif(0,2 * M_PI);
 
-  m_coordinates.first += length * cos(direction);
-  m_coordinates.second += length * sin(direction);
+bool Cell::DoTrial() {
+
+    double unif = R::runif(0, 1);
+    double nG = m_param->GetNG();
+    bool growth = false;
+
+    if (!m_in_mitosis) { //Interphase
+
+        if (unif <= (1.0 / (nG + 1.0))) { growth = true; Growth();}
+        else { Translation();}
+
+    } else { //Mitosis
+
+        if (unif <= (1.0 / (nG + 1.0))) { growth = true; Deformation();}
+        else if ((nG + 1.0) * unif <= 1.0 + nG / 2.0) { Rotation();}
+        else if (!m_ready_to_divide) { Translation();}
+
+    }
+
+    return growth;
+
+}
+
+void Cell::Translation() {
+
+    double length = m_param->GetMaxTranslation() * pow(R::runif(0, 1), 0.5);
+    double direction = R::runif(0, 2 * M_PI);
+    m_coordinates.x += length * cos(direction);
+    m_coordinates.y += length * sin(direction);
 
 }
 
 void Cell::Growth() {
-  
-  double max_growth = 0.01 + m_param->GetMaxRadius() - m_radius;
-  double growth = R::runif(0,std::min(m_growth_rate,max_growth));
-  m_radius += growth;
-  
-  if (m_radius >= m_param->GetMaxRadius()) {
 
-    m_radius = m_param->GetMaxRadius();  
-    m_axis.first = 2 * m_radius;  
-    m_in_mitosis = true;
+    double max_growth = 0.01 + m_param->GetMaxRadius() - m_radius;
+    double growth = R::runif(0, std::min(m_growth_rate, max_growth));
+    m_radius += growth;
+    m_axis_len = 2 * m_radius;
 
-  }
+    if (m_radius >= m_param->GetMaxRadius()) {
+
+        m_radius = m_param->GetMaxRadius();
+        m_axis_len = 2 * m_radius;
+        m_axis_ang = R::runif(0,2 * M_PI);
+        m_in_mitosis = true;
+
+    }
 
 }
 
 void Cell::Rotation() {
 
-  double rotate = R::runif(-m_param->GetMaxRotate(), m_param->GetMaxRotate());
-  m_axis.second += rotate;
+    double rotate = R::runif(-m_param->GetMaxRotate(), m_param->GetMaxRotate());
+    m_axis_ang += rotate;
 
 }
 
 
 void Cell::Deformation() {
 
-  double max_deform = std::min(m_radius - m_param->GetMinRadius() + 0.01, m_param->GetMaxDeform());
-  double deform = R::runif(0,max_deform);
+    double max_deform = std::min(m_radius - 1 + 0.01, m_param->GetMaxDeform());
+    double deform = R::runif(0, max_deform);
+    m_radius = std::max(m_radius - deform, 1.0);
+    m_axis_len = 2 * m_radius * (1 + cos(m_param->GetTheta(m_radius) / 2));
 
-  m_radius = std::max(m_radius - deform, m_param->GetMinRadius());
-  m_axis.first = 2 * m_radius * (1 + cos(m_param->GetTheta(m_radius) / 2));
+    if (m_radius == 1) {
 
-  if (m_radius == m_param->GetMinRadius()) {
-    m_ready_to_divide = true;  
-  }
+        m_ready_to_divide = true;
 
-}
-
-Cell* Cell::Divide() {
-
-  double c1_x, c1_y, c2_x, c2_y;
-
-  c1_x = m_coordinates.first - m_radius * cos(m_axis.second);
-  c1_y = m_coordinates.second - m_radius * sin(m_axis.second);
-  c2_x = m_coordinates.first + m_radius * cos(m_axis.second);
-  c2_y = m_coordinates.second + m_radius * sin(m_axis.second);
-
-  m_coordinates = std::make_pair(c1_x, c1_y);
-  m_axis.first = 0;
-  m_axis.second = 0;
-  m_radius = m_param->GetMinRadius();
-  m_ready_to_divide = false;
-	m_in_mitosis = false;
-  return new Cell(std::make_pair(c2_x, c2_y), m_param, m_growth_rate);
+    }
 
 }
 
-bool Cell::ReadyToDivide() {
+bool Cell::ReadyToDivide() const {
 
-  return m_ready_to_divide;
-
-}
-
-std::pair<double, double> Cell::GetCoord() {
-
-  return m_coordinates;
+    return m_ready_to_divide;
 
 }
 
-double Cell::GetRadius() {
+Point Cell::GetCoord() const {
 
-	return m_radius;
-
-}
-
-double Cell::GetAxisLength() {
-
-  return m_axis.first;
+    return m_coordinates;
 
 }
 
-double Cell::GetAxisAngle() {
+void Cell::SetCoord(Point pt) {
+    
+    m_coordinates = pt;
 
-  return m_axis.second;
+}
+
+double Cell::GetRadius() const {
+
+    return m_radius;
+
+}
+
+void Cell::SetRadius(double rad) {
+
+    m_radius = rad;
+
+}
+
+double Cell::GetAxisLength() const {
+
+    return m_axis_len;
+
+}
+
+double Cell::GetAxisAngle() const {
+
+    return m_axis_ang;
 
 }
 
 void Cell::SetGrowth(double rate) {
 
-  m_growth_rate = rate;
+    m_growth_rate = rate;
 
 }
 
-double Cell::GetGrowth() {
+double Cell::GetGrowth() const {
 
-  return m_growth_rate;
+    return m_growth_rate;
 
 }
 
-double Cell::CellDistance(Cell &other) {
+void Cell::EnterRandomPointOfMitosis() {
 
-  std::vector<double> centers;
-  
-  double a_x = GetCoord().first;
-  double a_y = GetCoord().second;
-  double a_rad = GetRadius();
-  double a_len = GetAxisLength();
-  double a_ang = GetAxisAngle();
+    m_in_mitosis = true;
+    m_radius = R::runif(1,m_param->GetMaxRadius());
+    m_axis_len = 2 * m_radius * (1 + cos(m_param->GetTheta(m_radius) / 2));
+    m_axis_ang = R::runif(0,2 * M_PI);
+    
+}
 
-  double b_x = other.GetCoord().first;
-  double b_y = other.GetCoord().second;
-  double b_rad = other.GetRadius();
-  double b_len = other.GetAxisLength();
-  double b_ang = other.GetAxisAngle();
+double Cell::CellDistance(const Cell& other) const {
 
-  if (a_len > 0) {  
+    std::vector<Point> a_centers;
+    std::vector<Point> b_centers;
 
-    centers.push_back(a_x + (-0.5 * a_len + a_rad) * cos(a_ang));
-    centers.push_back(a_y + (-0.5 * a_len + a_rad) * sin(a_ang));
-    centers.push_back(a_x + (0.5 * a_len + a_rad) * cos(a_ang));
-    centers.push_back(a_y + (0.5 * a_len + a_rad) * sin(a_ang));
+    double a_x = GetCoord().x;
+    double a_y = GetCoord().y;
+    double a_rad = GetRadius();
+    double a_len = GetAxisLength();
+    double a_ang = GetAxisAngle();
 
-  } else {
+    double b_x = other.GetCoord().x;
+    double b_y = other.GetCoord().y;
+    double b_rad = other.GetRadius();
+    double b_len = other.GetAxisLength();
+    double b_ang = other.GetAxisAngle();
 
-    centers.push_back(a_x);
-    centers.push_back(a_y);
+    a_centers.push_back(Point(
+        a_x + (0.5 * a_len - a_rad) * cos(a_ang),
+        a_y + (0.5 * a_len - a_rad) * sin(a_ang)));
 
-  }
+    a_centers.push_back(Point(
+        a_x - (0.5 * a_len - a_rad) * cos(a_ang),
+        a_y - (0.5 * a_len - a_rad) * sin(a_ang)));
 
-  if (b_len > 0) {
+    b_centers.push_back(Point(
+        b_x + (0.5 * b_len - b_rad) * cos(b_ang),
+        b_y + (0.5 * b_len - b_rad) * sin(b_ang)));
 
-    centers.push_back(b_x + (-0.5 * b_len + b_rad) * cos(b_ang));
-    centers.push_back(b_y + (-0.5 * b_len + b_rad) * sin(b_ang));
-    centers.push_back(b_x + (0.5 * b_len + b_rad) * cos(b_ang));
-    centers.push_back(b_y + (0.5 * b_len + b_rad) * sin(b_ang));
+    b_centers.push_back(Point(
+        b_x - (0.5 * b_len - b_rad) * cos(b_ang),
+        b_y - (0.5 * b_len - b_rad) * sin(b_ang)));
 
-  } else {
+    double min_dist = std::numeric_limits<double>::max();
 
-    centers.push_back(b_x);
-    centers.push_back(b_y);
+    for (unsigned int i = 0; i < a_centers.size(); ++i) {
 
-  }    
-  
-  double x_dist, y_dist;
-  double dist, min_dist = std::numeric_limits<double>::max();
+        for (unsigned int j = 0; j < b_centers.size(); ++j) {
 
-  for (unsigned int i = 0; i < centers.size() / 2 - 1; i++) {
+            min_dist = std::min(min_dist, a_centers[i].dist(b_centers[j]));
 
-    for (unsigned int j = i + 1; j < centers.size() / 2; j++) {
-
-      x_dist = centers[2*j] - centers[2*i];
-      y_dist = centers[2*j+1] - centers[2*i+1]; 
-      dist = pow(pow(x_dist,2) + pow(y_dist,2), 0.5) - a_rad - b_rad;
-      min_dist = std::min(min_dist, dist);
+        }
 
     }
 
-  }
+    return min_dist - a_rad - b_rad;
 
-  return min_dist;
-
-} 
+}
 
 
