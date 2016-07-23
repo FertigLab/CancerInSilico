@@ -6,7 +6,6 @@
 #' @param density the density the cells are seeded at
 #' @param cycleLengthDist cycle time distribution
 #' @param inheritGrowth whether or not daughter cells have the same cycle-length as parents
-#' @param timeIncrement time length of a step in the model, based on the hour
 #' @param outputIncrement time increment to print status at
 #' @param randSeed seed for the model
 #' @param epsilon epsilon model specific parameter
@@ -20,8 +19,7 @@ runModel <- function(initialNum,
                      density = 0.01,
                      cycleLengthDist = 12,
                      inheritGrowth = F,
-                     timeIncrement = 0.25,
-                     outputIncrement = 40,
+                     outputIncrement = 6,
                      randSeed = 0,
                      epsilon = 4)
                          
@@ -34,14 +32,20 @@ runModel <- function(initialNum,
 
     }
 
-    nG <- 10
-    delta <- 0.5
-    grRates <- 3 * (sqrt(2) - 1) * timeIncrement * nG / cycleLengthDist
+    nG <- 24
+    delta <- 0.2 ## must be less than 4 or calculations break
+    
+    timeIncrement = delta / (4 * nG * (4 - sqrt(2)))
+    if (timeIncrement > delta * (min(cycleLengthDist) - 1) / (8 * nG * (sqrt(2) - 1))) {
+      timeIncrement = delta * (min(cycleLengthDist) - 1) / (8 * nG * (sqrt(2) - 1))
+    }
+    maxDeform <- 2 * timeIncrement * nG * (4 - sqrt(2))
+    grRates <- 2 * (sqrt(2) - 1) * timeIncrement * nG / (cycleLengthDist - 1)
     mcSteps <- ceiling(runTime / timeIncrement)
-    maxTranslation <- mean(grRates)
-    maxRotate <- 3 * mean(grRates)
-    maxDeform <- 2 * max(grRates)
-
+    maxTranslation <- delta / 2
+    maxRotate <- acos((16 + delta ^ 2 - 4 * delta) / 16)
+    outputIncrement <- floor(outputIncrement / timeIncrement)
+    
     output <- tryCatch({
 
         CellModel(initialNum, mcSteps, density, maxTranslation,

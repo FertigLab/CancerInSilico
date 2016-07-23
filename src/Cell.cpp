@@ -96,15 +96,12 @@ void Cell::Translation() {
 
 void Cell::Growth() {
 
-    double max_growth = 0.01 + m_param->GetMaxRadius() - m_radius;
-    double growth = R::runif(0, std::min(m_growth_rate, max_growth));
-    m_radius += growth;
+    double growth = R::runif(0,m_growth_rate);
+    m_radius = std::min(pow(2,0.5), m_radius + growth);
     m_axis_len = 2 * m_radius;
 
-    if (m_radius >= m_param->GetMaxRadius()) {
+    if (m_radius == pow(2,0.5)) {
 
-        m_radius = m_param->GetMaxRadius();
-        m_axis_len = 2 * m_radius;
         m_axis_ang = R::runif(0,2 * M_PI);
         m_in_mitosis = true;
 
@@ -122,12 +119,11 @@ void Cell::Rotation() {
 
 void Cell::Deformation() {
 
-    double max_deform = std::min(m_radius - 1 + 0.01, m_param->GetMaxDeform());
-    double deform = R::runif(0, max_deform);
-    m_radius = std::max(m_radius - deform, 1.0);
-    m_axis_len = 2 * m_radius * (1 + cos(m_param->GetTheta(m_radius) / 2));
+    double deform = R::runif(0, m_param->GetMaxDeform());
+    m_axis_len = std::min(4.0, m_axis_len + deform);
+    m_radius = m_param->GetRadius(m_axis_len);
 
-    if (m_radius == 1) {
+    if (m_axis_len == 4.0) {
 
         m_ready_to_divide = true;
 
@@ -192,8 +188,8 @@ double Cell::GetGrowth() const {
 void Cell::EnterRandomPointOfMitosis() {
 
     m_in_mitosis = true;
-    m_radius = R::runif(1,m_param->GetMaxRadius());
-    m_axis_len = 2 * m_radius * (1 + cos(m_param->GetTheta(m_radius) / 2));
+    m_axis_len = R::runif(2 * pow(2,0.5),4);
+    m_radius = m_param->GetRadius(m_axis_len);
     m_axis_ang = R::runif(0,2 * M_PI);
     
 }

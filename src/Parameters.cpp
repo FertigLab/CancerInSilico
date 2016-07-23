@@ -5,6 +5,8 @@
 #include "ExceptionHandling.h"
 #include "Parameters.h"
 
+#define MIN_AXIS_LEN 1.1716
+
 void Parameters::InitializeRadiusSolver() {
 
 	InitSlowSolver();
@@ -12,14 +14,17 @@ void Parameters::InitializeRadiusSolver() {
 
 }
 
+//hardcoded for max radius = sqrt(2)
 void Parameters::InitSlowSolver() {
 
-    double theta;
+    double theta, num, denom;
 
     for (int i = 0; i <= 31400; ++i) {
 
         theta = (double) i / 10000;
-        m_slow_solver.push_back(m_max_radius * pow(M_PI / (2 * M_PI - theta + sin(theta)), 0.5));
+        num = 64 * M_PI * pow((1 + cos(theta / 2)), 2);
+        denom = sin(theta) - theta + 2 * M_PI;
+        m_slow_solver.push_back(pow(num / denom, 0.5));
 
     }
 
@@ -29,16 +34,16 @@ void Parameters::InitFastSolver() {
 
 	double theta;
 
-	for (int i = 0; i <= 4142; ++i) {
+	for (int i = 0; i <= 11716; ++i) {
 
-		theta = GetThetaSlow(1 + (double) i / 10000);
+		theta = GetThetaSlow(2 * pow(2,0.5) + (double) i / 10000);
 		m_fast_solver.push_back(theta);
 
 	}
 
 }
 
-double Parameters::GetThetaSlow(double rad) {
+double Parameters::GetThetaSlow(double axis_len) {
 
     int imin = 0, imax = 31400;
     int imid;
@@ -47,7 +52,7 @@ double Parameters::GetThetaSlow(double rad) {
 
         imid = (int)((imin + imax) / 2);
 
-        if (m_slow_solver[imid] <= rad) {
+        if (m_slow_solver[imid] <= axis_len) {
 
             imin = imid;
 
@@ -59,7 +64,7 @@ double Parameters::GetThetaSlow(double rad) {
 
     }
 
-    if (rad - m_slow_solver[imin] < m_slow_solver[imax] - rad) {
+    if (axis_len - m_slow_solver[imin] < m_slow_solver[imax] - axis_len) {
 
         return (double) imin / 10000;
 
@@ -71,15 +76,24 @@ double Parameters::GetThetaSlow(double rad) {
 
 }
 
-double Parameters::GetTheta(double rad) {
+double Parameters::GetRadius(double axis_len) {
 
-	return m_fast_solver[HashRadius(rad)];
+    if (axis_len <= 2 * pow(2,0.5)) {
+
+        return axis_len / 2;
+
+    } else {
+
+       	double theta = m_fast_solver[HashAxisLength(axis_len)];
+        return 4 * pow(M_PI, 0.5) / (sin(theta) - theta + 2 * M_PI);
+
+    }
 
 }
 
-int Parameters::HashRadius(double rad) {
+int Parameters::HashAxisLength(double axis_len) {
 
-	return floor((rad - 1) * 10000);
+	return floor((axis_len - 2 * pow(2,0.5)) * 10000);
 
 }
 

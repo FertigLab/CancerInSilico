@@ -28,9 +28,8 @@ setMethod("plotInteractive", "CellModel",
           
     function(model, time = 0) {
 
-        while (time <= length(model@cells)) {
-            temptime = model@parameters[2] * 4 + 1
-            
+        while (time <= model@parameters[2]) {
+          
             plotCellsAtTime(model,time)
     
             read = readline()
@@ -45,7 +44,7 @@ setMethod("plotInteractive", "CellModel",
             cmds <- c("n","b","t","s","q","h")
     
             if (is.na(arg_num)) {
-    	        arg_num <- (temptime-1)/100 + 1
+    	        arg_num <- 1
             }
     
     		if ((cmd %in% cmds)) {
@@ -57,7 +56,7 @@ setMethod("plotInteractive", "CellModel",
                     {time = arg_num},
                     {
                     cat("Cell Density = ", getDensity(model,time), "\n")
-        						cat("Number of Cells = ", length(getGrowthRateDistribution(model,time)), "\n")
+        						cat("Number of Cells = ", length(getCycleLengthDistribution(model,time)), "\n")
                     },
                     {
                     graphics.off()
