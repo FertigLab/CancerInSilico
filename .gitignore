@@ -50,7 +50,7 @@ cmdtest.R
 **.Rcheck/
 **.RData
 
+*.log
 *.Rhistory
-
 *.html
 
