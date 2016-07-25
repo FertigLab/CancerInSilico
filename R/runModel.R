@@ -22,9 +22,9 @@ runModel <- function(initialNum,
                      inheritGrowth = F,
                      outputIncrement = 6,
                      randSeed = 0,
-                     epsilon = 4#,
-                     #nG = 10)
-                         )
+                     epsilon = 4,
+                     nG = 10)
+
 {
 
     if (density > 0.1) {
@@ -33,8 +33,6 @@ runModel <- function(initialNum,
         stop()
 
     }
-
-    nG = 10
 
     delta <- 0.2 ## must be less than 4 or calculations break
     
@@ -66,4 +64,4 @@ runModel <- function(initialNum,
 
     return(cellMat)
 
-}
+}
