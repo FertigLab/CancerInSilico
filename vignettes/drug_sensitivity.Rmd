@@ -1,6 +1,6 @@
 ---
 title: "Drug Sensitivity Simulation"
-author: "Thomas D. Sherman, Raymond Cheng"
+author: "Thomas D. Sherman, Raymond Cheng, Elana J. Fertig"
 date: "`r doc_date()`"
 package: "`r pkg_ver('CellModel')`"
 bibliography: References.bib
@@ -18,7 +18,7 @@ library(CellModel)
 
 # Introduction
 
-The main objective of the *CellModel* package is to provide R implementations of a broad class of cell-based models [see @SZABO2013] and provide a single, consistent interface to execute the models. The currrent version of CellModel contains a basic, off-lattice model of cell growth. This model is based off the work in [see @DRASDO2003]. This model was chosen to be implemented first since it is a very basic model that provides enough infastructure to test some simple ideas related to drug response and resistance.
+The main objective of the *CellModel* package is to provide a single, consistent R interface for running several different types of cell-based models [see @SZABO2013 for a review of current approaches to cell-based modeling]. While most cell-based models appear similiar on the surface, there can be significant variety in the underlying cell mechanics of the model. This results in a difference both in terms of output and efficiency. This package aims to provide the user with an easy way to both use and compare each type of model. The currrent version of *CellModel* contains a basic, off-lattice model of cell growth. This model is based off the work in [@DRASDO2003]. It was chosen to be implemented first since it is a basic model that provides enough infastructure to test some simple ideas related to drug response and resistance.
 
 # Basic Simulation
 
@@ -79,7 +79,7 @@ Cells have the option of inheriting the cycle-length from their parent or sampli
 
 *epsilon*
 
-This is a model specific parameter. For a more detailed explanation see Draso, 2003. Note that the effective energy F_T is set to 1 is this version of the model.
+This is a model specific parameter. For a more detailed explanation [see @Drasdo]. Note that the effective energy F_T is set to 1 is this version of the model.
 
 *randSeed*
 

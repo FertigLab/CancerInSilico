@@ -26,7 +26,7 @@ class Parameters {
 	void InitSlowSolver();
 	void InitFastSolver();
 	double GetThetaSlow(double);
-	int HashRadius(double);
+	int HashAxisLength(double);
 
   public:
 
@@ -57,7 +57,7 @@ class Parameters {
 
 	double GetRandomGrowthRate();
 	double GetMaxGrowth();
-    double GetTheta(double);
+    double GetRadius(double);
 
 };
 

@@ -5,8 +5,8 @@
 \title{\code{runModel} Runs the model}
 \usage{
 runModel(initialNum, runTime, density = 0.01, cycleLengthDist = 12,
-  inheritGrowth = F, timeIncrement = 0.25, outputIncrement = 40,
-  randSeed = 0, epsilon = 4)
+  inheritGrowth = F, outputIncrement = 6, randSeed = 0, epsilon = 4,
+  nG = 10)
 }
 \arguments{
 \item{initialNum}{how many cells initially}
@@ -19,13 +19,13 @@ runModel(initialNum, runTime, density = 0.01, cycleLengthDist = 12,
 
 \item{inheritGrowth}{whether or not daughter cells have the same cycle-length as parents}
 
-\item{timeIncrement}{time length of a step in the model, based on the hour}
-
 \item{outputIncrement}{time increment to print status at}
 
 \item{randSeed}{seed for the model}
 
 \item{epsilon}{epsilon model specific parameter}
+
+\item{nG}{model specific parameter}
 }
 \value{
 A CellModel containing all info from the model run
