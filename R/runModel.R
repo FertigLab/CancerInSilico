@@ -9,6 +9,7 @@
 #' @param outputIncrement time increment to print status at
 #' @param randSeed seed for the model
 #' @param epsilon epsilon model specific parameter
+#' @param nG model specific parameter
 #' @return A CellModel containing all info from the model run
 #' @examples
 #' runModel(100,10)
@@ -21,8 +22,9 @@ runModel <- function(initialNum,
                      inheritGrowth = F,
                      outputIncrement = 6,
                      randSeed = 0,
-                     epsilon = 4)
-                         
+                     epsilon = 4#,
+                     #nG = 10)
+                         )
 {
 
     if (density > 0.1) {
@@ -32,7 +34,8 @@ runModel <- function(initialNum,
 
     }
 
-    nG <- 24
+    nG = 10
+
     delta <- 0.2 ## must be less than 4 or calculations break
     
     timeIncrement = delta / (4 * nG * (4 - sqrt(2)))
@@ -63,4 +66,4 @@ runModel <- function(initialNum,
 
     return(cellMat)
 
-}
+}
