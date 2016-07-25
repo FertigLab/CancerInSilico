@@ -17,7 +17,7 @@ runModel(initialNum, runTime, density = 0.01, cycleLengthDist = 12,
 
 \item{cycleLengthDist}{cycle time distribution}
 
-\item{inheritGrowth}{check if cells inherit growth patterns upon division}
+\item{inheritGrowth}{whether or not daughter cells have the same cycle-length as parents}
 
 \item{timeIncrement}{time length of a step in the model, based on the hour}
 

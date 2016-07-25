@@ -2,7 +2,7 @@
 % Please edit documentation in R/simulateGeneExp.R
 \name{simulateGeneExp}
 \alias{simulateGeneExp}
-\title{\code{getTotalCells} Simulate Gene Expression Data (Beginning)}
+\title{\code{simulateGeneExp} Simulate Gene Expression Data (Beginning)}
 \usage{
 simulateGeneExp(model, genes)
 }
@@ -15,7 +15,7 @@ simulateGeneExp(model, genes)
 the size of the cell population over time
 }
 \description{
-\code{getTotalCells} Simulate Gene Expression Data (Beginning)
+\code{simulateGeneExp} Simulate Gene Expression Data (Beginning)
 }
 \examples{
 getTotalCells(runModel(10,100))

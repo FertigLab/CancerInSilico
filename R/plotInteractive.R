@@ -57,7 +57,7 @@ setMethod("plotInteractive", "CellModel",
                     {time = arg_num},
                     {
                     cat("Cell Density = ", getDensity(model,time), "\n")
-        						cat("Number of Cells = ", length(getGrowthRateDistribution(model,time)), "\n")
+        						cat("Number of Cells = ", length(getCycleLengthDistribution(model,time)), "\n")
                     },
                     {
                     graphics.off()

@@ -1,4 +1,4 @@
-#' \code{getTotalCells} Simulate Gene Expression Data (Beginning)
+#' \code{simulateGeneExp} Simulate Gene Expression Data (Beginning)
 #'
 #' @param model A CellModel
 #' @param genes A vector of gene names
@@ -18,13 +18,34 @@ setMethod("simulateGeneExp", "CellModel",
               #Total Number of Cells
               numcells = getTotalCells(model)
               
+              if(length(getCellPhasePos(model,t,2)) == 0){
+                  #Case: Not half the local max size of that cell
+                  gpCell = rep(0,length(numogenes))
+                  geneMatrix[t,] = gpcell
+              }
+              else{
+                  #Case: Approx cell is half local max size
+                  gpcell = length(getCellPhasePos(model,t,2) * numogenes)
+                  geneMatrix[t,] = gpcell
+              }
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
               #Matrix Creation
               geneMatrix = matrix(NA,length(model@cells),length(numogenes))
               for(t in 1:length(model@cells)){
                   #Genes Per Cell
-                  gpcell = length(splitCells(model,t)) * numogenes
+                  gpcell = length(getCellPhasePos(model,t)) * numogenes
                   #Check if there are cells dividing at the time
-                  if(length(splitCells(model,t)) == 0){
+                  if(length(getCellPhasePos(model,t)) == 0){
                       #Case: None are dividing
                       gpcell = rep(0,length(numogenes))
                       geneMatrix[t,] = gpcell
