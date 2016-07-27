@@ -25,7 +25,7 @@ public:
 
 	~CellPopulation();
 
-	CellPopulation(Parameters *, unsigned int, double);
+	CellPopulation(Parameters*, unsigned int, double);
 
 	Point GetRandomLocation(Cell*, double);
 	bool ValidCellPlacement(Cell*);
@@ -33,10 +33,11 @@ public:
 	void OneTimeStep();
 	void Update();
 
-	void AttemptTrial(Cell *);
+	void AttemptTrial(Cell*);
 	bool AcceptTrial(double);
-	double CalculateTotalInteraction(Cell *);
-	double CalculateInteraction(Cell *, Cell *);
+    int CalculateNumberOfNeighbors(Cell*);
+	double CalculateTotalInteraction(Cell*);
+	double CalculateInteraction(Cell*, Cell*);
 
 	void CheckMitosis(Cell*);
 	void SetGrowthRates();

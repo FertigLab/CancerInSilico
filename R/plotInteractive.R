@@ -63,7 +63,13 @@ setMethod("plotInteractive", "CellModel",
                     break
                     },
                     {
-                    cat("Basic Commands: \n b = back one timestep \n n = forward one timestep \n s = summary of cells \n q = quit \"console\"\n h = basic command help\n")
+                    cat("Basic Commands:
+b ARG = back ARG timesteps (default ARG = 1)
+n ARG = forward ARG timesteps (default ARG = 1)
+t ARG - jump to timestep ARG (default ARG = 1)
+s = summary of cells
+q = quit \"console\"
+h = basic command help\n")
                     }
     			)
             }

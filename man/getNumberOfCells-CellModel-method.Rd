@@ -19,6 +19,6 @@ the size of the cell population over time
 \code{getNumberOfCells} Plots the total number of cells vs time
 }
 \examples{
-getNumberOfCells(runModel(10,10),10)
+getNumberOfCells(runModel(1,10),10)
 }
 

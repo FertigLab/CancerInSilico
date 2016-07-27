@@ -5,10 +5,12 @@
 \alias{getParameters,CellModel-method}
 \title{\code{getParameters} get a named list of parameters in the model}
 \usage{
-\S4method{getParameters}{CellModel}(model)
+\S4method{getParameters}{CellModel}(model, fullDist = FALSE)
 }
 \arguments{
 \item{model}{A CellModel}
+
+\item{fullDist}{whether or not to return full distribution of cycle length}
 }
 \value{
 a named list of parameters in the model
@@ -17,6 +19,6 @@ a named list of parameters in the model
 \code{getParameters} get a named list of parameters in the model
 }
 \examples{
-getParameters(runModel(10,100))
+getParameters(runModel(1,1))
 }
 

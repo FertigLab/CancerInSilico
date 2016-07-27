@@ -5,8 +5,13 @@
 \title{\code{runModel} Runs the model}
 \usage{
 runModel(initialNum, runTime, density = 0.01, cycleLengthDist = 12,
+<<<<<<< HEAD
   inheritGrowth = F, outputIncrement = 6, randSeed = 0, epsilon = 4,
   nG = 10)
+=======
+  inheritGrowth = FALSE, outputIncrement = 6, randSeed = 0,
+  epsilon = 10, nG = 24)
+>>>>>>> 5a4936dd8591d8e541975803bf2813ea7474e081
 }
 \arguments{
 \item{initialNum}{how many cells initially}
@@ -23,7 +28,11 @@ runModel(initialNum, runTime, density = 0.01, cycleLengthDist = 12,
 
 \item{randSeed}{seed for the model}
 
+<<<<<<< HEAD
 \item{epsilon}{epsilon model specific parameter}
+=======
+\item{epsilon}{model specific parameter}
+>>>>>>> 5a4936dd8591d8e541975803bf2813ea7474e081
 
 \item{nG}{model specific parameter}
 }
@@ -34,6 +43,6 @@ A CellModel containing all info from the model run
 \code{runModel} Runs the model
 }
 \examples{
-runModel(100,10)
+runModel(1,8)
 }
 

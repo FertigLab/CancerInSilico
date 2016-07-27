@@ -1,11 +1,11 @@
 ---
-title: "Drug Sensitivity Simulation"
+title: "User Manual"
 author: "Thomas D. Sherman, Raymond Cheng, Elana J. Fertig"
 date: "`r doc_date()`"
 package: "`r pkg_ver('CellModel')`"
 bibliography: References.bib
 vignette: >
-  %\VignetteIndexEntry{Drug Sensitivity Simulation}
+  %\VignetteIndexEntry{User Manual}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 output: 
@@ -18,49 +18,48 @@ library(CellModel)
 
 # Introduction
 
-The main objective of the *CellModel* package is to provide a single, consistent R interface for running several different types of cell-based models [see @SZABO2013 for a review of current approaches to cell-based modeling]. While most cell-based models appear similiar on the surface, there can be significant variety in the underlying cell mechanics of the model. This results in a difference both in terms of output and efficiency. This package aims to provide the user with an easy way to both use and compare each type of model. The currrent version of *CellModel* contains a basic, off-lattice model of cell growth. This model is based off the work in [@DRASDO2003]. It was chosen to be implemented first since it is a basic model that provides enough infastructure to test some simple ideas related to drug response and resistance.
+The main objective of the *CellModel* package is to provide a single, consistent interface for running cell-based models. In this first iteration of the package, we have implemented a similiar model to the one presented in @DRASDO2003. Subsequent versions of the package will include more types of cell-based models [see @SZABO2013 for an overview of different approaches]. This class of models starts at the cellular level and simulates each cell's interactions with its neighbors and its local environment. By doing so, it places focus on the cell-cell dynamics which allows for a detailed exploration of how mechanisms at the cellullar level effect overall population dynamics. This does come at a cost, however, since these models can be difficult to parametrize and often take a considerable amount of time to run.
+
+The model in @DRASDO2003 was chosen to be implemented first since it is simple to parametrize and reasonably efficient. The only mechanisms modelled are the progression through the cell-cycle and intercellular forces. The cell-cycle is modelled as a cell growing during Interphase and dividing during Mitosis. The primary use of the cell-cycle is for timing between divisions and ensuring the cell has enough room to divide. Intercellular forces are modelled by the way cells attempt to arrange themselves with respsect to one another. Cells arrange themselves according to the "competition between atrractive interactions due to adhesion molecules anchored in the cell membranes and repulsive contributions ... from the limited cell deform-ability and compressibility" [@DRASDO2003]. Furthermore, cells cannot occupy space already occupied by another cell. This property is especially important for larger, denser cell populations. "As the number of cells that has to be pushed aside by a dividing cell in order to obtain free space for growth becomes too large, the cell stops in one of the cell-cycle check points" [@DRASDO2003]. This gives rise to an exterior layer of proliferating cells and an interior core of quiet cells as the cell population becomes dense.
+
+(note: Since this model is not lattice-based it does suffer from a slower run time than an equally simple lattice-based model, but allows for more accurate modeling of cell-cell interactions.)
+
+Example of cell population at 84 hours starting from a single cell:
+
+![Example Run](ExampleRun.png)
 
 # Basic Simulation
 
-The main function in the package is *runModel*, which can be called with only two parameters - inital number of cells and number of hours to run the simulation (in terms of model time). *runModel* returns a *CellModel* object which contains two fields - cells and parameters. While the simulation runs it periodically displays the current time in the model (hr) and the number of cells.
+The following is essentially the most basic use of the model. It will be used to demonstrate the package functions available.
 
 ```{r}
-basic_sim <- runModel(10,24)
-```
+basic_sim <- runModel(initialNum = 30,
+                     runTime =24,
+                     density = 0.01,
+                     cycleLengthDist = 10 + rexp(1000,1/4),
+                     inheritGrowth = FALSE,
+                     outputIncrement = 6,
+                     randSeed = 0,
+                     epsilon = 4,
+                     nG = 8)
 
-The *cells* field is a list containing vectors of information about the cells at each timestep.
-
-```{r}
-basic_sim@cells[[1]]
-```
-
-This is raw data that is not meant to be interacted with directly. Instead use the package functions to extract useful information from the simulation.
-
-The parameters field contains a vector of parameters.
-
-```{r}
-basic_sim@parameters
-```
-
-Although the parameters can be retrieved this way it is preferrable to use *getParameters*.
-
-```{r}
-getParameters(basic_sim)
 ```
 
 ## Parameter Overview
 
 There are 9 parameters for *runModel*, although only the first two need to be provided (initialNum, runTime).
 
-*initialNum* - the number of cells in the simulation at time zero  
+*iinitialNum* - the number of cells in the simulation at time zero  
 *runTime* - the number of simulated hours in the run  
 *density* - the initial density of the cells  
 *cycleLengthDist* - the distribution of cell-cycle length (hrs)  
 *inheritGrowth* - T/F for whether cells inherit cell-cycle length from parent  
-*timeIncrement* - the number of simulated hours for each MC step  
-*outputIncrement* - the number of MC steps between each display of time, size  
+*outputIncrement* - the amount of time in between outputs while the model is running  
 *randSeed* - the random seed used for the simulation  
-*epsilon* - model specific parameter from Drasdo, 2003
+*epsilon* - model specific parameter  
+*nG* - model specific parameter
+
+Most of the parameters are not model specific, but rather apply generally to all cell models. There are two exceptions: *epsilon* and *nG*. These parameters have the same name in @DRASDO2003. More explanation is offered in the next section. 
 
 ## Parameter Details
 
@@ -69,76 +68,83 @@ There are 9 parameters for *runModel*, although only the first two need to be pr
 The cells are initially seeded randomly throughout a circle, whose radius is calculated based on the density parameter. *density* in this case is defined as
 the ratio of the total area of the cells and the area of the circle. Providing a *density* higher than 0.1 will result in an error, since the program cannot efficiently seed cells that close together. Cells are seeded randomly throughout the cell-cycle.
 
-*runTime*, *cycleLengthDist*, *timeIncrement*, *outputIncrement*
+*runTime*, *cycleLengthDist*, *outputIncrement*
 
-The model does not have a length scale so the dimensions of the cells are arbitrary, but it does have a time scale. The value passed in *cycleLengthDist* is the average length (in terms of simulation hours) of the cell-cycle for a cell in isolation. *runTime* is the number of simulation hours the model runs for. If a vector is passed in *cycleLengthDist* then it is treated as a distribution of times and each cell is assigned a random value (uniform) from this vector when it is born. *timeIncrement* is the amount of time (hours) that passes during each MC step of the simulation. Note that if *timeIncrement* is too large to accurately simulate the model (given the other parameters) then it will automatically be set to an appropiate value. *outputIncrement* specifices how many MC steps are in between each display in the console. Thus, *outputIncrement* * *timeIncrement* will be the hours in between each display.
+The model does not have a length scale so the dimensions of the cells are arbitrary, but it does have a time scale. The value passed in *cycleLengthDist* is the average length (in terms of simulation hours) of the cell-cycle for a cell in isolation. *runTime* is the number of simulation hours the model runs for. If a vector is passed in *cycleLengthDist* then it is treated as a distribution of times and each cell is assigned a random value (uniform) from this vector when it is born. *outputIncrement* specifices how much time is in between each display in the console.
 
 *inheritGrowth*
 
-Cells have the option of inheriting the cycle-length from their parent or sampling from *cycleLengthDist* when they are born. This allows for "growth" rates to be affected in a heritable way. This functionality is explored more in section 3.
+Cells have the option of inheriting the cycle-length from their parent or sampling from *cycleLengthDist* when they are born. This allows for "growth" rates to be affected in a heritable way.
 
-*epsilon*
+*epsilon, nG*
 
-This is a model specific parameter. For a more detailed explanation [see @Drasdo]. Note that the effective energy F_T is set to 1 is this version of the model.
+In order to understand these parameters, it is neccesary to understand some basic things about the model. Cells primarily do two things: move and grow. When a cell grows to twice its original volume, it divides. This process happens at a rate depending on what the user sets *cycleLengthDist* to be. Cells move in order to arrange themselves to respect the intercellular forces mentioned in the introduction. High values for *epsilon* make it less likely for cells to move against the intercelluar forces. High values for *nG* give the model more time in between growth steps to find the ideal configuration based on the present intercellular forces. For a more detailed explanation of these parameters it is best to read the article (note that the casual user should always use the default values of these parameters).
 
 *randSeed*
 
 The user can pass in a random seed of their choosing. All random samples in the model will be affected by this seed. The default seed is 0.
 
-## Simple Run
-
-The following is essentially the most basic use of the model. It will be used to demonstrate the package functions available.
-
-```{r}
-simple_run <- runModel(initialNum = 150,
-                       runTime = 168,
-                       density = 0.04,
-                       cycleLengthDist = 12,
-                       inheritGrowth = F,
-                       timeIncrement = 0.2,
-                       outputIncrement = 144,
-                       randSeed = 10,
-                       epsilon = 2)
-```
-
 ## Output Analysis - Package Functions
 
-There are several functions used to get relevant information from the *CellModel* object. It is not recommended to pull data directly from the *cells* field as this is just the raw data from the simulation.
-
-### *getTotalCells*
+There are several functions used to get relevant information from the *CellModel* object. It is not recommended to pull data directly from the fields in the *CellModel* object since it is the raw data from the model.
 
 ```{r}
-t <- getTotalCells(simple_run)
-end <- getParameters(simple_run)$runTime
-outInc <- getParameters(simple_run)$outputIncrement
-plot(1:length(t), t, type = "l", xaxt="n", xlab="time", ylab="# of cells")
-axis(1, at = seq(1,length(t),outInc), labels = seq(0,end,length.out=length(t)/outInc))
+## should never call these
+
+# basic_sim@cells
+# basic_sim@parameters
+```
+
+### *getParameters*
+
+This is the function used to get any information about the parameters passed into the model. There are two versions of this function. First, it can be called with just the *CellModel* object, in which case it will return all parameters with one exception: only the mean of *cycleLengthDistribution* will be returned.
+
+```{r}
+getParameters(basic_sim) 
+```
+
+In order to see the full distribution that was passed in, it is neccesary to specifiy:
+
+```{r}
+d <- getParameters(basic_sim, fullDist=TRUE)$cycleLengthDist
+plot(density(d),main="Cycle Length Distribution - Parameter",xlab="length")
+```
+
+### *getNumberOfCells*
+
+This function returns the total number of cells at a given time.
+
+```{r}
+length <- getParameters(basic_sim)$runTime
+t <- sapply(0:length,getNumberOfCells,model=basic_sim)
+plot(0:length, t, type = "l", xlab="time", ylab="# of cells")
 ```
 
 ### *getCycleLengthDistribution*
 
+This function returns the distribution of cell-cycle lengths at a given time.
+
 ```{r}
-cyc_len <- getCycleLengthDistribution(simple_run,0)
-mean(cyc_len)
-var(cyc_len)
-plot(density(cyc_len), main="Time 0",xlab="Cycle Length")
+cyc_len <- getCycleLengthDistribution(basic_sim,0)
+plot(density(cyc_len),main="Cycle Length Distribution - Time 0",xlab="length")
 ```
 
 ### *getDensity*
 
+This function returns the density of the cell population at a given time.
+
 ```{r}
-den <- c()
-for (i in 0:72) {
-  den[i+1] <- getDensity(simple_run,i)
-}
-plot(0:72,den,type="l",xlab="time",ylab="cell density")
+den <- sapply(0:length,getDensity,model=basic_sim)
+plot(0:length,den,type="l",xlab="time",ylab="cell density")
 ```
 
 ### *plotCellsAtTime*
 
+This function plots a visual representation of the cells at a given time.
+
 ```{r}
-plotCellsAtTime(simple_run,0)
-plotCellsAtTime(simple_run,72)
+plotCellsAtTime(basic_sim,0)
+plotCellsAtTime(basic_sim,length)
 ```
 
 ### *plotInteractive*
@@ -152,57 +158,6 @@ Basic Commands:
  h = basic command help
 ```
 
-The *plotInteractive* function is similiar to *plotCellsAtTime* except there are additional commands that allow the user to step through the simulation and watch it progress as well as query information at the current time.
-
-# Simulating Drug Response
-
-Since the model allows for a distribution of cell-cycle lengths, it is possible to simulate the effects of a drug that suppresses proliferation. In addition, when *inheritGrowth* is true cells will pass down their cell-cycle lengths. This allows the user to simulate varying effectiveness of a drug due to heritable traits, sucha as a mutation.
-
-## Simple Case
-
-In the simple case, we can consider a population of cells that are either effected or not effected by a drug that suprresses proliferation.
-
-```{r}
-drug_prop = c(rep(12,100),rep(36,100))
-run1 <- runModel(200,100,0.005,outputIncrement=80,cycleLengthDist=drug_prop, inheritGrowth=T)
-run2 <- runModel(200,100,0.005,outputIncrement=80,cycleLengthDist=drug_prop, inheritGrowth=F)
-
-prop1 = c()
-prop2 = c()
-
-for (i in 1:100) {
-  prop1[i] = sum(getCycleLengthDistribution(run1,i) == 12) / length(getCycleLengthDistribution(run1,i))
-  prop2[i] = sum(getCycleLengthDistribution(run2,i) == 12) / length(getCycleLengthDistribution(run2,i))
-}
-
-plot(1:100,ylim=c(0.3,0.6),prop1,type="l", col="red",xlab="time",ylab="resistant population proportion")
-lines(1:100,prop2)
-```
-
-Here the red line is for the simulation where cycle times are inherited, and the black line is for the simulation where cycle times are random. This could be thought of as a heritable mutation driving the resistance to the drug. Over time we would expect the cells that posses the mutation to make up a larger and larger percentage of the population.
-
-## Advanced Case
-
-In this simulation, we assume the drug does not have a binary effect on the cycle time, but rather effects the cycle according to some distribution. The question here would be how long it takes for a significant change in the distribution to occur.
-
-```{r}
-set.seed(0)
-cycle_dist <- 8 + 16 * rbeta(10000,2,4)
-adv_case <- runModel(100,200,0.001,cycleLengthDist=cycle_dist,outputIncrement=120,inheritGrowth=T)
-```
-
-Note that in order to reproduce results exactly, it is neccesary to set the seed before generating *cycle_dist* since *randSeed* only sets the seed internal to the model.
-
-```{r}
-plot(density(getCycleLengthDistribution(adv_case,1)))
-plot(density(getCycleLengthDistribution(adv_case,200)))
-
-mean(getCycleLengthDistribution(adv_case,1))
-mean(getCycleLengthDistribution(adv_case,200))
-```
-
-Here we notice that at time __ we finally saw a significant change in the distribution.
-
-This general framework allows for detailed analysis on the effect of heritable changes in the "growth rate" of a cell.
+The *plotInteractive* function is similiar to *plotCellsAtTime* except there are additional commands that allow the user to step through the simulation and watch it progress as well as display information at the current timestep.
 
 ## References

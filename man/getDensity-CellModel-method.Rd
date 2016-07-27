@@ -19,6 +19,6 @@ The density of cells at that time (not quite the same as confluency)
 \code{getDensity} Gets the density of cells at a given time
 }
 \examples{
-getDensity(runModel(100,10),5)
+getDensity(runModel(1,10),10)
 }
 

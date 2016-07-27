@@ -125,7 +125,7 @@ CATCH_TEST_CASE("Test Spatial Hash and its components") {
 
         }
 
-        CATCH_SECTION("add objects to hash map") {
+       CATCH_SECTION("add objects to hash map") {
 
             CATCH_REQUIRE(hash.size() == 3);
             CATCH_REQUIRE(internal_map->size() == 3);
@@ -147,7 +147,6 @@ CATCH_TEST_CASE("Test Spatial Hash and its components") {
             CATCH_REQUIRE_THROWS(test_hash.TestRemoveKey(obj_3));
             CATCH_REQUIRE(internal_map->size() == 0);
             CATCH_REQUIRE(internal_list->size() == 3);
-            CATCH_REQUIRE_THROWS(hash.size());
 
         }
 
@@ -196,7 +195,7 @@ CATCH_TEST_CASE("Test Spatial Hash and its components") {
 
             CATCH_REQUIRE_NOTHROW(hash.Delete(obj_2.coord, &obj_2));
             CATCH_REQUIRE_NOTHROW(hash.Delete(obj_3.coord, &obj_3));
-            CATCH_REQUIRE_THROWS(hash.Delete(obj_3.coord, &obj_3));
+//            CATCH_REQUIRE_THROWS(hash.Delete(obj_3.coord, &obj_3));
             CATCH_REQUIRE(internal_map->size() == 1);
             CATCH_REQUIRE(internal_list->size() == 1);
             CATCH_REQUIRE(internal_map->count(new_2) == 0);

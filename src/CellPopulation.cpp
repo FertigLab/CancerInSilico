@@ -154,6 +154,7 @@ void CellPopulation::CheckMitosis(Cell* cell) {
 void CellPopulation::AttemptTrial(Cell *cell) {
 
     double pre_interaction = CalculateTotalInteraction(cell);
+    int num_neighbors = CalculateNumberOfNeighbors(cell);
     Cell orig = *cell;
     bool growth = cell->DoTrial();
 
@@ -184,7 +185,8 @@ void CellPopulation::AttemptTrial(Cell *cell) {
 		double post_interaction = CalculateTotalInteraction(cell);
 
 		if (post_interaction == std::numeric_limits<double>::max()
-		        || !AcceptTrial(post_interaction - pre_interaction)) {
+		        || !AcceptTrial(post_interaction - pre_interaction)
+                || num_neighbors > CalculateNumberOfNeighbors(cell)) {
 
 		    m_population.Update(cell->GetCoord(), orig.GetCoord());
 		    *cell = orig;
@@ -211,6 +213,26 @@ bool CellPopulation::AcceptTrial(double delta_interaction) {
 
 }
 
+int CellPopulation::CalculateNumberOfNeighbors(Cell *cell) {
+
+    int neighbors = 0;
+	SpatialHash<Cell>::circular_iterator iter
+		= m_population.begin(cell->GetCoord(), m_param->GetCompressionDELTA() + 1);
+
+	for (; iter != m_population.end(cell->GetCoord(), m_param->GetCompressionDELTA() + 1); ++iter) {
+
+        if (cell->CellDistance(*iter) <= m_param->GetCompressionDELTA()) {
+
+            neighbors++;
+
+        }
+
+    }
+
+    return neighbors;
+
+}
+    
 double CellPopulation::CalculateTotalInteraction(Cell *cell) {
 
     double inter, sum = 0.0;

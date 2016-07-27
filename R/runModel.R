@@ -8,23 +8,23 @@
 #' @param inheritGrowth whether or not daughter cells have the same cycle-length as parents
 #' @param outputIncrement time increment to print status at
 #' @param randSeed seed for the model
-#' @param epsilon epsilon model specific parameter
+#' @param epsilon model specific parameter
 #' @param nG model specific parameter
 #' @return A CellModel containing all info from the model run
 #' @examples
-#' runModel(100,10)
+#' runModel(1,8)
 #' @export
 
 runModel <- function(initialNum,
                      runTime,
                      density = 0.01,
                      cycleLengthDist = 12,
-                     inheritGrowth = F,
+                     inheritGrowth = FALSE,
                      outputIncrement = 6,
                      randSeed = 0,
-                     epsilon = 4,
-                     nG = 10)
-    
+                     epsilon = 10,
+                     nG = 24)
+
 {
     
     if (density > 0.1) {
@@ -45,23 +45,23 @@ runModel <- function(initialNum,
     mcSteps <- ceiling(runTime / timeIncrement)
     maxTranslation <- delta / 2
     maxRotate <- acos((16 + delta ^ 2 - 4 * delta) / 16)
-    outputIncrement <- floor(outputIncrement / timeIncrement)
+    outputIncrement2 <- floor(outputIncrement / timeIncrement)
     
     output <- tryCatch({
         
         CellModel(initialNum, mcSteps, density, maxTranslation,
-                  maxDeform, maxRotate, epsilon, delta, outputIncrement,
-                  randSeed, grRates, inheritGrowth, nG, timeIncrement)
-        
+        maxDeform, maxRotate, epsilon, delta, outputIncrement2,
+        randSeed, grRates, inheritGrowth, nG, timeIncrement)
+
     }, error = function(cond) {
         
         message(cond, '\n')
         stop()
         
     })
-    
-    cellMat <- new("CellModel",cells = output,parameters = c(initialNum,runTime,density,mean(cycleLengthDist),inheritGrowth,timeIncrement,outputIncrement,randSeed,epsilon))
-    
+
+    cellMat <- new("CellModel",cells = output,parameters = c(initialNum,runTime,density,inheritGrowth,outputIncrement,randSeed,epsilon,nG,timeIncrement,cycleLengthDist))
+
     return(cellMat)
     
 }
