@@ -5,7 +5,6 @@
 #' @return the size of the cell population over time
 #' @examples
 #' getTotalCells(runModel(10,100))
-#' @export
 
 setGeneric("simulateGeneExp", function(model,genes)
     standardGeneric("simulateGeneExp"))
@@ -16,31 +15,24 @@ setMethod("simulateGeneExp", "CellModel",
               #Randomized Values for # of Each Genes
               numogenes = rexp((genes),1/3) #rep(1,length(genes))
               #Total Number of Cells
-              numcells = getTotalCells(model)
-              
-              if(length(getCellPhasePos(model,t,2)) == 0){
-                  #Case: Not half the local max size of that cell
-                  gpCell = rep(0,length(numogenes))
-                  geneMatrix[t,] = gpcell
-              }
-              else{
-                  #Case: Approx cell is half local max size
-                  gpcell = length(getCellPhasePos(model,t,2) * numogenes)
-                  geneMatrix[t,] = gpcell
-              }
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
+              numcells = getNumberOfCells(model)
               #Matrix Creation
               geneMatrix = matrix(NA,length(model@cells),length(numogenes))
+              for(t in 1:length(model@cells)){
+                  xcoords = seq(1,length(data@cells[[1]]),6)
+                  ycoords = seq(1,length(data@cells[[1]]),6)
+                  pairs = cbind(xcoords,ycoords)
+                  test = data.matrix(dist(pairs))
+              }
+              
+              
+              
+              
+              
+              
+              
+              
+              
               for(t in 1:length(model@cells)){
                   #Genes Per Cell
                   gpcell = length(getCellPhasePos(model,t)) * numogenes

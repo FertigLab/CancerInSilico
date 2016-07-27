@@ -4,14 +4,12 @@
 \alias{getCellPhasePos}
 \title{\code{getCellPhasePos} Determines which cells are in the process of dividing}
 \usage{
-getCellPhasePos(model, time, opt = 1)
+getCellPhasePos(model, time)
 }
 \arguments{
 \item{model}{A CellModel}
 
 \item{time}{Time}
-
-\item{opt}{changes between getting mitosis or synthesis phase}
 }
 \value{
 the size of the cell population over time

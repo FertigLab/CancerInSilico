@@ -24,21 +24,21 @@ runModel <- function(initialNum,
                      randSeed = 0,
                      epsilon = 4,
                      nG = 10)
-
+    
 {
-
+    
     if (density > 0.1) {
         
         message("density too high to seed efficiently\n")
         stop()
-
+        
     }
-
+    
     delta <- 0.2 ## must be less than 4 or calculations break
     
     timeIncrement = delta / (4 * nG * (4 - sqrt(2)))
     if (timeIncrement > delta * (min(cycleLengthDist) - 1) / (8 * nG * (sqrt(2) - 1))) {
-      timeIncrement = delta * (min(cycleLengthDist) - 1) / (8 * nG * (sqrt(2) - 1))
+        timeIncrement = delta * (min(cycleLengthDist) - 1) / (8 * nG * (sqrt(2) - 1))
     }
     maxDeform <- 2 * timeIncrement * nG * (4 - sqrt(2))
     grRates <- 2 * (sqrt(2) - 1) * timeIncrement * nG / (cycleLengthDist - 1)
@@ -48,20 +48,20 @@ runModel <- function(initialNum,
     outputIncrement <- floor(outputIncrement / timeIncrement)
     
     output <- tryCatch({
-
+        
         CellModel(initialNum, mcSteps, density, maxTranslation,
-        maxDeform, maxRotate, epsilon, delta, outputIncrement,
-        randSeed, grRates, inheritGrowth, nG, timeIncrement)
-
+                  maxDeform, maxRotate, epsilon, delta, outputIncrement,
+                  randSeed, grRates, inheritGrowth, nG, timeIncrement)
+        
     }, error = function(cond) {
-
+        
         message(cond, '\n')
         stop()
-
+        
     })
-
+    
     cellMat <- new("CellModel",cells = output,parameters = c(initialNum,runTime,density,mean(cycleLengthDist),inheritGrowth,timeIncrement,outputIncrement,randSeed,epsilon))
-
+    
     return(cellMat)
-
+    
 }
