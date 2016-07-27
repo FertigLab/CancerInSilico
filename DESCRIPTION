@@ -13,14 +13,12 @@ Maintainer:
 Description: This package simulates cell growth.
 License: GPL (>= 2)
 Imports:
-    Rcpp (>= 0.12.3),
     methods,
     grDevices,
     graphics,
     stats
 Depends:
-    Rcpp,
-    testthat
+    Rcpp
 LinkingTo:
     Rcpp,
     testthat,

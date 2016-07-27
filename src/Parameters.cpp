@@ -85,7 +85,7 @@ double Parameters::GetRadius(double axis_len) {
     } else {
 
        	double theta = m_fast_solver[HashAxisLength(axis_len)];
-        return 4 * pow(M_PI, 0.5) / (sin(theta) - theta + 2 * M_PI);
+        return axis_len / (2 + 2 * cos(theta / 2));        
 
     }
 

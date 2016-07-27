@@ -18,6 +18,6 @@ the size of the cell population
 \code{getNumberOfCells} return the total number of cells at time
 }
 \examples{
-getNumberOfCells(runModel(10,10),10)
+getNumberOfCells(runModel(1,10),10)
 }
 

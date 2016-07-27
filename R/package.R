@@ -13,6 +13,7 @@
 #' @name CellModel
 #' @importFrom Rcpp evalCpp
 #' @importFrom graphics plot text lines points symbols
+#' @importFrom grDevices graphics.off
 #' @importFrom methods new
 #' @importFrom stats density
 #' @useDynLib CellModel

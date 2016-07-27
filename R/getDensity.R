@@ -4,7 +4,7 @@
 #' @param time The time of interest
 #' @return The density of cells at that time (not quite the same as confluency)
 #' @examples
-#' getDensity(runModel(100,10),5)
+#' getDensity(runModel(1,10),10)
 #' @export
 
 setGeneric("getDensity", function(model,time)
@@ -16,7 +16,7 @@ setGeneric("getDensity", function(model,time)
 #' @param time The time of interest
 #' @return The density of cells at that time (not quite the same as confluency)
 #' @examples
-#' getDensity(runModel(100,10),5)
+#' getDensity(runModel(1,10),10)
 #' @export
 
 setMethod("getDensity", "CellModel",

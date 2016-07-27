@@ -33,7 +33,7 @@ void Simulation::Run(int MCsteps, int out_incr, double time_incr) {
 
         m_cells->OneTimeStep();
 		time += time_incr;
-		m_cells->RecordPopulation();
+		m_cells->RecordPopulation(); //TODO: don't record every MC step
 
     }
 

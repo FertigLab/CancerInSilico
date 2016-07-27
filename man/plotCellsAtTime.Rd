@@ -18,6 +18,6 @@ Plot a visual representation of cells at time
 \code{plotCellsAtTime} Plots a CellModel at a certain point in time
 }
 \examples{
-plotCellsAtTime(runModel(10,100),60)
+plotCellsAtTime(runModel(1,10),10)
 }
 
