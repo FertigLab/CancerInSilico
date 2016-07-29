@@ -21,6 +21,6 @@ returns a vector of growth rates for cells alive at time
      rates of all the cells
 }
 \examples{
-getCycleLengthDistribution(runModel(1,10),0)
+getCycleLengthDistribution(runCancerSim(1,10),0)
 }
 

@@ -1,4 +1,4 @@
-#'\code{runModel} Runs the model
+#'\code{runCancerSim} Runs the model
 #'
 #'
 #' @param initialNum how many cells initially
@@ -12,10 +12,10 @@
 #' @param nG model specific parameter
 #' @return A CellModel containing all info from the model run
 #' @examples
-#' runModel(1,8)
+#' runCancerSim(1,8)
 #' @export
 
-runModel <- function(initialNum,
+runCancerSim <- function(initialNum,
                      runTime,
                      density = 0.01,
                      cycleLengthDist = 12,

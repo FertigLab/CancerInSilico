@@ -19,6 +19,6 @@ Plot a visual representation of cells at time
 \code{plotCellsAtTime} Plots a CellModel at a certain point in time
 }
 \examples{
-plotCellsAtTime(runModel(1,10),10)
+plotCellsAtTime(runCancerSim(1,10),10)
 }
 

@@ -4,7 +4,7 @@
 #' @param time the time of interest
 #' @return the size of the cell population
 #' @examples
-#' getNumberOfCells(runModel(1,10),10)
+#' getNumberOfCells(runCancerSim(1,10),10)
 #' @export
 #' 
 setGeneric("getNumberOfCells", function(model, time)
@@ -16,7 +16,7 @@ setGeneric("getNumberOfCells", function(model, time)
 #' @param time the time of interest
 #' @return the size of the cell population over time
 #' @examples
-#' getNumberOfCells(runModel(1,10),10)
+#' getNumberOfCells(runCancerSim(1,10),10)
 #' @export
 
 setMethod("getNumberOfCells", "CellModel",

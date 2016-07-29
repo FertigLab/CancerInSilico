@@ -4,7 +4,7 @@
 #' @param fullDist whether or not to return full distribution of cycle length
 #' @return a named list of parameters in the model
 #' @examples
-#' getParameters(runModel(1,1))
+#' getParameters(runCancerSim(1,1))
 #' @export
 #' 
 
@@ -17,7 +17,7 @@ setGeneric("getParameters", function(model, fullDist=FALSE)
 #' @param fullDist whether or not to return full distribution of cycle length
 #' @return a named list of parameters in the model
 #' @examples
-#' getParameters(runModel(1,1))
+#' getParameters(runCancerSim(1,1))
 #' @export
 #' 
 
