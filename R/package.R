@@ -1,4 +1,4 @@
-#' CellModel
+#' CancerInSilico
 #'
 #' \tabular{ll}{
 #' Package: \tab CellModel\cr
@@ -10,11 +10,11 @@
 #' @author Maintainer: Elana J. Fertig \email{ejfertig@jhmi.edu},
 #'             Thomas D. Sherman \email{tsherma4@jhu.edu}
 #' @docType package
-#' @name CellModel
+#' @name CancerInSilico
 #' @importFrom Rcpp evalCpp
 #' @importFrom graphics plot text lines points symbols
 #' @importFrom grDevices graphics.off
 #' @importFrom methods new
 #' @importFrom stats density
-#' @useDynLib CellModel
+#' @useDynLib CancerInSilico
 NULL

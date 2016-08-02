@@ -33,6 +33,7 @@ class Cell {
     void SetCoord(Point);
     double GetRadius() const;
 	void SetRadius(double);
+	void SetAxisLength(double);
     double GetAxisLength() const;
     double GetAxisAngle() const;
     void SetGrowth(double);

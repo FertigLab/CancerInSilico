@@ -161,6 +161,12 @@ void Cell::SetRadius(double rad) {
 
 }
 
+void Cell::SetAxisLength(double len) {
+
+    m_axis_len = len;
+
+}
+
 double Cell::GetAxisLength() const {
 
     return m_axis_len;

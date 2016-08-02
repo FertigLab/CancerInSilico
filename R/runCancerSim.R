@@ -22,46 +22,15 @@ runCancerSim <- function(initialNum,
                      inheritGrowth = FALSE,
                      outputIncrement = 6,
                      randSeed = 0,
-                     epsilon = 10,
-                     nG = 24)
+                     modelType = "DrasdoHohme2003",
+                     ...)
 
 {
 
-    if (density > 0.1) {
-        
-        message("density too high to seed efficiently\n")
-        stop()
-
+    if (modelType != "DrasdoHohme2003") {
+      stop("invalid model type")
+    } else {
+      return (runDrasdoHohme(initialNum, runTime, density, cycleLengthDist, inheritGrowth, outputIncrement, randSeed, ...))
     }
-
-    delta <- 0.2 ## must be less than 4 or calculations break
-    
-    timeIncrement = delta / (4 * nG * (4 - sqrt(2)))
-    if (timeIncrement > delta * (min(cycleLengthDist) - 1) / (8 * nG * (sqrt(2) - 1))) {
-      timeIncrement = delta * (min(cycleLengthDist) - 1) / (8 * nG * (sqrt(2) - 1))
-    }
-    maxDeform <- 2 * timeIncrement * nG * (4 - sqrt(2))
-    grRates <- 2 * (sqrt(2) - 1) * timeIncrement * nG / (cycleLengthDist - 1)
-    mcSteps <- ceiling(runTime / timeIncrement)
-    maxTranslation <- delta / 2
-    maxRotate <- acos((16 + delta ^ 2 - 4 * delta) / 16)
-    outputIncrement2 <- floor(outputIncrement / timeIncrement)
-    
-    output <- tryCatch({
-
-        CellModel(initialNum, mcSteps, density, maxTranslation,
-        maxDeform, maxRotate, epsilon, delta, outputIncrement2,
-        randSeed, grRates, inheritGrowth, nG, timeIncrement)
-
-    }, error = function(cond) {
-
-        message(cond, '\n')
-        stop()
-
-    })
-
-    cellMat <- new("CellModel",cells = output,parameters = c(initialNum,runTime,density,inheritGrowth,outputIncrement,randSeed,epsilon,nG,timeIncrement,cycleLengthDist))
-
-    return(cellMat)
 
 }

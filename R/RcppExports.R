@@ -2,6 +2,6 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 CellModel <- function(initialNum, numMCSteps, density, maxTranslation, maxDeform, maxRotate, epsilon, delta, outIncrement, randSeed, growthRates, inheritGrowth, nG, timeIncrement) {
-    .Call('CellModel_CellModel', PACKAGE = 'CellModel', initialNum, numMCSteps, density, maxTranslation, maxDeform, maxRotate, epsilon, delta, outIncrement, randSeed, growthRates, inheritGrowth, nG, timeIncrement)
+    .Call('CancerInSilico_CellModel', PACKAGE = 'CancerInSilico', initialNum, numMCSteps, density, maxTranslation, maxDeform, maxRotate, epsilon, delta, outIncrement, randSeed, growthRates, inheritGrowth, nG, timeIncrement)
 }
 

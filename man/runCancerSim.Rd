@@ -6,7 +6,7 @@
 \usage{
 runCancerSim(initialNum, runTime, density = 0.01, cycleLengthDist = 12,
   inheritGrowth = FALSE, outputIncrement = 6, randSeed = 0,
-  epsilon = 10, nG = 24)
+  modelType = "DrasdoHohme2003", ...)
 }
 \arguments{
 \item{initialNum}{how many cells initially}

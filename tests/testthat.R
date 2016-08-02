@@ -1,4 +1,4 @@
 library(testthat)
-library(CellModel)
+library(CancerInSilico)
 
-test_check("CellModel")
+test_check("CancerInSilico")

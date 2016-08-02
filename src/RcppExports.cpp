@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // CellModel
 Rcpp::List CellModel(int initialNum, int numMCSteps, double density, double maxTranslation, double maxDeform, double maxRotate, double epsilon, double delta, int outIncrement, int randSeed, Rcpp::NumericVector growthRates, bool inheritGrowth, double nG, double timeIncrement);
-RcppExport SEXP CellModel_CellModel(SEXP initialNumSEXP, SEXP numMCStepsSEXP, SEXP densitySEXP, SEXP maxTranslationSEXP, SEXP maxDeformSEXP, SEXP maxRotateSEXP, SEXP epsilonSEXP, SEXP deltaSEXP, SEXP outIncrementSEXP, SEXP randSeedSEXP, SEXP growthRatesSEXP, SEXP inheritGrowthSEXP, SEXP nGSEXP, SEXP timeIncrementSEXP) {
+RcppExport SEXP CancerInSilico_CellModel(SEXP initialNumSEXP, SEXP numMCStepsSEXP, SEXP densitySEXP, SEXP maxTranslationSEXP, SEXP maxDeformSEXP, SEXP maxRotateSEXP, SEXP epsilonSEXP, SEXP deltaSEXP, SEXP outIncrementSEXP, SEXP randSeedSEXP, SEXP growthRatesSEXP, SEXP inheritGrowthSEXP, SEXP nGSEXP, SEXP timeIncrementSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
