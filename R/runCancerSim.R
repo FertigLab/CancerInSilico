@@ -8,8 +8,8 @@
 #' @param inheritGrowth whether or not daughter cells have the same cycle-length as parents
 #' @param outputIncrement time increment to print status at
 #' @param randSeed seed for the model
-#' @param epsilon model specific parameter
-#' @param nG model specific parameter
+#' @param modelType the name of the cell-based model to use
+#' @param ... model specific parameters (depends on modelType)
 #' @return A CellModel containing all info from the model run
 #' @examples
 #' runCancerSim(1,8)

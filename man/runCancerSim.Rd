@@ -23,9 +23,9 @@ runCancerSim(initialNum, runTime, density = 0.01, cycleLengthDist = 12,
 
 \item{randSeed}{seed for the model}
 
-\item{epsilon}{model specific parameter}
+\item{modelType}{the name of the cell-based model to use}
 
-\item{nG}{model specific parameter}
+\item{...}{model specific parameters (depends on modelType)}
 }
 \value{
 A CellModel containing all info from the model run
