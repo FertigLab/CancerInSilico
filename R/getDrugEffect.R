@@ -8,33 +8,31 @@
 #' getDrugEffect(0.3, seq(2,12,0.1))
 #' @export
 
-getDrugEffect <- function(slowDown, cycleLengthSeq) {
-## allow user to pass function, raw cycleLengthDist
+getDrugEffect <- function(FUN = function(x) {0}, ...) {
 
-    ret_list <- vector("list", length(cycleLengthSeq))
-
-    if (length(slowDown) == 1) {
-
-        for (i in 1:length(ret_list)) {
-
-            ret_list[[i]] = c(cycleLengthSeq[i], slowDown)
-
-        }
-
-    } else if (length(slowDown) != length(cycleLengthSeq)) {
-
-        stop()
-
-    } else {
-
-        for (i in 1:length(ret_list)) {
-
-            ret_list[[i]] = c(cycleLengthSeq[i], slowDown[i])
-
-        }
-
+  cycleLengthDist <- list(...)$cycleLengthDist
+  cycleLengthSeq <- list(...)$cycleLengthSeq
+  
+  if (is.null(cycleLengthDist)) {
+    
+    if (is.null(cycleLengthSeq)) {
+    
+      stop("must specifiy either cycleLengthDist or cycleLengthSeq")
+    
     }
 
-    return (ret_list)
+  } else if (is.null(cycleLengthSeq)) {
+      
+      cycleLengthSeq <- seq(min(cycleLengthDist), max(cycleLengthDist), 0.1)
+
+  } 
+
+  ret_list <- vector("list", length(cycleLengthSeq))
+
+  for (i in 1:length(ret_list)) {
+
+    ret_list[[i]] = c(cycleLengthSeq[i], FUN(cycleLengthSeq[i]))
+
+  }
 
 }
