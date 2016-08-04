@@ -18,10 +18,17 @@ Simulation::~Simulation() {
 void Simulation::Run(int MCsteps, int out_incr, double time_incr) {
 
 	double time = 0.0;
+    bool drug_added = false;
 	m_cells->RecordPopulation();
 	
     for (int i = 0; i < MCsteps; i++) {
 
+        if (!drug_added && time > 5.0) {
+    
+            m_cells->AddDrug();
+
+        }
+        
         Rcpp::checkUserInterrupt();
 
         if (i % out_incr == 0) {
