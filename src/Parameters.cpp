@@ -111,12 +111,11 @@ double Parameters::GetMaxGrowth() {
 
 }
 
-double Parameters::GetDrugEffect(double cycleTime) {
+double Parameters::GetDrugEffect(double growthRate) {
 
     //TODO: hash cycle time to find nearest element in m_drug_effect_map
-    //TODO: sample from resulting distribution    
-
-    return 1 - m_drug_effect_map.at(cycleTime);
+    int size = m_drug_effect_map.at(growthRate).size();
+    return 1 - m_drug_effect_map.at(growthRate)[floor(R::runif(0,size))];
 
 }
     

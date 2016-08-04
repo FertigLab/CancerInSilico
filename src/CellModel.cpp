@@ -38,11 +38,11 @@ Rcpp::List CellModel(
 
         std::vector<double> dist = Rcpp::as< std::vector<double> >(drugEffect[i]);   
 
-        double cycle_time = dist[0];
+        double growthRate = dist[0];
         dist[0] = dist.back();
         dist.pop_back();     
 
-        drug_effect.insert(std::pair<double, std::vector<double> >(cycle_time, dist));
+        drug_effect.insert(std::pair<double, std::vector<double> >(growthRate, dist));
 
     }
 
