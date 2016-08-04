@@ -1,4 +1,4 @@
-#' \code{simulateGToSPathSing} Simulate G1 to Synthesis Phase Gene Expression
+#' \code{simulateGToSPathSing} Simulate G1 to Synthesis Phase Gene Expression (Per Cell)
 #'
 #' @param model A CellModel
 #' @param pathway A gene pathway
@@ -25,8 +25,6 @@ setMethod("simulateGToSPathSing", "CellModel",
                     cells = matrix(0,length(radii),length(pathway))
                     rownames(cells,TRUE,prefix = "cell ")
                     colnames(cells)<-pathway
-                    
-                    
                     if(length(test) == 0){
                         output[[t]] = t(cells)
                     }

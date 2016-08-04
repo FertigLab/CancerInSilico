@@ -1,4 +1,4 @@
-#' \code{simulateGToMPathSing} Simulate G2 to Mitosis Phase Gene Expression
+#' \code{simulateGToMPathSing} Simulate G2 to Mitosis Phase Gene Expression (Per Cell)
 #'
 #' @param model A CellModel
 #' @param pathway A gene pathway

@@ -5,7 +5,7 @@
 #' @param time The time of interest for the growth rates
 #' @return returns a vector of growth rates for cells alive at time
 #' @examples
-#' getCycleLengthDistribution(runModel(1,10),0)
+#' getCycleLengthDistribution(runCancerSim(1,10),0)
 #' @export
 
 setGeneric("getCycleLengthDistribution", function(model, time)
@@ -18,7 +18,7 @@ setGeneric("getCycleLengthDistribution", function(model, time)
 #' @param time The time of interest for the growth rates
 #' @return returns a vector of growth rates for cells alive at time
 #' @examples
-#' getCycleLengthDistribution(runModel(1,10),0)
+#' getCycleLengthDistribution(runCancerSim(1,10),0)
 #' @export
 
 setMethod("getCycleLengthDistribution", "CellModel",

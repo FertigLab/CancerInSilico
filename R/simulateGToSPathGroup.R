@@ -6,7 +6,7 @@
 #' @export
 
 setGeneric("simulateGToSPathGroup", function(model,pathway)
-    standardGeneric("simulateGToSPath"))
+    standardGeneric("simulateGToSPathGroup"))
 
 setMethod("simulateGToSPathGroup", "CellModel",
             function(model,pathway) {

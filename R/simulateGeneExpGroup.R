@@ -1,7 +1,9 @@
-#' \code{simulateGeneExpGroup} Simulate Gene Expression Data (Averages)
+#' \code{simulateGeneExpGroup} Simulate Gene Expression Data (Average)
 #'
 #' @param model A CellModel
 #' @param pathway A list of pathways, Format:(GtoM, GtoS, Prox)
+#' @param perError User defined error for noise calculations
+#' @param opt Option for which noise error calculated
 #' @return the size of the cell population over time
 #' @export
 
@@ -67,9 +69,6 @@ setMethod("simulateGeneExpGroup", "CellModel",
                 else if(opt == 2){
                     
                 }
-                
-                
-                
                 return(t(output))
                 
           }

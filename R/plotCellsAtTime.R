@@ -4,7 +4,7 @@
 #' @param time The timestep at which to plot the modelrix.
 #' @return Plot a visual representation of cells at time
 #' @examples
-#' plotCellsAtTime(runModel(1,10),10)
+#' plotCellsAtTime(runCancerSim(1,10),10)
 #' @export
 
 setGeneric("plotCellsAtTime", function(model,time)
@@ -16,7 +16,7 @@ setGeneric("plotCellsAtTime", function(model,time)
 #' @param time The timestep at which to plot the modelrix.
 #' @return Plot a visual representation of cells at time
 #' @examples
-#' plotCellsAtTime(runModel(1,10),10)
+#' plotCellsAtTime(runCancerSim(1,10),10)
 #' @export
 
 setMethod("plotCellsAtTime", "CellModel",

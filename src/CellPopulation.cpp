@@ -96,6 +96,7 @@ void CellPopulation::SeedCells() {
 		if (unif < 0.75) { //interphase
 
 			(*iter).SetRadius(R::runif(1,m_param->GetMaxRadius()));
+            (*iter).SetAxisLength((*iter).GetRadius() * 2);
 	
 		} else { //mitosis
 

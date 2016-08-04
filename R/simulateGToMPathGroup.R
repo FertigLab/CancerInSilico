@@ -8,7 +8,7 @@
 setGeneric("simulateGToMPathGroup", function(model,pathway)
     standardGeneric("simulateGToMPathGroup"))
 
-setMethod("simulateGToMPath", "CellModel",
+setMethod("simulateGToMPathGroup", "CellModel",
         function(model,pathway) {
             nummgenes = rexp(length(pathway),1/3)
             gmMatrix = matrix(NA,model@parameters[2],length(nummgenes))

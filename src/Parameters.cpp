@@ -1,6 +1,7 @@
 #include <cmath>
 #include <Rcpp.h>
 #include <algorithm>
+#include <exception>
 
 #include "ExceptionHandling.h"
 #include "Parameters.h"
@@ -22,9 +23,9 @@ void Parameters::InitSlowSolver() {
     for (int i = 0; i <= 31400; ++i) {
 
         theta = (double) i / 10000;
-        num = 64 * M_PI * pow((1 + cos(theta / 2)), 2);
-        denom = sin(theta) - theta + 2 * M_PI;
-        m_slow_solver.push_back(pow(num / denom, 0.5));
+        num = pow(2 * M_PI, 0.5) * 2 * (1 + cos(theta / 2));
+        denom = pow(sin(theta) - theta + 2 * M_PI, 0.5);
+        m_slow_solver.push_back(num / denom);
 
     }
 
@@ -43,6 +44,7 @@ void Parameters::InitFastSolver() {
 
 }
 
+//m_slow_solver sorted from high to low
 double Parameters::GetThetaSlow(double axis_len) {
 
     int imin = 0, imax = 31400;
@@ -52,7 +54,7 @@ double Parameters::GetThetaSlow(double axis_len) {
 
         imid = (int)((imin + imax) / 2);
 
-        if (m_slow_solver[imid] <= axis_len) {
+        if (m_slow_solver[imid] >= axis_len) {
 
             imin = imid;
 
@@ -64,7 +66,7 @@ double Parameters::GetThetaSlow(double axis_len) {
 
     }
 
-    if (axis_len - m_slow_solver[imin] < m_slow_solver[imax] - axis_len) {
+    if (axis_len - m_slow_solver[imax] < m_slow_solver[imin] - axis_len) {
 
         return (double) imin / 10000;
 
@@ -78,9 +80,9 @@ double Parameters::GetThetaSlow(double axis_len) {
 
 double Parameters::GetRadius(double axis_len) {
 
-    if (axis_len <= 2 * pow(2,0.5)) {
+    if (axis_len < 2 * pow(2,0.5)) {
 
-        return axis_len / 2;
+        throw std::invalid_argument("called deformation function with axis length less than max\n");
 
     } else {
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/simulateGeneExpGroup.R
 \name{simulateGeneExpGroup}
 \alias{simulateGeneExpGroup}
-\title{\code{simulateGeneExpGroup} Simulate Gene Expression Data (Averages)}
+\title{\code{simulateGeneExpGroup} Simulate Gene Expression Data (Average)}
 \usage{
 simulateGeneExpGroup(model, pathway, perError = 0.1, opt = 1)
 }
@@ -10,11 +10,15 @@ simulateGeneExpGroup(model, pathway, perError = 0.1, opt = 1)
 \item{model}{A CellModel}
 
 \item{pathway}{A list of pathways, Format:(GtoM, GtoS, Prox)}
+
+\item{perError}{User defined error for noise calculations}
+
+\item{opt}{Option for which noise error calculated}
 }
 \value{
 the size of the cell population over time
 }
 \description{
-\code{simulateGeneExpGroup} Simulate Gene Expression Data (Averages)
+\code{simulateGeneExpGroup} Simulate Gene Expression Data (Average)
 }
 

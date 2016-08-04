@@ -2,21 +2,23 @@
 % Please edit documentation in R/simulateGeneExpSing.R
 \name{simulateGeneExpSing}
 \alias{simulateGeneExpSing}
-\title{\code{simulateGeneExpGroup} Simulate Gene Expression Data (Each Cell)}
+\title{\code{simulateGeneExpSing} Simulate Gene Expression Data (Per Cell)}
 \usage{
-simulateGeneExpSing(model, pathway, time)
+simulateGeneExpSing(model, pathway, perError = 0.1, opt = 1)
 }
 \arguments{
 \item{model}{A CellModel}
 
 \item{pathway}{A list of pathways, Format:(GtoM, GtoS, Prox)}
 
-\item{time}{Time Specified by user}
+\item{perError}{User defined error for noise calculations}
+
+\item{opt}{Option for which noise error calculated}
 }
 \value{
 the size of the cell population over time
 }
 \description{
-\code{simulateGeneExpGroup} Simulate Gene Expression Data (Each Cell)
+\code{simulateGeneExpSing} Simulate Gene Expression Data (Per Cell)
 }
 
