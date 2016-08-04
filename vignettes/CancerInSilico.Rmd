@@ -14,8 +14,6 @@ output:
 
 ```{r include=FALSE, cache=FALSE}
 library(CancerInSilico)
-## I left this in so that it can be built in Rstudio. I will take it out
-## before submission.
 ```
 
 # Introduction
