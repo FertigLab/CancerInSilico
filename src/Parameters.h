@@ -14,7 +14,6 @@ class Parameters {
 
   private:
 
-    int m_initial_num_cells;
     double m_max_translation, m_max_rotate, m_max_deform;
     double m_epsilon, m_delta;
 	double m_max_radius;
@@ -45,9 +44,9 @@ class Parameters {
     void SetResistanceEPSILON(double ep) { m_epsilon = ep;}
     void SetCompressionDELTA(double dt) { m_delta = dt;}
 	void SetInheritGrowth(bool gr) { m_inherit_growth = gr;}
-	void StoreGrowthDistribution(std::vector<double> gr) { m_growth_dist = gr;}
+	void StoreGrowthDistribution(std::vector<double>);
 	void SetNG(double ng) { m_nG = ng;}
-    void StoreDrugEffect(DrugEffectMap& map) { m_drug_effect_map = map;}
+    void StoreDrugEffect(DrugEffectMap map) { m_drug_effect_map = map;}
 
     //Getters
     double GetMaxTranslation() { return m_max_translation;}
