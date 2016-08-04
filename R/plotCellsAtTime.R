@@ -26,7 +26,7 @@ setMethod("plotCellsAtTime", "CellModel",
     	row <- timeToRow(model,time)
         
         numCells <- length(model@cells[[row]]) / 6
-    
+
         xcoords <- seq(1,numCells * 6,6)
         ycoords <- xcoords + 1
         radii <- xcoords + 2

@@ -6,7 +6,6 @@
 #' @examples
 #' getParameters(runCancerSim(1,1))
 #' @export
-#' 
 
 setGeneric("getParameters", function(model, fullDist=FALSE)
     standardGeneric("getParameters"))
@@ -19,7 +18,6 @@ setGeneric("getParameters", function(model, fullDist=FALSE)
 #' @examples
 #' getParameters(runCancerSim(1,1))
 #' @export
-#' 
 
 setMethod("getParameters", "CellModel",
 

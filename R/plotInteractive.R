@@ -9,7 +9,7 @@
 #' command prompt inputs.
 #' @export
 
-setGeneric("plotInteractive", function(model,time = 1)
+setGeneric("plotInteractive", function(model,time = 0)
   standardGeneric("plotInteractive"))
 
 #' \code{plotInteractive} Plots a CellModel at a certain point in time

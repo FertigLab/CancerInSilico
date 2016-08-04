@@ -23,6 +23,7 @@ setMethod("getDensity", "CellModel",
 
     function(model,time) {
 
+
     row <- timeToRow(model,time)
     xcoords <- seq(1,length(model@cells[[row]]),6)
     ycoords <- xcoords + 1
