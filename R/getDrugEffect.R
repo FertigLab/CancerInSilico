@@ -8,7 +8,7 @@
 #' getDrugEffect(0.3, seq(2,12,0.1))
 #' @export
 
-getDrugEffect() <- function(slowDown, cycleLengthSeq) {
+getDrugEffect <- function(slowDown, cycleLengthSeq) {
 ## allow user to pass function, raw cycleLengthDist
 
     ret_list <- vector("list", length(cycleLengthSeq))
@@ -17,7 +17,7 @@ getDrugEffect() <- function(slowDown, cycleLengthSeq) {
 
         for (i in 1:length(ret_list)) {
 
-            ret_list[i] = c(cycleLengthSeq[i], slowDown)
+            ret_list[[i]] = c(cycleLengthSeq[i], slowDown)
 
         }
 
@@ -29,7 +29,7 @@ getDrugEffect() <- function(slowDown, cycleLengthSeq) {
 
         for (i in 1:length(ret_list)) {
 
-            ret_list[i] = c(cycleLengthSeq[i], slowDown[i])
+            ret_list[[i]] = c(cycleLengthSeq[i], slowDown[i])
 
         }
 

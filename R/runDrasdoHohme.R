@@ -35,6 +35,12 @@ runDrasdoHohme <- function(initialNum,
   maxRotate <- acos((16 + delta ^ 2 - 4 * delta) / 16)
   outputIncrement2 <- floor(outputIncrement / timeIncrement)
   
+  for (i in 1:length(drugEffect)) {
+    
+      drugEffect[[i]][1] <- 2 * (sqrt(2) - 1) * timeIncrement * nG / (drugEffect[[i]][1] - 1)
+  
+  }
+  
   output <- tryCatch({
     
     CellModel(initialNum, mcSteps, density, maxTranslation,

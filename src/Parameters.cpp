@@ -110,3 +110,15 @@ double Parameters::GetMaxGrowth() {
 	return *std::max_element(m_growth_dist.begin(), m_growth_dist.end());
 
 }
+
+double Parameters::GetDrugEffect(double cycleTime) {
+
+    //TODO: hash cycle time to find nearest element in m_drug_effect_map
+    //TODO: sample from resulting distribution    
+
+    return 1 - m_drug_effect_map.at(cycleTime);
+
+}
+    
+
+
