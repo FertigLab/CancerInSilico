@@ -12,6 +12,10 @@ output:
   BiocStyle::html_document
 ---
 
+```{r include=FALSE, cache=FALSE}
+library(CancerInSilico)
+```
+
 # Introduction
 
 The main objective of the *CancerInSilico* package is to provide an R interface for running mathematical models of tumor progression. In C++, we have implemented an off-lattice, cell-based model from @DRASDO2003 and this package provides the neccesary R functions to run the C++ code and analyze the output in R. In general, cell-based models simulate each cell in a tumor, accounting for interactions with its neighbors and its local environment. This model specifically models cell-cycle, intercellular forces, and cellular motility. By doing so, it places focus on the cell-cell dynamics which allows for a detailed exploration of intra- and inter-cellular mechanisms that effect overall population dynamics of cells in a tumor. 
