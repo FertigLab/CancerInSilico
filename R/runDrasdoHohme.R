@@ -5,6 +5,7 @@ runDrasdoHohme <- function(initialNum,
                          inheritGrowth,
                          outputIncrement,
                          randSeed,
+                         drugEffect,
                          ...)
   
 {
@@ -38,7 +39,7 @@ runDrasdoHohme <- function(initialNum,
     
     CellModel(initialNum, mcSteps, density, maxTranslation,
               maxDeform, maxRotate, epsilon, delta, outputIncrement2,
-              randSeed, grRates, inheritGrowth, nG, timeIncrement)
+              randSeed, drugEffect, grRates, inheritGrowth, nG, timeIncrement)
     
   }, error = function(cond) {
     
