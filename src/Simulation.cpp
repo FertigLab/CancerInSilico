@@ -15,7 +15,7 @@ Simulation::~Simulation() {
 
 }
 
-void Simulation::Run(int MCsteps, int out_incr, double time_incr) {
+void Simulation::Run(int MCsteps, int out_incr, double time_incr, double rec_incr) {
 
 	double time = 0.0;
     bool drug_added = false;
