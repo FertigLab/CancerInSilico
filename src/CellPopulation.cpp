@@ -108,6 +108,18 @@ void CellPopulation::SeedCells() {
 
 }
 
+void CellPopulation::AddDrug() {
+
+    SpatialHash<Cell>::full_iterator iter = m_population.begin();
+    for (; iter != m_population.end(); ++iter) {
+
+        double gr = (*iter).GetGrowth();
+        (*iter).SetGrowth(gr * m_param->GetDrugEffect(gr));
+
+    }
+
+}
+
 void CellPopulation::OneTimeStep() {
 
     int sz = m_population.size();

@@ -110,3 +110,36 @@ double Parameters::GetMaxGrowth() {
 	return *std::max_element(m_growth_dist.begin(), m_growth_dist.end());
 
 }
+
+void Parameters::StoreGrowthDistribution(std::vector<double> gr) {
+
+    m_growth_dist = gr;
+    std::sort (m_growth_dist.begin(), m_growth_dist.end());
+
+}
+
+double Parameters::GetDrugEffect(double growthRate) {
+
+    double index;
+    std::pair<std::vector<double>::iterator, std::vector<double>::iterator> bounds;
+    bounds = std::equal_range (m_growth_dist.begin(), m_growth_dist.end(), growthRate);
+
+    if (abs(*bounds.first - growthRate) < abs(*bounds.second - growthRate)) {
+
+        index = *bounds.first;
+
+    } else {
+
+        index = *bounds.second;
+
+    }
+
+    std::vector<double>& vec_ref = m_drug_effect_map.at(index);
+
+    int size = vec_ref.size();
+    return 1 - vec_ref[floor(R::runif(0,size))];
+
+}
+    
+
+

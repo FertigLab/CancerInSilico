@@ -43,6 +43,8 @@ public:
 	void SetGrowthRates();
 	void SeedCells();
 
+    void AddDrug();
+
 	void RecordPopulation();
 	Rcpp::List GetPopulationAsList();
 

@@ -5,8 +5,9 @@
 \title{\code{runCancerSim} Runs the model}
 \usage{
 runCancerSim(initialNum, runTime, density = 0.01, cycleLengthDist = 12,
-  inheritGrowth = FALSE, outputIncrement = 6, randSeed = 0,
-  modelType = "DrasdoHohme2003", ...)
+  drugEffect = getDrugEffect(0, seq(min(cycleLengthDist),
+  max(cycleLengthDist), 0.1)), inheritGrowth = FALSE, outputIncrement = 6,
+  randSeed = 0, modelType = "DrasdoHohme2003", ...)
 }
 \arguments{
 \item{initialNum}{how many cells initially}
@@ -16,6 +17,8 @@ runCancerSim(initialNum, runTime, density = 0.01, cycleLengthDist = 12,
 \item{density}{the density the cells are seeded at}
 
 \item{cycleLengthDist}{cycle time distribution}
+
+\item{drugEffect}{distribution of drug effects}
 
 \item{inheritGrowth}{whether or not daughter cells have the same cycle-length as parents}
 

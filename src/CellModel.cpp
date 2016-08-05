@@ -2,6 +2,8 @@
 #include "Simulation.h"
 
 #include <Rcpp.h>
+#include <iostream>
+#include <boost/unordered_map.hpp>
 
 // [[Rcpp::export]]
 Rcpp::List CellModel(
@@ -16,6 +18,7 @@ Rcpp::List CellModel(
     double delta,
     int outIncrement,
     int randSeed,
+    Rcpp::List drugEffect,
 	Rcpp::NumericVector growthRates,
 	bool inheritGrowth,
 	double nG,
@@ -28,7 +31,32 @@ Rcpp::List CellModel(
 	
 		gr_rates.push_back(growthRates[i]);
 
-	}		
+	}	
+
+    boost::unordered_map<double, std::vector<double> > drug_effect;	
+    for (unsigned int i = 0; i < drugEffect.size(); ++i) {
+
+        std::vector<double> dist = Rcpp::as< std::vector<double> >(drugEffect[i]);   
+
+        double growthRate = dist[0];
+        dist[0] = dist.back();
+        dist.pop_back();     
+
+        drug_effect.insert(std::pair<double, std::vector<double> >(growthRate, dist));
+
+    }
+
+    /*boost::unordered_map<double, std::vector<double> >::iterator iter;
+    for (iter = drug_effect.begin(); iter != drug_effect.end(); ++iter) {
+
+        std::cout << iter->first << std::endl;
+        for (unsigned int i = 0; i < iter->second.size(); ++i) {
+
+            std::cout << "\t" << iter->second[i] << std::endl;
+
+        }
+
+    }*/
 
     Rcpp::Environment baseEnv("package:base");
     Rcpp::Function setSeed = baseEnv["set.seed"];
@@ -44,6 +72,7 @@ Rcpp::List CellModel(
 	params->StoreGrowthDistribution(gr_rates);
 	params->SetInheritGrowth(inheritGrowth);
 	params->SetNG(nG);
+    params->StoreDrugEffect(drug_effect);
 
     Simulation main_sim = Simulation(params, initialNum, density);
     main_sim.Run(numMCSteps, outIncrement, timeIncrement);

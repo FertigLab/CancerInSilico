@@ -3,6 +3,7 @@
 export(getCellPhasePos)
 export(getCycleLengthDistribution)
 export(getDensity)
+export(getDrugEffect)
 export(getNumberOfCells)
 export(getParameters)
 export(plotCellsAtTime)
