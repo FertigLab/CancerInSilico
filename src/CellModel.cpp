@@ -23,7 +23,7 @@ Rcpp::List CellModel(
 	bool inheritGrowth,
 	double nG,
 	double timeIncrement,
-	double recordIncrement
+	int recordIncrement
 
 ) {
 

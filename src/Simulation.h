@@ -18,7 +18,7 @@ class Simulation {
     Simulation(Parameters*, int, double);
     ~Simulation();
 
-    void Run(int, int, double);
+    void Run(int, int, double, int);
     Rcpp::List GetCellsAsList();
 
 };

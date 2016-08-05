@@ -15,7 +15,7 @@ Simulation::~Simulation() {
 
 }
 
-void Simulation::Run(int MCsteps, int out_incr, double time_incr, double rec_incr) {
+void Simulation::Run(int MCsteps, int out_incr, double time_incr, int rec_incr) {
 
 	double time = 0.0;
     bool drug_added = false;
@@ -42,7 +42,11 @@ void Simulation::Run(int MCsteps, int out_incr, double time_incr, double rec_inc
         m_cells->OneTimeStep();
 		time += time_incr;
 		
-        m_cells->RecordPopulation(); //TODO: don't record every MC step
+        if (i % rec_incr == 0) {
+
+            m_cells->RecordPopulation();
+        
+        }
 
     }
 

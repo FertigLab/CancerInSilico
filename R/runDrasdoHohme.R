@@ -4,6 +4,7 @@ runDrasdoHohme <- function(initialNum,
                          cycleLengthDist,
                          inheritGrowth,
                          outputIncrement,
+                         recordIncrement,
                          randSeed,
                          drugEffect,
                          ...)
@@ -35,6 +36,10 @@ runDrasdoHohme <- function(initialNum,
   maxTranslation <- delta / 2
   maxRotate <- acos((16 + delta ^ 2 - 4 * delta) / 16)
   outputIncrement2 <- floor(outputIncrement / timeIncrement)
+  recordIncrement2 <- floor(recordIncrement / timeIncrement)  
+  if (recordIncrement == 0) {
+    recordIncrement2 <- 1
+  }
   
   for (i in 1:length(drugEffect)) {
     
@@ -46,7 +51,7 @@ runDrasdoHohme <- function(initialNum,
     
     CellModel(initialNum, mcSteps, density, maxTranslation,
               maxDeform, maxRotate, epsilon, delta, outputIncrement2,
-              randSeed, drugEffect, grRates, inheritGrowth, nG, timeIncrement,recordIncrement)
+              randSeed, drugEffect, grRates, inheritGrowth, nG, timeIncrement,recordIncrement2)
     
   }, error = function(cond) {
     
@@ -55,7 +60,7 @@ runDrasdoHohme <- function(initialNum,
     
   })
   
-  cellMat <- new("CellModel",cells = output,parameters = c(initialNum,runTime,density,inheritGrowth,outputIncrement,randSeed,epsilon,nG,timeIncrement,recordIncrement), cycleLengthDist, drugEffect)
+  cellMat <- new("CellModel",cells = output,parameters = c(initialNum,runTime,density,inheritGrowth,outputIncrement,randSeed,epsilon,nG,timeIncrement,recordIncrement), paramCycleLengthDist = cycleLengthDist, paramDrugEffect = drugEffect)
   
   return(cellMat)
   
