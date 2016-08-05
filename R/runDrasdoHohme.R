@@ -24,6 +24,7 @@ runDrasdoHohme <- function(initialNum,
   
   delta <- 0.2 ## must be less than 4 or calculations break
   
+  #timeIncrement is the time between each timestep
   timeIncrement = delta / (4 * nG * (4 - sqrt(2)))
   if (timeIncrement > delta * (min(cycleLengthDist) - 1) / (8 * nG * (sqrt(2) - 1))) {
     timeIncrement = delta * (min(cycleLengthDist) - 1) / (8 * nG * (sqrt(2) - 1))
@@ -45,7 +46,7 @@ runDrasdoHohme <- function(initialNum,
     
     CellModel(initialNum, mcSteps, density, maxTranslation,
               maxDeform, maxRotate, epsilon, delta, outputIncrement2,
-              randSeed, drugEffect, grRates, inheritGrowth, nG, timeIncrement)
+              randSeed, drugEffect, grRates, inheritGrowth, nG, timeIncrement,recordIncrement)
     
   }, error = function(cond) {
     
@@ -54,7 +55,7 @@ runDrasdoHohme <- function(initialNum,
     
   })
   
-  cellMat <- new("CellModel",cells = output,parameters = c(initialNum,runTime,density,inheritGrowth,outputIncrement,randSeed,epsilon,nG,timeIncrement,cycleLengthDist))
+  cellMat <- new("CellModel",cells = output,parameters = c(initialNum,runTime,density,inheritGrowth,outputIncrement,randSeed,epsilon,nG,timeIncrement,recordIncrement), cycleLengthDist, drugEffect)
   
   return(cellMat)
   

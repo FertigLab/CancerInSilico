@@ -22,7 +22,8 @@ Rcpp::List CellModel(
 	Rcpp::NumericVector growthRates,
 	bool inheritGrowth,
 	double nG,
-	double timeIncrement
+	double timeIncrement,
+	double recordIncrement
 
 ) {
 
@@ -75,7 +76,7 @@ Rcpp::List CellModel(
     params->StoreDrugEffect(drug_effect);
 
     Simulation main_sim = Simulation(params, initialNum, density);
-    main_sim.Run(numMCSteps, outIncrement, timeIncrement);
+    main_sim.Run(numMCSteps, outIncrement, timeIncrement, recordIncrement);
     Rcpp::List ret_val = main_sim.GetCellsAsList();
 
     delete params;

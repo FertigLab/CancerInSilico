@@ -14,7 +14,7 @@ setGeneric("simulateGeneExpSing", function(model,pathway,perError = 0.1,opt = 1,
 setMethod("simulateGeneExpSing", "CellModel",
           
         function(model,pathway,perError = 0.1,opt = 1,success = 1) {
-        
+            
             gtompath = pathway[[1]]
             gtospath = pathway[[2]]
             proxpath = pathway[[3]]
@@ -76,7 +76,6 @@ setMethod("simulateGeneExpSing", "CellModel",
                         bi = rnbinom(length(gtom[[t]][1,]),phi,mu = sum(t1[j,])/length(gtom[[t]][j,]))
                         bimatrix[j,] = bi
                     }
-                    print(bimatrix)
                     output[[t]] = t1 + bimatrix
                 }
             }
