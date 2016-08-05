@@ -4,15 +4,16 @@
 #' @param pathway A list of pathways, Format:(GtoM, GtoS, Prox)
 #' @param perError User defined error for noise calculations
 #' @param opt Option for which noise error calculated
+#' @param success number of successes in Negative Binomial error model
 #' @return the size of the cell population over time
 #' @export
 
-setGeneric("simulateGeneExpSing", function(model,pathway,perError = 0.1,opt = 1)
+setGeneric("simulateGeneExpSing", function(model,pathway,perError = 0.1,opt = 1,success = 1)
     standardGeneric("simulateGeneExpSing"))
 
 setMethod("simulateGeneExpSing", "CellModel",
           
-        function(model,pathway,perError = 0.1,opt = 1) {
+        function(model,pathway,perError = 0.1,opt = 1,success = 1) {
         
             gtompath = pathway[[1]]
             gtospath = pathway[[2]]
@@ -61,15 +62,24 @@ setMethod("simulateGeneExpSing", "CellModel",
                 if(opt == 1){
                     sdmatrix = matrix(0,length(name),length(gtom[[t]][1,]))
                     for(j in 1:length(gtom[[t]][1,])){
-                        sd = pmax(perError * output[[t]][j,], perError)
-                        sdmatrix[j,] = sd
+                        sd = pmax(perError * t1[,j], perError)
+                        sdmatrix[,j] = sd
                     }
                     distro = rnorm(length(gtom[[t]][1,]) * length(name),t1,sdmatrix)
                     output[[t]] = t1 + distro
                 }
+                #Negative Binomial
+                if(opt == 2){
+                    phi = 1/success
+                    bimatrix = matrix(0,length(name),length(gtom[[t]][1,]))
+                    for(j in 1:length(name)){
+                        bi = rnbinom(length(gtom[[t]][1,]),phi,mu = sum(t1[j,])/length(gtom[[t]][j,]))
+                        bimatrix[j,] = bi
+                    }
+                    print(bimatrix)
+                    output[[t]] = t1 + bimatrix
+                }
             }
-            
-            
             return(output)
         }
 )

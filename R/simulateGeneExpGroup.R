@@ -4,15 +4,16 @@
 #' @param pathway A list of pathways, Format:(GtoM, GtoS, Prox)
 #' @param perError User defined error for noise calculations
 #' @param opt Option for which noise error calculated
+#' @param success Number of Successes in Negative Binomial error model
 #' @return the size of the cell population over time
 #' @export
 
-setGeneric("simulateGeneExpGroup", function(model,pathway,perError = 0.1,opt = 1)
+setGeneric("simulateGeneExpGroup", function(model,pathway,perError = 0.1,opt = 1,success = 1)
     standardGeneric("simulateGeneExpGroup"))
 
 setMethod("simulateGeneExpGroup", "CellModel",
           
-          function(model,pathway,perError = 0.1,opt = 1) {
+          function(model,pathway,perError = 0.1,opt = 1,success = 1) {
               
                 #Get Individual Pathways
                 gtompath = pathway[[1]]
@@ -67,7 +68,13 @@ setMethod("simulateGeneExpGroup", "CellModel",
                 }
                 #Negative Binomial
                 else if(opt == 2){
-                    
+                    phi = 1/success
+                    bimatrix = matrix(0,model@parameters[2],length(name))
+                    for(t in 1:model@parameters[2]){
+                        bi = rnbinom(length(name),phi,mu = output[,1:length(name)])
+                        bimatrix[t,] = bi
+                    }
+                    output = output + bimatrix
                 }
                 return(t(output))
                 
