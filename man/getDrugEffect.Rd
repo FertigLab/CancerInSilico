@@ -4,12 +4,12 @@
 \alias{getDrugEffect}
 \title{\code{getDrugEffect}}
 \usage{
-getDrugEffect(slowDown, cycleLengthSeq)
+getDrugEffect(FUN = function(x) {     0 }, ...)
 }
 \arguments{
-\item{cycleLengthSeq}{A sequence spanning the range of cycle lengths}
-
 \item{slwoDown}{A vector specifying the slow down of the growth rate}
+
+\item{cycleLengthSeq}{A sequence spanning the range of cycle lengths}
 }
 \value{
 A list of vectors specifying the distribution of drug effects depending on the growth rate of the cell

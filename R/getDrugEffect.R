@@ -34,5 +34,7 @@ getDrugEffect <- function(FUN = function(x) {0}, ...) {
     ret_list[[i]] = c(cycleLengthSeq[i], FUN(cycleLengthSeq[i]))
 
   }
+  
+  return (ret_list)
 
 }

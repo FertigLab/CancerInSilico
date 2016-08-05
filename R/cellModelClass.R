@@ -2,4 +2,4 @@
 #'
 #'@export
 
-setClass("CellModel", representation(cells = "list", parameters = "numeric", cycleLengthDist = "numeric", drugEffect = "list")
+setClass("CellModel", representation(cells = "list", parameters = "numeric", cycleLengthDist = "numeric", drugEffect = "list"))

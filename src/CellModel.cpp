@@ -46,18 +46,6 @@ Rcpp::List CellModel(
 
     }
 
-    /*boost::unordered_map<double, std::vector<double> >::iterator iter;
-    for (iter = drug_effect.begin(); iter != drug_effect.end(); ++iter) {
-
-        std::cout << iter->first << std::endl;
-        for (unsigned int i = 0; i < iter->second.size(); ++i) {
-
-            std::cout << "\t" << iter->second[i] << std::endl;
-
-        }
-
-    }*/
-
     Rcpp::Environment baseEnv("package:base");
     Rcpp::Function setSeed = baseEnv["set.seed"];
     setSeed(randSeed);

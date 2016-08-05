@@ -114,31 +114,33 @@ double Parameters::GetMaxGrowth() {
 void Parameters::StoreGrowthDistribution(std::vector<double> gr) {
 
     m_growth_dist = gr;
-    std::sort (m_growth_dist.begin(), m_growth_dist.end());
 
 }
 
-double Parameters::GetDrugEffect(double growthRate) {
+void Parameters::StoreDrugEffect(DrugEffectMap map) {
 
-    double index;
-    std::pair<std::vector<double>::iterator, std::vector<double>::iterator> bounds;
-    bounds = std::equal_range (m_growth_dist.begin(), m_growth_dist.end(), growthRate);
+    m_drug_effect_map = map;
+    DrugEffectMap::iterator iter = m_drug_effect_map.begin();
+    for (; iter != m_drug_effect_map.end(); ++iter) {
 
-    if (abs(*bounds.first - growthRate) < abs(*bounds.second - growthRate)) {
-
-        index = *bounds.first;
-
-    } else {
-
-        index = *bounds.second;
+        m_drug_effect_indices.push_back(iter->first);
 
     }
 
+    std::sort (m_drug_effect_indices.begin(), m_drug_effect_indices.end());
+
+}
+
+
+double Parameters::GetDrugEffect(double growthRate) {
+
+    double index = *(std::lower_bound(m_drug_effect_indices.begin(), m_drug_effect_indices.end(), growthRate));
+    
     std::vector<double>& vec_ref = m_drug_effect_map.at(index);
 
     int size = vec_ref.size();
     return 1 - vec_ref[floor(R::runif(0,size))];
-
+    
 }
     
 

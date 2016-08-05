@@ -26,6 +26,7 @@ void Simulation::Run(int MCsteps, int out_incr, double time_incr) {
         if (!drug_added && time > 5.0) {
     
             m_cells->AddDrug();
+            drug_added = true;
 
         }
         
@@ -40,7 +41,8 @@ void Simulation::Run(int MCsteps, int out_incr, double time_incr) {
 
         m_cells->OneTimeStep();
 		time += time_incr;
-		m_cells->RecordPopulation(); //TODO: don't record every MC step
+		
+        m_cells->RecordPopulation(); //TODO: don't record every MC step
 
     }
 

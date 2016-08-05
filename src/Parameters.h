@@ -23,7 +23,9 @@ class Parameters {
 	std::vector<double> m_slow_solver;
 	std::vector<double> m_fast_solver;
 	std::vector<double> m_growth_dist;
+
     DrugEffectMap m_drug_effect_map;
+    std::vector<double> m_drug_effect_indices;
 
     void InitializeRadiusSolver();
 	void InitSlowSolver();
@@ -46,7 +48,7 @@ class Parameters {
 	void SetInheritGrowth(bool gr) { m_inherit_growth = gr;}
 	void StoreGrowthDistribution(std::vector<double>);
 	void SetNG(double ng) { m_nG = ng;}
-    void StoreDrugEffect(DrugEffectMap map) { m_drug_effect_map = map;}
+    void StoreDrugEffect(DrugEffectMap);
 
     //Getters
     double GetMaxTranslation() { return m_max_translation;}
