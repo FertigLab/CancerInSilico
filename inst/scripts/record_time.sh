@@ -1,5 +1,4 @@
 #! /usr/bin/env bash
 
-time R -f time_standard.R > run_time.txt
-
+/usr/bin/time --output=run_time.txt R -f time_standard.R
 
