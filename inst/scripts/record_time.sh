@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
 
-time R -f profile_standard.R > run_time.txt
+time R -f time_standard.R > run_time.txt
 
 
