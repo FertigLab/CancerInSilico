@@ -43,6 +43,7 @@ stuff/**
 *.swo
 
 *.txt
+!run_time.txt
 cmdtest.bat
 cmdtest.R
 *.csv

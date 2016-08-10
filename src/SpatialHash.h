@@ -26,11 +26,11 @@ public:
         circular_iterator(SpatialHash<T>* hash, Point& center, double radius, bool end = false) {
     
             m_hash = hash;
-            m_center = center;
+            m_center = m_hash->Hash(center);
             m_radius = radius;
             construct_box(radius + 4.0);
 
-            m_current.x = m_box.left - m_hash->m_bucket_size;
+            m_current.x = m_box.left - 1.0;
             m_current.y = m_box.bottom;
             advance_to_next();
             if (end) { goto_end();}
@@ -84,7 +84,7 @@ public:
 
         void goto_end() {
         
-            m_current.x = m_box.right + m_hash->m_bucket_size;
+            m_current.x = m_box.right + 1.0;
             m_current.y = m_box.top;
 
         }
@@ -110,20 +110,12 @@ public:
 
         void construct_box(double radius) {
             
-            m_center.x -= radius;
-            m_box.left = m_hash->Hash(m_center).x;
+            double adj_radius = floor((radius + m_hash->m_bucket_size / 2) / m_hash->m_bucket_size) + 1;
 
-            m_center.x += 2 * radius;
-            m_box.right = m_hash->Hash(m_center).x;            
-            
-            m_center.y -= radius;
-            m_box.bottom = m_hash->Hash(m_center).y;            
-
-            m_center.y += 2 * radius;
-            m_box.top = m_hash->Hash(m_center).y;            
-            
-            m_center.x -= radius;
-            m_center.y -= radius;
+            m_box.left = m_center.x - adj_radius;
+            m_box.right = m_center.x + adj_radius;
+            m_box.bottom = m_center.y - adj_radius;
+            m_box.top = m_center.y + adj_radius;
 
         }
 
@@ -131,22 +123,21 @@ public:
 
             do {
                 
-                if (m_current.x > m_box.right + m_hash->m_bucket_size/2) {
+                if (m_current.x > m_box.right) {
 
                     break;
                 }
 
-                m_current.y -= m_hash->m_bucket_size;
+                m_current.y -= 1.0;
                 if (m_current.y < m_box.bottom) {
                 
                     m_current.y = m_box.top;
-                    m_current.x += m_hash->m_bucket_size;
+                    m_current.x += 1.0;
 
                 }
-                m_current = m_hash->Hash(m_current);
     
             } while (m_hash->m_hash_map.count(m_current) == 0
-                        || m_current == m_hash->Hash(m_center));
+                        || m_current == m_center);
 
         }
 
@@ -276,11 +267,8 @@ Point SpatialHash<T>::Hash(Point pt) {
 
     Point center = Point(0,0);
 
-    center.x = m_bucket_size * floor(fabs(pt.x) / m_bucket_size)
-               + m_bucket_size / 2;
-
-    center.y = m_bucket_size * floor(fabs(pt.y) / m_bucket_size)
-               + m_bucket_size / 2;
+    center.x = floor((fabs(pt.x) - m_bucket_size / 2) / m_bucket_size) + 1;
+    center.y = floor((fabs(pt.y) - m_bucket_size / 2) / m_bucket_size) + 1;
 
     if (pt.x < 0) { center.x *= -1;}
     if (pt.y < 0) { center.y *= -1;}
