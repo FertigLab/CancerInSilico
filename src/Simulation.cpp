@@ -23,6 +23,7 @@ void Simulation::Run(int MCsteps, int out_incr, double time_incr, int rec_incr) 
 	
     for (int i = 0; i < MCsteps; i++) {
 
+        //TODO: add parameter for drug application time
         if (!drug_added && time > 5.0) {
     
             m_cells->AddDrug();

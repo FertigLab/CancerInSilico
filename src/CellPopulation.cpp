@@ -110,6 +110,7 @@ void CellPopulation::SeedCells() {
 
 void CellPopulation::AddDrug() {
 
+    //TODO: add drug to original dist in m_param
     SpatialHash<Cell>::full_iterator iter = m_population.begin();
     for (; iter != m_population.end(); ++iter) {
 
