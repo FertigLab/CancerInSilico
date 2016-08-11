@@ -7,6 +7,7 @@ runDrasdoHohme <- function(initialNum,
                          recordIncrement,
                          randSeed,
                          drugEffect,
+                         drugTime,
                          ...)
   
 {
@@ -51,7 +52,7 @@ runDrasdoHohme <- function(initialNum,
     
     CellModel(initialNum, mcSteps, density, maxTranslation,
               maxDeform, maxRotate, epsilon, delta, outputIncrement2,
-              randSeed, drugEffect, grRates, inheritGrowth, nG, timeIncrement,recordIncrement2)
+              randSeed, drugEffect, grRates, inheritGrowth, nG, timeIncrement,recordIncrement2,drugTime)
     
   }, error = function(cond) {
     
@@ -60,7 +61,7 @@ runDrasdoHohme <- function(initialNum,
     
   })
   
-  cellMat <- new("CellModel",cells = output,parameters = c(initialNum,runTime,density,inheritGrowth,outputIncrement,randSeed,epsilon,nG,timeIncrement,recordIncrement), paramCycleLengthDist = cycleLengthDist, paramDrugEffect = drugEffect)
+  cellMat <- new("CellModel",cells = output,parameters = c(initialNum,runTime,density,inheritGrowth,outputIncrement,randSeed,epsilon,nG,timeIncrement,recordIncrement,drugTime), paramCycleLengthDist = cycleLengthDist, paramDrugEffect = drugEffect)
   
   return(cellMat)
   

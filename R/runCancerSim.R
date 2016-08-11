@@ -26,6 +26,7 @@ runCancerSim <- function(initialNum,
                      recordIncrement = 0.25,
                      randSeed = 0,
                      modelType = "DrasdoHohme2003",
+                     drugTime = 0.0,
                      ...)
 
 {
@@ -33,7 +34,7 @@ runCancerSim <- function(initialNum,
     if (modelType != "DrasdoHohme2003") {
       stop("invalid model type")
     } else {
-      return (runDrasdoHohme(initialNum, runTime, density, cycleLengthDist, inheritGrowth, outputIncrement, recordIncrement, randSeed, drugEffect, ...))
+      return (runDrasdoHohme(initialNum, runTime, density, cycleLengthDist, inheritGrowth, outputIncrement, recordIncrement, randSeed, drugEffect, drugTime, ...))
     }
 
 }

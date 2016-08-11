@@ -23,7 +23,8 @@ Rcpp::List CellModel(
 	bool inheritGrowth,
 	double nG,
 	double timeIncrement,
-	int recordIncrement
+	int recordIncrement,
+    double drugTime
 
 ) {
 
@@ -62,6 +63,7 @@ Rcpp::List CellModel(
 	params->SetInheritGrowth(inheritGrowth);
 	params->SetNG(nG);
     params->StoreDrugEffect(drug_effect);
+    params->SetDrugTime(drugTime);
 
     Simulation main_sim = Simulation(params, initialNum, density);
 
