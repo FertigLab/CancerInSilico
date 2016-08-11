@@ -27,7 +27,7 @@ setGeneric("plotInteractive", function(model,time = 0)
 setMethod("plotInteractive", "CellModel",
           
     function(model, time = 0) {
-
+        defnum = 1
         while (time <= model@parameters[2]) {
           
             plotCellsAtTime(model,time)
@@ -41,10 +41,11 @@ setMethod("plotInteractive", "CellModel",
     
             cmd = gsub(" ","",substring(read,1,place))
             arg_num = suppressWarnings(as.numeric(gsub(" ","",substring(read,place,nchar(read)))))
-            cmds <- c("n","b","t","s","q","h")
+            
+            cmds <- c("n","b","t","i","s","q","h")
     
             if (is.na(arg_num)) {
-    	        arg_num <- 1
+                arg_num = defnum
             }
     
     		if ((cmd %in% cmds)) {
@@ -54,6 +55,7 @@ setMethod("plotInteractive", "CellModel",
                     {time = time + arg_num},
                     {time = time - arg_num},
                     {time = arg_num},
+			        {defnum = arg_num},
                     {
                     cat("Cell Density = ", getDensity(model,time), "\n")
         						cat("Number of Cells = ", length(getCycleLengthDistribution(model,time)), "\n")
@@ -67,6 +69,7 @@ setMethod("plotInteractive", "CellModel",
 b ARG = back ARG timesteps (default ARG = 1)
 n ARG = forward ARG timesteps (default ARG = 1)
 t ARG - jump to timestep ARG (default ARG = 1)
+i ARG - change default ARG for other commands
 s = summary of cells
 q = quit \"console\"
 h = basic command help\n")
