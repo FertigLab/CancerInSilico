@@ -24,6 +24,8 @@ CellPopulation::CellPopulation(Parameters *par, unsigned int size, double densit
 	SetGrowthRates();
 	SeedCells();
 
+    m_drug_added = false;
+
 }
 
 CellPopulation::~CellPopulation() {
@@ -118,6 +120,8 @@ void CellPopulation::AddDrug() {
 
     }
 
+    m_drug_added = true;
+
 }
 
 void CellPopulation::OneTimeStep() {
@@ -152,6 +156,12 @@ void CellPopulation::CheckMitosis(Cell* cell) {
 		} else {
 
 			gr_rate = m_param->GetRandomGrowthRate();
+
+            if (m_drug_added) {
+
+                gr_rate *= m_param->GetDrugEffect(gr_rate);
+
+            }
 
 		}
 
