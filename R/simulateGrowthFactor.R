@@ -11,9 +11,19 @@ setGeneric("simulateGrowthFactor", function(model,pathway)
 
 setMethod("simulateGeneExpGroup", "CellModel",
           
-          function(model,pathway) {
-              
-              
-              
-          }
+        function(model,pathway) {
+            
+            numfgenes = rexp(length(pathway),1/3)
+            gfmatrix = matrix(0,length(model@cells),length(numfgenes))
+            
+            for(t in 1:length(model@cells)){
+                
+                growFact <- seq(6,length(model@cells[[timeToRow(model,t)]]),6)
+                factors <- model@cells[[timeToRow(model,t)]][growFact]
+                
+            }
+            
+            
+            
+        }
 )

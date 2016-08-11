@@ -14,7 +14,7 @@ setMethod("simulateGToSPathGroup", "CellModel",
                 gsMatrix = matrix(NA,model@parameters[2],length(numsgenes))
                 for(t in 1:model@parameters[2]){
                     radii <- seq(3,length(model@cells[[timeToRow(model,t)]]),6)
-                    radius <- data@cells[[timeToRow(model,t)]][radii]
+                    radius <- model@cells[[timeToRow(model,t)]][radii]
                     #Total Number of Cells
                     numcells = sum(model@cells[[timeToRow(model,t)]][radii] > 0)
                     #Range for determining a cell
