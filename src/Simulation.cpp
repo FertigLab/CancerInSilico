@@ -19,9 +19,14 @@ void Simulation::Run(int MCsteps, int out_incr, double time_incr, int rec_incr) 
 
 	double time = 0.0;
     bool drug_added = false;
-	m_cells->RecordPopulation();
 	
     for (int i = 0; i < MCsteps; i++) {
+
+        if (i % rec_incr == 0) {
+
+            m_cells->RecordPopulation();
+        
+        }
 
         if (!drug_added && time > m_param->GetDrugTime()) {
     
@@ -41,12 +46,6 @@ void Simulation::Run(int MCsteps, int out_incr, double time_incr, int rec_incr) 
 
         m_cells->OneTimeStep();
 		time += time_incr;
-		
-        if (i % rec_incr == 0) {
-
-            m_cells->RecordPopulation();
-        
-        }
 
     }
 
