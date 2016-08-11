@@ -60,7 +60,9 @@ runDrasdoHohme <- function(initialNum,
     
   })
   
-  cellMat <- new("CellModel",cells = output,parameters = c(initialNum,runTime,density,inheritGrowth,outputIncrement,randSeed,epsilon,nG,timeIncrement,recordIncrement), paramCycleLengthDist = cycleLengthDist, paramDrugEffect = drugEffect)
+  cellMat <- new("CellModel",cells = output,parameters = c(initialNum,runTime,density,inheritGrowth,outputIncrement,randSeed,epsilon,nG,timeIncrement,recordIncrement),
+                 paramCycleLengthDist = cycleLengthDist,
+                 paramDrugEffect = drugEffect)
   
   return(cellMat)
   

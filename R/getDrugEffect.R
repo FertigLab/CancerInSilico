@@ -21,7 +21,8 @@ getDrugEffect <- function(FUN = function(x) {0}, ...) {
     
     }
 
-  } else if (is.null(cycleLengthSeq)) {
+  } 
+  else if (is.null(cycleLengthSeq)) {
       
       cycleLengthSeq <- seq(min(cycleLengthDist), max(cycleLengthDist), 0.1)
 
