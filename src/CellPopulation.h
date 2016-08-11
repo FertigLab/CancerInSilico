@@ -21,6 +21,8 @@ private:
 
 	std::vector<std::vector<double> > m_population_record;
 
+    bool m_drug_added;
+
 public:
 
 	~CellPopulation();
