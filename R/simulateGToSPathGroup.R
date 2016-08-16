@@ -18,7 +18,7 @@ setMethod("simulateGToSPathGroup", "CellModel",
                     #Total Number of Cells
                     numcells = sum(model@cells[[timeToRow(model,t)]][radii] > 0)
                     #Range for determining a cell
-                    toprange <- max(radius)/sqrt(2) + 0.1
+                    toprange <- sqrt(3/2) + 0.01
                     botrange <- max(radius)/sqrt(2) - 0.1
                     test = subset(radius,radius<toprange & radius>botrange)
                     #Genes Per Cell
@@ -40,3 +40,7 @@ setMethod("simulateGToSPathGroup", "CellModel",
                 return(gsMatrix)
             }
 )
+
+radii <- seq(3,length(model@cells[[timeToRow(model,t-1)]]),6)
+prev_radius <- model@cells[[timeToRow(model,t-1)]][radii]
+cur_radius <- model@cells[[timeToRow(model,t)]][radii]
