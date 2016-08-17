@@ -18,6 +18,7 @@ setMethod("simulateGToSPathGroup", "CellModel",
                     curradius <- model@cells[[timeToRow(model,t)]][radii]
                     #Total Number of Cells
                     numcells = sum(model@cells[[timeToRow(model,t)]][radii] > 0)
+                    
                     test = which(curradius > sqrt(3/2) & prevradius < sqrt(3/2))
                     #Genes Per Cell
                     gscell = length(test) * numsgenes
@@ -34,3 +35,7 @@ setMethod("simulateGToSPathGroup", "CellModel",
                 return(gsMatrix)
             }
 )
+
+radii <- seq(3,length(model@cells[[timeToRow(model,t-1)]]),6)
+prev_radius <- model@cells[[timeToRow(model,t-1)]][radii]
+cur_radius <- model@cells[[timeToRow(model,t)]][radii]
