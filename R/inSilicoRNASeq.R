@@ -1,7 +1,7 @@
 #' \code{inSilicoRNASeq} Simulate gene expression data that would be generated from a RNA-seq
 #'
 #' @param model A \code{\link{CellModel}}
-#' @param pathway Optional; A list of genes associated with pathways, defaulting to gene symbols in the package data object \code{\link{inSilicoPathways}}. If specified by the user, names of pathways should be GtoM for genes associated with the G to M cell cycle transition, GtoS for genes associated with G to S, Prox for genes associated with contact, and Growth for genes associated with growth factor receptor signaling.
+#' @param pathways Optional; A list of genes associated with pathways, defaulting to gene symbols in the package data object \code{\link{inSilicoPathways}}. If specified by the user, names of pathways should be GtoM for genes associated with the G to M cell cycle transition, GtoS for genes associated with G to S, Prox for genes associated with contact, and Growth for genes associated with growth factor receptor signaling.
 #' @param ReferenceDataSet Optional; Reference gene expression dataset to use to calculate the gene expression values for genes in the pathway to use as mean values in the simulation. Defaults values randomly selected from an exponential distribution with parameter \code{lambda}. If specified by the user, \code{row.names} of the ReferenceDataset must match gene names in the \code{pathway} argument.
 #' @param fasta Optional; NULL value will create a matrix of counts with a negative binomial error model. Otherwise, path to FASTA file containing transcripts from which to simulate reads. See details in \code{\link{simulate_experiment_countmat}}.
 #' @param samplingFrequency Optional; Distance between time points in hours at which gene expression values are simulated. Defaults to every hour.
@@ -12,7 +12,7 @@
 #' @export
 #' 
 
-inSilicoRNASeq <- function(CellModels, pathway=NULL, ReferenceDataSet=NULL, fasta=NULL,
+inSilicoRNASeq <- function(CellModels, pathways=NULL, ReferenceDataSet=NULL, fasta=NULL,
                           samplingFrequency=1, combineFUN="max", attrsep = " ", ...){
   
   # call standard function to simulate mean expression values for all pathways
