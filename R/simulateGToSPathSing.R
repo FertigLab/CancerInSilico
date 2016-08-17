@@ -10,7 +10,7 @@ setGeneric("simulateGToSPathSing", function(model,pathway)
 
 setMethod("simulateGToSPathSing", "CellModel",
             function(model,pathway) {
-                numsgenes = rexp(length(pathway),1/3)
+                numsgenes = pathway
                 output = list()
                 for(t in 1:model@parameters[2]){
                     radii <- seq(3,length(model@cells[[timeToRow(model,t)]]),6)
@@ -23,7 +23,7 @@ setMethod("simulateGToSPathSing", "CellModel",
                     #Matrix Calculation
                     cells = matrix(0,length(radii),length(pathway))
                     rownames(cells,TRUE,prefix = "cell ")
-                    colnames(cells)<-pathway
+                    colnames(cells)<-names(pathway)
                     if(length(test) == 0){
                         output[[t]] = t(cells)
                     }

@@ -10,14 +10,14 @@ setGeneric("simulateGToMPathSing", function(model,pathway)
 
 setMethod("simulateGToMPathSing", "CellModel",
         function(model,pathway) {
-            nummgenes = rexp(length(pathway),1/3)
+            nummgenes = pathway
             output = list()
             for(t in 1:model@parameters[2]){
                 radii <- seq(3,length(model@cells[[timeToRow(model,t)]]),6)
                 #vector for the specific time
                 cells = matrix(0,length(radii),length(pathway))
                 rownames(cells,TRUE,prefix = "cell ")
-                colnames(cells)<-pathway
+                colnames(cells)<-names(pathway)
                 if(length(getCellPhasePos(model,t)) == 0){
                     #Case: None are dividing
                     output[[t]] = t(cells)

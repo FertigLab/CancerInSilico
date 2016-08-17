@@ -1,31 +1,42 @@
 #' \code{simulateGeneExpSing} Simulate Gene Expression Data (Per Cell)
 #'
 #' @param model A CellModel
-#' @param pathway A list of pathways, Format:(GtoM, GtoS, Prox)
+#' @param pathways A list of pathways, Format:(GtoM, GtoS, Prox)
 #' @param perError User defined error for noise calculations
 #' @param opt Option for which noise error calculated
-#' @param success number of successes in Negative Binomial error model
 #' @return the size of the cell population over time
 #' @export
 
-setGeneric("simulateGeneExpSing", function(model,pathway,perError = 0.1,opt = 1,success = 1)
+setGeneric("simulateGeneExpSing", function(model,pathways,perError = 0.1,opt = 1)
     standardGeneric("simulateGeneExpSing"))
 
 setMethod("simulateGeneExpSing", "CellModel",
           
-        function(model,pathway,perError = 0.1,opt = 1,success = 1) {
+        function(model,pathways,perError = 0.1,opt = 1) {
             
-            gtompath = pathway[[1]]
-            gtospath = pathway[[2]]
-            proxpath = pathway[[3]]
+            #Get Individual Pathways
+            gtompath = pathways[[1]]
+            gtospath = pathways[[2]]
+            proxpath = pathways[[3]]
             
-            #Create simulation data for each pathway
-            gtom = simulateGToMPathSing(model,gtompath)
-            gtos = simulateGToSPathSing(model,gtospath)
-            prox = simulateProxPathSing(model,proxpath)
-            
+            #Combined list of genes and exponential
             name = c(gtompath,gtospath,proxpath)
             name = name[!duplicated(name)]
+            genes = rexp(length(name),1/3)
+            genes = setNames(genes,name)
+            
+            #Set Gene Exponentials per Path
+            temp = intersect(gtompath,name)
+            nummgenes = genes[temp]
+            temp = intersect(gtospath,name)
+            numsgenes = genes[temp]
+            temp = intersect(proxpath,name)
+            proxgenes = genes[temp]
+            
+            #Create simulation data for each pathway
+            gtom = simulateGToMPathSing(model,nummgenes)
+            gtos = simulateGToSPathSing(model,numsgenes)
+            prox = simulateProxPathSing(model,proxgenes)
             
             #Output Variable
             output = list()
@@ -70,11 +81,11 @@ setMethod("simulateGeneExpSing", "CellModel",
                 }
                 #Negative Binomial
                 if(opt == 2){
-                    phi = 1/success
                     bimatrix = matrix(0,length(name),length(gtom[[t]][1,]))
-                    for(j in 1:length(name)){
-                        bi = rnbinom(length(gtom[[t]][1,]),phi,mu = sum(t1[j,])/length(gtom[[t]][j,]))
-                        bimatrix[j,] = bi
+                    for(j in 1:length(gtom[[t]][1,])){
+                        mu = t(t(rowMeans(t1)))
+                        bi = NBsim(mu,t1)
+                        bimatrix[,j] = bi
                     }
                     output[[t]] = t1 + bimatrix
                 }

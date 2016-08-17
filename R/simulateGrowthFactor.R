@@ -14,9 +14,9 @@ setMethod("simulateGrowthFactor", "CellModel",
         function(model,pathway) {
             
             numfgenes = rexp(length(pathway),1/3)
-            gfmatrix = matrix(0,length(model@cells),length(numfgenes))
+            gfmatrix = matrix(0,model@parameters[2],length(numfgenes))
             
-            for(t in 1:length(model@cells)){
+            for(t in 1:model@parameters[2]){
                 #Get Model Cell Data
                 radii <- seq(3,length(model@cells[[timeToRow(model,t)]]),6)
                 radius <- model@cells[[timeToRow(model,t)]][radii]
@@ -26,7 +26,7 @@ setMethod("simulateGrowthFactor", "CellModel",
                 numcells = sum(model@cells[[timeToRow(model,t)]][radii] > 0)
                 
                 avgrates = sum(rates)/(length(rates)*max(rates))
-                gfcell = avgrates * numfcells / numcells
+                gfcell = avgrates * numfgenes / numcells
                 
                 gfmatrix[t,] = gfcell
                 
