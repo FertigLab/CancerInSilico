@@ -1,17 +1,22 @@
-###CancerInSilico 8.10.2016
-###Emily Flam / Elana J. Fertig
-###Find sample with max median value of raw RNA expression and expression Z-score for genes 
-### for all pathways to use in gene expression simulation
-getPathwayExpressionValues <- function(ReferenceDataset=NULL, exponentialModel=T, pathways) {
+#' \code{getPathwayExpressionValues} Determine the gene expression values to use for each gene in each pathway.
+#' @param pathway A list of genes associated with pathways.
+#' @param ReferenceDataSet Optional; Reference gene expression dataset to use to calculate the gene expression values for genes in the pathway to use as mean values in the simulation. Defaults values randomly selected from an exponential distribution with parameter \code{lambda}. If specified by the user, \code{row.names} of the ReferenceDataset must match gene names in the \code{pathway} argument. In this case, gene expression values will be set as the values for genes in the pathway of the sample with max median value of raw RNA expression and expression Z-score for pathway genes. 
+#' @param lambda Optional; Parameter of the exponential distribution used to determine the maximum expression value of each simulated gene in the pathway. Defaults to 1/3. Not used if values are determined from a dataset in \code{ReferenceDataSet}.
+#' @return list of numeric objects for the maximum expression value of each gene in each pathway. 
+#' 
+
+getPathwayExpressionValues <- function(ReferenceDataset=NULL, lambda=1/3, pathways) {
   
   if (is.null(ReferenceDataset)) {
-    if (exponentialModel) {
-        ### Raymond fill this in or kill it as needed
-        ### This would be generating the values for each gene from
-        ### The exponenential model 
-    } else {
-       ### Use specified values from an internal package dataset
-    }
+    
+    pathValues <- lapply(pathways,function(x){
+      val <- rexp(length(x),rate=lambda)
+      names(val) <- names(x)
+      return(val)
+    })
+    
+    return(pathValues)
+
   } else {
     D <- sweep(ReferenceDataset,1,apply(ReferenceDataset,1,max),FUN="/")
     
