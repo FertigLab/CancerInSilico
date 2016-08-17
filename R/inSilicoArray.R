@@ -12,7 +12,7 @@
 #' @export
 #' 
 
-inSilicoArray <- function(CellModels, pathways=NULL, lambda=1/3, perError=0.1, ReferenceDataSet=NULL, 
+inSilicoArray <- function(CellModels, pathway=NULL, lambda=1/3, perError=0.1, ReferenceDataSet=NULL, 
                           samplingFrequency=1, combineFUN="max", ...){
   
   # call standard function to simulate mean expression values for all pathways
