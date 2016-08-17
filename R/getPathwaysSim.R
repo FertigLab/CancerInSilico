@@ -2,7 +2,6 @@
 #'
 #' @param pathway Optional; A list of genes associated with pathways, defaulting to gene symbols in the package data object \code{\link{inSilicoPathways}}. If specified by the user, names of pathways should be GtoM for genes associated with the G to M cell cycle transition, GtoS for genes associated with G to S, Prox for genes associated with contact, and Growth for genes associated with growth factor receptor signaling.
 #' @return A list of genes associated with pathways that will be used for the simulation.
-#' @export
 #' 
 getPathwaysSim <- function(pathways)
 
