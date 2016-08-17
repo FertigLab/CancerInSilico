@@ -7,7 +7,7 @@
 runCancerSim(initialNum, runTime, density = 0.01, cycleLengthDist = 12,
   drugEffect = getDrugEffect(cycleLengthDist = cycleLengthDist),
   inheritGrowth = FALSE, outputIncrement = 6, recordIncrement = 0.25,
-  randSeed = 0, modelType = "DrasdoHohme2003", ...)
+  randSeed = 0, modelType = "DrasdoHohme2003", drugTime = 0, ...)
 }
 \arguments{
 \item{initialNum}{how many cells initially}

@@ -10,16 +10,19 @@ setGeneric("simulateGToSPathGroup", function(model,pathway)
 
 setMethod("simulateGToSPathGroup", "CellModel",
             function(model,pathway) {
-                numsgenes = rexp(length(pathway),1/3)
+                numsgenes = pathway
                 gsMatrix = matrix(0,model@parameters[2],length(numsgenes))
                 for(t in 1:model@parameters[2]){
-                    radii <- seq(3,length(model@cells[[timeToRow(model,t-1)]]),6)
-                    prevradius <- model@cells[[timeToRow(model,t-1)]][radii]
-                    curradius <- model@cells[[timeToRow(model,t)]][radii]
-                    #Total Number of Cells
+                    radii <- seq(3,length(model@cells[[timeToRow(model,t)]]),6)
+                    currradius <- model@cells[[timeToRow(model,t)]][radii]
+                    test = vector();
+                    if(is(try(model@cells[[timeToRow(model,t+1)]][radii],TRUE),'try-error')==FALSE){
+                        nextradius <- model@cells[[timeToRow(model,t+1)]][radii]
+                        test = which(nextradius > sqrt(3/2) & currradius < sqrt(3/2))
+                    }
+                    #Number of Cells
                     numcells = sum(model@cells[[timeToRow(model,t)]][radii] > 0)
                     
-                    test = which(curradius > sqrt(3/2) & prevradius < sqrt(3/2))
                     #Genes Per Cell
                     gscell = length(test) * numsgenes
                     
@@ -30,12 +33,8 @@ setMethod("simulateGToSPathGroup", "CellModel",
                     }
                     
                 }
-                colnames(gsMatrix)<-pathway
+                colnames(gsMatrix)<-names(pathway)
                 rownames(gsMatrix)<-c(1:model@parameters[2])
                 return(gsMatrix)
             }
 )
-
-radii <- seq(3,length(model@cells[[timeToRow(model,t-1)]]),6)
-prev_radius <- model@cells[[timeToRow(model,t-1)]][radii]
-cur_radius <- model@cells[[timeToRow(model,t)]][radii]

@@ -10,7 +10,7 @@ setGeneric("simulateGToMPathGroup", function(model,pathway)
 
 setMethod("simulateGToMPathGroup", "CellModel",
         function(model,pathway) {
-            nummgenes = rexp(length(pathway),1/3)
+            nummgenes = pathway
             gmMatrix = matrix(0,model@parameters[2],length(nummgenes))
             for(t in 1:model@parameters[2]){
                 radii <- seq(3,length(model@cells[[timeToRow(model,t)]]),6)
@@ -25,7 +25,7 @@ setMethod("simulateGToMPathGroup", "CellModel",
                     gmMatrix[t,] = gmcell/numcells
                 }
             }
-            colnames(gmMatrix)<-pathway
+            colnames(gmMatrix)<-names(pathway)
             rownames(gmMatrix)<-c(1:model@parameters[2])
             #output = gmMatrix[rowSums(gmMatrix[,-1]) != 0,]
             return(gmMatrix)

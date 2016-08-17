@@ -28,10 +28,10 @@ options(width = 3000)
 
 # Introduction
 
-The main objective of the gene expression methods is to be able to simulate the amount of genes expressed in a pathway during certain situations. For the most part, functions are divided into two types of functions with a certain specification in the function name: "group" specifies the function taking the averages of the genes expressed in the cells, and "sing" specifying the function takes the average gene expressed for each cell at the time. All these calculations are based off the model created using *runCancerSim* and either a list or vector of the pathways used in each of the pathway or scenario.
+The main objective of the gene expression methods is to be able to simulate the amount of genes expressed in a pathway during certain situations. For the most part, functions are divided into two types of functions with a certain specification in the function name: "*group*" specifies the function taking the averages of the genes expressed in the cells, and "*sing*" specifying the function takes the average gene expressed for each cell at the time. All these calculations are based off the model created using *runCancerSim* and either a list or vector of the pathways used in each of the pathway or scenario.
 
 
-# *simulateGeneExpGroup* and *simulateGeneExpSing*
+# Gene Summation Functions *simulateGeneExpGroup* and *simulateGeneExpSing*
 
 Within this part of the package, two main functions can be used in order to develop the general gene distributions based on the information wanted. These functions take all the models and merge them together by taking the maximum of each gene expressed.
 
@@ -118,9 +118,15 @@ The option parameter that allows the user to decide on the output's noise model.
 
 *success*
 
-The number of success, "k", that is used to calculate the negative binomial model's, <b>&phi;</b> and <b>&mu;</b> parameters.
+The number of success, "k", that is used to calculate the negative binomial model's, **&phi;** and **&mu;** parameters.
 
-## Other Functions
+## Individual Calculation Functions
+
+The differences between the *suffix* variants of each function used for calculations are described in their respective "**return**" and "**examples**" sections.
+
+
+
+
 
 
 

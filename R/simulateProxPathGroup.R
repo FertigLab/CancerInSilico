@@ -10,7 +10,7 @@ setGeneric("simulateProxPathGroup", function(model,pathway)
 
 setMethod("simulateProxPathGroup", "CellModel",
           function(model,pathway) {
-              proxgenes = rexp(length(pathway),1/3)
+              proxgenes = pathway
               proxMatrix = matrix(0,model@parameters[2],length(proxgenes))
               for(t in 1:model@parameters[2]){
                   xcoords = seq(1,length(model@cells[[timeToRow(model,t)]]),6)
@@ -35,7 +35,7 @@ setMethod("simulateProxPathGroup", "CellModel",
                       proxMatrix[t,] = proxcell/numcells
                   }
               }
-              colnames(proxMatrix) <- pathway
+              colnames(proxMatrix) <- names(pathway)
               rownames(proxMatrix) <- c(1:model@parameters[2])
               return(proxMatrix)
           }

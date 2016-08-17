@@ -10,7 +10,7 @@ setGeneric("simulateProxPathSing", function(model,pathway)
 
 setMethod("simulateProxPathSing", "CellModel",
         function(model,pathway) {
-            proxgenes = rexp(length(pathway),1/3)
+            proxgenes = pathway
             output = list()
             for(t in 1:model@parameters[2]){
                 xcoords = seq(1,length(model@cells[[timeToRow(model,t)]]),6)
@@ -32,7 +32,7 @@ setMethod("simulateProxPathSing", "CellModel",
                 #Matrix Calculation
                 cells = matrix(0,length(xcoords),length(pathway))
                 rownames(cells,TRUE,prefix = "cell ")
-                colnames(cells)<-pathway
+                colnames(cells)<-names(pathway)
                 if(sum(tester/6) == 0){
                     x = rep(0,length(proxgenes))
                     output[[t]] = t(cells)

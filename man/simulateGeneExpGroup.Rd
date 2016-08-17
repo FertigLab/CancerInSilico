@@ -4,7 +4,7 @@
 \alias{simulateGeneExpGroup}
 \title{\code{simulateGeneExpGroup} Simulate Gene Expression Data (Average)}
 \usage{
-simulateGeneExpGroup(model, pathway, perError = 0.1, opt = 1, success = 1)
+simulateGeneExpGroup(model, pathway, perError = 0.1, opt = 1)
 }
 \arguments{
 \item{model}{A CellModel}
@@ -14,8 +14,6 @@ simulateGeneExpGroup(model, pathway, perError = 0.1, opt = 1, success = 1)
 \item{perError}{User defined error for noise calculations}
 
 \item{opt}{Option for which noise error calculated}
-
-\item{success}{Number of Successes in Negative Binomial error model}
 }
 \value{
 the size of the cell population over time
