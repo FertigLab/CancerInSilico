@@ -12,7 +12,7 @@
 #' @export
 #' 
 
-inSilicoRNASeq <- function(CellModels, pathways=NULL, ReferenceDataSet=NULL, fasta=NULL,
+inSilicoRNASeq <- function(CellModels, pathway=NULL, ReferenceDataSet=NULL, fasta=NULL,
                           samplingFrequency=1, combineFUN="max", attrsep = " ", ...){
   
   # call standard function to simulate mean expression values for all pathways
