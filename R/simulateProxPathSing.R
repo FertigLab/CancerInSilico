@@ -28,7 +28,7 @@ setMethod("simulateProxPathSing", "CellModel",
                 test = t(t(test) - rad) - rad
                 tester = apply(test<0.2 & test>0,1,sum)
                 #Genes Per Cell
-                proxcheck = which(tester<=6)
+                proxcheck = which(tester<6)
                 #Matrix Calculation
                 cells = matrix(0,length(xcoords),length(pathway))
                 rownames(cells,TRUE,prefix = "cell ")

@@ -11,29 +11,23 @@ setGeneric("simulateGToSPathGroup", function(model,pathway)
 setMethod("simulateGToSPathGroup", "CellModel",
             function(model,pathway) {
                 numsgenes = rexp(length(pathway),1/3)
-                gsMatrix = matrix(NA,model@parameters[2],length(numsgenes))
+                gsMatrix = matrix(0,model@parameters[2],length(numsgenes))
                 for(t in 1:model@parameters[2]){
-                    radii <- seq(3,length(model@cells[[timeToRow(model,t)]]),6)
-                    radius <- model@cells[[timeToRow(model,t)]][radii]
+                    radii <- seq(3,length(model@cells[[timeToRow(model,t-1)]]),6)
+                    prevradius <- model@cells[[timeToRow(model,t-1)]][radii]
+                    curradius <- model@cells[[timeToRow(model,t)]][radii]
                     #Total Number of Cells
                     numcells = sum(model@cells[[timeToRow(model,t)]][radii] > 0)
-                    #Range for determining a cell
-                    toprange <- max(radius)/sqrt(2) + 0.1
-                    botrange <- max(radius)/sqrt(2) - 0.1
-                    test = subset(radius,radius<toprange & radius>botrange)
+                    test = which(curradius > sqrt(3/2) & prevradius < sqrt(3/2))
                     #Genes Per Cell
                     gscell = length(test) * numsgenes
-                    #GTOS PATHWAY
                     
-                    if(length(test) == 0){
-                        x = rep(0,length(numsgenes))
-                        gsMatrix[t,] = x
-                    }
-                    else{
+                    if(length(test) != 0){
                         #Case: Some cells are in target range
                         #Calculate the average of each gene at the time
                         gsMatrix[t,] = gscell/numcells
                     }
+                    
                 }
                 colnames(gsMatrix)<-pathway
                 rownames(gsMatrix)<-c(1:model@parameters[2])

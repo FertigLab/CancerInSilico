@@ -11,7 +11,7 @@ setGeneric("simulateProxPathGroup", function(model,pathway)
 setMethod("simulateProxPathGroup", "CellModel",
           function(model,pathway) {
               proxgenes = rexp(length(pathway),1/3)
-              proxMatrix = matrix(NA,model@parameters[2],length(proxgenes))
+              proxMatrix = matrix(0,model@parameters[2],length(proxgenes))
               for(t in 1:model@parameters[2]){
                   xcoords = seq(1,length(model@cells[[timeToRow(model,t)]]),6)
                   ycoords = xcoords + 1
@@ -28,14 +28,10 @@ setMethod("simulateProxPathGroup", "CellModel",
                   test = t(t(test) - rad) - rad
                   tester = apply(test<0.2 & test>0,1,sum)
                   #Genes Per Cell
-                  proxcheck = which(tester<=6)
+                  proxcheck = which(tester<6)
                   proxcell = sum(tester[proxcheck]/6) * proxgenes
                   #PROXIMITY PATHWAY
-                  if(sum(tester/6) == 0){
-                      x = rep(0,length(proxgenes))
-                      proxMatrix[t,] = x
-                  }
-                  else{
+                  if(sum(tester/6) != 0){
                       proxMatrix[t,] = proxcell/numcells
                   }
               }

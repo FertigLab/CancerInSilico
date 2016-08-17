@@ -9,7 +9,7 @@
 setGeneric("simulateGrowthFactor", function(model,pathway)
     standardGeneric("simulateGrowthFactor"))
 
-setMethod("simulateGeneExpGroup", "CellModel",
+setMethod("simulateGrowthFactor", "CellModel",
           
         function(model,pathway) {
             
@@ -17,13 +17,20 @@ setMethod("simulateGeneExpGroup", "CellModel",
             gfmatrix = matrix(0,length(model@cells),length(numfgenes))
             
             for(t in 1:length(model@cells)){
+                #Get Model Cell Data
+                radii <- seq(3,length(model@cells[[timeToRow(model,t)]]),6)
+                radius <- model@cells[[timeToRow(model,t)]][radii]
+                growRate <- seq(6,length(model@cells[[timeToRow(model,t)]]),6)
+                rates <- model@cells[[timeToRow(model,t)]][growRate]
+                #Total Number of Cells
+                numcells = sum(model@cells[[timeToRow(model,t)]][radii] > 0)
                 
-                growFact <- seq(6,length(model@cells[[timeToRow(model,t)]]),6)
-                factors <- model@cells[[timeToRow(model,t)]][growFact]
+                avgrates = sum(rates)/(length(rates)*max(rates))
+                gfcell = avgrates * numfcells / numcells
+                
+                gfmatrix[t,] = gfcell
                 
             }
-            
-            
-            
+            return(gfmatrix)
         }
 )

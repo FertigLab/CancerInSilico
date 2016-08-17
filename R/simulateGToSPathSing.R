@@ -14,13 +14,12 @@ setMethod("simulateGToSPathSing", "CellModel",
                 output = list()
                 for(t in 1:model@parameters[2]){
                     radii <- seq(3,length(model@cells[[timeToRow(model,t)]]),6)
-                    radius <- model@cells[[timeToRow(model,t)]][radii]
-                    #Total Number of Cells
-                    numcells = sum(model@cells[[timeToRow(model,t)]][radii] > 0)
-                    #Range for determining a cell
-                    toprange <- max(radius)/sqrt(2) + 0.1
-                    botrange <- max(radius)/sqrt(2) - 0.1
-                    test = which(radius<toprange & radius>botrange)
+                    currradius <- model@cells[[timeToRow(model,t)]][radii]
+                    test = vector();
+                    if(is(try(model@cells[[timeToRow(model,t+1)]][radii],TRUE),'try-error')==FALSE){
+                        nextradius <- model@cells[[timeToRow(model,t+1)]][radii]
+                        test = which(nextradius > sqrt(3/2) & currradius < sqrt(3/2))
+                    }
                     #Matrix Calculation
                     cells = matrix(0,length(radii),length(pathway))
                     rownames(cells,TRUE,prefix = "cell ")

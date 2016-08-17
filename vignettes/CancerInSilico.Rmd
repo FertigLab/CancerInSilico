@@ -276,6 +276,7 @@ Basic Commands:
 b ARG = back ARG timesteps (default ARG = 1)
 n ARG = forward ARG timesteps (default ARG = 1)
 t ARG - jump to timestep ARG (default ARG = 1)
+i ARG - changes default ARG value for commands
 s = summary of cells
 q = quit "console"
 h = basic command help

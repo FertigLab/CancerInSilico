@@ -11,7 +11,7 @@ setGeneric("simulateGToMPathGroup", function(model,pathway)
 setMethod("simulateGToMPathGroup", "CellModel",
         function(model,pathway) {
             nummgenes = rexp(length(pathway),1/3)
-            gmMatrix = matrix(NA,model@parameters[2],length(nummgenes))
+            gmMatrix = matrix(0,model@parameters[2],length(nummgenes))
             for(t in 1:model@parameters[2]){
                 radii <- seq(3,length(model@cells[[timeToRow(model,t)]]),6)
                 #Total Number of Cells
@@ -19,15 +19,10 @@ setMethod("simulateGToMPathGroup", "CellModel",
                 #Genes Per Cell
                 gmcell = length(getCellPhasePos(model,t)) * nummgenes
                 #GTOM PATHWAY
-                if(length(getCellPhasePos(model,t)) == 0){
-                    #Case: None are dividing
-                    x = rep(0,length(nummgenes))
-                    gmMatrix[t,] = x
-                }
-                else{
-                  #Case: Some cells are dividing
-                  #Calculate the average of each gene at the time
-                  gmMatrix[t,] = gmcell/numcells
+                if(length(getCellPhasePos(model,t)) != 0){
+                    #Case: Some cells are dividing
+                    #Calculate the average of each gene at the time
+                    gmMatrix[t,] = gmcell/numcells
                 }
             }
             colnames(gmMatrix)<-pathway
