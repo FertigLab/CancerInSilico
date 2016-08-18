@@ -2,7 +2,7 @@
 #'
 #'
 #' @param initialNum how many cells initially
-#' @param runTime how long the simulation represents in realtime
+#' @param runTime how long the simulation represents in real cellular time (hours)
 #' @param density the density the cells are seeded at
 #' @param cycleLengthDist cycle time distribution
 #' @param drugEffect distribution of drug effects
