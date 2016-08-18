@@ -45,7 +45,7 @@ simulateMeanExpression <- function(CellModels, pathways=NULL, lambda=1/3, Refere
 #' @param ... other input arguments to combineFUN
 #' @return Matrix simulating the mean gene expression values for pathway genes from a \code{\link{CellModel}} simulation at the specified frequency in \code{samplingFrequency}.
 #' 
-simulateSCMeanExpression <- function(CellModels, ncells=96, pathways=NULL, lambda=1/3, 
+simulateMeanSCExpression <- function(CellModels, ncells=96, pathways=NULL, lambda=1/3, 
                                      ReferenceDataSet=NULL,
                                      samplingFrequency=1, combineFUN=max, ...){
   
@@ -54,7 +54,7 @@ simulateSCMeanExpression <- function(CellModels, ncells=96, pathways=NULL, lambd
   pathways <- getPathwaysSim(pathways)
   
   # get gene expression values to use for each pathway
-  pathwayExprsValues <- getPathwayExpressionValues(ReferenceDataset=ReferenceDataset,
+  pathwayExprsValues <- getPathwayExpressionValues(ReferenceDataset=ReferenceDataSet,
                                                    lambda=lambda, pathways=pathways)
   
   # run simulation for each pathway

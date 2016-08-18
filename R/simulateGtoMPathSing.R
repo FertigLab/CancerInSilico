@@ -1,4 +1,4 @@
-#' \code{simulateGToMPathSing} Simulate G2 to Mitosis Phase Gene Expression (Per Cell)
+#' \code{simulateGtoMPathSing} Simulate G2 to Mitosis Phase Gene Expression (Per Cell)
 #'
 #' @param model A CellModel
 #' @param pathway A gene pathway
@@ -6,10 +6,10 @@
 #' @return the size of the cell population over time
 #' @export
 
-setGeneric("simulateGToMPathSing", function(model,pathway,sampFreq = 1)
-    standardGeneric("simulateGToMPathSing"))
+setGeneric("simulateGtoMPathSing", function(model,pathway,sampFreq = 1)
+    standardGeneric("simulateGtoMPathSing"))
 
-setMethod("simulateGToMPathSing", "CellModel",
+setMethod("simulateGtoMPathSing", "CellModel",
         function(model,pathway,sampFreq = 1) {
             nummgenes = pathway
             times = seq(sampFreq,model@parameters[2],sampFreq)
