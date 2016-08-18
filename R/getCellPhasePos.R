@@ -2,6 +2,7 @@
 #'
 #' @param model A CellModel
 #' @param time Time
+#' @param sampFreq Time (in hours) at which to simulate gene expression data
 #' @return the size of the cell population over time
 #' @export
 

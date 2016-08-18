@@ -5,7 +5,7 @@
 \title{\code{inSilicoArray} Simulate gene expression data that would be generated from a microarray}
 \usage{
 inSilicoArray(CellModels, pathways = NULL, lambda = 1/3, perError = 0.1,
-  ReferenceDataSet = NULL, samplingFrequency = 1, combineFUN = "max", ...)
+  ReferenceDataSet = NULL, samplingFrequency = 1, combineFUN = max, ...)
 }
 \arguments{
 \item{pathways}{Optional; A list of genes associated with pathways, defaulting to gene symbols in the package data object \code{\link{inSilicoPathways}}. If specified by the user, names of pathways should be GtoM for genes associated with the G to M cell cycle transition, GtoS for genes associated with G to S, Prox for genes associated with contact, and Growth for genes associated with growth factor receptor signaling.}

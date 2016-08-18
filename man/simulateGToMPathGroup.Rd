@@ -4,14 +4,14 @@
 \alias{simulateGtoMPathGroup}
 \title{\code{simulateGtoMPathGroup} Simulate G2 to Mitosis Phase Gene Expression (Average)}
 \usage{
-simulateGtoMPathGroup(model, pathway, samplingFrequency)
+simulateGtoMPathGroup(model, pathway, sampFreq = 1)
 }
 \arguments{
 \item{model}{A CellModel}
 
 \item{pathway}{A gene pathway}
 
-\item{samplingFrequency}{Time (in hours) at which to simulate gene expression data}
+\item{sampFreq}{Time (in hours) at which to simulate gene expression data}
 }
 \value{
 the size of the cell population over time

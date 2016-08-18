@@ -4,12 +4,14 @@
 \alias{simulateGToSPathSing}
 \title{\code{simulateGToSPathSing} Simulate G1 to Synthesis Phase Gene Expression (Per Cell)}
 \usage{
-simulateGToSPathSing(model, pathway)
+simulateGToSPathSing(model, pathway, sampFreq = 1)
 }
 \arguments{
 \item{model}{A CellModel}
 
 \item{pathway}{A gene pathway}
+
+\item{sampFreq}{Time (in hours) at which to simulate gene expression data}
 }
 \value{
 the size of the cell population over time

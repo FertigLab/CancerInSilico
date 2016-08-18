@@ -2,18 +2,20 @@
 #'
 #' @param model A CellModel
 #' @param pathway A gene pathway
-#' @param samplingFrequency Time (in hours) at which to simulate gene expression data
+#' @param sampFreq Time (in hours) at which to simulate gene expression data
 #' @return the size of the cell population over time
 #' @export
 
-setGeneric("simulateGtoMPathGroup", function(model,pathway,samplingFrequency)
+setGeneric("simulateGtoMPathGroup", function(model,pathway,sampFreq = 1)
     standardGeneric("simulateGtoMPathGroup"))
 
 setMethod("simulateGtoMPathGroup", "CellModel",
-        function(model,pathway,samplingFrequency) {
+        function(model,pathway,sampFreq = 1) {
             nummgenes = pathway
-            gmMatrix = matrix(0,model@parameters[2],length(nummgenes))
-            for(t in 1:model@parameters[2]){
+            times = seq(sampFreq,model@parameters[2],sampFreq)
+            t = sampFreq
+            gmMatrix = matrix(0,length(times),length(nummgenes))
+            while(t < model@parameters[2]){
                 radii <- seq(3,length(model@cells[[timeToRow(model,t)]]),6)
                 #Total Number of Cells
                 numcells = sum(model@cells[[timeToRow(model,t)]][radii] > 0)
@@ -25,10 +27,10 @@ setMethod("simulateGtoMPathGroup", "CellModel",
                     #Calculate the average of each gene at the time
                     gmMatrix[t,] = gmcell/numcells
                 }
+                t = t + sampFreq
             }
             colnames(gmMatrix)<-names(pathway)
-            rownames(gmMatrix)<-c(1:model@parameters[2])
-            #output = gmMatrix[rowSums(gmMatrix[,-1]) != 0,]
+            rownames(gmMatrix)<-times
             return(gmMatrix)
         }
 )

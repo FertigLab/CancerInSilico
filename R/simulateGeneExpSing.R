@@ -4,14 +4,15 @@
 #' @param pathways A list of pathways, Format:(GtoM, GtoS, Prox)
 #' @param perError User defined error for noise calculations
 #' @param opt Option for which noise error calculated
+#' @param sampFreq The frequency at which data is collected
 #' @return the size of the cell population over time
 
-setGeneric("simulateGeneExpSing", function(model,pathways,perError = 0.1,opt = 1)
+setGeneric("simulateGeneExpSing", function(model,pathways,perError = 0.1,opt = 1, sampFreq = 1)
     standardGeneric("simulateGeneExpSing"))
 
 setMethod("simulateGeneExpSing", "CellModel",
           
-        function(model,pathways,perError = 0.1,opt = 1) {
+        function(model,pathways,perError = 0.1,opt = 1, sampFreq = 1) {
             
             #Get Individual Pathways
             gtompath = pathways[[1]]
@@ -33,9 +34,9 @@ setMethod("simulateGeneExpSing", "CellModel",
             proxgenes = genes[temp]
             
             #Create simulation data for each pathway
-            gtom = simulateGToMPathSing(model,nummgenes)
-            gtos = simulateGToSPathSing(model,numsgenes)
-            prox = simulateProxPathSing(model,proxgenes)
+            gtom = simulateGToMPathSing(model,nummgenes, sampFreq)
+            gtos = simulateGToSPathSing(model,numsgenes, sampFreq)
+            prox = simulateProxPathSing(model,proxgenes, sampFreq)
             
             #Output Variable
             output = list()

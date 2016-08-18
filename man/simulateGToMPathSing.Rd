@@ -11,7 +11,7 @@ simulateGToMPathSing(model, pathway, sampFreq = 1)
 
 \item{pathway}{A gene pathway}
 
-\item{sampFreq}{The frequency at which data is collected}
+\item{sampFreq}{Time (in hours) at which to simulate gene expression data}
 }
 \value{
 the size of the cell population over time

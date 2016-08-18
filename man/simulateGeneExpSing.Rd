@@ -4,7 +4,8 @@
 \alias{simulateGeneExpSing}
 \title{\code{simulateGeneExpSing} Simulate Gene Expression Data (Per Cell)}
 \usage{
-simulateGeneExpSing(model, pathways, perError = 0.1, opt = 1)
+simulateGeneExpSing(model, pathways, perError = 0.1, opt = 1,
+  sampFreq = 1)
 }
 \arguments{
 \item{model}{A CellModel}
@@ -14,6 +15,8 @@ simulateGeneExpSing(model, pathways, perError = 0.1, opt = 1)
 \item{perError}{User defined error for noise calculations}
 
 \item{opt}{Option for which noise error calculated}
+
+\item{sampFreq}{The frequency at which data is collected}
 }
 \value{
 the size of the cell population over time

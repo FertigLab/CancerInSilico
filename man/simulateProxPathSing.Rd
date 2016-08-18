@@ -10,6 +10,8 @@ simulateProxPathSing(model, pathway)
 \item{model}{A CellModel}
 
 \item{pathway}{A gene pathway}
+
+\item{sampFreq}{Time (in hours) at which to simulate gene expression data}
 }
 \value{
 the size of the cell population over time

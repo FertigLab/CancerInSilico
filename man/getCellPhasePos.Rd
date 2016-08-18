@@ -10,6 +10,8 @@ getCellPhasePos(model, time, sampFreq)
 \item{model}{A CellModel}
 
 \item{time}{Time}
+
+\item{sampFreq}{Time (in hours) at which to simulate gene expression data}
 }
 \value{
 the size of the cell population over time

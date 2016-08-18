@@ -2,7 +2,7 @@
 #'
 #' @param model A CellModel
 #' @param pathway A gene pathway
-#' @param sampFreq The frequency at which data is collected
+#' @param sampFreq Time (in hours) at which to simulate gene expression data
 #' @return the size of the cell population over time
 #' @export
 
