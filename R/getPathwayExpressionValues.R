@@ -11,7 +11,7 @@ getPathwayExpressionValues <- function(ReferenceDataset=NULL, lambda=1/3, pathwa
     
     pathValues <- lapply(pathways,function(x){
       val <- rexp(length(x),rate=lambda)
-      names(val) <- names(x)
+      names(val) <- x
       return(val)
     })
     

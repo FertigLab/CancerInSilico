@@ -14,7 +14,7 @@ setMethod("simulateGrowthPathGroup", "CellModel",
           
         function(model,pathway,samplingFrequency) {
             
-            numfgenes = rexp(length(pathway),1/3)
+            numfgenes = pathway 
             gfmatrix = matrix(0,model@parameters[2],length(numfgenes))
             
             for(t in 1:model@parameters[2]){
@@ -32,6 +32,9 @@ setMethod("simulateGrowthPathGroup", "CellModel",
                 gfmatrix[t,] = gfcell
                 
             }
+   
+            colnames(gfmatrix) <- names(pathway)
+
             return(gfmatrix)
         }
 )

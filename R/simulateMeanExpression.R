@@ -23,7 +23,7 @@ simulateMeanExpression <- function(CellModels, pathways=NULL, lambda=1/3, Refere
   # run simulation for each pathway
   pathSimOutput <- list()
   for (path in names(pathwayExprsValues)) {
-    pathSimOutput[[path]] <- eval(parse(text=sprintf("simulate%sPathGroup(CellModels, pathwayExprsValues[[path]], samplingFrequency)",
+    pathSimOutput[[path]] <- eval(parse(text=sprintf("t(simulate%sPathGroup(CellModels, pathwayExprsValues[[path]], samplingFrequency))",
                                                      path)))
   }
 

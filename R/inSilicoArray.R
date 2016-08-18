@@ -13,7 +13,7 @@
 #' 
 
 inSilicoArray <- function(CellModels, pathways=NULL, lambda=1/3, perError=0.1, ReferenceDataSet=NULL, 
-                          samplingFrequency=1, combineFUN="max", ...){
+                          samplingFrequency=1, combineFUN=max, ...){
   
   # call standard function to simulate mean expression values for all pathways
   simMeanExprs <- simulateMeanExpression(CellModels=CellModels, pathways=pathways, 
@@ -23,7 +23,7 @@ inSilicoArray <- function(CellModels, pathways=NULL, lambda=1/3, perError=0.1, R
   
   # simulate data with a normal error model
   sdMatrix <- pmax(perError*simMeanExprs, perError)
-  outData <- simMeanExprs + sdMatrix*rnorm(length(simMeanExprs), nrow=nrow(simMeanExprs))
+  outData <- simMeanExprs + sdMatrix*matrix(rnorm(length(simMeanExprs)), nrow=nrow(simMeanExprs))
   
   # return simulated data matrix
   return(outData)
