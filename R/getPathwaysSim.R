@@ -10,6 +10,7 @@ getPathwaysSim <- function(pathways) {
   if (is.null(pathways)) {
     # load default pathways 
     data('inSilicoPathways', package = 'CancerInSilico')
+    return(inSilicoPathways)
   } else {
     # find pathways that should be simulated with CancerInSilico
     pathways <- pathways[intersect(names(pathways), pathSim)]
@@ -27,8 +28,9 @@ getPathwaysSim <- function(pathways) {
                     paste(names(pathways), collapse=", ")))
     }
     
+    return(pathways)
+
   }
   
-  return(pathways)
   
 }
