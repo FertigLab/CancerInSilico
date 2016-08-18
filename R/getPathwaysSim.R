@@ -8,8 +8,7 @@ getPathwaysSim <- function(pathways) {
   pathSim <- c('GtoM', 'GtoS', 'Prox', 'Growth')
   
   if (is.null(pathways)) {
-    # load default pathways 
-    data('inSilicoPathways', package = 'CancerInSilico')
+    # use default pathways from the package 
     return(inSilicoPathways)
   } else {
     # find pathways that should be simulated with CancerInSilico
