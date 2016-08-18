@@ -12,7 +12,7 @@ runCancerSim(initialNum, runTime, density = 0.01, cycleLengthDist = 12,
 \arguments{
 \item{initialNum}{how many cells initially}
 
-\item{runTime}{how long the simulation represents in realtime}
+\item{runTime}{how long the simulation represents in real cellular time (hours)}
 
 \item{density}{the density the cells are seeded at}
 

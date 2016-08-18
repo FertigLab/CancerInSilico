@@ -1,15 +1,16 @@
-#' \code{simulateGToMPathGroup} Simulate G2 to Mitosis Phase Gene Expression (Average)
+#' \code{simulateGtoMPathGroup} Simulate G2 to Mitosis Phase Gene Expression (Average)
 #'
 #' @param model A CellModel
 #' @param pathway A gene pathway
+#' @param samplingFrequency Time (in hours) at which to simulate gene expression data
 #' @return the size of the cell population over time
 #' @export
 
-setGeneric("simulateGToMPathGroup", function(model,pathway)
-    standardGeneric("simulateGToMPathGroup"))
+setGeneric("simulateGtoMPathGroup", function(model,pathway,samplingFrequency)
+    standardGeneric("simulateGtoMPathGroup"))
 
-setMethod("simulateGToMPathGroup", "CellModel",
-        function(model,pathway) {
+setMethod("simulateGtoMPathGroup", "CellModel",
+        function(model,pathway,samplingFrequency) {
             nummgenes = pathway
             gmMatrix = matrix(0,model@parameters[2],length(nummgenes))
             for(t in 1:model@parameters[2]){

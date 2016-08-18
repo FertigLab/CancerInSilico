@@ -4,12 +4,14 @@
 \alias{simulateProxPathGroup}
 \title{\code{simulateProxPathGroup} Simulate Proximity Based Gene Expression (Average)}
 \usage{
-simulateProxPathGroup(model, pathway)
+simulateProxPathGroup(model, pathway, samplingFrequency)
 }
 \arguments{
 \item{model}{A CellModel}
 
 \item{pathway}{A gene pathway}
+
+\item{samplingFrequency}{time (in hours) to sample gene expression data}
 }
 \value{
 the size of the cell population over time

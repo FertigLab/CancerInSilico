@@ -1,19 +1,20 @@
-#' \code{simulateGrowthFactor} Simulate Gene Expression Data (Average)
+#' \code{simulateGrowthPathGroup} Simulate Gene Expression Data (Average)
 #'
 #' @param model A CellModel
 #' @param pathway A vector of gene names
+#' @param samplingFrequency Time (in hours) at which to simulate gene expression data
 #' @return the size of the cell population over time
 #' @export
 
 
-setGeneric("simulateGrowthFactor", function(model,pathway)
-    standardGeneric("simulateGrowthFactor"))
+setGeneric("simulateGrowthPathGroup", function(model,pathway,samplingFrequency)
+    standardGeneric("simulateGrowthPathGroup"))
 
-setMethod("simulateGrowthFactor", "CellModel",
+setMethod("simulateGrowthPathGroup", "CellModel",
           
-        function(model,pathway) {
+        function(model,pathway,samplingFrequency) {
             
-            numfgenes = rexp(length(pathway),1/3)
+            numfgenes = pathway 
             gfmatrix = matrix(0,model@parameters[2],length(numfgenes))
             
             for(t in 1:model@parameters[2]){
@@ -31,6 +32,9 @@ setMethod("simulateGrowthFactor", "CellModel",
                 gfmatrix[t,] = gfcell
                 
             }
+   
+            colnames(gfmatrix) <- names(pathway)
+
             return(gfmatrix)
         }
 )

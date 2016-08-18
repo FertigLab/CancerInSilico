@@ -1,15 +1,16 @@
-#' \code{simulateGToSPathGroup} Simulate G1 to Synthesis Phase Gene Expression (Average)
+#' \code{simulateGtoSPathGroup} Simulate G1 to Synthesis Phase Gene Expression (Average)
 #'
 #' @param model A CellModel
 #' @param pathway A gene pathway
+#' @param samplingFrequency time (in hours) to sample gene expression data
 #' @return the size of the cell population over time
 #' @export
 
-setGeneric("simulateGToSPathGroup", function(model,pathway)
-    standardGeneric("simulateGToSPathGroup"))
+setGeneric("simulateGtoSPathGroup", function(model,pathway, samplingFrequency)
+    standardGeneric("simulateGtoSPathGroup"))
 
-setMethod("simulateGToSPathGroup", "CellModel",
-            function(model,pathway) {
+setMethod("simulateGtoSPathGroup", "CellModel",
+            function(model,pathway, samplingFrequency) {
                 numsgenes = pathway
                 gsMatrix = matrix(0,model@parameters[2],length(numsgenes))
                 for(t in 1:model@parameters[2]){

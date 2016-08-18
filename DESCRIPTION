@@ -1,7 +1,7 @@
 Package: CancerInSilico
 Type: Package
 Title: An R interface for computational modeling of tumor progression
-Version: 0.99.3
+Version: 0.99.4
 Date: 2016-06-01
 Author:
     Thomas D. Sherman,
@@ -12,13 +12,15 @@ Maintainer:
     Elana J. Fertig <ejfertig@jhmi.edu>
 Description: The CancerInSilico package provides an R interface for running mathematical models of tumor progresson. This package has the underlying models implemented in C++ and the output and analysis features implemented in R.
 License: GPL (>= 2)
+LazyData: true
 Imports:
     methods,
     grDevices,
     graphics,
     stats
 Depends:
-    Rcpp
+    Rcpp,
+    polyester
 LinkingTo:
     Rcpp,
     testthat,
