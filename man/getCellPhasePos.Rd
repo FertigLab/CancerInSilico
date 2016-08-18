@@ -4,7 +4,7 @@
 \alias{getCellPhasePos}
 \title{\code{getCellPhasePos} Determines which cells are in the process of dividing}
 \usage{
-getCellPhasePos(model, time)
+getCellPhasePos(model, time, sampFreq)
 }
 \arguments{
 \item{model}{A CellModel}

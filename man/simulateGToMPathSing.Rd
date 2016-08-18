@@ -4,12 +4,14 @@
 \alias{simulateGToMPathSing}
 \title{\code{simulateGToMPathSing} Simulate G2 to Mitosis Phase Gene Expression (Per Cell)}
 \usage{
-simulateGToMPathSing(model, pathway)
+simulateGToMPathSing(model, pathway, sampFreq = 1)
 }
 \arguments{
 \item{model}{A CellModel}
 
 \item{pathway}{A gene pathway}
+
+\item{sampFreq}{The frequency at which data is collected}
 }
 \value{
 the size of the cell population over time
