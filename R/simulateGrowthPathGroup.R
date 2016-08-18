@@ -2,16 +2,17 @@
 #'
 #' @param model A CellModel
 #' @param pathway A vector of gene names
+#' @param samplingFrequency Time (in hours) at which to simulate gene expression data
 #' @return the size of the cell population over time
 #' @export
 
 
-setGeneric("simulateGrowthFactor", function(model,pathway)
+setGeneric("simulateGrowthFactor", function(model,pathway,samplingFrequency)
     standardGeneric("simulateGrowthFactor"))
 
 setMethod("simulateGrowthFactor", "CellModel",
           
-        function(model,pathway) {
+        function(model,pathway,samplingFrequency) {
             
             numfgenes = rexp(length(pathway),1/3)
             gfmatrix = matrix(0,model@parameters[2],length(numfgenes))

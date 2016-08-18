@@ -8,6 +8,8 @@ simulateMeanExpression(CellModels, pathways = NULL, lambda = 1/3,
   ReferenceDataSet = NULL, samplingFrequency = 1, combineFUN = max, ...)
 }
 \arguments{
+\item{CellModels}{A \code{\link{CellModel}}}
+
 \item{pathways}{Optional; A list of genes associated with pathways, defaulting to gene symbols in the package data object \code{\link{inSilicoPathways}}. If specified by the user, names of pathways should be GtoM for genes associated with the G to M cell cycle transition, GtoS for genes associated with G to S, Prox for genes associated with contact, and Growth for genes associated with growth factor receptor signaling.}
 
 \item{lambda}{Optional; Parameter of the exponential distribution used to determine the maximum expression value of each simulated gene in the pathway. Defaults to 1/3. Not used if values are determined from a dataset in \code{ReferenceDataSet}.}
@@ -19,8 +21,6 @@ simulateMeanExpression(CellModels, pathways = NULL, lambda = 1/3,
 \item{combineFUN}{Optional; Function used to combine expression values from genes shared in multiple pathways. Defaults to maximum value in any condition.}
 
 \item{...}{other input arguments to combineFUN}
-
-\item{model}{A \code{\link{CellModel}}}
 }
 \value{
 Matrix simulating the mean gene expression values for pathway genes from a \code{\link{CellModel}} simulation at the specified frequency in \code{samplingFrequency}.

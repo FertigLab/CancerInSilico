@@ -2,14 +2,15 @@
 #'
 #' @param model A CellModel
 #' @param pathway A gene pathway
+#' @param samplingFrequency time (in hours) to sample gene expression data
 #' @return the size of the cell population over time
 #' @export
 
-setGeneric("simulateProxPathGroup", function(model,pathway)
+setGeneric("simulateProxPathGroup", function(model,pathway,samplingFrequency)
     standardGeneric("simulateProxPathGroup"))
 
 setMethod("simulateProxPathGroup", "CellModel",
-          function(model,pathway) {
+          function(model,pathway,samplingFrequency) {
               proxgenes = pathway
               proxMatrix = matrix(0,model@parameters[2],length(proxgenes))
               for(t in 1:model@parameters[2]){

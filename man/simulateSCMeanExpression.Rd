@@ -9,6 +9,8 @@ simulateSCMeanExpression(CellModels, ncells = 96, pathways = NULL,
   combineFUN = max, ...)
 }
 \arguments{
+\item{CellModels}{A \code{\link{CellModel}}}
+
 \item{ncells}{Optional; number of cells for single cell RNA-seq. Default=96.}
 
 \item{pathways}{Optional; A list of genes associated with pathways, defaulting to gene symbols in the package data object \code{\link{inSilicoPathways}}. If specified by the user, names of pathways should be GtoM for genes associated with the G to M cell cycle transition, GtoS for genes associated with G to S, Prox for genes associated with contact, and Growth for genes associated with growth factor receptor signaling.}
@@ -22,8 +24,6 @@ simulateSCMeanExpression(CellModels, ncells = 96, pathways = NULL,
 \item{combineFUN}{Optional; Function used to combine expression values from genes shared in multiple pathways. Defaults to maximum value in any condition.}
 
 \item{...}{other input arguments to combineFUN}
-
-\item{model}{A \code{\link{CellModel}}}
 }
 \value{
 Matrix simulating the mean gene expression values for pathway genes from a \code{\link{CellModel}} simulation at the specified frequency in \code{samplingFrequency}.

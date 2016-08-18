@@ -1,6 +1,6 @@
 #' \code{simulateMeanExpression} Standardized function to simulate mean gene expression values for all datatypes
 #'
-#' @param model A \code{\link{CellModel}}
+#' @param CellModels A \code{\link{CellModel}}
 #' @param pathways Optional; A list of genes associated with pathways, defaulting to gene symbols in the package data object \code{\link{inSilicoPathways}}. If specified by the user, names of pathways should be GtoM for genes associated with the G to M cell cycle transition, GtoS for genes associated with G to S, Prox for genes associated with contact, and Growth for genes associated with growth factor receptor signaling.
 #' @param ReferenceDataSet Optional; Reference gene expression dataset to use to calculate the gene expression values for genes in the pathway to use as mean values in the simulation. Defaults values randomly selected from an exponential distribution with parameter \code{lambda}. If specified by the user, \code{row.names} of the ReferenceDataset must match gene names in the \code{pathway} argument.
 #' @param lambda Optional; Parameter of the exponential distribution used to determine the maximum expression value of each simulated gene in the pathway. Defaults to 1/3. Not used if values are determined from a dataset in \code{ReferenceDataSet}.
@@ -17,13 +17,13 @@ simulateMeanExpression <- function(CellModels, pathways=NULL, lambda=1/3, Refere
   pathways <- getPathwaysSim(pathways)
 
   # get gene expression values to use for each pathway
-  pathwayExprsValues <- getPathwayExpressionValues(ReferenceDataset=ReferenceDataset,
+  pathwayExprsValues <- getPathwayExpressionValues(ReferenceDataset=ReferenceDataSet,
                                                    lambda=lambda, pathways=pathways)
 
   # run simulation for each pathway
   pathSimOutput <- list()
   for (path in names(pathwayExprsValues)) {
-    pathSimOutput[[path]] <- eval(parse(text=sprintf("simulate%sPathGroup(model, pathwayExprsValues[[path]], samplingFrequency)",
+    pathSimOutput[[path]] <- eval(parse(text=sprintf("simulate%sPathGroup(CellModels, pathwayExprsValues[[path]], samplingFrequency)",
                                                      path)))
   }
 
@@ -35,7 +35,7 @@ simulateMeanExpression <- function(CellModels, pathways=NULL, lambda=1/3, Refere
 
 #' \code{simulateSCMeanExpression} Standardized function to simulate mean gene expression values for all single cell RNA-seq
 #'
-#' @param model A \code{\link{CellModel}}
+#' @param CellModels A \code{\link{CellModel}}
 #' @param ncells Optional; number of cells for single cell RNA-seq. Default=96.
 #' @param pathways Optional; A list of genes associated with pathways, defaulting to gene symbols in the package data object \code{\link{inSilicoPathways}}. If specified by the user, names of pathways should be GtoM for genes associated with the G to M cell cycle transition, GtoS for genes associated with G to S, Prox for genes associated with contact, and Growth for genes associated with growth factor receptor signaling.
 #' @param ReferenceDataSet Optional; Reference gene expression dataset to use to calculate the gene expression values for genes in the pathway to use as mean values in the simulation. Defaults values randomly selected from an exponential distribution with parameter \code{lambda}. If specified by the user, \code{row.names} of the ReferenceDataset must match gene names in the \code{pathway} argument.
@@ -60,7 +60,7 @@ simulateSCMeanExpression <- function(CellModels, ncells=96, pathways=NULL, lambd
   # run simulation for each pathway
   pathSimOutput <- list()
   for (path in names(pathwayExprsValues)) {
-    pathSimOutput[[path]] <- eval(parse(text=sprintf("simulate%sPathSing(model, pathwayExprsValues[[path]], samplingFrequency=samplingFrequency, ncells=ncells)",
+    pathSimOutput[[path]] <- eval(parse(text=sprintf("simulate%sPathSing(CellModels, pathwayExprsValues[[path]], samplingFrequency=samplingFrequency, ncells=ncells)",
                                                      path)))
   }
   
