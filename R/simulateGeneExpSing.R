@@ -5,7 +5,6 @@
 #' @param perError User defined error for noise calculations
 #' @param opt Option for which noise error calculated
 #' @return the size of the cell population over time
-#' @export
 
 setGeneric("simulateGeneExpSing", function(model,pathways,perError = 0.1,opt = 1)
     standardGeneric("simulateGeneExpSing"))
