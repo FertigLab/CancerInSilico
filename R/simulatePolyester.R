@@ -34,6 +34,7 @@ simulatePolyester <- function(simMeanExprs=simMeanExprs,fasta=fasta, attrsep = a
   
   # run Polyester to simulate gene expression data
   simulate_experiment_countmat(fasta=fasta,
-                               num_reps=1, readmat= newmu, ...)
+                               num_reps=1, readmat= newmu, 
+                               attrsep = attrsep, ...)
   
 }
