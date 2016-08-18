@@ -22,6 +22,8 @@ inSilicoSCRNASeq <- function(CellModels, ncells=96, pathways=NULL, ReferenceData
                                            samplingFrequency=samplingFrequency, combineFUN=combineFUN,
                                            ...)
   
+  # convert to counts from estimated log-transformed data
+  simMeanExprs <- round(2^simMeanExprs-1)
   
   if (is.null(fasta)) {
     # simulate single cell data with a negative binomial error model
