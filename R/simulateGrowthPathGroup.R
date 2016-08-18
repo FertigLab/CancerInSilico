@@ -1,4 +1,4 @@
-#' \code{simulateGrowthFactor} Simulate Gene Expression Data (Average)
+#' \code{simulateGrowthPathGroup} Simulate Gene Expression Data (Average)
 #'
 #' @param model A CellModel
 #' @param pathway A vector of gene names
@@ -7,10 +7,10 @@
 #' @export
 
 
-setGeneric("simulateGrowthFactor", function(model,pathway,samplingFrequency)
-    standardGeneric("simulateGrowthFactor"))
+setGeneric("simulateGrowthPathGroup", function(model,pathway,samplingFrequency)
+    standardGeneric("simulateGrowthPathGroup"))
 
-setMethod("simulateGrowthFactor", "CellModel",
+setMethod("simulateGrowthPathGroup", "CellModel",
           
         function(model,pathway,samplingFrequency) {
             
