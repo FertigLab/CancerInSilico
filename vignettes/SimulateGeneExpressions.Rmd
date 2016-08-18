@@ -53,7 +53,7 @@ average_genes_expressed[,1:5]
 ### *simulateGeneExpGroup* Function Signature
 
 ```{r,eval=FALSE}
-simulateGeneExpGroup(model,pathway,perError = 0.1,opt = 1,success = 1)
+simulateGeneExpGroup(model,pathway,perError = 0.1,opt = 1)
 ```
 
 ### Output of *simulateGeneExpGroup*
@@ -66,7 +66,7 @@ The output of *simulateGeneExpGroup* is stored into a matrix object that compare
 The *simulateGeneExpSing* function provides a centralized function to generate all three models of the pathways simulated, specfically for the simulations running to determine gene expression for each individual cell. It also creates a noise model based on the option selected, which is added to the simulation data to simulate real-life data collection. The following code provides an example of a run of *simulateGeneExpSing* to simulate the average gene expression with a negative binomial distribution noise model at each hour.
 
 ```{r}
-genes_per_cell_expressed = simulateGeneExpSing(data, pathways, opt = 2, success = 5)
+genes_per_cell_expressed = simulateGeneExpSing(data, pathways, opt = 2)
 
 ```
 ```{r,echo = FALSE,collapse=TRUE}
@@ -78,7 +78,7 @@ genes_per_cell_expressed[1:2]
 ### *simulateGeneExpsing* Function Signature
 
 ```{r,eval=FALSE}
-simulateGeneExpSing(model,pathway,perError = 0.1,opt = 1,success = 1)
+simulateGeneExpSing(model,pathway,perError = 0.1,opt = 1)
 ```
 
 ### Output of *simulateGeneExpSing*
@@ -92,11 +92,10 @@ Both functions, *simulateGeneExpSing* and *simulateGeneExpGroup* have the same p
 
 ### Parameter Overview
 
-* *model* - [CellModel] Required Parameter; Generated from *runCancerSim*  
-* *pathway* - [List] Required Parameter; Must be a list of 3  
-* *perError* - [Double] Optional Parameter; Should be less than 1  
-* *opt* - [Integer] Optional Parameter; Varies from 1 to 3  
-* *success* - [Double] Optional Parameter; Greater than or equal to 1  
+*model* - [CellModel] Required Parameter; Generated from *runCancerSim*  
+*pathway* - [List] Required Parameter; Must be a list of 3  
+*perError* - [Double] Optional Parameter; Should be less than 1  
+*opt* - [Integer] Optional Parameter; Varies from 1 to 3  
 
 ### Parameter Description
 
@@ -116,17 +115,58 @@ The amount possible error that can be generated using the data from the model. T
 
 The option parameter that allows the user to decide on the output's noise model.
 
-*success*
-
-The number of success, "k", that is used to calculate the negative binomial model's, **&phi;** and **&mu;** parameters.
 
 ## Individual Calculation Functions
 
 The differences between the *suffix* variants of each function used for calculations are described in their respective "**return**" and "**examples**" sections.
 
+### *simulateGToMPath*
+
+This is the function that generates a simulation for the G<sub>2</sub> to Mitosis pathway.
+
+**Function Signature:**
+
+
+**Arguments:**
+
+
+**Return:**
+
+
+**Example:**
 
 
 
+### *simulateGToSPath*
 
+This is the function that generates a simulation for the G<sub>1</sub> to Synthesis pathway.
+
+**Function Signature:**
+
+
+**Arguments:**
+
+
+**Return:**
+
+
+**Example:**
+
+
+### *simulateProxPath*
+
+
+This is the function that generates a simulation for the Contact Inhibition pathway.
+
+**Function Signature:**
+
+
+**Arguments:**
+
+
+**Return:**
+
+
+**Example:**
 
 

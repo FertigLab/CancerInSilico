@@ -4,12 +4,13 @@
 \alias{simulateGeneExpGroup}
 \title{\code{simulateGeneExpGroup} Simulate Gene Expression Data (Average)}
 \usage{
-simulateGeneExpGroup(model, pathway, perError = 0.1, opt = 1)
+simulateGeneExpGroup(model, pathways, perError = 0.1, opt = 1,
+  frequency = 1)
 }
 \arguments{
 \item{model}{A CellModel}
 
-\item{pathway}{A list of pathways, Format:(GtoM, GtoS, Prox)}
+\item{pathways}{A list of pathways, Format:(GtoM, GtoS, Prox)}
 
 \item{perError}{User defined error for noise calculations}
 

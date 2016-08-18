@@ -7,12 +7,12 @@
 #' @return the size of the cell population over time
 #' @export
 
-setGeneric("simulateGeneExpGroup", function(model,pathways,perError = 0.1,opt = 1)
+setGeneric("simulateGeneExpGroup", function(model,pathways,perError = 0.1,opt = 1,frequency =1 )
     standardGeneric("simulateGeneExpGroup"))
 
 setMethod("simulateGeneExpGroup", "CellModel",
           
-        function(model,pathways,perError = 0.1,opt = 1) {
+        function(model,pathways,perError = 0.1,opt = 1,frequency = 1) {
                   
             #Get Individual Pathways
             gtompath = pathways[[1]]
@@ -86,6 +86,7 @@ setMethod("simulateGeneExpGroup", "CellModel",
                 }
                 output = output + bimatrix
             }
+            
             return(t(output))
                 
         }

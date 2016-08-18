@@ -5,14 +5,18 @@
 #' @return the size of the cell population over time
 #' @export
 
-setGeneric("simulateGToSPathSing", function(model,pathway)
+setGeneric("simulateGToSPathSing", function(model,pathway,sampFreq = 1)
     standardGeneric("simulateGToSPathSing"))
 
 setMethod("simulateGToSPathSing", "CellModel",
-            function(model,pathway) {
+            function(model,pathway,sampFreq = 1) {
                 numsgenes = pathway
-                output = list()
-                for(t in 1:model@parameters[2]){
+                times = seq(sampFreq,model@parameters[2],sampFreq)
+                altout = matrix(NA,length(pathway),length(times) * model@cells[[times[length(times)]]])
+                cnames = vector()
+                count = 1
+                t = sampFreq
+                while(t < model@parameters[2]){
                     radii <- seq(3,length(model@cells[[timeToRow(model,t)]]),6)
                     currradius <- model@cells[[timeToRow(model,t)]][radii]
                     test = vector();
@@ -22,18 +26,26 @@ setMethod("simulateGToSPathSing", "CellModel",
                     }
                     #Matrix Calculation
                     cells = matrix(0,length(radii),length(pathway))
-                    rownames(cells,TRUE,prefix = "cell ")
-                    colnames(cells)<-names(pathway)
+                    #Generate Column Names
+                    test = paste("t",t,rownames(cells,FALSE,"c"))
+                    cnames = append(cnames,test)
+                    #Add to Matrix
                     if(length(test) == 0){
-                        output[[t]] = t(cells)
+                        altout[,count:(count+length(radii)-1)] = t(cells)
+                        count = count + length(radii)
                     }
                     else{
                         #Case: Some cells are in target range
                         #Calculate the average of each gene at the time
                         cells[test,] = numsgenes
-                        output[[t]] = t(cells)
+                        altout[,count:(count+length(radii)-1)] = t(cells)
+                        count = count + length(radii)
                     }
+                    t = t + 1
                 }
-                return(output)
+                altout <- altout[,colSums(is.na(altout))<nrow(altout)]
+                rownames(altout) <- names(pathway)
+                colnames(altout) <- cnames
+                return(altout)
             }
 )
