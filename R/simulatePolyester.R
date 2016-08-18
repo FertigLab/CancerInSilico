@@ -28,7 +28,11 @@ simulatePolyester <- function(simMeanExprs=simMeanExprs,fasta=fasta, attrsep = a
     for (i in intersect(unique(gnames),row.names(simMeanExprs))){ #for each gene that is in common between the input and the fasta,
       # distribute reads across transcripts for the same gene
       # distributed according to the relative size of each transcript
-      newmu[which(gnames==i),j]=(simMeanExprs[i,j]*width(transcripts)[gnames==i]/(sum(width(transcripts)[gnames==i])))
+      sampleReads <- sample.int(n=length(which(gnames==i)),
+                                size=simMeanExprs[i,j], replace=T,
+                                prob=width(transcripts)[gnames==i] / 
+                                  (sum(width(transcripts)[gnames==i])))
+      newmu[which(gnames==i),j] <- as.numeric(factor(sampleReads,levels=1:length(which(gnames==i))))
     }
     
   }
