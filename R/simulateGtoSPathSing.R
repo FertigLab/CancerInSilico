@@ -3,14 +3,15 @@
 #' @param model A CellModel
 #' @param pathway A gene pathway
 #' @param sampFreq Time (in hours) at which to simulate gene expression data
+#' @param nCell Number of cells selected for a random sample at given time
 #' @return the size of the cell population over time
 #' @export
 
-setGeneric("simulateGtoSPathSing", function(model,pathway,sampFreq = 1)
+setGeneric("simulateGtoSPathSing", function(model,pathway,sampFreq = 1,ncell = 0)
     standardGeneric("simulateGtoSPathSing"))
 
 setMethod("simulateGtoSPathSing", "CellModel",
-            function(model,pathway,sampFreq = 1) {
+            function(model,pathway,sampFreq = 1,ncell = 0) {
                 numsgenes = pathway
                 times = seq(sampFreq,model@parameters[2],sampFreq)
                 altout = matrix(NA,length(pathway),length(times) * model@cells[[times[length(times)]]])
@@ -28,19 +29,34 @@ setMethod("simulateGtoSPathSing", "CellModel",
                     #Matrix Calculation
                     cells = matrix(0,length(radii),length(pathway))
                     #Generate Column Names
-                    test = paste("t",t,rownames(cells,FALSE,"c"))
-                    cnames = append(cnames,test)
+                    tests = paste("t",t,rownames(cells,FALSE,"c"))
+                    if(ncell != 0){
+                        if(length(radii)< ncell){
+                            ncell2 = length(radii)
+                        }
+                        else{
+                            ncell2 = ncell
+                        }
+                        samp = sample(1:length(radii),ncell2)
+                        tests = tests[samp]
+                        cells = matrix(0,length(samp),length(pathway))
+                        x = samp[which(samp %in% test)]
+                    }
+                    else{
+                        x = test
+                    }
+                    cnames = append(cnames,tests)
                     #Add to Matrix
-                    if(length(test) == 0){
-                        altout[,count:(count+length(radii)-1)] = t(cells)
-                        count = count + length(radii)
+                    if(length(x) == 0){
+                        altout[,count:(count+nrow(cells)-1)] = t(cells)
+                        count = count + nrow(cells)
                     }
                     else{
                         #Case: Some cells are in target range
                         #Calculate the average of each gene at the time
-                        cells[test,] = numsgenes
-                        altout[,count:(count+length(radii)-1)] = t(cells)
-                        count = count + length(radii)
+                        cells[x,] = numsgenes
+                        altout[,count:(count+nrow(cells)-1)] = t(cells)
+                        count = count + nrow(cells)
                     }
                     t = t + 1
                 }

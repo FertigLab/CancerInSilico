@@ -5,7 +5,7 @@
 \title{\code{inSilicoRNASeq} Simulate gene expression data that would be generated from a RNA-seq}
 \usage{
 inSilicoRNASeq(CellModels, pathways = NULL, ReferenceDataSet = NULL,
-  fasta = NULL, samplingFrequency = 1, combineFUN = "max",
+  fasta = NULL, samplingFrequency = 1, lambda = 1/3, combineFUN = max,
   attrsep = " ", ...)
 }
 \arguments{
@@ -16,6 +16,8 @@ inSilicoRNASeq(CellModels, pathways = NULL, ReferenceDataSet = NULL,
 \item{fasta}{Optional; NULL value will create a matrix of counts with a negative binomial error model. Otherwise, path to FASTA file containing transcripts from which to simulate reads. See details in \code{\link{simulate_experiment_countmat}}.}
 
 \item{samplingFrequency}{Optional; Distance between time points in hours at which gene expression values are simulated. Defaults to every hour.}
+
+\item{lambda}{Optional; Parameter of the exponential distribution used to determine the maximum expression value of each simulated gene in the pathway. Defaults to 1/3. Not used if values are determined from a dataset in \code{ReferenceDataSet}.}
 
 \item{combineFUN}{Optional; One of max, sum, mean, or median to specify the function used to combine expression values from genes shared in multiple pathways. Defaults to maximum value in any condition (max).}
 

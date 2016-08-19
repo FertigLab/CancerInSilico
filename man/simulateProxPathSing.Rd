@@ -4,7 +4,7 @@
 \alias{simulateProxPathSing}
 \title{\code{simulateProxPathSing} Simulate Proximity Based Gene Expression (Per Cell)}
 \usage{
-simulateProxPathSing(model, pathway)
+simulateProxPathSing(model, pathway, sampFreq = 1, ncell = 0)
 }
 \arguments{
 \item{model}{A CellModel}
@@ -12,6 +12,8 @@ simulateProxPathSing(model, pathway)
 \item{pathway}{A gene pathway}
 
 \item{sampFreq}{Time (in hours) at which to simulate gene expression data}
+
+\item{nCell}{Number of cells selected for a random sample at given time}
 }
 \value{
 the size of the cell population over time

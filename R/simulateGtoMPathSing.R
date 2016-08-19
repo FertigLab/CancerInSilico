@@ -3,14 +3,15 @@
 #' @param model A CellModel
 #' @param pathway A gene pathway
 #' @param sampFreq Time (in hours) at which to simulate gene expression data
+#' @param nCell Number of cells selected for a random sample at given time
 #' @return the size of the cell population over time
 #' @export
 
-setGeneric("simulateGtoMPathSing", function(model,pathway,sampFreq = 1)
+setGeneric("simulateGtoMPathSing", function(model,pathway,sampFreq = 1,ncell = 0)
     standardGeneric("simulateGtoMPathSing"))
 
 setMethod("simulateGtoMPathSing", "CellModel",
-        function(model,pathway,sampFreq = 1) {
+        function(model,pathway,sampFreq = 1,ncell = 0) {
             nummgenes = pathway
             times = seq(sampFreq,model@parameters[2],sampFreq)
             altout = matrix(NA,length(pathway),length(times) * model@cells[[times[length(times)]]])
@@ -22,20 +23,36 @@ setMethod("simulateGtoMPathSing", "CellModel",
                 #vector for the specific time
                 cells = matrix(0,length(radii),length(pathway))
                 #Generate Column Names
-                test = paste("t",t,rownames(cells,FALSE,"c"))
-                cnames = append(cnames,test)
+                tests = gsub(" ","",(paste("t",t,rownames(cells,FALSE,"c"))))
+                if(ncell != 0){
+                    if(length(radii)< ncell){
+                        ncell2 = length(radii)
+                    }
+                    else{
+                        ncell2 = ncell
+                    }
+                    samp = sample(1:length(radii),ncell2)
+                    tests = tests[samp]
+                    cells = matrix(0,length(samp),length(pathway))
+                    x = samp[which(samp %in% getCellPhasePos(model,t,sampFreq))]
+                }
+                else{
+                    x = getCellPhasePos(model,t,sampFreq)
+                }
+                cnames = append(cnames,tests)
+                
                 #Add to Matrix
                 if(length(getCellPhasePos(model,t,sampFreq)) == 0){
                     #Case: None are dividing
-                    altout[,count:(count+length(radii)-1)] = t(cells)
-                    count = count + length(radii)
+                    altout[,count:(count+nrow(cells)-1)] = t(cells)
+                    count = count + nrow(cells)
                 }
                 else{
                     #Case: Some cells are dividing
                     #Calculate the average of each gene at the time
-                    cells[getCellPhasePos(model,t,sampFreq),] = nummgenes
-                    altout[,count:(count+length(radii)-1)] = t(cells)
-                    count = count + length(radii)
+                    cells[x,] = nummgenes
+                    altout[,count:(count+nrow(cells)-1)] = t(cells)
+                    count = count + nrow(cells)
                 }
                 t = t + sampFreq
             }

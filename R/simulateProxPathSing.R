@@ -3,14 +3,15 @@
 #' @param model A CellModel
 #' @param pathway A gene pathway
 #' @param sampFreq Time (in hours) at which to simulate gene expression data
+#' @param nCell Number of cells selected for a random sample at given time
 #' @return the size of the cell population over time
 #' @export
 
-setGeneric("simulateProxPathSing", function(model,pathway)
+setGeneric("simulateProxPathSing", function(model,pathway,sampFreq = 1,ncell = 0)
     standardGeneric("simulateProxPathSing"))
 
 setMethod("simulateProxPathSing", "CellModel",
-        function(model,pathway) {
+        function(model,pathway,sampFreq = 1,ncell = 0) {
             proxgenes = pathway
             times = seq(sampFreq,model@parameters[2],sampFreq)
             altout = matrix(NA,length(pathway),length(times) * model@cells[[times[length(times)]]])
@@ -37,17 +38,32 @@ setMethod("simulateProxPathSing", "CellModel",
                 #Matrix Calculation
                 cells = matrix(0,length(xcoords),length(pathway))
                 #Generate Column Names
-                test = paste("t",t,rownames(cells,FALSE,"c"))
-                cnames = append(cnames,test)
-                #Add to Matrix
-                if(sum(tester/6) == 0){
-                    altout[,count:(count+length(radii)-1)] = t(cells)
-                    count = count + length(radii)
+                tests = paste("t",t,rownames(cells,FALSE,"c"))
+                if(ncell != 0){
+                    if(length(radii)< ncell){
+                        ncell2 = length(radii)
+                    }
+                    else{
+                        ncell2 = ncell
+                    }
+                    samp = sample(1:length(radii),ncell2)
+                    tests = tests[samp]
+                    cells = matrix(0,length(samp),length(pathway))
+                    x = samp(which(samp %in% proxcheck))
                 }
                 else{
-                    cells[proxcheck,] = proxgenes
-                    altout[,count:(count+length(radii)-1)] = t(cells)
-                    count = count + length(radii)
+                    x = proxcheck
+                }
+                cnames = append(cnames,tests)
+                #Add to Matrix
+                if(sum(tester/6) == 0){
+                    altout[,count:(count+nrow(cells)-1)] = t(cells)
+                    count = count + nrow(cells)
+                }
+                else{
+                    cells[x,] = proxgenes
+                    altout[,count:(count+nrow(cells)-1)] = t(cells)
+                    count = count + nrow(cells)
                 }
                 t = t + 1
             }
