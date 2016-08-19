@@ -1,5 +1,5 @@
 simulatePolyester <- function(simMeanExprs=simMeanExprs,fasta=fasta, attrsep = attrsep,
-                              idfield='gene_symbol', ...) {
+                              idfield='gene_symbol', outdir=".", ...) {
   
   # process fasta to create mean values for transcripts
   transcripts = readDNAStringSet(fasta) # read in the fasta
@@ -41,8 +41,17 @@ simulatePolyester <- function(simMeanExprs=simMeanExprs,fasta=fasta, attrsep = a
   }
   
   # run Polyester to simulate gene expression data
-  simulate_experiment_countmat(fasta=fasta,
-                               num_reps=1, readmat= newmu, 
-                               attrsep = attrsep, ...)
+  simulate_experiment(fasta=fasta,reads_per_transcript=1,
+                      num_reps=rep(1,ncol(newmu)), fold_changes = newmu, 
+                      attrsep = attrsep, ...)
+  
+  if (!is.null(colnames(newmu))) {
+    for (i in 1:ncol(newmu)){
+      fns <- list.files(outdir,pattern=paste0('sample_', sprintf('%02d', i)))
+      file.rename(file.path(outdir, fns),
+                  file.path(outdir, paste(colnames(newmu)[i], fns, sep="_")))
+    }
+  }
+  
   
 }
