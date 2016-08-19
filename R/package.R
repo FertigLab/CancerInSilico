@@ -18,5 +18,6 @@
 #' @importFrom stats density
 #' @importFrom polyester simulate_experiment
 #' @importFrom Biostrings readDNAStringSet 
+#' @importFrom IRanges width
 #' @useDynLib CancerInSilico
 NULL
