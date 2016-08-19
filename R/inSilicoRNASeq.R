@@ -34,6 +34,8 @@ inSilicoRNASeq <- function(CellModels, pathways=NULL, ReferenceDataSet=NULL, fas
                                                        ReferenceDataset=ReferenceDataSet,
                                                        ...)})
     
+    dimnames(outData) <- dimnames(simMeanExprs)
+    
     return(outData)
     
   } else { 

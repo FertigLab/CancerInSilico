@@ -16,6 +16,7 @@
 #' @importFrom grDevices graphics.off
 #' @importFrom methods new
 #' @importFrom stats density
-#' @importFrom polyester simulate_experiment_countmat
+#' @importFrom polyester simulate_experiment
+#' @importFrom Biostrings readDNAStringSet 
 #' @useDynLib CancerInSilico
 NULL
