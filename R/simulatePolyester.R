@@ -1,5 +1,5 @@
 simulatePolyester <- function(simMeanExprs=simMeanExprs,fasta=fasta, attrsep = attrsep,
-                              idfield='gene_symbol', outdir=".", ...) {
+                              idfield='gene_symbol', outdir=".", pathways=NULL, ...) {
   
   # process fasta to create mean values for transcripts
   transcripts = readDNAStringSet(fasta) # read in the fasta
@@ -14,6 +14,10 @@ simulatePolyester <- function(simMeanExprs=simMeanExprs,fasta=fasta, attrsep = a
   names(gnames) <- sapply(tmpsplit,geti,1) # name as transcript ids
   
   # check that using valid columns of the fasta file
+  if (is.null(pathways)) {
+    pathways <- inSilicoPathways
+  }
+  
   if (!any(unique(unlist(pathways)) %in% gnames)) {
     stop(paste(idfield, 'does not correspond to the annotation of genes in pathways'))
   }
