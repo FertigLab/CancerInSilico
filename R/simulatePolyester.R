@@ -1,5 +1,5 @@
 simulatePolyester <- function(simMeanExprs=simMeanExprs,fasta=fasta, attrsep = attrsep,
-                              idfield='gene_symbol', outdir=".", ...) {
+                              idfield='gene_symbol', outdir=".", pathways=NULL, ...) {
   
   # process fasta to create mean values for transcripts
   transcripts = readDNAStringSet(fasta) # read in the fasta
@@ -14,6 +14,10 @@ simulatePolyester <- function(simMeanExprs=simMeanExprs,fasta=fasta, attrsep = a
   names(gnames) <- sapply(tmpsplit,geti,1) # name as transcript ids
   
   # check that using valid columns of the fasta file
+  if (is.null(pathways)) {
+    pathways <- inSilicoPathways
+  }
+  
   if (!any(unique(unlist(pathways)) %in% gnames)) {
     stop(paste(idfield, 'does not correspond to the annotation of genes in pathways'))
   }
@@ -25,32 +29,30 @@ simulatePolyester <- function(simMeanExprs=simMeanExprs,fasta=fasta, attrsep = a
   
   for (j in 1:ncol(simMeanExprs)) {
     
-    for (i in intersect(unique(gnames),row.names(simMeanExprs))){ #for each gene that is in common between the input and the fasta,
+    for (i in intersect(unique(gnames),
+                        row.names(simMeanExprs)[simMeanExprs[,j]>0])) { #for each gene that is in common between the input and the fasta,
       # distribute reads randomly across transcripts for the same gene
       # distributed according to the relative size of each transcript
-      sampleReads <- sample.int(n=length(which(gnames==i)),
-                                size=simMeanExprs[i,j], replace=T,
-                                prob=width(transcripts)[gnames==i] / 
-                                  (sum(width(transcripts)[gnames==i])))
-      
-      # add distribution of reads in each transcript
-      newmu[which(gnames==i),j] <- as.numeric(factor(sampleReads,
-                                                     levels=1:length(which(gnames==i))))
+      newmu[which(gnames==i),j] <- round(simMeanExprs[i,j]*width(transcripts)[gnames==i] / 
+        (sum(width(transcripts)[gnames==i])))
     }
     
   }
   
   # run Polyester to simulate gene expression data
-  simulate_experiment(fasta=fasta,reads_per_transcript=1,
-                      num_reps=rep(1,ncol(newmu)), fold_changes = newmu, 
-                      attrsep = attrsep, ...)
-  
-  if (!is.null(colnames(newmu))) {
-    for (i in 1:ncol(newmu)){
-      fns <- list.files(outdir,pattern=paste0('sample_', sprintf('%02d', i)))
-      file.rename(file.path(outdir, fns),
-                  file.path(outdir, paste(colnames(newmu)[i], fns, sep="_")))
+  for (i in 1:ncol(newmu)) {
+    simulate_experiment(fasta=fasta,reads_per_transcript=1,
+                        num_reps=1, fold_changes = newmu[,i], 
+                        attrsep = attrsep, outdir=outdir) #, ...)
+    
+    fnnew <- paste0('s_',sprintf('%02d',i))
+    if (!is.null(colnames(newmu))) {
+      fnnew <- sprintf('s_%s_%02d',colnames(newmu)[i],i)
     }
+  
+    fns <- list.files(outdir,pattern=paste0('sample_01'))
+    file.rename(file.path(outdir, fns),
+                file.path(outdir, sub('sample_01',fnnew,fns)))
   }
   
   

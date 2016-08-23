@@ -34,6 +34,8 @@ inSilicoRNASeq <- function(CellModels, pathways=NULL, ReferenceDataSet=NULL, fas
                                                        ReferenceDataset=ReferenceDataSet,
                                                        ...)})
     
+    dimnames(outData) <- dimnames(simMeanExprs)
+    
     return(outData)
     
   } else { 
@@ -41,7 +43,8 @@ inSilicoRNASeq <- function(CellModels, pathways=NULL, ReferenceDataSet=NULL, fas
     # run polyester
     message('Simulating time-course RNA-seq data with Polyester')
     
-    simulatePolyester(simMeanExprs=simMeanExprs,fasta=fasta, attrsep = attrsep, ...)
+    simulatePolyester(simMeanExprs=simMeanExprs,fasta=fasta, attrsep = attrsep, 
+                      pathways = pathways, ...)
   }
   
 }

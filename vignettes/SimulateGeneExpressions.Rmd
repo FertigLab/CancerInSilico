@@ -31,6 +31,40 @@ options(width = 3000)
 The main objective of the gene expression methods is to be able to simulate the amount of genes expressed in a pathway during certain situations. For the most part, functions are divided into two types of functions with a certain specification in the function name: "*group*" specifies the function taking the averages of the genes expressed in the cells, and "*sing*" specifying the function takes the average gene expressed for each cell at the time. All these calculations are based off the model created using *runCancerSim* and either a list or vector of the pathways used in each of the pathway or scenario.
 
 
+# inSilico RNA Gene Expression Sequencing
+
+Within this section of the package, two functions are used to generate the gene expression distribution data. These functions are used to take all the given models provided by a user, and merge them based on the model given such as max, sum or a user-defined function. This allows for the output to be varied depending on the data the user wants to view.
+
+## *inSilicoSCRNASeq*: gene expression of individual cells from RNA Seq Data
+
+
+
+## *inSilicoRNASeq*: gene expression from RNA Seq Data
+
+
+
+## Parameters
+
+*model* - [CellModel] Required Parameter; Generated from *runCancerSim*  
+*ncells* - [Integer] Optional Parameter; Value greater than or equal to 0; Only for *inSilicoSCRNASeq*
+*pathways* - [List] Optional Parameter;
+*referenceDataset* - 
+*lambda* - 
+*fasta* - 
+*samplingFrequency* - 
+*combineFUN* - 
+*...* - 
+
+
+### Parameter Overview
+
+
+
+### Parameter Desciption
+
+
+
+
 # Gene Summation Functions *simulateGeneExpGroup* and *simulateGeneExpSing*
 
 Within this part of the package, two main functions can be used in order to develop the general gene distributions based on the information wanted. These functions take all the models and merge them together by taking the maximum of each gene expressed.
@@ -40,7 +74,7 @@ Within this part of the package, two main functions can be used in order to deve
 The *simulateGeneExpGroup* function provides a centralized function to generate all three models of the pathways simulated, specifically for the simulations that determine average gene expression presented by the model at each time. It also creates a noise model based on the option selected, which is added to the simulation data to simulate real-life data collection. The following code provides an example of a run of *simulateGeneExpGroup* to simulate the average gene expression with a normal distribution noise model at each hour.
 
 ```{r}
-average_genes_expressed = simulateGeneExpGroup(data, pathways, perError = 0.01, opt = 1)
+average_genes_expressed = simulateGeneExpGroup(data, pathways, perError = 0.01, opt = 1, sampFreq = 1, ncell = 0)
 
 ```
 ```{r , echo = FALSE}
@@ -53,7 +87,7 @@ average_genes_expressed[,1:5]
 ### *simulateGeneExpGroup* Function Signature
 
 ```{r,eval=FALSE}
-simulateGeneExpGroup(model,pathway,perError = 0.1,opt = 1)
+simulateGeneExpGroup(model,pathway,perError = 0.1,opt = 1, sampFreq = 1, ncell = 0)
 ```
 
 ### Output of *simulateGeneExpGroup*
@@ -66,7 +100,7 @@ The output of *simulateGeneExpGroup* is stored into a matrix object that compare
 The *simulateGeneExpSing* function provides a centralized function to generate all three models of the pathways simulated, specfically for the simulations running to determine gene expression for each individual cell. It also creates a noise model based on the option selected, which is added to the simulation data to simulate real-life data collection. The following code provides an example of a run of *simulateGeneExpSing* to simulate the average gene expression with a negative binomial distribution noise model at each hour.
 
 ```{r}
-genes_per_cell_expressed = simulateGeneExpSing(data, pathways, opt = 2)
+genes_per_cell_expressed = simulateGeneExpSing(data, pathways, opt = 2, sampFreq = 1, ncell = 0)
 
 ```
 ```{r,echo = FALSE,collapse=TRUE}
@@ -78,7 +112,7 @@ genes_per_cell_expressed[1:2]
 ### *simulateGeneExpsing* Function Signature
 
 ```{r,eval=FALSE}
-simulateGeneExpSing(model,pathway,perError = 0.1,opt = 1)
+simulateGeneExpSing(model,pathway,perError = 0.1,opt = 1, sampFreq = 1, ncell = 0)
 ```
 
 ### Output of *simulateGeneExpSing*
@@ -96,6 +130,8 @@ Both functions, *simulateGeneExpSing* and *simulateGeneExpGroup* have the same p
 *pathway* - [List] Required Parameter; Must be a list of 3  
 *perError* - [Double] Optional Parameter; Should be less than 1  
 *opt* - [Integer] Optional Parameter; Varies from 1 to 3  
+*sampFreq* - [Double] Optional Parameter; Any value between model runtime and 0.  
+*ncell* - [Integer] Optional Parameter; Any value
 
 ### Parameter Description
 
@@ -113,60 +149,13 @@ The amount possible error that can be generated using the data from the model. T
 
 *opt*
 
-The option parameter that allows the user to decide on the output's noise model.
+The option parameter that allows the user to decide on the output's noise model. The first option, with a default of 1, is the normal noise model based on the means of the genes at each gene. The second option is a negative binomial noise model with the calculations based on the *limma::voom* model. The third option will be an alternate negative binomial model with calculations based on the *polyester* package.
 
+*sampFreq*
 
-## Individual Calculation Functions
+The parameter specifying the frequency the data from the model would be collected. This is all based on the model hour, where a decimal will be that part of an hour in real time.
 
-The differences between the *suffix* variants of each function used for calculations are described in their respective "**return**" and "**examples**" sections.
+*ncell*
 
-### *simulateGToMPath*
-
-This is the function that generates a simulation for the G<sub>2</sub> to Mitosis pathway.
-
-**Function Signature:**
-
-
-**Arguments:**
-
-
-**Return:**
-
-
-**Example:**
-
-
-
-### *simulateGToSPath*
-
-This is the function that generates a simulation for the G<sub>1</sub> to Synthesis pathway.
-
-**Function Signature:**
-
-
-**Arguments:**
-
-
-**Return:**
-
-
-**Example:**
-
-
-### *simulateProxPath*
-
-
-This is the function that generates a simulation for the Contact Inhibition pathway.
-
-**Function Signature:**
-
-
-**Arguments:**
-
-
-**Return:**
-
-
-**Example:**
-
+The number of cells randomly collected at any given timepoint. Value of "0" sets it to not take any sample.
 
