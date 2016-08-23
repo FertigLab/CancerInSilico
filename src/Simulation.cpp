@@ -1,6 +1,7 @@
 #include "Simulation.h"
 #include "Parameters.h"
 #include <Rcpp.h>
+#include <cmath>
 
 Simulation::Simulation(Parameters *par, int init_num, double den) {
 
@@ -39,7 +40,7 @@ void Simulation::Run(int MCsteps, int out_incr, double time_incr, int rec_incr) 
 
         if (i % out_incr == 0) {
 
-            Rprintf("time = %.2f\n", time);
+            Rprintf("time = %.2f\n", ceil(time));
             Rprintf("size = %d\n", m_cells->size());
 
         }
