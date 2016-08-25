@@ -12,20 +12,18 @@ setGeneric("simulateGtoSPathSing", function(model,pathway,sampFreq = 1,ncell = 0
 
 setMethod("simulateGtoSPathSing", "CellModel",
             function(model,pathway,sampFreq = 1,ncell = 0) {
-                numsgenes = pathway
-                times = seq(sampFreq,model@parameters[2],sampFreq)
+
+                times = seq(0,model@parameters[2],sampFreq)
                 altout = matrix(NA,length(pathway),length(times) * model@cells[[times[length(times)]]])
                 cnames = vector()
                 count = 1
-                t = sampFreq
-                while(t < model@parameters[2]){
-                    radii <- seq(3,length(model@cells[[timetoRow(model,t)]]),6)
-                    currradius <- model@cells[[timetoRow(model,t)]][radii]
-                    test = vector();
-                    if(is(try(model@cells[[timetoRow(model,t+1)]][radii],TRUE),'try-error')==FALSE){
-                        nextradius <- model@cells[[timetoRow(model,t+1)]][radii]
-                        test = which(nextradius > sqrt(3/2) & currradius < sqrt(3/2))
-                    }
+
+                for (t in times) {
+
+                    cur_rad <- getRadii(model, t)
+                    next_rad <- getRadii(model, t + sampFreq)
+                    indices <- which(next_rad > sqrt(3/2) & cur_rad < sqrt(3/2))                    
+
                     #Matrix Calculation
                     cells = matrix(0,length(radii),length(pathway))
                     #Generate Column Names
