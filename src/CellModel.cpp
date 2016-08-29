@@ -16,19 +16,19 @@ Rcpp::List CellModel(
     double delta,
     int outIncrement,
     int randSeed,
-	Rcpp::NumericVector growthRates,
-	bool inheritGrowth,
-	double nG,
-	double timeIncrement
+    Rcpp::NumericVector growthRates,
+    bool inheritGrowth,
+    double nG,
+    double timeIncrement
 
 ) {
 
-	std::vector<double> gr_rates;
-	for (unsigned int i = 0; i < growthRates.length(); ++i) {
-	
-		gr_rates.push_back(growthRates[i]);
+    std::vector<double> gr_rates;
+    for (unsigned int i = 0; i < growthRates.length(); ++i) {
+    
+        gr_rates.push_back(growthRates[i]);
 
-	}		
+    }        
 
     Rcpp::Environment baseEnv("package:base");
     Rcpp::Function setSeed = baseEnv["set.seed"];
@@ -41,9 +41,9 @@ Rcpp::List CellModel(
     params->SetMaxRotate(maxRotate);
     params->SetResistanceEPSILON(epsilon);
     params->SetCompressionDELTA(delta);
-	params->StoreGrowthDistribution(gr_rates);
-	params->SetInheritGrowth(inheritGrowth);
-	params->SetNG(nG);
+    params->StoreGrowthDistribution(gr_rates);
+    params->SetInheritGrowth(inheritGrowth);
+    params->SetNG(nG);
 
     Simulation main_sim = Simulation(params, initialNum, density);
     main_sim.Run(numMCSteps, outIncrement, timeIncrement);

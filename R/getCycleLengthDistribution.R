@@ -19,14 +19,15 @@ setGeneric("getCycleLengthDistribution", function(model, time)
 #' @return returns a vector of growth rates for cells alive at time
 #' @examples
 #' getCycleLengthDistribution(runCancerSim(1,10),0)
+#' @rdname CellModel-class
 #' @export
 
 setMethod("getCycleLengthDistribution", "CellModel",
 
     function(model,time) {
           
-        nG <- model@parameters[8]
-        timeIncrement <- model@parameters[9]
+        nG <- .nG(model)
+        timeIncrement <- .timeIncrement(model)
         row <- timeToRow(model,time)
         gr_rates <- seq(6,length(model@cells[[row]]),6)
         gr <- model@cells[[row]][gr_rates]

@@ -33,6 +33,14 @@ A CellModel containing all info from the model run
 \description{
 \code{runCancerSim} Runs the model
 }
+\details{
+This function provides a centralized R interface to run c++ code for cell-based
+models implemented in this package. Standard parameters, as well as model-specific parameters,
+are passed in to this function along with a model name. This function then runs the model 
+and returns a CellModel object containing all the information from the model. This object
+can then be accessed with various functions designed to interact with the class. To see a list
+of available functions, there is a show() command implemented for CellModel objects.
+}
 \examples{
 runCancerSim(1,8)
 }

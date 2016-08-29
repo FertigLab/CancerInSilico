@@ -17,6 +17,7 @@ setGeneric("getDensity", function(model,time)
 #' @return The density of cells at that time (not quite the same as confluency)
 #' @examples
 #' getDensity(runCancerSim(1,10),10)
+#' @rdname CellModel-class
 #' @export
 
 setMethod("getDensity", "CellModel",

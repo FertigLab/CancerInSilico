@@ -18,28 +18,34 @@ setGeneric("getParameters", function(model, fullDist=FALSE)
 #' @return a named list of parameters in the model
 #' @examples
 #' getParameters(runCancerSim(1,1))
+#' @rdname CellModel-class
 #' @export
-#' 
 
 setMethod("getParameters", "CellModel",
 
     function(model, fullDist=FALSE) {
 
-        len = length(model@parameters)
-        retDist = mean(model@parameters[10:len])
+        retDist = mean(.cycleLengthDist(model))
+
         if (fullDist) {
-          retDist = model@parameters[10:len]
+ 
+         retDist = .cycleLengthDist(model)
+
         }
+
         ret_val = list(
-            initialNum=model@parameters[1],
-            runTime=model@parameters[2],           
-            density=model@parameters[3],           
-            inheritGrowth=model@parameters[4],           
-            outputIncrement=model@parameters[5],           
-            randSeed=model@parameters[6],           
-            epsilon=model@parameters[7],           
-            nG=model@parameters[8],
-            cycleLengthDist=retDist
+
+            initialNum = .initialNumCells(model),
+            runTime = .runTime(model),           
+            initialDensity = .initialDensity(model),           
+            inheritGrowth = .inheritGrowth(model),           
+            outputIncrement = .outputIncrement(model),           
+            randSeed = .randSeed(model),           
+            epsilon = .epsilon(model),           
+            nG = .nG(model),
+            timeIncrement = .timeIncrement(model),
+            cycleLengthDist = retDist
+
         )           
 
         return(ret_val)

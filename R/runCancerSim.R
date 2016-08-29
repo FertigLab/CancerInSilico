@@ -1,6 +1,11 @@
 #'\code{runCancerSim} Runs the model
 #'
-#'
+#' @details This function provides a centralized R interface to run c++ code for cell-based
+#' models implemented in this package. Standard parameters, as well as model-specific parameters,
+#' are passed in to this function along with a model name. This function then runs the model 
+#' and returns a CellModel object containing all the information from the model. This object
+#' can then be accessed with various functions designed to interact with the class. To see a list
+#' of available functions, there is a show() command implemented for CellModel objects.
 #' @param initialNum how many cells initially
 #' @param runTime how long the simulation represents in realtime
 #' @param density the density the cells are seeded at
@@ -28,9 +33,14 @@ runCancerSim <- function(initialNum,
 {
 
     if (modelType != "DrasdoHohme2003") {
+
       stop("invalid model type")
+
     } else {
-      return (runDrasdoHohme(initialNum, runTime, density, cycleLengthDist, inheritGrowth, outputIncrement, randSeed, ...))
+
+      return (runDrasdoHohme(initialNum, runTime, density, cycleLengthDist,
+                inheritGrowth, outputIncrement, randSeed, ...))
+
     }
 
 }

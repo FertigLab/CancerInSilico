@@ -24,9 +24,14 @@ runDrasdoHohme <- function(initialNum,
   delta <- 0.2 ## must be less than 4 or calculations break
   
   timeIncrement = delta / (4 * nG * (4 - sqrt(2)))
-  if (timeIncrement > delta * (min(cycleLengthDist) - 1) / (8 * nG * (sqrt(2) - 1))) {
-    timeIncrement = delta * (min(cycleLengthDist) - 1) / (8 * nG * (sqrt(2) - 1))
+  max_incr = delta * (min(cycleLengthDist) - 1) / (8 * nG * (sqrt(2) - 1))
+
+  if (timeIncrement > max_incr) {
+
+    timeIncrement = max_incr
+
   }
+
   maxDeform <- 2 * timeIncrement * nG * (4 - sqrt(2))
   grRates <- 2 * (sqrt(2) - 1) * timeIncrement * nG / (cycleLengthDist - 1)
   mcSteps <- ceiling(runTime / timeIncrement)
@@ -34,20 +39,22 @@ runDrasdoHohme <- function(initialNum,
   maxRotate <- acos((16 + delta ^ 2 - 4 * delta) / 16)
   outputIncrement2 <- floor(outputIncrement / timeIncrement)
   
-  output <- tryCatch({
-    
-    CellModel(initialNum, mcSteps, density, maxTranslation,
+  output <- CellModel(initialNum, mcSteps, density, maxTranslation,
               maxDeform, maxRotate, epsilon, delta, outputIncrement2,
               randSeed, grRates, inheritGrowth, nG, timeIncrement)
-    
-  }, error = function(cond) {
-    
-    message(cond, '\n')
-    stop()
-    
-  })
-  
-  cellMat <- new("CellModel",cells = output,parameters = c(initialNum,runTime,density,inheritGrowth,outputIncrement,randSeed,epsilon,nG,timeIncrement,cycleLengthDist))
+ 
+  cellMat <- new("CellModel",
+                    m_cells = output,
+                    m_initialNumCells = initialNum,
+                    m_runTime = runTime,
+                    m_initialDensity = density,
+                    m_inheritGrowth = inheritGrowth,
+                    m_outputIncrement = outputIncrement,
+                    m_randSeed = randSeed,
+                    m_epsilon = epsilon,
+                    m_nG = nG,
+                    m_timeIncrement = timeIncrement,
+                    m_cycleLengthDist = cycleLengthDist)
   
   return(cellMat)
   

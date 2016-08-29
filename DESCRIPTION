@@ -30,5 +30,5 @@ Suggests:
 	BiocStyle
 VignetteBuilder:
     knitr
-biocViews: MathematicalBiology
+biocViews: MathematicalBiology, SystemsBiology, CellBiology, BiomedicalInformatics
 RoxygenNote: 5.0.1

@@ -17,6 +17,7 @@ setGeneric("plotCellsAtTime", function(model,time)
 #' @return Plot a visual representation of cells at time
 #' @examples
 #' plotCellsAtTime(runCancerSim(1,10),10)
+#' @rdname CellModel-class
 #' @export
 
 setMethod("plotCellsAtTime", "CellModel",

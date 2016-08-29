@@ -17,6 +17,7 @@ setGeneric("getNumberOfCells", function(model, time)
 #' @return the size of the cell population over time
 #' @examples
 #' getNumberOfCells(runCancerSim(1,10),10)
+#' @rdname CellModel-class
 #' @export
 
 setMethod("getNumberOfCells", "CellModel",
