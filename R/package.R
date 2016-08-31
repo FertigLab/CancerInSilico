@@ -14,7 +14,7 @@
 #' @importFrom Rcpp evalCpp
 #' @importFrom graphics plot text lines points symbols
 #' @importFrom grDevices graphics.off
-#' @importFrom methods new
+#' @importFrom methods new show
 #' @importFrom stats density
 #' @useDynLib CancerInSilico
 NULL

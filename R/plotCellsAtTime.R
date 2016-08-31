@@ -26,7 +26,7 @@ setMethod("plotCellsAtTime", "CellModel",
 
     	row <- timeToRow(model,time)
         
-        numCells <- length(model@cells[[row]]) / 6
+        numCells <- length(model@m_cells[[row]]) / 6
     
         xcoords <- seq(1,numCells * 6,6)
         ycoords <- xcoords + 1
@@ -34,19 +34,19 @@ setMethod("plotCellsAtTime", "CellModel",
         axis_len <- xcoords + 3
         axis_ang <- xcoords + 4
     
-        mn <- min(min(model@cells[[row]][xcoords]),min(model@cells[[row]][ycoords])) - 2
-        mx <- max(max(model@cells[[row]][xcoords]),max(model@cells[[row]][ycoords])) + 2
+        mn <- min(min(model@m_cells[[row]][xcoords]),min(model@m_cells[[row]][ycoords])) - 2
+        mx <- max(max(model@m_cells[[row]][xcoords]),max(model@m_cells[[row]][ycoords])) + 2
         
         plot(c(mn,mx),c(mn,mx),main=paste("Plot of CellModel At Time",time),xlab = "",ylab="",type="n",asp=1)
               
-        x_1 <- model@cells[[row]][xcoords] + (0.5 * model@cells[[row]][axis_len] - model@cells[[row]][radii]) * cos(model@cells[[row]][axis_ang])
-        x_2 <- model@cells[[row]][xcoords] - (0.5 * model@cells[[row]][axis_len] - model@cells[[row]][radii]) * cos(model@cells[[row]][axis_ang])
-        y_1 <- model@cells[[row]][ycoords] + (0.5 * model@cells[[row]][axis_len] - model@cells[[row]][radii]) * sin(model@cells[[row]][axis_ang])
-        y_2 <- model@cells[[row]][ycoords] - (0.5 * model@cells[[row]][axis_len] - model@cells[[row]][radii]) * sin(model@cells[[row]][axis_ang])
+        x_1 <- model@m_cells[[row]][xcoords] + (0.5 * model@m_cells[[row]][axis_len] - model@m_cells[[row]][radii]) * cos(model@m_cells[[row]][axis_ang])
+        x_2 <- model@m_cells[[row]][xcoords] - (0.5 * model@m_cells[[row]][axis_len] - model@m_cells[[row]][radii]) * cos(model@m_cells[[row]][axis_ang])
+        y_1 <- model@m_cells[[row]][ycoords] + (0.5 * model@m_cells[[row]][axis_len] - model@m_cells[[row]][radii]) * sin(model@m_cells[[row]][axis_ang])
+        y_2 <- model@m_cells[[row]][ycoords] - (0.5 * model@m_cells[[row]][axis_len] - model@m_cells[[row]][radii]) * sin(model@m_cells[[row]][axis_ang])
         
         x <- c(x_1,x_2)
         y <- c(y_1,y_2)
-        rad <- c(model@cells[[row]][radii], model@cells[[row]][radii])
+        rad <- c(model@m_cells[[row]][radii], model@m_cells[[row]][radii])
         
         symbols(x,y, circles=rad, inches=FALSE, add=TRUE, bg="bisque4", fg="bisque4")
    

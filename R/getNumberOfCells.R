@@ -24,8 +24,8 @@ setMethod("getNumberOfCells", "CellModel",
 
     function(model, time) {
 
-        radii = seq(3, length(model@cells[[timeToRow(model,time)]]), 6)
-        return(sum(model@cells[[timeToRow(model,time)]][radii] > 0))
+        radii = seq(3, length(model@m_cells[[timeToRow(model,time)]]), 6)
+        return(sum(model@m_cells[[timeToRow(model,time)]][radii] > 0))
     
     }
 

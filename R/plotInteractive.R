@@ -21,15 +21,15 @@ setGeneric("plotInteractive", function(model,time = 1)
 #' takes in command-line-like inputs as well
 #' see "plotCellsAtTime and plotInteractive" in vignette for
 #' command prompt inputs.
-#' @rdname CellModel-class
 #' @export
+#' @rdname CellModel-class
 
 
 setMethod("plotInteractive", "CellModel",
           
     function(model, time = 0) {
 
-        while (time <= model@parameters[2]) {
+        while (time <= .runTime(model)) {
           
             plotCellsAtTime(model,time)
     
