@@ -5,7 +5,7 @@ setMethod("timeToRow", "CellModel",
           
 	function(model, time) {
 
-        return(floor(time / model@parameters[10]) + 1)
+        return(floor(time / .timeIncrement(model)) + 1)
 
 	}
          

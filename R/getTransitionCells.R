@@ -12,6 +12,8 @@ setGeneric("getTransitionCells", function(model,time,phase)
 setMethod("getTransitionCells", "CellModel",
     function(model,time,phase) {
 
+        time_window = model@parameters
+
         if (phase == 'S') {
 
             

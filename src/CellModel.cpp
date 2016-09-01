@@ -28,10 +28,10 @@ Rcpp::List CellModel(
 
 ) {
 
-	std::vector<double> gr_rates;
-	for (unsigned int i = 0; i < growthRates.length(); ++i) {
-	
-		gr_rates.push_back(growthRates[i]);
+    std::vector<double> gr_rates;
+    for (unsigned int i = 0; i < growthRates.length(); ++i) {
+    
+        gr_rates.push_back(growthRates[i]);
 
 	}	
 
