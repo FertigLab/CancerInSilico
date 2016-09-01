@@ -24,7 +24,7 @@ setMethod("simulateGtoSPathGroup", "CellModel",
             next_rad <- getRadii(model, t + sampFreq)
             indices <- which(next_rad > sqrt(3/2) & cur_rad < sqrt(3/2))               
 
-            gsMatrix[t,] = pathway * length(test) / getNumberOfCells(model, t) 
+            gsMatrix[t,] = pathway * length(indices) / getNumberOfCells(model, t) 
 
         }
 
