@@ -36,10 +36,12 @@ public:
 	void Update();
 
 	void AttemptTrial(Cell*);
-	bool AcceptTrial(double);
+    bool CheckForCellOverlap(Point, Cell*);
+    bool CheckBoundary(Cell*);
     int CalculateNumberOfNeighbors(Cell*);
 	double CalculateTotalInteraction(Cell*);
 	double CalculateInteraction(Cell*, Cell*);
+	bool AcceptTrial(double, double, Cell*);
 
 	void CheckMitosis(Cell*);
 	void SetGrowthRates();

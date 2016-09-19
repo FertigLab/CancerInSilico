@@ -7,7 +7,14 @@ CellPopulation::CellPopulation(Parameters *par, unsigned int size, double densit
 
     m_param = par;
     m_population = SpatialHash<Cell>(1.0);
+
     double disk_radius = pow(size / density, 0.5);
+    if (m_param->GetBoundary() < disk_radius + 2) {
+
+        m_param->SetBoundary(disk_radius + 2);
+
+    }
+
     Point new_loc;
 	Cell* temp;
 
@@ -176,53 +183,72 @@ void CellPopulation::CheckMitosis(Cell* cell) {
 
 void CellPopulation::AttemptTrial(Cell *cell) {
 
-    double pre_interaction = CalculateTotalInteraction(cell);
+    double interaction = CalculateTotalInteraction(cell);
     int num_neighbors = CalculateNumberOfNeighbors(cell);
+
     Cell orig = *cell;
     bool growth = cell->DoTrial();
+
+    bool overlap = CheckForCellOverlap(orig.GetCoord(), cell);
+    bool boundary = CheckBoundary(cell);
+
+    if (overlap || boundary) {
+
+        *cell = orig;
+
+    } else if (growth) {
+
+        return;
+
+    }
+
+    m_population.Update(orig.GetCoord(), cell->GetCoord());    
+    
+    if (!AcceptTrial(interaction, num_neighbors, cell)) {
+
+        m_population.Update(cell->GetCoord(), orig.GetCoord());    
+        *cell = orig;
+
+    }
+
+}
+
+bool CellPopulation::CheckForCellOverlap(Point center, Cell* cell) {
 
 	double max_search = std::max(m_param->GetMaxTranslation(), m_param->GetMaxRadius());
 
 	SpatialHash<Cell>::circular_iterator iter
-		= m_population.begin(orig.GetCoord(), max_search);
+		= m_population.begin(center, max_search);
 
-
-	for (; iter != m_population.end(orig.GetCoord(), max_search); ++iter) {
+	for (; iter != m_population.end(center, max_search); ++iter) {
 
 		if ((*iter).CellDistance(*cell) < 0) {
 
-			*cell = orig;
+			return true;
 
 		}
 
 	}
 
-    m_population.Update(orig.GetCoord(), cell->GetCoord());
-	
-	if (growth) {
-		
-		return;
-
-	} else {
-
-		double post_interaction = CalculateTotalInteraction(cell);
-
-		if (post_interaction == std::numeric_limits<double>::max()
-		        || !AcceptTrial(post_interaction - pre_interaction)
-                || num_neighbors > CalculateNumberOfNeighbors(cell)) {
-
-		    m_population.Update(cell->GetCoord(), orig.GetCoord());
-		    *cell = orig;
-
-		}
-	
-	}
+    return false;
 
 }
 
-bool CellPopulation::AcceptTrial(double delta_interaction) {
+bool CellPopulation::CheckBoundary(Cell* cell) {
 
-    if (delta_interaction <= 0.0) {
+    return cell->GetCoord().dist(Point(0,0)) > m_param->GetBoundary();
+
+}
+
+bool CellPopulation::AcceptTrial(double prev_interaction, double prev_num_neighbors, Cell* cell) {
+
+    double delta_interaction = CalculateTotalInteraction(cell) - prev_interaction;
+
+    if (CalculateNumberOfNeighbors(cell) < prev_num_neighbors) {
+
+        return false;
+
+    } else if (delta_interaction <= 0.0) {
 
         return true;
 
@@ -267,15 +293,7 @@ double CellPopulation::CalculateTotalInteraction(Cell *cell) {
 
         if (&iter != cell) {
 
-            inter = CalculateInteraction(&iter, cell);
-
-            if (inter == std::numeric_limits<double>::max()) {
-
-                return inter;
-
-            }
-
-            sum += inter;
+            sum += CalculateInteraction(&iter, cell);
 
         }
 
@@ -293,9 +311,9 @@ double CellPopulation::CalculateInteraction(Cell* a, Cell* b) {
 
         return 0.0;
 
-    } else if (dist < 0) { //should never be called
+    } else if (dist < 0) {
 
-        return std::numeric_limits<double>::max();
+        throw std::invalid_argument("cells overlap");
 
     } else {
 

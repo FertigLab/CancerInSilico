@@ -24,7 +24,8 @@ Rcpp::List CellModel(
 	double nG,
 	double timeIncrement,
 	int recordIncrement,
-    double drugTime
+    double drugTime,
+    double boundary
 
 ) {
 
@@ -64,6 +65,7 @@ Rcpp::List CellModel(
 	params->SetNG(nG);
     params->StoreDrugEffect(drug_effect);
     params->SetDrugTime(drugTime);
+    params->SetBoundary(boundary);
 
     Simulation main_sim = Simulation(params, initialNum, density);
 
