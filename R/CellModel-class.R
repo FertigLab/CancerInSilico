@@ -105,7 +105,7 @@ getCoordinates <- function(model, time) {
 
     indices <- seq(1,length(model@mCells[[timeToRow(model,time)]]),6)
     ret_mat <- matrix(nrow = length(indices), ncol = 2)
-    for (i in indices) {
+    for (i in 1:length(indices)) {
 
         ret_mat[i,1] = model@mCells[[timeToRow(model,time)]][indices[i]]
         ret_mat[i,2] = model@mCells[[timeToRow(model,time)]][indices[i]+1]
@@ -122,7 +122,6 @@ getRadii <-	function(model, time) {
     return(model@mCells[[timeToRow(model,time)]][indices])
 
 }
-         
          
 getAxisLength <- function(model, time) {
 
