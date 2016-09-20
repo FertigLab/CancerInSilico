@@ -45,9 +45,12 @@ simulatePathway <- function(model, pathway, type, sampFreq = 1, sampSize = 1, si
 
             }, GROWTH = {
 
-                cycle_len <- getCycleLengths(model,t)[cells]
-                single_cell_exp <- 1 - 1 / (1 + exp(-0.25 * (cycle_len - mean_cycle_len)))
-    
+                cur_rad <- getRadii(model, t)[cells]
+                next_rad <- getRadii(model, t + time_window)[cells]
+                not_growing <- cur_rad > next_rad
+                single_cell_exp <- (next_rad - cur_rad) / cur_rad
+                single_cell_exp[not_growing] = 0
+
             }, PROX = {
 
                 single_cell_exp <- c()
@@ -72,6 +75,8 @@ simulatePathway <- function(model, pathway, type, sampFreq = 1, sampSize = 1, si
         }
 
     }
+
+    return (gsMatrix)
 
 }
 
