@@ -148,7 +148,7 @@ runDrasdoHohme <- function(initialNum,
                  mEpsilon = epsilon,
                  mNG = nG,
                  mTimeIncrement = timeIncrement,
-                 mRecordIncrement = recordIncrement2,
+                 mRecordIncrement = recordIncrement,
                  mCycleLengthDist = cycleLengthDist)
 
     return(cellMat)
