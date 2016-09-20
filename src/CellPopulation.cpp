@@ -190,9 +190,8 @@ void CellPopulation::AttemptTrial(Cell *cell) {
     bool growth = cell->DoTrial();
 
     bool overlap = CheckForCellOverlap(orig.GetCoord(), cell);
-    bool boundary = CheckBoundary(cell);
 
-    if (overlap || boundary) {
+    if (overlap) {// || CheckBoundary(cell)) {
 
         *cell = orig;
 
@@ -291,11 +290,7 @@ double CellPopulation::CalculateTotalInteraction(Cell *cell) {
 
 	for (; iter != m_population.end(cell->GetCoord(), m_param->GetCompressionDELTA() + 1); ++iter) {
 
-        if (&iter != cell) {
-
-            sum += CalculateInteraction(&iter, cell);
-
-        }
+        sum += CalculateInteraction(&iter, cell);
 
     }
 
@@ -310,10 +305,6 @@ double CellPopulation::CalculateInteraction(Cell* a, Cell* b) {
     if (dist > m_param->GetCompressionDELTA()) {
 
         return 0.0;
-
-    } else if (dist < 0) {
-
-        throw std::invalid_argument("cells overlap");
 
     } else {
 
