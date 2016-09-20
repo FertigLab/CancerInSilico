@@ -7,6 +7,8 @@
 #' @param sampSize how many cells to sample in the case of single-cell expression data
 #' @param singleCell whether or not to simulate single-cell expression data
 #' @return gene expression matrix for given pathway 
+#' @export
+#'
 
 simulatePathway <- function(model, pathway, type, sampFreq = 1, sampSize = 1, singleCell=FALSE) {
 
@@ -20,7 +22,7 @@ simulatePathway <- function(model, pathway, type, sampFreq = 1, sampSize = 1, si
 
     for (t in times) {
 
-        cells <- 1 + (seq(1,getNumberOfCells(model, time), 6) - 1) / 6
+        cells <- 1 + (seq(1,getNumberOfCells(model, t), 6) - 1) / 6
         if (singleCell) {
 
             cells <- sample(cells, sampSize)
@@ -43,7 +45,7 @@ simulatePathway <- function(model, pathway, type, sampFreq = 1, sampSize = 1, si
 
             }, GROWTH = {
 
-                cycle_len <- getCycleLengths(model,time)[cells]
+                cycle_len <- getCycleLengths(model,t)[cells]
                 single_cell_exp <- 1 - 1 / (1 + exp(-0.25 * (cycle_len - mean_cycle_len)))
     
             }, PROX = {
