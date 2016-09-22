@@ -77,7 +77,7 @@ class TestSpatialHash {
 };
 
 CATCH_TEST_CASE("Test Spatial Hash and its components") {
-
+/*
     CATCH_SECTION("Point Functions") {
 
         Point p1 = Point(1,1);
@@ -325,6 +325,6 @@ CATCH_TEST_CASE("Test Spatial Hash and its components") {
         }
 
     }
-
+*/
 }
 

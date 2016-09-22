@@ -4,7 +4,7 @@
 #include "Parameters.h"
 
 CATCH_TEST_CASE("Test Parameters and Radius Solver") {
-
+/*
     CATCH_SECTION("Test max error of Radius Solver") {
 
         Parameters params = Parameters(pow(2,0.5));
@@ -25,5 +25,5 @@ CATCH_TEST_CASE("Test Parameters and Radius Solver") {
         CATCH_REQUIRE(max_error < 0.001);
 
     }
-
+*/
 }
