@@ -18,77 +18,144 @@
 #' @export
 
 setClass("CellModel", representation(
-                        m_cells = "list",
-                        m_initialNumCells = "numeric",
-                        m_runTime = "numeric",
-                        m_initialDensity = "numeric",
-                        m_inheritGrowth = "logical",
-                        m_outputIncrement = "numeric",
-                        m_randSeed = "numeric",
-                        m_epsilon = "numeric",
-                        m_nG = "numeric",
-                        m_timeIncrement = "numeric",
-                        m_cycleLengthDist = "numeric" ))
+                        mCells = "list",
+                        mInitialNumCells = "numeric",
+                        mRunTime = "numeric",
+                        mInitialDensity = "numeric",
+                        mInheritGrowth = "logical",
+                        mOutputIncrement = "numeric",
+                        mRandSeed = "numeric",
+                        mEpsilon = "numeric",
+                        mNG = "numeric",
+                        mTimeIncrement = "numeric",
+                        mCycleLengthDist = "numeric",
+                        mRecordIncrement = "numeric" ))
 
-## getters
+## getters (parameters)
 
 .initialNumCells <- function(model) {
 
-    return (model@m_initialNumCells)
+    return (model@mInitialNumCells)
 
 }
 
 .runTime <- function(model) {
 
-    return (model@m_runTime)
+    return (model@mRunTime)
 
 }
 
 .initialDensity <- function(model) {
 
-    return (model@m_initialDensity)
+    return (model@mInitialDensity)
 
 }
 
 .inheritGrowth <- function(model) {
 
-    return (model@m_inheritGrowth)
+    return (model@mInheritGrowth)
 
 }
 
 .outputIncrement <- function(model) {
 
-    return (model@m_outputIncrement)
+    return (model@mOutputIncrement)
 
 }
 
 .randSeed <- function(model) {
 
-    return (model@m_randSeed)
+    return (model@mRandSeed)
 
 }
 
 .epsilon <- function(model) {
 
-    return (model@m_epsilon)
+    return (model@mEpsilon)
 
 }
 
 .nG <- function(model) {
 
-    return (model@m_nG)
+    return (model@mNG)
 
 }
 
 .timeIncrement <- function(model) {
 
-    return (model@m_timeIncrement)
+    return (model@mTimeIncrement)
+
+}
+
+.recordIncrement <- function(model) {
+
+    return (model@mRecordIncrement)
 
 }
 
 .cycleLengthDist <- function(model) {
 
-    return (model@m_cycleLengthDist)
+    return (model@mCycleLengthDist)
+
+}
+
+## getters (cell data)
+
+getCoordinates <- function(model, time) {
+
+    indices <- seq(1,length(model@mCells[[timeToRow(model,time)]]),6)
+    ret_mat <- matrix(nrow = length(indices), ncol = 2)
+    for (i in 1:length(indices)) {
+
+        ret_mat[i,1] = model@mCells[[timeToRow(model,time)]][indices[i]]
+        ret_mat[i,2] = model@mCells[[timeToRow(model,time)]][indices[i]+1]
+
+	}
+
+    return (ret_mat)
+         
+}
+
+getRadii <-	function(model, time) {
+
+    indices <- seq(3,length(model@mCells[[timeToRow(model,time)]]),6)
+    return(model@mCells[[timeToRow(model,time)]][indices])
+
+}
+         
+getAxisLength <- function(model, time) {
+
+    indices <- seq(4,length(model@mCells[[timeToRow(model,time)]]),6)
+    return(model@mCells[[timeToRow(model,time)]][indices])
+
+}
+
+getAxisAngle <- function(model, time) {
+
+    indices <- seq(5,length(model@mCells[[timeToRow(model,time)]]),6)
+    return(model@mCells[[timeToRow(model,time)]][indices])
+
+}
+
+getGrowthRates <- function(model, time) {
+
+    indices <- seq(6,length(model@mCells[[timeToRow(model,time)]]),6)
+    return(model@mCells[[timeToRow(model,time)]][indices])
+
+}
+
+#' \code{getCycleLengths} return the cycle lengths of each cells at time
+#'
+#' @param model a CellModel object
+#' @param time time of interest
+#' @return the cycle lengths of each cell at time
+#' @export
+#'
+
+getCycleLengths <- function(model, time) {
+
+    gr_rates <- getGrowthRates(model, time)
+    return (1 + 2 * (sqrt(2) - 1) * .timeIncrement(model) * .nG(model) / gr_rates)
 
 }
 
@@ -104,17 +171,54 @@ setMethod("show", "CellModel",
 
     function (object) {
 
-        cat("model parameters:")
+        cat("model parameters:\n")
         print(getParameters(object))
         cat("available functions:\n")
-        cat("plotInteractive\n")
-        cat("plotCellsAtTime\n")
-        cat("getParameters\n")
-        cat("getDensity\n")
-        cat("getNumberOfCells\n")
-        cat("getCycleLengthDistribution\n")
+        cat("interactivePlot\n")
+        cat("getCycleLengths\n")
 
     }
 
 )
+
+#' \code{getParameters} get a named list of parameters in the model
+#'
+#' @param model A CellModel
+#' @param fullDist whether or not to return full distribution of cycle length
+#' @return a named list of parameters in the model
+#' @examples
+#' getParameters(runCancerSim(1,1))
+#' @rdname CellModel-class
+#' @export
+#'
+
+getParameters <- function(model, fullDist=FALSE) {
+
+    retDist = mean(.cycleLengthDist(model))
+
+    if (fullDist) {
+
+     retDist = .cycleLengthDist(model)
+
+    }
+
+    ret_val = list(
+
+        initialNum = .initialNumCells(model),
+        runTime = .runTime(model),           
+        initialDensity = .initialDensity(model),           
+        inheritGrowth = .inheritGrowth(model),           
+        outputIncrement = .outputIncrement(model),           
+        randSeed = .randSeed(model),           
+        epsilon = .epsilon(model),           
+        nG = .nG(model),
+        timeIncrement = .timeIncrement(model),
+        cycleLengthDist = retDist
+
+    )           
+
+    return(ret_val)
+
+}
+
 

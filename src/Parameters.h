@@ -20,6 +20,7 @@ class Parameters {
 	bool m_inherit_growth;
 	double m_nG;
     double m_drug_time;
+    double m_boundary;
 
 	std::vector<double> m_slow_solver;
 	std::vector<double> m_fast_solver;
@@ -51,6 +52,7 @@ class Parameters {
 	void SetNG(double ng) { m_nG = ng;}
     void StoreDrugEffect(DrugEffectMap);
     void SetDrugTime(double dt) { m_drug_time = dt;}
+    void SetBoundary(double rad) { m_boundary = rad;}
 
     //Getters
     double GetMaxTranslation() { return m_max_translation;}
@@ -63,6 +65,7 @@ class Parameters {
 	double GetMaxRadius() { return m_max_radius;}
     double GetDrugEffect(double);
     double GetDrugTime() { return m_drug_time;}
+    double GetBoundary() { return m_boundary;}
 
 	double GetRandomGrowthRate();
 	double GetMaxGrowth();
