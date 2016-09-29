@@ -15,38 +15,38 @@ friend class TestCellPopulation;
 
 private:
 
-	Parameters *m_param;
+    Parameters *m_param;
 
-	SpatialHash<Cell> m_population;
+    SpatialHash<Cell> m_population;
 
-	std::vector<std::vector<double> > m_population_record;
+    std::vector<std::vector<double> > m_population_record;
 
 public:
 
-	~CellPopulation();
+    ~CellPopulation();
 
-	CellPopulation(Parameters*, unsigned int, double);
+    CellPopulation(Parameters*, unsigned int, double);
 
-	Point GetRandomLocation(Cell*, double);
-	bool ValidCellPlacement(Cell*);
+    Point GetRandomLocation(Cell*, double);
+    bool ValidCellPlacement(Cell*);
 
-	void OneTimeStep();
-	void Update();
+    void OneTimeStep();
+    void Update();
 
-	void AttemptTrial(Cell*);
-	bool AcceptTrial(double);
+    void AttemptTrial(Cell*);
+    bool AcceptTrial(double);
     int CalculateNumberOfNeighbors(Cell*);
-	double CalculateTotalInteraction(Cell*);
-	double CalculateInteraction(Cell*, Cell*);
+    double CalculateTotalInteraction(Cell*);
+    double CalculateInteraction(Cell*, Cell*);
 
-	void CheckMitosis(Cell*);
-	void SetGrowthRates();
-	void SeedCells();
+    void CheckMitosis(Cell*);
+    void SetGrowthRates();
+    void SeedCells();
 
-	void RecordPopulation();
-	Rcpp::List GetPopulationAsList();
+    void RecordPopulation();
+    Rcpp::List GetPopulationAsList();
 
-	int size();
+    int size();
 
 };
 

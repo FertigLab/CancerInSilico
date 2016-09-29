@@ -219,14 +219,13 @@ CATCH_TEST_CASE("Test Spatial Hash and its components") {
         SpatialHash<TestObject> hash = SpatialHash<TestObject>(1.0);
         SpatialHash<TestObject>::full_iterator full_iter = hash.begin();
 
-        CATCH_SECTION("Test empty iterator") {
+       CATCH_SECTION("Test empty iterator") {
 
             full_iter == hash.end();
-            CATCH_REQUIRE_NOTHROW(TestObject temp = *full_iter);
 
         }
 
-        TestObject* first = new TestObject(Point(0,0),0);
+       TestObject* first = new TestObject(Point(0,0),0);
         CATCH_REQUIRE_NOTHROW(hash.Insert(first->coord, first));
 
         SpatialHash<TestObject>::circular_iterator circ_iter = hash.begin(first->coord, 0);

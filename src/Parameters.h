@@ -14,25 +14,25 @@ class Parameters {
     int m_initial_num_cells;
     double m_max_translation, m_max_rotate, m_max_deform;
     double m_epsilon, m_delta;
-	double m_max_radius;
-	bool m_inherit_growth;
-	double m_nG;
+    double m_max_radius;
+    bool m_inherit_growth;
+    double m_nG;
 
-	std::vector<double> m_slow_solver;
-	std::vector<double> m_fast_solver;
-	std::vector<double> m_growth_dist;
+    std::vector<double> m_slow_solver;
+    std::vector<double> m_fast_solver;
+    std::vector<double> m_growth_dist;
 
     void InitializeRadiusSolver();
-	void InitSlowSolver();
-	void InitFastSolver();
-	int HashAxisLength(double);
+    void InitSlowSolver();
+    void InitFastSolver();
+    int HashAxisLength(double);
 
   public:
 
     Parameters(double max_rad) {
-		m_max_radius = max_rad;
-		InitializeRadiusSolver();
-	}
+        m_max_radius = max_rad;
+        InitializeRadiusSolver();
+    }
 
     //Setters
     void SetMaxTranslation(double trans) { m_max_translation = trans;}
@@ -40,9 +40,9 @@ class Parameters {
     void SetMaxDeform(double def) { m_max_deform = def;}
     void SetResistanceEPSILON(double ep) { m_epsilon = ep;}
     void SetCompressionDELTA(double dt) { m_delta = dt;}
-	void SetInheritGrowth(bool gr) { m_inherit_growth = gr;}
-	void StoreGrowthDistribution(std::vector<double> gr) { m_growth_dist = gr;}
-	void SetNG(double ng) { m_nG = ng;}
+    void SetInheritGrowth(bool gr) { m_inherit_growth = gr;}
+    void StoreGrowthDistribution(std::vector<double> gr) { m_growth_dist = gr;}
+    void SetNG(double ng) { m_nG = ng;}
 
     //Getters
     double GetMaxTranslation() { return m_max_translation;}
@@ -50,14 +50,14 @@ class Parameters {
     double GetMaxDeform() { return m_max_deform;}
     double GetResistanceEPSILON() { return m_epsilon;}
     double GetCompressionDELTA() { return m_delta;}
-	bool InheritGrowth() { return m_inherit_growth;}
-	double GetNG() { return m_nG;}
-	double GetMaxRadius() { return m_max_radius;}
+    bool InheritGrowth() { return m_inherit_growth;}
+    double GetNG() { return m_nG;}
+    double GetMaxRadius() { return m_max_radius;}
 
-	double GetRandomGrowthRate();
-	double GetMaxGrowth();
+    double GetRandomGrowthRate();
+    double GetMaxGrowth();
     double GetRadius(double);
-	double GetThetaSlow(double);
+    double GetThetaSlow(double);
 
 };
 

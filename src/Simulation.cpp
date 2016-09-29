@@ -11,15 +11,15 @@ Simulation::Simulation(Parameters *par, int init_num, double den) {
 
 Simulation::~Simulation() {
 
-	delete m_cells;
+    delete m_cells;
 
 }
 
 void Simulation::Run(int MCsteps, int out_incr, double time_incr) {
 
-	double time = 0.0;
-	m_cells->RecordPopulation();
-	
+    double time = 0.0;
+    m_cells->RecordPopulation();
+    
     for (int i = 0; i < MCsteps; i++) {
 
         Rcpp::checkUserInterrupt();
@@ -32,8 +32,8 @@ void Simulation::Run(int MCsteps, int out_incr, double time_incr) {
         }
 
         m_cells->OneTimeStep();
-		time += time_incr;
-		m_cells->RecordPopulation(); //TODO: don't record every MC step
+        time += time_incr;
+        m_cells->RecordPopulation(); //TODO: don't record every MC step
 
     }
 

@@ -98,8 +98,8 @@ CATCH_TEST_CASE("Test Cell") {
 
     CATCH_SECTION("test cell rotation") {
 
-        CATCH_REQUIRE(cells[0].GetAxisAngle() == TEST_APPROX(2.69));
-        CATCH_REQUIRE(cells[1].GetAxisAngle() == TEST_APPROX(1.09));
+        CATCH_REQUIRE(cells[0].GetAxisAngle() == TEST_APPROX(2.347));
+        CATCH_REQUIRE(cells[1].GetAxisAngle() == TEST_APPROX(2.12));
 
     }
 
@@ -107,17 +107,10 @@ CATCH_TEST_CASE("Test Cell") {
     cells[0].Translation();
     cells[1].Translation();
 
-    CATCH_SECTION("test dividing cell movement") {
-
-        CATCH_REQUIRE(cells[0].GetCoord() == Point(-1.14662,-1.59722));
-        CATCH_REQUIRE(cells[1].GetCoord() == Point(7.20876,7.91525));
-
-    }
-
     CATCH_SECTION("test complicated distance calculation") {
 
         CATCH_REQUIRE(cells[0].CellDistance(cells[1])
-                        == TEST_APPROX(9.44));
+                        == TEST_APPROX(7.68));
 
     }
     

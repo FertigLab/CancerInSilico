@@ -10,8 +10,8 @@
 
 void Parameters::InitializeRadiusSolver() {
 
-	InitSlowSolver();
-	InitFastSolver();
+    InitSlowSolver();
+    InitFastSolver();
 
 }
 
@@ -33,14 +33,14 @@ void Parameters::InitSlowSolver() {
 
 void Parameters::InitFastSolver() {
 
-	double theta;
+    double theta;
 
-	for (int i = 0; i <= 11716; ++i) {
+    for (int i = 0; i <= 11716; ++i) {
 
-		theta = GetThetaSlow(2 * pow(2,0.5) + (double) i / 10000);
-		m_fast_solver.push_back(theta);
+        theta = GetThetaSlow(2 * pow(2,0.5) + (double) i / 10000);
+        m_fast_solver.push_back(theta);
 
-	}
+    }
 
 }
 
@@ -86,7 +86,7 @@ double Parameters::GetRadius(double axis_len) {
 
     } else {
 
-       	double theta = m_fast_solver[HashAxisLength(axis_len)];
+        double theta = m_fast_solver[HashAxisLength(axis_len)];
         return axis_len / (2 + 2 * cos(theta / 2));        
 
     }
@@ -95,18 +95,18 @@ double Parameters::GetRadius(double axis_len) {
 
 int Parameters::HashAxisLength(double axis_len) {
 
-	return floor((axis_len - 2 * pow(2,0.5)) * 10000);
+    return floor((axis_len - 2 * pow(2,0.5)) * 10000);
 
 }
 
 double Parameters::GetRandomGrowthRate() {
 
-	return m_growth_dist[floor(R::runif(0, m_growth_dist.size()))];
+    return m_growth_dist[floor(R::runif(0, m_growth_dist.size()))];
 
 }
 
 double Parameters::GetMaxGrowth() {
 
-	return *std::max_element(m_growth_dist.begin(), m_growth_dist.end());
+    return *std::max_element(m_growth_dist.begin(), m_growth_dist.end());
 
 }

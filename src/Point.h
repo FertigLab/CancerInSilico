@@ -17,28 +17,28 @@ typedef struct point {
 
     bool operator==(const struct point& other) const {
         return (x < other.x + 0.0001 && x > other.x - 0.0001)
-				&& (y < other.y + 0.0001 && y > other.y - 0.0001);
+                && (y < other.y + 0.0001 && y > other.y - 0.0001);
     }
 
     bool operator!=(const struct point& other) const {
         return !(other == *this);
     }
 
-	point() { x = 0.0; y = 0.0;}
+    point() { x = 0.0; y = 0.0;}
 
-	point(double in_x, double in_y) {
-		x = in_x;
-		y = in_y;
-	}
+    point(double in_x, double in_y) {
+        x = in_x;
+        y = in_y;
+    }
 
-	double dist(const struct point& other) const {
-		return pow(pow(x - other.x,2) + pow(y - other.y,2),0.5);
-	}
+    double dist(const struct point& other) const {
+        return pow(pow(x - other.x,2) + pow(y - other.y,2),0.5);
+    }
 
-	void operator=(const struct point& other) {
-		x = other.x;
-		y = other.y;
-	}
+    void operator=(const struct point& other) {
+        x = other.x;
+        y = other.y;
+    }
 
 } Point;
 
