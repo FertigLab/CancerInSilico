@@ -17,4 +17,7 @@ plot a visual representation of cells
 \description{
 \code{plotCell} plots a CellModel at a given time
 }
+\examples{
+plotCells(runCancerSim(10,1), 1)
+}
 

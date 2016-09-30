@@ -382,6 +382,8 @@ timeToRow <- function(model, time) {
 #' @param model A CellModel
 #' @param time time in model hours
 #' @return plot a visual representation of cells 
+#' @examples plotCells(runCancerSim(10,1), 1)
+#' @export
 
 plotCells <- function(model,time)  {
 
@@ -429,6 +431,7 @@ setMethod("show", "CellModel",
         print(getParameters(object))
         cat("available functions:\n")
         cat("interactivePlot\n")
+        cat("plotCells\n")
         cat("getParameters\n")
         cat("getDensity\n")
         cat("getCycleLengths\n")

@@ -32,18 +32,24 @@ single_cell_run <- runCancerSim(initialNum = 1, runTime = 84)
 ```
 
 ```{r,eval=F}
-plotCellsAtTime(single_cell_run, 84)
+plotCells(single_cell_run, 84)
 ```
 
 ![Example Run](ExampleRun.png)
-*Figure 1* the distribution of cells from this simulation at the final 84 hour time point using the plotting function *PlotCellsAtTime*, described further in Section 2.3.5.
+*Figure 1* the distribution of cells from this simulation at the final 84 hour time point using the plotting function *plotCells*, described further in Section 2.3.5.
 
 ## *runCancerSim* Usage
 
 ```{r, eval=F}
-runCancerSim(initialNum, runTime, density = 0.1, cycleLengthDist = 12,
-             inheritGrowth = F, outputIncrement = 6, randSeed = 0,
-             modelType = "DrasdoHohme2003", ...)
+runCancerSim(initialNum,
+             runTime,
+             density = 0.1,
+             cycleLengthDist = 12,
+             inheritGrowth = F,
+             outputIncrement = 6,
+             randSeed = 0,
+             modelType = "DrasdoHohme2003",
+             ...)
 ```
 
 ## Parameters
@@ -102,14 +108,14 @@ In the @DRASDO2003 model, cells primarily do two things: move and grow. When a c
 
 ## Output Variables and *CellModel* class 
 
-The output of the model is stored in a *CellModel* object. This object has two fields: *cells* and *parameters*. *parameters* contains a named list of all the parameters used to run the model. *cells* is a list that contains information about the cell population at every time step in the model. The primary purpose of this object is to store all the information about a run in a single place and provide a standard data structure for the package functions to handle the raw data safely.
+The output of the model is stored in a *CellModel* object. This object has a field containing all cell data, *mCells*, and a field for each parameter. To get a named list of all the parameters users can call *getParameters* on a *CellModel* object. *mCells* is a list that contains information about the cell population at every time step in the model. The primary purpose of this object is to store all the information about a run in a single place and provide a standard data structure for the package functions to handle the raw data safely.
 
 ```{r}
 # the result of runCancerSim stored in
 # basic_sim are a CellModel object
-basic_sim <- runCancerSim(initialNum = 30,
-                          runTime = 24,
-                          density = 0.05,
+basic_sim <- runCancerSim(initialNum = 3,
+                          runTime = 48,
+                          density = 0.1,
                           cycleLengthDist = 10 + rexp(1000,1/4),
                           inheritGrowth = FALSE,
                           outputIncrement = 6,
@@ -121,6 +127,31 @@ basic_sim <- runCancerSim(initialNum = 30,
 ## Functions for analysis of *CellModel* class
 
 The following describes several functions used to get relevant information from the *CellModel* object in a user-friendly format, without requiring direct interaction with the complex fields from raw data stored in the *CellModel* class.
+
+### *show*
+
+This shows the parameters of a model as well as all available function in the *CellModel* class.
+
+**Function Signature**: 
+
+```{r, eval=FALSE}
+show(model)
+```
+
+**Arguments**:
+
+*model* - A *CellModel* object  
+
+**Return**:
+
+shows all parameters and available functions for the *CellModel* object
+
+**Example**:
+
+```{r}
+## example call
+show(basic_sim) 
+```
 
 ### *getParameters*
 
@@ -180,12 +211,12 @@ t <- sapply(0:length,getNumberOfCells,model=basic_sim)
 plot(0:length, t, type = "l", xlab="time", ylab="# of cells")
 ```
 
-### *getCycleLengthDistribution*
+### *getCycleLengths*
 
 **Function Signature**: 
 
 ```{r,eval=FALSE}
-getCycleLengthDistribution(model, time)
+getCycleLengths(model, time)
 ```
 
 **Arguments**:
@@ -200,7 +231,7 @@ A vector of cell-cycle lengths for each cell in *model* at *time*.
 **Example**: 
 
 ```{r}
-cyc_len <- getCycleLengthDistribution(basic_sim,0)
+cyc_len <- getCycleLengths(basic_sim,0)
 plot(density(cyc_len),main="Cycle Length Distribution - Time 0",xlab="length")
 ```
 
@@ -228,12 +259,12 @@ den <- sapply(0:length,getDensity,model=basic_sim)
 plot(0:length,den,type="l",xlab="time",ylab="cell density")
 ```
 
-### *plotCellsAtTime*
+### *plotCells*
 
 **Function Signature**: 
 
 ```{r,eval=FALSE}
-plotCellsAtTime(model, time)
+plotCells(model, time)
 ```
 
 **Arguments**:
@@ -248,18 +279,18 @@ plots a visual representation of the cells at *time*.
 **Example**: 
 
 ```{r}
-plotCellsAtTime(basic_sim,0)
-plotCellsAtTime(basic_sim,length)
+plotCells(basic_sim,0)
+plotCells(basic_sim,length)
 ```
 
-### *plotInteractive*
+### *interactivePlot*
 
-The *plotInteractive* function is similiar to *plotCellsAtTime* except there are additional commands that allow the user to step through the simulation and watch it progress as well as display information at the current timestep.
+The *interactivePlot* function is similiar to *plotCells* except there are additional commands that allow the user to step through the simulation and watch it progress as well as display information at the current timestep.
 
 **Function Signature**: 
 
 ```{r,eval=FALSE}
-plotInteractive(model, time = 0)
+interactivePlot(model, time = 0)
 ```
 
 **Arguments**:
@@ -276,8 +307,9 @@ Basic Commands:
 b ARG = back ARG timesteps (default ARG = 1)
 n ARG = forward ARG timesteps (default ARG = 1)
 t ARG - jump to timestep ARG (default ARG = 1)
+i ARG - change default ARG for other commands
 s = summary of cells
-q = quit "console"
+q = quit
 h = basic command help
 ```
 
