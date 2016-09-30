@@ -12,23 +12,34 @@
 
 simulatePathway <- function(model, pathway, type, sampFreq = 1, sampSize = 1, singleCell=FALSE) {
 
-    time_window = 1 # arbitrary for now
-    mean_cycle_len = 16 # avg cycle length in hours
+    # time window to search for events related to gene expression
+    time_window = 1 
+    # average cycle time used for determining if cell is growing 'fast' or 'slow'
+    mean_cycle_len = 16
+
+    # vector of times to get gene expression for
     times <- seq(0, .runTime(model) - time_window, sampFreq)
 
+    # create return matrix
     gsMatrix <- matrix(0,length(times),length(pathway) * sampSize)
     colnames(gsMatrix) <- rep(names(pathway), sampSize)
     rownames(gsMatrix) <- times
 
+    # loop through each time
     for (t in times) {
 
-        cells <- 1 + (seq(1,getNumberOfCells(model, t), 6) - 1) / 6
-        if (singleCell) {
+        # get a vector of all cells
+        cells <- 1:getNumberOfCells(model, t)
 
+        # if doing single cell ...
+        if (singleCell) {
+    
+            # get a sample of cells
             cells <- sample(cells, sampSize)
 
         }
 
+        # switch on type of gene expression
         switch (type,
 
             S =  {
