@@ -27,8 +27,7 @@ setClass("CellModel", representation(
                         mEpsilon = "numeric",
                         mNG = "numeric",
                         mTimeIncrement = "numeric",
-                        mCycleLengthDist = "numeric",
-                        mRecordIncrement = "numeric" ))
+                        mCycleLengthDist = "numeric" ))
 
 #### getters (parameters) ####
 
@@ -51,10 +50,6 @@ setClass("CellModel", representation(
 .timeIncrement <- function(model) { return (model@mTimeIncrement) }
 
 .cycleLengthDist <- function(model) { return (model@mCycleLengthDist) }
-
-.recordIncrement <- function(model) { return (model@mRecordIncrement) }
-
-}
 
 #### getters (cell data) ####
 
@@ -165,7 +160,7 @@ getGrowthRates <- function(model, time) {
     # return the values at these indices
     return(model@mCells[[row]][indices])
 
-
+}
 
 #### exported functions for this class ####
 
@@ -197,7 +192,7 @@ getCycleLengths <- function(model, time) {
 #' getNumberOfCells(runCancerSim(1,1), 1)
 #' @export
 
-getNumberOfCells <- function(model, time) {
+getNumberOfCells <-    function(model, time) {
 
     return (sum(getRadii(model, time) > 0))   
 
@@ -262,6 +257,7 @@ getParameters <- function(model, fullDist=FALSE) {
         epsilon = .epsilon(model),           
         nG = .nG(model),
         timeIncrement = .timeIncrement(model),
+        recordIncrement = .recordIncrement(model),
         cycleLengthDist = retDist
 
     )           
@@ -270,70 +266,6 @@ getParameters <- function(model, fullDist=FALSE) {
     return(ret_val)
 
 }
-
-#' \code{plotCell} plots a CellModel at a given time
-#'
-#' @param model A CellModel
-#' @param time time in model hours
-#' @return plot a visual representation of cells 
-#' @examples plotCells(runCancerSim(10,1), 1)
-#' @export
-
-plotCells <- function(model,time)  {
-
-    # get all the cell information
-    coords <- getCoordinates(model, time)
-    radii <- getRadii(model, time)
-    axis_len <- getAxisLength(model, time)
-    axis_ang <- getAxisAngle(model, time)
-
-    # find a square that contains all cells
-    mn <- min(coords) - 2
-    mx <- max(coords) + 2
-    
-    # create the plot template
-    plot(c(mn,mx),c(mn,mx),main=paste("Plot of CellModel At Time",time),xlab = "",ylab="",type="n",asp=1)
-          
-    # get all (x,y) pairs for each of the two circles that make up a cell
-    x_1 <- coords[,1] + (0.5 * axis_len - radii) * cos(axis_ang)
-    x_2 <- coords[,1] - (0.5 * axis_len - radii) * cos(axis_ang)
-    y_1 <- coords[,2] + (0.5 * axis_len - radii) * sin(axis_ang)
-    y_2 <- coords[,2] - (0.5 * axis_len - radii) * sin(axis_ang)
-
-    # combine all coordinate pairs along with the radii for each cell    
-    x <- c(x_1,x_2)
-    y <- c(y_1,y_2)
-    rad <- c(radii, radii)
-    
-    # plot the cells
-    symbols(x,y, circles=rad, inches=FALSE, add=TRUE, bg="bisque4", fg="bisque4")
-
-}
-
-#' \code{show} display summary of CellModel class
-#'
-#' @param object A CellModel Object
-#' @examples show(runCancerSim(1,1))
-#' @return shows all available functions and parameters of model
-#' @export
-
-setMethod("show", "CellModel",
-
-    function (object) {
-
-        cat("model parameters:")
-        print(getParameters(object))
-        cat("available functions:\n")
-        cat("interactivePlot\n")
-        cat("plotCells\n")
-        cat("getParameters\n")
-        cat("getDensity\n")
-        cat("getCycleLengths\n")
-        cat("getNumberOfCells\n")
-
-    }
-
-)
 
 #' \code{interactivePlot} plots a CellModel and allows the user to control the plot with various commands
 #'
@@ -475,8 +407,70 @@ getNumNeighbors <- function(model, time, index) {
 
 timeToRow <- function(model, time) {
 
-    return (floor(time / .timeIncrement(model)) + 1)
+    return (floor(time / .recordIncrement(model)) + 1)
 
 }
 
+#' \code{plotCell} plots a CellModel at a given time
+#'
+#' @param model A CellModel
+#' @param time time in model hours
+#' @return plot a visual representation of cells 
+#' @examples plotCells(runCancerSim(10,1), 1)
+#' @export
 
+plotCells <- function(model,time)  {
+
+    # get all the cell information
+    coords <- getCoordinates(model, time)
+    radii <- getRadii(model, time)
+    axis_len <- getAxisLength(model, time)
+    axis_ang <- getAxisAngle(model, time)
+
+    # find a square that contains all cells
+    mn <- min(coords) - 2
+    mx <- max(coords) + 2
+    
+    # create the plot template
+    plot(c(mn,mx),c(mn,mx),main=paste("Plot of CellModel At Time",time),xlab = "",ylab="",type="n",asp=1)
+          
+    # get all (x,y) pairs for each of the two circles that make up a cell
+    x_1 <- coords[,1] + (0.5 * axis_len - radii) * cos(axis_ang)
+    x_2 <- coords[,1] - (0.5 * axis_len - radii) * cos(axis_ang)
+    y_1 <- coords[,2] + (0.5 * axis_len - radii) * sin(axis_ang)
+    y_2 <- coords[,2] - (0.5 * axis_len - radii) * sin(axis_ang)
+
+    # combine all coordinate pairs along with the radii for each cell    
+    x <- c(x_1,x_2)
+    y <- c(y_1,y_2)
+    rad <- c(radii, radii)
+    
+    # plot the cells
+    symbols(x,y, circles=rad, inches=FALSE, add=TRUE, bg="bisque4", fg="bisque4")
+
+}
+
+#' \code{show} display summary of CellModel class
+#'
+#' @param object A CellModel Object
+#' @examples show(runCancerSim(1,1))
+#' @return shows all available functions and parameters of model
+#' @export
+
+setMethod("show", "CellModel",
+
+    function (object) {
+
+        cat("model parameters:")
+        print(getParameters(object))
+        cat("available functions:\n")
+        cat("interactivePlot\n")
+        cat("plotCells\n")
+        cat("getParameters\n")
+        cat("getDensity\n")
+        cat("getCycleLengths\n")
+        cat("getNumberOfCells\n")
+
+    }
+
+)

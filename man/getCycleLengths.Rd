@@ -9,12 +9,15 @@ getCycleLengths(model, time)
 \arguments{
 \item{model}{a CellModel object}
 
-\item{time}{time of interest}
+\item{time}{time in model hours}
 }
 \value{
 the cycle lengths of each cell at time
 }
 \description{
 \code{getCycleLengths} return the cycle lengths of each cells at time
+}
+\examples{
+getCycleLengths(runCancerSim(1,1), 1)
 }
 
