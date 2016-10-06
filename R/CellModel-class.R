@@ -13,6 +13,7 @@
 #' @slot mEpsilon model specific parameter 
 #' @slot mNG model specific parameter
 #' @slot mTimeIncrement amount of time elapsed in each model step
+#' @slot mRecordIncrement time increment when cell data is recorded
 #' @slot mCycleLengthDist initial distribution of cell-cycle lengths 
 #' @export
 
@@ -27,6 +28,7 @@ setClass("CellModel", representation(
                         mEpsilon = "numeric",
                         mNG = "numeric",
                         mTimeIncrement = "numeric",
+                        mRecordIncrement = "numeric",
                         mCycleLengthDist = "numeric" ))
 
 #### getters (parameters) ####
@@ -48,6 +50,8 @@ setClass("CellModel", representation(
 .nG <- function(model) { return (model@mNG) }
 
 .timeIncrement <- function(model) { return (model@mTimeIncrement) }
+
+.recordIncrement <- function(model) { return (model@mRecordIncrement) }
 
 .cycleLengthDist <- function(model) { return (model@mCycleLengthDist) }
 
