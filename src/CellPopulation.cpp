@@ -191,9 +191,10 @@ void CellPopulation::AttemptTrial(Cell *cell) {
 
     bool overlap = CheckForCellOverlap(orig.GetCoord(), cell);
 
-    if (overlap) {// || CheckBoundary(cell)) {
+/*    if (overlap || CheckBoundary(cell)) {
 
         *cell = orig;
+        return;
 
     } else if (growth) {
 
@@ -207,6 +208,23 @@ void CellPopulation::AttemptTrial(Cell *cell) {
 
         m_population.Update(cell->GetCoord(), orig.GetCoord());    
         *cell = orig;
+
+    }*/
+
+    if (overlap || CheckBoundary(cell)) {
+
+        *cell = orig;
+
+    } else if (!growth) {
+
+        m_population.Update(orig.GetCoord(), cell->GetCoord());    
+        
+        if (!AcceptTrial(interaction, num_neighbors, cell)) {
+
+            m_population.Update(cell->GetCoord(), orig.GetCoord());    
+            *cell = orig;
+
+        }
 
     }
 
