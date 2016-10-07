@@ -191,6 +191,12 @@ double Cell::GetGrowth() const {
 
 }
 
+int Cell::GetCellType() const {
+
+    return 0;
+
+}
+
 void Cell::EnterRandomPointOfMitosis() {
 
     m_in_mitosis = true;

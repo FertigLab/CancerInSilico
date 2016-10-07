@@ -339,20 +339,26 @@ int CellPopulation::size() {
 
 }
 
+/* records the current state of the cell population */
 void CellPopulation::RecordPopulation() {
 
+    /* the vector to hold the current population */
     std::vector<double> current_pop;
-	SpatialHash<Cell>::full_iterator iter = m_population.begin();
-    Cell *temp;
-
+	
+    /* cell population iterator */
+    SpatialHash<Cell>::full_iterator iter = m_population.begin();
+  
+    /* loop through each cell */  
 	for (; iter != m_population.end(); ++iter) {
 
+        /* store cell information */
         current_pop.push_back((*iter).GetCoord().x);
         current_pop.push_back((*iter).GetCoord().y);
         current_pop.push_back((*iter).GetRadius());
         current_pop.push_back((*iter).GetAxisLength());
         current_pop.push_back((*iter).GetAxisAngle());
         current_pop.push_back((*iter).GetGrowth());
+        current_pop.push_back((*iter).GetCellType());
 
     }
 
