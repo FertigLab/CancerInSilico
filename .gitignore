@@ -28,6 +28,7 @@
 *.app
 
 *~
+*#*
 **/.Rhistory
 Package/..Rcheck/*
 *.gz
@@ -55,3 +56,5 @@ cmdtest.R
 *.Rhistory
 *.html
 
+*.DS_Store
+*.Rapp.history

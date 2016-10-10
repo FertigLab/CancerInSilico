@@ -8,7 +8,8 @@ class Cell {
 
   private:
 
-    Parameters *m_param;
+    /* copy of parameters object */
+    Parameters* m_param;
 
     Point m_coordinates;
     double m_radius;
@@ -38,6 +39,9 @@ class Cell {
     double GetAxisAngle() const;
     void SetGrowth(double);
     double GetGrowth() const;
+    void SetCellType();
+    int GetCellType() const;
+
     bool ReadyToDivide() const;
 	void EnterRandomPointOfMitosis();
 
