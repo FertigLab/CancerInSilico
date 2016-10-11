@@ -53,7 +53,7 @@ Rcpp::List CellModel(
     Rcpp::Function setSeed = baseEnv["set.seed"];
     setSeed(randSeed);
 
-    Parameters* params = new Parameters(pow(2,0.5));
+    Parameters* params = new Parameters(pow(2, 0.5));
 
     params->SetMaxTranslation(maxTranslation);
     params->SetMaxDeform(maxDeform);
