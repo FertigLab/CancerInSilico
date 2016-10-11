@@ -233,7 +233,14 @@ bool CellPopulation::CheckForCellOverlap(Point center, Cell* cell) {
 
 bool CellPopulation::CheckBoundary(Cell* cell) {
 
-    return cell->GetCoord().dist(Point(0,0)) > m_param->GetBoundary();
+    double x_dist = (0.5 * cell->GetAxisLength() - cell->GetRadius()) * cos(cell->GetAxisAngle());
+    double y_dist = (0.5 * cell->GetAxisLength() - cell->GetRadius()) * sin(cell->GetAxisAngle());
+
+    Point center_1 = Point(cell->GetCoord().x + x_dist, cell->GetCoord().y + y_dist);
+    Point center_2 = Point(cell->GetCoord().x - x_dist, cell->GetCoord().y - y_dist);
+
+    return (center_1.dist(Point(0,0)) + cell->GetRadius() > m_param->GetBoundary()
+            || center_2.dist(Point(0,0)) + cell->GetRadius() > m_param->GetBoundary());
 
 }
 
