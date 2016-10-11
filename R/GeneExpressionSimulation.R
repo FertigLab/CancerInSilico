@@ -85,7 +85,7 @@ simulatePathway <- function(model, pathway, type, sampFreq = 1, sampSize = 1, si
 #' @param time_window the window of time (model hours) to check if a cell made the transition
 #' @return gene expression for each cell 
 
-getGtoSexpression(model, cells, time, time_window) {
+getGtoSexpression <- function(model, cells, time, time_window) {
 
     # get the axis lengths of each cell at current time 
     cur_rad <- getRadii(model, time)[cells]
@@ -107,7 +107,7 @@ getGtoSexpression(model, cells, time, time_window) {
 #' @param time_window the window of time (model hours) to check if a cell made the transition
 #' @return gene expression for each cell 
 
-getGtoMexpression(model, cells, time, time_window) {
+getGtoMexpression <- function(model, cells, time, time_window) {
 
     # get the axis lengths of each cell at current time 
     cur_ax <- getAxisLength(model, time)[cells]
@@ -127,7 +127,7 @@ getGtoMexpression(model, cells, time, time_window) {
 #' @param time model time in hours
 #' @return gene expression for each cell 
 
-getPROXexpression(model, cells, time) {
+getPROXexpression <- function(model, cells, time) {
 
     # create empty vector
     exp <- c()
@@ -152,7 +152,7 @@ getPROXexpression(model, cells, time) {
 #' @param time model time in hours
 #' @return gene expression for each cell 
 
-getGROWTHexpression(model, cells, time) {
+getGROWTHexpression <- function(model, cells, time) {
 
     # get the cycle lengths of each cell
     cycle_len <- getCycleLengths(model,time)[cells]
