@@ -27,6 +27,7 @@ runCancerSim <- function(initialNum,
                          randSeed = 0,
                          modelType = "DrasdoHohme2003",
                          drugTime = 0.0,
+                         boundary = 1,
                          ...)
 
 {
@@ -47,6 +48,7 @@ runCancerSim <- function(initialNum,
                              randSeed,
                              drugEffect,
                              drugTime,
+                             boundary,
                              ...))
 
     }
@@ -67,6 +69,7 @@ runDrasdoHohme <- function(initialNum,
                            randSeed,
                            drugEffect,
                            drugTime,
+                           boundary,
                            ...)
   
 {
@@ -95,8 +98,8 @@ runDrasdoHohme <- function(initialNum,
         timeIncrement = max_incr
 
     }
-
-    boundary <- 1
+    
+    boundary <- max(boundary, sqrt(initialNum / density) + 2)
     maxDeform <- 2 * timeIncrement * nG * (4 - sqrt(2))
     grRates <- 2 * (sqrt(2) - 1) * timeIncrement * nG / (cycleLengthDist - 1)
     mcSteps <- ceiling(runTime / timeIncrement)
@@ -149,7 +152,8 @@ runDrasdoHohme <- function(initialNum,
                  mNG = nG,
                  mTimeIncrement = timeIncrement,
                  mRecordIncrement = recordIncrement,
-                 mCycleLengthDist = cycleLengthDist)
+                 mCycleLengthDist = cycleLengthDist,
+                 mBoundary = boundary)
 
     return(cellMat)
   

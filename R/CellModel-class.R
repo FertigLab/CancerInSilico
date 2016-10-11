@@ -29,7 +29,8 @@ setClass("CellModel", representation(
                         mNG = "numeric",
                         mTimeIncrement = "numeric",
                         mRecordIncrement = "numeric",
-                        mCycleLengthDist = "numeric" ))
+                        mCycleLengthDist = "numeric",
+                        mBoundary = "numeric" ))
 
 #### getters (parameters) ####
 
@@ -55,6 +56,8 @@ setClass("CellModel", representation(
 
 .cycleLengthDist <- function(model) { return (model@mCycleLengthDist) }
 
+.boundary <- function(model) { return (model@mBoundary) }
+
 #### getters (cell data) ####
 
 #' \code{getCoordinates} get a two dimensional matrix of all the cell coordinates
@@ -69,7 +72,7 @@ getCoordinates <- function(model, time) {
     row <- timeToRow(model, time)
 
     # get the sequence of indices that contain x-coordinates
-    indices <- seq(1,length(model@mCells[[row]]),6)
+    indices <- seq(1,length(model@mCells[[row]]),7)
     
     # create return matrix, col 1 = x-coord & col 2 = y-coord
     ret_mat <- matrix(nrow = length(indices), ncol = 2)
@@ -102,7 +105,7 @@ getRadii <- function(model, time) {
     row <- timeToRow(model, time)
 
     # get the sequence of indices that contain the cell radius (starts at 3)
-    indices <- seq(3,length(model@mCells[[row]]),6)
+    indices <- seq(3,length(model@mCells[[row]]),7)
 
     # return the values at these indices
     return(model@mCells[[row]][indices])
@@ -121,7 +124,7 @@ getAxisLength <- function(model, time) {
     row <- timeToRow(model, time)
 
     # get the sequence of indices that contain the axis length (starts at 4)
-    indices <- seq(4,length(model@mCells[[row]]),6)
+    indices <- seq(4,length(model@mCells[[row]]),7)
 
     # return the values at these indices
     return(model@mCells[[row]][indices])
@@ -140,7 +143,7 @@ getAxisAngle <- function(model, time) {
     row <- timeToRow(model, time)
 
     # get the sequence of indices that contain the axis angle (starts at 5)
-    indices <- seq(5,length(model@mCells[[row]]),6)
+    indices <- seq(5,length(model@mCells[[row]]),7)
 
     # return the values at these indices
     return(model@mCells[[row]][indices])
@@ -159,7 +162,7 @@ getGrowthRates <- function(model, time) {
     row <- timeToRow(model, time)
 
     # get the sequence of indices that contain the cell growth rate (starts at 6)
-    indices <- seq(6,length(model@mCells[[row]]),6)
+    indices <- seq(6,length(model@mCells[[row]]),7)
 
     # return the values at these indices
     return(model@mCells[[row]][indices])
@@ -423,7 +426,7 @@ timeToRow <- function(model, time) {
 #' @examples plotCells(runCancerSim(10,1), 1)
 #' @export
 
-plotCells <- function(model,time)  {
+plotCells <- function(model,time,drawBoundary = TRUE)  {
 
     # get all the cell information
     coords <- getCoordinates(model, time)
@@ -451,6 +454,13 @@ plotCells <- function(model,time)  {
     
     # plot the cells
     symbols(x,y, circles=rad, inches=FALSE, add=TRUE, bg="bisque4", fg="bisque4")
+
+    # draw boundary
+    if (drawBoundary) {
+
+        symbols(0,0,circles=.boundary(model), inches=FALSE, add=TRUE)
+
+    }
 
 }
 
