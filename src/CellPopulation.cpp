@@ -9,7 +9,12 @@ CellPopulation::CellPopulation(Parameters *par, unsigned int size, double densit
     m_population = SpatialHash<Cell>(1.0);
 
     double disk_radius = pow(size / density, 0.5);
-    if (m_param->GetBoundary() < disk_radius + 2) {
+        
+    if (m_param->GetBoundary() == 0.0) {
+
+        m_param->SetBoundary(std::numeric_limits::max);
+
+    } else if (m_param->GetBoundary() < disk_radius + 2) {
 
         m_param->SetBoundary(disk_radius + 2);
 
