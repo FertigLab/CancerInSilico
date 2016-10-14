@@ -3,53 +3,77 @@
 
 #include "CellPopulation.h"
 
+/* constructor; takes a Parameters object, initial size and density of the population */
 CellPopulation::CellPopulation(Parameters *par, unsigned int size, double density) {
 
+    /* store the parameters */
     m_param = par;
+
+    /* inialize the data structure to hold the cells */
     m_population = SpatialHash<Cell>(1.0);
 
+    /* calculate the initial seeding radius */
     double disk_radius = pow(size / density, 0.5);
-        
+    
+    /* if boundary is zero (no boundary) */
     if (m_param->GetBoundary() == 0.0) {
 
-        m_param->SetBoundary(std::numeric_limits::max);
+        /* set boundary value to maximum allowed */
+        m_param->SetBoundary(std::numeric_limits<double>::max());
 
+    /* otherwise check if boundary is too small (must be bigger than initial seeding radius) */
     } else if (m_param->GetBoundary() < disk_radius + 2) {
 
+        /* set boundary to the minimum valeu */
         m_param->SetBoundary(disk_radius + 2);
 
     }
 
-    Point new_loc;
-	Cell* temp;
+    /* create dummy cell object to temporarily hold cells */
+    Cell* temp;
 
-	//create cells
+    /* create and seed cells in random locations inside the inital radius */
     for (unsigned int i = 0; i < size; i++) {
 
-		temp = new Cell(Point(0,0), m_param);
+        /* create new cell at point (0,0) */
+        temp = new Cell(Point(0,0), m_param);
+
+        /* get random location inside the radius and the cell there */
         GetRandomLocation(temp, disk_radius);
+
+        /* add cell to the cell population */
         m_population.Insert(temp->GetCoord(), temp);
+
+        /* check if the user wants to cancel the simulation (done from R console) */
         Rcpp::checkUserInterrupt();
 
     }
 
-	SetGrowthRates();
-	SeedCells();
+    /* set the intial growth rates of the cells */
+    SetGrowthRates();
 
+    /* seed cells throughout the cell cycle */
+    SeedCells();
+
+    /* intialzation; haven't added the drug yet */
     m_drug_added = false;
 
 }
 
+/* deconstructor */
 CellPopulation::~CellPopulation() {
 	
-	SpatialHash<Cell>::full_iterator iter = m_population.begin();
+    /* iterate through entire cell population */
+    SpatialHash<Cell>::full_iterator iter = m_population.begin();
     for (; iter != m_population.end(); ++iter) {
 
+        /* delete every cell */
         delete &iter;
 
     }
 
 }
+
 
 Point CellPopulation::GetRandomLocation(Cell* cell, double rad) {
 
@@ -61,7 +85,7 @@ Point CellPopulation::GetRandomLocation(Cell* cell, double rad) {
         ang = R::runif(0, 2 * M_PI);
         x = rad * pow(dist, 0.5) * cos(ang);
         y = rad * pow(dist, 0.5) * sin(ang);
-		cell->SetCoord(Point(x,y));
+        cell->SetCoord(Point(x,y));
 
     } while (!ValidCellPlacement(cell));
 
