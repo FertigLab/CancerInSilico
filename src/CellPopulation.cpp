@@ -6,15 +6,35 @@
 /* constructor; takes a Parameters object, initial size and density of the population */
 CellPopulation::CellPopulation(Parameters *par, unsigned int size, double density) {
 
-    /* store the parameters */
+	/* store the parameters */
     m_param = par;
 
-    /* inialize the data structure to hold the cells */
+	/* initalize the data structure to hold the cells */
     m_population = SpatialHash<Cell>(1.0);
 
     /* calculate the initial seeding radius */
     double disk_radius = pow(size / density, 0.5);
-    
+   
+    /* create the cell boundary: cells cannot go outside the boundary */
+    CreateBoundary();
+  
+    /* create dummy cell object to temporarily hold cells */
+    Cell* temp;
+
+     /* set the intial growth rates of the cells */
+    SetGrowthRates();
+
+    /* seed cells throughout the cell cycle */
+    SeedCells();
+
+    /* intialzation; haven't added the drug yet */
+    m_drug_added = false;
+
+}
+
+/* create the cell boundary */
+CellPopulation::CreateBoundary() {
+
     /* if boundary is zero (no boundary) */
     if (m_param->GetBoundary() == 0.0) {
 
@@ -24,15 +44,17 @@ CellPopulation::CellPopulation(Parameters *par, unsigned int size, double densit
     /* otherwise check if boundary is too small (must be bigger than initial seeding radius) */
     } else if (m_param->GetBoundary() < disk_radius + 2) {
 
-        /* set boundary to the minimum valeu */
+        /* set boundary to the minimum value */
         m_param->SetBoundary(disk_radius + 2);
 
     }
 
-    /* create dummy cell object to temporarily hold cells */
-    Cell* temp;
+}
 
-    /* create and seed cells in random locations inside the inital radius */
+/* create all the cells */
+CellPopulation::CreateCells(int number, double radius) {
+
+   /* create and seed cells in random locations inside the inital radius */
     for (unsigned int i = 0; i < size; i++) {
 
         /* create new cell at point (0,0) */
@@ -48,15 +70,6 @@ CellPopulation::CellPopulation(Parameters *par, unsigned int size, double densit
         Rcpp::checkUserInterrupt();
 
     }
-
-    /* set the intial growth rates of the cells */
-    SetGrowthRates();
-
-    /* seed cells throughout the cell cycle */
-    SeedCells();
-
-    /* intialzation; haven't added the drug yet */
-    m_drug_added = false;
 
 }
 
