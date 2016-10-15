@@ -50,6 +50,35 @@ test_that("getDrugEffect", {
 
 test_that("simulatePathway", {
 
+    # cell models to test
+    m1 <- runCancerSim(1,10)
+    m2 <- runCancerSim(2,20) # goes to size 38
+    m3 <- readRDS("testObj.rds") # how can I access this?
+
+    # pathway
+    p1 <- seq(0, 9, 1) # tests expressions of value integers 0-9
+    zeros <- seq(0, 0, length.out = 10) # vector of all zeros, length 10
+
+    # get gene expression matrix for m1, type PROX
+    geMatrix_m1_PROX <- simulatePathway(m1, p1, type = PROX)
+    expect_equal(geMatrix_PROX[0,], zeros) # no neighbors at t = 0
+    expect_equal(geMatrix_PROX[1,], zeros) # no neighbors at t = 1
+    for (i in 2:9) {
+        expect_equal(geMatrix_PROX[i,], p1/6) # one neighbor at t = 2-9
+    }
+    # this 
+    pathway <- rnorm(10,10,1)
+    names(pathway) <- letters[1:10]
+
+    # get gene expression mwwwatrix for m2, type PROX
+    geMatrix_m2_PROX <- simulatePathway(m2, p1, type = PROX)
+
+    # test gene expression matrix for m2
+    for (j in 1:60) {
+        # test gene expression at time i
+   #     currExp_m2_PROX <- geMatrix_m2_PROX[j,]
+   #     expect_equal(?,currExp_m2_PROX) # HOW TO CALCULATE EXPECTED?
+    }
 
 
 })
