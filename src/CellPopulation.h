@@ -15,7 +15,7 @@ friend class TestCellPopulation;
 
 private:
 
-    Parameters *m_param;
+	Parameters *m_param;
 
 	SpatialHash<Cell> m_population;
 
@@ -28,10 +28,6 @@ public:
 	~CellPopulation();
 
 	CellPopulation(Parameters*, unsigned int, double);
-
-    void CreateBoundary();
-    void CreateCells(int, double);
-    void InitCellCycles();
 
 	Point GetRandomLocation(Cell*, double);
 	bool ValidCellPlacement(Cell*);
@@ -49,6 +45,7 @@ public:
 
 	void CheckMitosis(Cell*);
 	void SetGrowthRates();
+	void SeedCells();
 
     void AddDrug();
 
