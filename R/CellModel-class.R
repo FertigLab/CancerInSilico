@@ -475,7 +475,7 @@ setMethod("show", "CellModel",
 
     function (object) {
 
-        cat("model parameters:")
+        cat("model parameters:\n")
         print(getParameters(object))
         cat("available functions:\n")
         cat("interactivePlot\n")
