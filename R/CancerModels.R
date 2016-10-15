@@ -99,7 +99,7 @@ runDrasdoHohme <- function(initialNum,
 
     }
     
-    boundary <- max(boundary, sqrt(initialNum / density) + 2)
+    if (boundary != 0) { boundary <- max(boundary, sqrt(initialNum / density) + 2) }
     maxDeform <- 2 * timeIncrement * nG * (4 - sqrt(2))
     grRates <- 2 * (sqrt(2) - 1) * timeIncrement * nG / (cycleLengthDist - 1)
     mcSteps <- ceiling(runTime / timeIncrement)
