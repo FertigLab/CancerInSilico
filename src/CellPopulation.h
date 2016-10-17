@@ -66,11 +66,14 @@ public:
     /* take one model time step */
 	void OneTimeStep();
 
-    /* make one Monte Carlo step */
+    /* take one Monte Carlo step */
 	void Update();
 
     /* attempt a growth/migration/rotation trial */
 	void AttemptTrial(Cell*);
+
+    /* calculate how many neighbors the cell has */
+    int CalculateNumberOfNeighbors(Cell*);
 
     /* check if cell overlaps any other cells near a point */
     bool CheckForCellOverlap(Point, Cell*);
@@ -78,8 +81,8 @@ public:
     /* check if cell is within the boundary */
     bool CheckBoundary(Cell*);
 
-    /* calculate how many neighbors the cell has */
-    int CalculateNumberOfNeighbors(Cell*);
+    /* determine whether or not to accept the trial */
+	bool AcceptTrial(double, double, Cell*);
 
     /* calculate the interaction potential of this cell with all others */
 	double CalculateTotalInteraction(Cell*);
@@ -87,22 +90,19 @@ public:
     /* calculate the interaction potential between two cells */
 	double CalculateInteraction(Cell*, Cell*);
 
-    /* determine whether or not to accept the trail */
-	bool AcceptTrial(double, double, Cell*);
-
     /* check if a cell is ready to divide */    
 	void CheckMitosis(Cell*);
 
     /******************************************/
 
-    /* record the current state of the population */    
+    /* record the current state of the cell population */    
 	void RecordPopulation();
 
-    /* return the cell population record as a R list */    
+    /* return the cell population record as an R list */    
 	Rcpp::List GetPopulationAsList();
 
-    /* return the size of the population */
-	int size();
+    /* return the size of the cell population */
+    int size();
 
 };
 
