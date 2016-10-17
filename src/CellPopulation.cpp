@@ -50,7 +50,7 @@ CellPopulation::~CellPopulation() {
 }
 
 /* create the cell boundary */
-CellPopulation::CreateBoundary(double radius) {
+void CellPopulation::CreateBoundary(double radius) {
 
     /* if boundary is zero (no boundary) */
     if (m_param->GetBoundary() == 0.0) {
@@ -70,13 +70,13 @@ CellPopulation::CreateBoundary(double radius) {
 }
 
 /* create all the cells */
-CellPopulation::CreateCells(int num, double radius) {
+void CellPopulation::CreateCells(int num, double radius) {
 
     /* create 'num' amount of cells */
     for (unsigned int i = 0; i < num; i++) {
 
         /* create new cell at point (0,0) */
-        temp = new Cell(Point(0,0), m_param);
+        Cell* temp = new Cell(Point(0,0), m_param);
 
         /* get random location inside the radius and move the cell there */
         MoveToRandomLocation(temp, radius);

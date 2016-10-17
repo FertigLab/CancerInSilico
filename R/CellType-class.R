@@ -24,4 +24,4 @@ getCellType <- function(model) {
 
 }
 
-)
+
