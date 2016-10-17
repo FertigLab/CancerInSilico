@@ -3,6 +3,7 @@
 
 #include "CellPopulation.h"
 
+<<<<<<< HEAD
 /****** CONSTRUCTOR/DESTRUCTOR AND INITIALIZATION FUNCTIONS ******/
 
 /* constructor; takes a Parameters object, initial size and density of the population */
@@ -12,10 +13,15 @@ CellPopulation::CellPopulation(Parameters *par, unsigned int size, double densit
     m_param = par;
 
     /* initalize the data structure to hold the cells */
+=======
+CellPopulation::CellPopulation(Parameters *par, unsigned int size, double density) {
+
+    m_param = par;
+>>>>>>> c6f0194b5c6a403bc67ace450ecbe8abfe78daf1
     m_population = SpatialHash<Cell>(1.0);
 
-    /* calculate the initial seeding radius */
     double disk_radius = pow(size / density, 0.5);
+<<<<<<< HEAD
    
     /* create the cell boundary: cells cannot go outside the boundary */
     CreateBoundary(disk_radius);
@@ -83,16 +89,47 @@ CellPopulation::CreateCells(int num, double radius) {
         GetRandomLocation(temp, radius);
 
         /* add cell to the cell population */
-        m_population.Insert(temp->GetCoord(), temp);
+=======
+    if (m_param->GetBoundary() < disk_radius + 2) {
 
-        /* check if the user wants to cancel the simulation (done from R console) */
+        m_param->SetBoundary(disk_radius + 2);
+
+    }
+
+    Point new_loc;
+	Cell* temp;
+
+	//create cells
+    for (unsigned int i = 0; i < size; i++) {
+
+		temp = new Cell(Point(0,0), m_param);
+        GetRandomLocation(temp, disk_radius);
+>>>>>>> c6f0194b5c6a403bc67ace450ecbe8abfe78daf1
+        m_population.Insert(temp->GetCoord(), temp);
         Rcpp::checkUserInterrupt();
 
     }
 
+	SetGrowthRates();
+	SeedCells();
+
+    m_drug_added = false;
+
 }
 
+<<<<<<< HEAD
+=======
+CellPopulation::~CellPopulation() {
+	
+	SpatialHash<Cell>::full_iterator iter = m_population.begin();
+    for (; iter != m_population.end(); ++iter) {
 
+        delete &iter;
+
+    }
+
+}
+>>>>>>> c6f0194b5c6a403bc67ace450ecbe8abfe78daf1
 
 Point CellPopulation::GetRandomLocation(Cell* cell, double rad) {
 
@@ -104,7 +141,7 @@ Point CellPopulation::GetRandomLocation(Cell* cell, double rad) {
         ang = R::runif(0, 2 * M_PI);
         x = rad * pow(dist, 0.5) * cos(ang);
         y = rad * pow(dist, 0.5) * sin(ang);
-        cell->SetCoord(Point(x,y));
+		cell->SetCoord(Point(x,y));
 
     } while (!ValidCellPlacement(cell));
 
