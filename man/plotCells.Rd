@@ -4,7 +4,7 @@
 \alias{plotCells}
 \title{\code{plotCell} plots a CellModel at a given time}
 \usage{
-plotCells(model, time)
+plotCells(model, time, drawBoundary = TRUE)
 }
 \arguments{
 \item{model}{A CellModel}

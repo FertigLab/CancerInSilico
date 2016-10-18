@@ -30,6 +30,10 @@ An S4 class to represent the output of a cell-based model
 
 \item{\code{mTimeIncrement}}{amount of time elapsed in each model step}
 
+\item{\code{mRecordIncrement}}{time increment when cell data is recorded}
+
 \item{\code{mCycleLengthDist}}{initial distribution of cell-cycle lengths}
+
+\item{\code{mCycleSyncProb}}{the probability of cells being seed in interphase (not mitosis)}
 }}
 

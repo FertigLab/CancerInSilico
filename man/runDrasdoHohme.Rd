@@ -5,7 +5,8 @@
 \title{\code{runDrasdoHohme} Runs the model from the Drasdo, Hohme paper}
 \usage{
 runDrasdoHohme(initialNum, runTime, density, cycleLengthDist, inheritGrowth,
-  outputIncrement, recordIncrement, randSeed, drugEffect, drugTime, ...)
+  outputIncrement, recordIncrement, randSeed, drugEffect, drugTime, boundary,
+  cycleSyncProb, ...)
 }
 \description{
 \code{runDrasdoHohme} Runs the model from the Drasdo, Hohme paper

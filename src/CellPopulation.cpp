@@ -171,8 +171,9 @@ void CellPopulation::InitCellCycle() {
         /* random number in (0,1) for probability calculations */        
         unif = R::runif(0,1);
         
-        /* 75% chance to be seeded in interphase */
-        if (unif < 0.75) { //interphase
+
+        /* probability of being seeded in interphase */
+        if (unif < m_param->GetCycleSyncProb()) { //interphase
 
             /* set random radius and resulting axis length */
             (*iter).SetRadius(R::runif(1,m_param->GetMaxRadius()));

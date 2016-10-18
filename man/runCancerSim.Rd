@@ -7,7 +7,8 @@
 runCancerSim(initialNum, runTime, density = 0.01, cycleLengthDist = 12,
   drugEffect = getDrugEffect(cycleLengthDist = cycleLengthDist),
   inheritGrowth = FALSE, outputIncrement = 6, recordIncrement = 0.25,
-  randSeed = 0, modelType = "DrasdoHohme2003", drugTime = 0, ...)
+  randSeed = 0, modelType = "DrasdoHohme2003", drugTime = 0,
+  boundary = 1, cycleSyncProb = 0.75, ...)
 }
 \arguments{
 \item{initialNum}{how many cells initially}
@@ -27,6 +28,8 @@ runCancerSim(initialNum, runTime, density = 0.01, cycleLengthDist = 12,
 \item{randSeed}{seed for the model}
 
 \item{modelType}{the name of the cell-based model to use}
+
+\item{cycleSyncProb}{the probability of cells being seed in interphase (not mitosis)}
 
 \item{...}{model specific parameters (depends on modelType)}
 }

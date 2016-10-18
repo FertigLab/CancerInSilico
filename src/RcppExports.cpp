@@ -6,8 +6,8 @@
 using namespace Rcpp;
 
 // CellModel
-Rcpp::List CellModel(int initialNum, int numMCSteps, double density, double maxTranslation, double maxDeform, double maxRotate, double epsilon, double delta, int outIncrement, int randSeed, Rcpp::List drugEffect, Rcpp::NumericVector growthRates, bool inheritGrowth, double nG, double timeIncrement, int recordIncrement, double drugTime, double boundary);
-RcppExport SEXP CancerInSilico_CellModel(SEXP initialNumSEXP, SEXP numMCStepsSEXP, SEXP densitySEXP, SEXP maxTranslationSEXP, SEXP maxDeformSEXP, SEXP maxRotateSEXP, SEXP epsilonSEXP, SEXP deltaSEXP, SEXP outIncrementSEXP, SEXP randSeedSEXP, SEXP drugEffectSEXP, SEXP growthRatesSEXP, SEXP inheritGrowthSEXP, SEXP nGSEXP, SEXP timeIncrementSEXP, SEXP recordIncrementSEXP, SEXP drugTimeSEXP, SEXP boundarySEXP) {
+Rcpp::List CellModel(int initialNum, int numMCSteps, double density, double maxTranslation, double maxDeform, double maxRotate, double epsilon, double delta, int outIncrement, int randSeed, Rcpp::List drugEffect, Rcpp::NumericVector growthRates, bool inheritGrowth, double nG, double timeIncrement, int recordIncrement, double drugTime, double boundary, double syncProb);
+RcppExport SEXP CancerInSilico_CellModel(SEXP initialNumSEXP, SEXP numMCStepsSEXP, SEXP densitySEXP, SEXP maxTranslationSEXP, SEXP maxDeformSEXP, SEXP maxRotateSEXP, SEXP epsilonSEXP, SEXP deltaSEXP, SEXP outIncrementSEXP, SEXP randSeedSEXP, SEXP drugEffectSEXP, SEXP growthRatesSEXP, SEXP inheritGrowthSEXP, SEXP nGSEXP, SEXP timeIncrementSEXP, SEXP recordIncrementSEXP, SEXP drugTimeSEXP, SEXP boundarySEXP, SEXP syncProbSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -29,7 +29,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type recordIncrement(recordIncrementSEXP);
     Rcpp::traits::input_parameter< double >::type drugTime(drugTimeSEXP);
     Rcpp::traits::input_parameter< double >::type boundary(boundarySEXP);
-    __result = Rcpp::wrap(CellModel(initialNum, numMCSteps, density, maxTranslation, maxDeform, maxRotate, epsilon, delta, outIncrement, randSeed, drugEffect, growthRates, inheritGrowth, nG, timeIncrement, recordIncrement, drugTime, boundary));
+    Rcpp::traits::input_parameter< double >::type syncProb(syncProbSEXP);
+    __result = Rcpp::wrap(CellModel(initialNum, numMCSteps, density, maxTranslation, maxDeform, maxRotate, epsilon, delta, outIncrement, randSeed, drugEffect, growthRates, inheritGrowth, nG, timeIncrement, recordIncrement, drugTime, boundary, syncProb));
     return __result;
 END_RCPP
 }

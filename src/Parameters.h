@@ -21,6 +21,7 @@ class Parameters {
 	double m_nG;
     double m_drug_time;
     double m_boundary;
+    double m_cycle_sync_prob;
 
 	std::vector<double> m_slow_solver;
 	std::vector<double> m_fast_solver;
@@ -53,6 +54,7 @@ class Parameters {
     void StoreDrugEffect(DrugEffectMap);
     void SetDrugTime(double dt) { m_drug_time = dt;}
     void SetBoundary(double rad) { m_boundary = rad;}
+    void SetCycleSyncProb(double p) { m_cycle_sync_prob = p;}
 
     //Getters
     double GetMaxTranslation() { return m_max_translation;}
@@ -66,6 +68,7 @@ class Parameters {
     double GetDrugEffect(double);
     double GetDrugTime() { return m_drug_time;}
     double GetBoundary() { return m_boundary;}
+    double GetCycleSyncProb() { return m_cycle_sync_prob;}
 
 	double GetRandomGrowthRate();
 	double GetMaxGrowth();

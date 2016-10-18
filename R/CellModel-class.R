@@ -15,6 +15,7 @@
 #' @slot mTimeIncrement amount of time elapsed in each model step
 #' @slot mRecordIncrement time increment when cell data is recorded
 #' @slot mCycleLengthDist initial distribution of cell-cycle lengths 
+#' @slot mCycleSyncProb the probability of cells being seed in interphase (not mitosis)
 #' @export
 
 setClass("CellModel", representation(
@@ -30,7 +31,8 @@ setClass("CellModel", representation(
                         mTimeIncrement = "numeric",
                         mRecordIncrement = "numeric",
                         mCycleLengthDist = "numeric",
-                        mBoundary = "numeric" ))
+                        mBoundary = "numeric",
+                        mCycleSyncProb = "numeric" ))
 
 #### getters (parameters) ####
 
@@ -57,6 +59,8 @@ setClass("CellModel", representation(
 .cycleLengthDist <- function(model) { return (model@mCycleLengthDist) }
 
 .boundary <- function(model) { return (model@mBoundary) }
+
+.cycleSyncProb <- function(model) { return (model@cycleSyncProb) }
 
 #### getters (cell data) ####
 
@@ -265,6 +269,7 @@ getParameters <- function(model, fullDist=FALSE) {
         nG = .nG(model),
         timeIncrement = .timeIncrement(model),
         recordIncrement = .recordIncrement(model),
+        cycleSyncProb = .cycleSyncProb(model),
         cycleLengthDist = retDist
 
     )           

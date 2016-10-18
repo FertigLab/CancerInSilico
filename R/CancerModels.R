@@ -10,6 +10,7 @@
 #' @param outputIncrement time increment to print status at
 #' @param randSeed seed for the model
 #' @param modelType the name of the cell-based model to use
+#' @param cycleSyncProb the probability of cells being seed in interphase (not mitosis)
 #' @param ... model specific parameters (depends on modelType)
 #' @return A CellModel containing all info from the model run
 #' @examples
@@ -28,6 +29,7 @@ runCancerSim <- function(initialNum,
                          modelType = "DrasdoHohme2003",
                          drugTime = 0.0,
                          boundary = 1,
+                         cycleSyncProb = 0.75,
                          ...)
 
 {
@@ -49,6 +51,7 @@ runCancerSim <- function(initialNum,
                              drugEffect,
                              drugTime,
                              boundary,
+                             cycleSyncProb,
                              ...))
 
     }
@@ -70,6 +73,7 @@ runDrasdoHohme <- function(initialNum,
                            drugEffect,
                            drugTime,
                            boundary,
+                           cycleSyncProb,
                            ...)
   
 {
@@ -138,7 +142,8 @@ runDrasdoHohme <- function(initialNum,
                       timeIncrement, 
                       recordIncrement2, 
                       drugTime, 
-                      boundary)
+                      boundary,
+                      cycleSyncProb)
     
     cellMat <- new("CellModel",
                  mCells = output,
@@ -153,7 +158,8 @@ runDrasdoHohme <- function(initialNum,
                  mTimeIncrement = timeIncrement,
                  mRecordIncrement = recordIncrement,
                  mCycleLengthDist = cycleLengthDist,
-                 mBoundary = boundary)
+                 mBoundary = boundary,
+                 mCycleSyncProb = cycleSyncProb)
 
     return(cellMat)
   
