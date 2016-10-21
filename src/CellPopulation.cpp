@@ -179,7 +179,7 @@ void CellPopulation::InitCellCycle() {
             (*iter).SetRadius(R::runif(1,m_param->GetMaxRadius()));
             (*iter).SetAxisLength((*iter).GetRadius() * 2);
     
-        /* 25% chance to be seeded in mitosis */
+        /* otherwise seed in mitosis */
         } else { //mitosis
 
             /* put the cell in a random point in mitosis */

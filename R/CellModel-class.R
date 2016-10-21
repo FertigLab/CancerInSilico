@@ -60,7 +60,7 @@ setClass("CellModel", representation(
 
 .boundary <- function(model) { return (model@mBoundary) }
 
-.cycleSyncProb <- function(model) { return (model@cycleSyncProb) }
+.cycleSyncProb <- function(model) { return (model@mCycleSyncProb) }
 
 #### getters (cell data) ####
 
