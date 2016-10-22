@@ -144,4 +144,6 @@ double Parameters::GetDrugEffect(double growthRate) {
 }
     
 
-
+void Parameters::StoreCellTypes(List cellTypes) {
+    // save into m_cell_types, a vector of SEXP objects
+}
