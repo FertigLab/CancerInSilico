@@ -27,6 +27,7 @@ Rcpp::List CellModel(
     double drugTime,
     double boundary,
     double syncProb
+    Rcpp::List cellTypes
 
 ) {
 
@@ -68,6 +69,7 @@ Rcpp::List CellModel(
     params->SetDrugTime(drugTime);
     params->SetBoundary(boundary);
     params->SetCycleSyncProb(syncProb);
+    params->SetType(cellTypes);
 
     Simulation main_sim = Simulation(params, initialNum, density);
 
