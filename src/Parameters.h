@@ -26,6 +26,7 @@ class Parameters {
 	std::vector<double> m_slow_solver;
 	std::vector<double> m_fast_solver;
 	std::vector<double> m_growth_dist;
+        std::vector<SEXP> m_cell_types;
 
     DrugEffectMap m_drug_effect_map;
     std::vector<double> m_drug_effect_indices;
@@ -55,6 +56,7 @@ class Parameters {
     void SetDrugTime(double dt) { m_drug_time = dt;}
     void SetBoundary(double rad) { m_boundary = rad;}
     void SetCycleSyncProb(double p) { m_cycle_sync_prob = p;}
+    void StoreCellTypes(cellTypes);
 
     //Getters
     double GetMaxTranslation() { return m_max_translation;}
