@@ -169,4 +169,10 @@ double Parameters::GetDrugEffect(double growthRate) {
 
 void Parameters::StoreCellTypes(Rcpp::List cellTypes) {
     // save into m_cell_types, a vector of SEXP objects
+    m_cell_types = cellTypes;
+}
+
+Rcpp::List Parameters::GetCellTypes() {
+    // return m_cell_types, a vector of SEXP objects
+    return m_cell_types;
 }

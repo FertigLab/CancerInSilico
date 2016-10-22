@@ -71,6 +71,7 @@ class Parameters {
     double GetDrugTime() { return m_drug_time;}
     double GetBoundary() { return m_boundary;}
     double GetCycleSyncProb() { return m_cycle_sync_prob;}
+    Rcpp::List GetCellTypes();
 
 	double GetRandomGrowthRate();
 	double GetMaxGrowth();
