@@ -32,7 +32,8 @@ setClass("CellModel", representation(
                         mRecordIncrement = "numeric",
                         mCycleLengthDist = "numeric",
                         mBoundary = "numeric",
-                        mCycleSyncProb = "numeric" ))
+                        mCycleSyncProb = "numeric"
+                        mCellTypes = "list" ))
 
 #### getters (parameters) ####
 
