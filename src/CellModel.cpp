@@ -31,26 +31,6 @@ Rcpp::List CellModel(
 
 ) {
 
-    std::vector<double> gr_rates;
-    for (unsigned int i = 0; i < growthRates.length(); ++i) {
-    
-        gr_rates.push_back(growthRates[i]);
-
-	}	
-
-    boost::unordered_map<double, std::vector<double> > drug_effect;	
-    for (unsigned int i = 0; i < drugEffect.size(); ++i) {
-
-        std::vector<double> dist = Rcpp::as< std::vector<double> >(drugEffect[i]);   
-
-        double growthRate = dist[0];
-        dist[0] = dist.back();
-        dist.pop_back();     
-
-        drug_effect.insert(std::pair<double, std::vector<double> >(growthRate, dist));
-
-    }
-
     Rcpp::Environment baseEnv("package:base");
     Rcpp::Function setSeed = baseEnv["set.seed"];
     setSeed(randSeed);
@@ -65,11 +45,11 @@ Rcpp::List CellModel(
 	params->StoreGrowthDistribution(gr_rates);
 	params->SetInheritGrowth(inheritGrowth);
 	params->SetNG(nG);
-    params->StoreDrugEffect(drug_effect);
+    params->StoreDrugEffect(drugEffect);
     params->SetDrugTime(drugTime);
     params->SetBoundary(boundary);
     params->SetCycleSyncProb(syncProb);
-    params->SetType(cellTypes);
+    params->StoreCellTypes(cellTypes);
 
     Simulation main_sim = Simulation(params, initialNum, density);
 
