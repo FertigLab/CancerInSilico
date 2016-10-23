@@ -115,7 +115,7 @@ void Parameters::StoreGrowthDistribution(Rcpp::NumericVector growthRates) {
 
     for (unsigned int i = 0; i < growthRates.length(); ++i) {
     
-        m_growth_rates.push_back(growthRates[i]);
+        m_growth_dist.push_back(growthRates[i]);
 
     }
 
@@ -176,7 +176,7 @@ void Parameters::StoreCellTypes(Rcpp::List cellTypes) {
 
 }
 
-std::vector<Rcpp:S4> Parameters::GetCellTypes() {
+std::vector<Rcpp::S4> Parameters::GetCellTypes() {
 
     return m_cell_types;
 
