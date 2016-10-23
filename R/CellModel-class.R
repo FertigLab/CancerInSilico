@@ -16,6 +16,7 @@
 #' @slot mRecordIncrement time increment when cell data is recorded
 #' @slot mCycleLengthDist initial distribution of cell-cycle lengths 
 #' @slot mCycleSyncProb the probability of cells being seed in interphase (not mitosis)
+#' @slot mCellTypes a list of objects, each representing a type of cell
 #' @export
 
 setClass("CellModel", representation(
@@ -62,6 +63,8 @@ setClass("CellModel", representation(
 .boundary <- function(model) { return (model@mBoundary) }
 
 .syncCycles <- function(model) { return (model@mSyncCycles) }
+
+.cellTypes <- function(model) { return (model@mCellTypes) }
 
 #### getters (cell data) ####
 
@@ -236,6 +239,19 @@ getDensity <- function(model,time) {
 }
 
 
+#' \code{getCellTypes} get a list of all the cell types in the model
+#'
+#' @param model a CellModel object
+#' @return a list of factors
+#' @examples
+#' getCellTypes(runCancerSim(1,1))
+#' @export
+
+getCellTypes <- function(model) {
+    # add code here
+}
+
+
 #' \code{getParameters} get a named list of parameters in the model
 #'
 #' @param model A CellModel
@@ -272,8 +288,8 @@ getParameters <- function(model, fullDist=FALSE) {
         recordIncrement = .recordIncrement(model),
         boundary = .boundary(model),
         syncCycles = .syncCycles(model),
-        cycleLengthDist = retDist
-
+        cycleLengthDist = retDist,
+        cellTypes = .cellTypes(model)
     )           
 
     # return named list
