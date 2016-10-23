@@ -53,12 +53,7 @@ runCancerSim <- function(initialNum,
                              drugEffect,
                              drugTime,
                              boundary,
-<<<<<<< HEAD
                              syncCycles,
-=======
-                             cycleSyncProb,
-                             cellTypes,
->>>>>>> f6784e212bb637e15d17ee94cc1997bb44dc0568
                              ...))
 
     }
@@ -80,12 +75,7 @@ runDrasdoHohme <- function(initialNum,
                            drugEffect,
                            drugTime,
                            boundary,
-<<<<<<< HEAD
                            syncCycles,
-=======
-                           cycleSyncProb,
-                           cellTypes,
->>>>>>> f6784e212bb637e15d17ee94cc1997bb44dc0568
                            ...)
   
 {
@@ -154,12 +144,7 @@ runDrasdoHohme <- function(initialNum,
                       recordIncrement2, 
                       drugTime, 
                       boundary,
-<<<<<<< HEAD
                       syncCycles)
-=======
-                      cycleSyncProb,
-                      cellTypes)
->>>>>>> f6784e212bb637e15d17ee94cc1997bb44dc0568
     
     cellMat <- new("CellModel",
                  mCells = output,
@@ -174,14 +159,8 @@ runDrasdoHohme <- function(initialNum,
                  mTimeIncrement = timeIncrement,
                  mRecordIncrement = recordIncrement,
                  mCycleLengthDist = cycleLengthDist,
-<<<<<<< HEAD
                  mBoundary = calcBoundary(output, density, boundary),
                  mSyncCycles = syncCycles)
-=======
-                 mBoundary = boundary,
-                 mCycleSyncProb = cycleSyncProb
-                 mCellTypes = cellTypes)
->>>>>>> f6784e212bb637e15d17ee94cc1997bb44dc0568
 
     return(cellMat)
   

@@ -115,7 +115,7 @@ void Parameters::StoreGrowthDistribution(Rcpp::NumericVector growthRates) {
 
     for (unsigned int i = 0; i < growthRates.length(); ++i) {
     
-        m_growth_rates.push_back(growthRates[i]);
+        m_growth_dist.push_back(growthRates[i]);
 
     }
 
@@ -164,21 +164,5 @@ double Parameters::GetDrugEffect(double growthRate) {
     return 1 - vec_ref[floor(R::runif(0,size))];
     
 }
-    
 
-void Parameters::StoreCellTypes(Rcpp::List cellTypes) {
-
-    for (unsigned int i = 0; i < cellTypes.size(); ++i) {
-    
-        m_cell_types.push_back(Rcpp::S4(cellTypes[i]));
-
-    }
-
-}
-
-std::vector<Rcpp:S4> Parameters::GetCellTypes() {
-
-    return m_cell_types;
-
-}
 
