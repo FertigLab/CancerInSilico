@@ -76,7 +76,7 @@ class Parameters {
 	double GetRandomGrowthRate();
 	double GetMaxGrowth();
     double GetRadius(double);
-	double GetThetaSlow(double);
+	double GetThetaSlow(double); //
 
 };
 
