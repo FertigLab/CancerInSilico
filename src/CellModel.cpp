@@ -26,7 +26,7 @@ Rcpp::List CellModel(
 	int recordIncrement,
     double drugTime,
     double boundary,
-    bool syncCellCycle
+    bool syncCellCycle,
     Rcpp::List cellTypes
 
 ) {
@@ -42,7 +42,7 @@ Rcpp::List CellModel(
     params->SetMaxRotate(maxRotate);
     params->SetResistanceEPSILON(epsilon);
     params->SetCompressionDELTA(delta);
-	params->StoreGrowthDistribution(gr_rates);
+	params->StoreGrowthDistribution(growthRates);
 	params->SetInheritGrowth(inheritGrowth);
 	params->SetNG(nG);
     params->StoreDrugEffect(drugEffect);

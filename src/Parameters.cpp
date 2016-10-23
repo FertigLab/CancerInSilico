@@ -113,21 +113,18 @@ double Parameters::GetMaxGrowth() {
 
 void Parameters::StoreGrowthDistribution(Rcpp::NumericVector growthRates) {
 
-    std::vector<double> gr_rates;
     for (unsigned int i = 0; i < growthRates.length(); ++i) {
     
-        gr_rates.push_back(growthRates[i]);
+        m_growth_rates.push_back(growthRates[i]);
 
     }
-
-    m_growth_dist = gr_rates;
 
 }
 
 void Parameters::StoreDrugEffect(Rcpp::List drugEffect) {
 
     // Create DrugEffectMap
-    boost::unordered_map<double, std::vector<double> > drug_effect; 
+    DrugEffectMap drug_effect; 
     for (unsigned int i = 0; i < drugEffect.size(); ++i) {
 
         std::vector<double> dist = Rcpp::as< std::vector<double> >(drugEffect[i]);   
@@ -136,7 +133,8 @@ void Parameters::StoreDrugEffect(Rcpp::List drugEffect) {
         dist[0] = dist.back();
         dist.pop_back();     
 
-        drug_effect.insert(std::pair<double, std::vector<double> >(growthRate, dist));
+        drug_effect.insert(std::pair<double, std::vector<double> >
+                                (growthRate, dist));
 
     }
 
@@ -157,7 +155,8 @@ void Parameters::StoreDrugEffect(Rcpp::List drugEffect) {
 
 double Parameters::GetDrugEffect(double growthRate) {
 
-    double index = *(std::lower_bound(m_drug_effect_indices.begin(), m_drug_effect_indices.end(), growthRate));
+    double index = *(std::lower_bound(m_drug_effect_indices.begin(),
+                        m_drug_effect_indices.end(), growthRate));
     
     std::vector<double>& vec_ref = m_drug_effect_map.at(index);
 
@@ -168,11 +167,18 @@ double Parameters::GetDrugEffect(double growthRate) {
     
 
 void Parameters::StoreCellTypes(Rcpp::List cellTypes) {
-    // save into m_cell_types, a vector of SEXP objects
-    m_cell_types = cellTypes;
+
+    for (unsigned int i = 0; i < cellTypes.size(); ++i) {
+    
+        m_cell_types.push_back(Rcpp::S4(cellTypes[i]));
+
+    }
+
 }
 
-Rcpp::List Parameters::GetCellTypes() {
-    // return m_cell_types, a vector of SEXP objects
+std::vector<Rcpp:S4> Parameters::GetCellTypes() {
+
     return m_cell_types;
+
 }
+

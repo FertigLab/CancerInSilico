@@ -26,7 +26,7 @@ class Parameters {
 	std::vector<double> m_slow_solver;
 	std::vector<double> m_fast_solver;
 	std::vector<double> m_growth_dist;
-    std::vector<SEXP> m_cell_types;
+    std::vector<Rcpp::S4> m_cell_types;
 
     DrugEffectMap m_drug_effect_map;
     std::vector<double> m_drug_effect_indices;
@@ -71,7 +71,7 @@ class Parameters {
     double GetDrugTime() { return m_drug_time;}
     double GetBoundary() { return m_boundary;}
     bool GetSyncCellCycle() { return m_sync_cell_cycle;}
-    Rcpp::List GetCellTypes();
+    std::vector<Rcpp::S4> GetCellTypes();
 
 	double GetRandomGrowthRate();
 	double GetMaxGrowth();
