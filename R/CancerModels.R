@@ -3,6 +3,7 @@
 #' @details This function provides a centralized R interface to run c++ code for cell-based models implemented in this package. Standard parameters, as well as model-specific parameters, are passed in to this function along with a model name. This function then runs the model and returns a CellModel object containing all of the information from the model. This object can then be accessed with various functions designed to interact with the class. To see a list of available functions, there is a show() command implemented for CellModel objects.
 #' @param initialNum how many cells initially
 #' @param runTime how long the simulation runs in real cellular time (hours)
+#' @param cellTypes an array of S4 objects (each representing a different cell type)
 #' @param density the density the cells are seeded at
 #' @param cycleLengthDist cycle time distribution
 #' @param drugEffect distribution of drug effects
@@ -19,6 +20,7 @@
 
 runCancerSim <- function(initialNum,
                          runTime,
+                         cellTypes,
                          density = 0.01,
                          cycleLengthDist = 12,
                          drugEffect = getDrugEffect(cycleLengthDist = cycleLengthDist),
@@ -51,7 +53,12 @@ runCancerSim <- function(initialNum,
                              drugEffect,
                              drugTime,
                              boundary,
+<<<<<<< HEAD
                              syncCycles,
+=======
+                             cycleSyncProb,
+                             cellTypes,
+>>>>>>> f6784e212bb637e15d17ee94cc1997bb44dc0568
                              ...))
 
     }
@@ -73,7 +80,12 @@ runDrasdoHohme <- function(initialNum,
                            drugEffect,
                            drugTime,
                            boundary,
+<<<<<<< HEAD
                            syncCycles,
+=======
+                           cycleSyncProb,
+                           cellTypes,
+>>>>>>> f6784e212bb637e15d17ee94cc1997bb44dc0568
                            ...)
   
 {
@@ -142,7 +154,12 @@ runDrasdoHohme <- function(initialNum,
                       recordIncrement2, 
                       drugTime, 
                       boundary,
+<<<<<<< HEAD
                       syncCycles)
+=======
+                      cycleSyncProb,
+                      cellTypes)
+>>>>>>> f6784e212bb637e15d17ee94cc1997bb44dc0568
     
     cellMat <- new("CellModel",
                  mCells = output,
@@ -157,8 +174,14 @@ runDrasdoHohme <- function(initialNum,
                  mTimeIncrement = timeIncrement,
                  mRecordIncrement = recordIncrement,
                  mCycleLengthDist = cycleLengthDist,
+<<<<<<< HEAD
                  mBoundary = calcBoundary(output, density, boundary),
                  mSyncCycles = syncCycles)
+=======
+                 mBoundary = boundary,
+                 mCycleSyncProb = cycleSyncProb
+                 mCellTypes = cellTypes)
+>>>>>>> f6784e212bb637e15d17ee94cc1997bb44dc0568
 
     return(cellMat)
   

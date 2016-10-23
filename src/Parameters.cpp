@@ -111,15 +111,38 @@ double Parameters::GetMaxGrowth() {
 
 }
 
-void Parameters::StoreGrowthDistribution(std::vector<double> gr) {
+void Parameters::StoreGrowthDistribution(Rcpp::NumericVector growthRates) {
 
-    m_growth_dist = gr;
+    std::vector<double> gr_rates;
+    for (unsigned int i = 0; i < growthRates.length(); ++i) {
+    
+        gr_rates.push_back(growthRates[i]);
+
+    }
+
+    m_growth_dist = gr_rates;
 
 }
 
-void Parameters::StoreDrugEffect(DrugEffectMap map) {
+void Parameters::StoreDrugEffect(Rcpp::List drugEffect) {
 
-    m_drug_effect_map = map;
+    // Create DrugEffectMap
+    boost::unordered_map<double, std::vector<double> > drug_effect; 
+    for (unsigned int i = 0; i < drugEffect.size(); ++i) {
+
+        std::vector<double> dist = Rcpp::as< std::vector<double> >(drugEffect[i]);   
+
+        double growthRate = dist[0];
+        dist[0] = dist.back();
+        dist.pop_back();     
+
+        drug_effect.insert(std::pair<double, std::vector<double> >(growthRate, dist));
+
+    }
+
+    m_drug_effect_map = drug_effect;
+
+    // Insert comment here
     DrugEffectMap::iterator iter = m_drug_effect_map.begin();
     for (; iter != m_drug_effect_map.end(); ++iter) {
 
@@ -144,4 +167,12 @@ double Parameters::GetDrugEffect(double growthRate) {
 }
     
 
+void Parameters::StoreCellTypes(Rcpp::List cellTypes) {
+    // save into m_cell_types, a vector of SEXP objects
+    m_cell_types = cellTypes;
+}
 
+Rcpp::List Parameters::GetCellTypes() {
+    // return m_cell_types, a vector of SEXP objects
+    return m_cell_types;
+}

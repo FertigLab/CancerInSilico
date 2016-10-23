@@ -26,6 +26,7 @@ class Parameters {
 	std::vector<double> m_slow_solver;
 	std::vector<double> m_fast_solver;
 	std::vector<double> m_growth_dist;
+    std::vector<SEXP> m_cell_types;
 
     DrugEffectMap m_drug_effect_map;
     std::vector<double> m_drug_effect_indices;
@@ -49,12 +50,13 @@ class Parameters {
     void SetResistanceEPSILON(double ep) { m_epsilon = ep;}
     void SetCompressionDELTA(double dt) { m_delta = dt;}
 	void SetInheritGrowth(bool gr) { m_inherit_growth = gr;}
-	void StoreGrowthDistribution(std::vector<double>);
+	void StoreGrowthDistribution(Rcpp::NumericVector);
 	void SetNG(double ng) { m_nG = ng;}
-    void StoreDrugEffect(DrugEffectMap);
+    void StoreDrugEffect(Rcpp::List);
     void SetDrugTime(double dt) { m_drug_time = dt;}
     void SetBoundary(double rad) { m_boundary = rad;}
     void SetSyncCellCycle(bool b) { m_sync_cell_cycle = b;}
+    void StoreCellTypes(Rcpp::List);
 
     //Getters
     double GetMaxTranslation() { return m_max_translation;}
@@ -69,6 +71,7 @@ class Parameters {
     double GetDrugTime() { return m_drug_time;}
     double GetBoundary() { return m_boundary;}
     bool GetSyncCellCycle() { return m_sync_cell_cycle;}
+    Rcpp::List GetCellTypes();
 
 	double GetRandomGrowthRate();
 	double GetMaxGrowth();
