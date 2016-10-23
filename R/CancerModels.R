@@ -29,7 +29,7 @@ runCancerSim <- function(initialNum,
                          modelType = "DrasdoHohme2003",
                          drugTime = 0.0,
                          boundary = 1,
-                         cycleSyncProb = 0.75,
+                         syncCycles = TRUE,
                          ...)
 
 {
@@ -51,7 +51,7 @@ runCancerSim <- function(initialNum,
                              drugEffect,
                              drugTime,
                              boundary,
-                             cycleSyncProb,
+                             syncCycles,
                              ...))
 
     }
@@ -73,7 +73,7 @@ runDrasdoHohme <- function(initialNum,
                            drugEffect,
                            drugTime,
                            boundary,
-                           cycleSyncProb,
+                           syncCycles,
                            ...)
   
 {
@@ -84,7 +84,7 @@ runDrasdoHohme <- function(initialNum,
     epsilon <- list(...)$epsilon
     if (is.null(epsilon)) {epsilon = 10}
 
-    if (density > 0.1) {
+    if (density > 0.9) {
 
         message("density too high to seed efficiently\n")
         stop()
@@ -103,7 +103,6 @@ runDrasdoHohme <- function(initialNum,
 
     }
     
-    boundary <- max(boundary, sqrt(initialNum / density) + 2)
     maxDeform <- 2 * timeIncrement * nG * (4 - sqrt(2))
     grRates <- 2 * (sqrt(2) - 1) * timeIncrement * nG / (cycleLengthDist - 1)
     mcSteps <- ceiling(runTime / timeIncrement)
@@ -143,7 +142,7 @@ runDrasdoHohme <- function(initialNum,
                       recordIncrement2, 
                       drugTime, 
                       boundary,
-                      cycleSyncProb)
+                      syncCycles)
     
     cellMat <- new("CellModel",
                  mCells = output,
@@ -158,9 +157,42 @@ runDrasdoHohme <- function(initialNum,
                  mTimeIncrement = timeIncrement,
                  mRecordIncrement = recordIncrement,
                  mCycleLengthDist = cycleLengthDist,
-                 mBoundary = boundary,
-                 mCycleSyncProb = cycleSyncProb)
+                 mBoundary = calcBoundary(output, density, boundary),
+                 mSyncCycles = syncCycles)
 
     return(cellMat)
   
+}
+
+calcBoundary <- function(rawOutput, density, boundary) {
+
+    len <- length(rawOutput[[1]])
+    radii <- rawOutput[[1]][seq(3,len,7)]
+    axis <- rawOutput[[1]][seq(4,len,7)]
+    cellArea <- 0
+
+    for (i in 1:length(radii)) {
+
+        if (axis[i] > 2.828) {
+
+            cellArea <- cellArea + 2 * pi
+
+        } else {
+
+            cellArea <- cellArea + pi * radii[i] ^ 2
+
+        } 
+
+    }
+
+    if (boundary == 0) {
+
+        return (0)
+
+    } else {
+
+        return (max(sqrt(cellArea / (pi * density)), boundary))
+
+    }
+
 }

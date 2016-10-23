@@ -12,23 +12,27 @@ CellPopulation::CellPopulation(Parameters *par, unsigned int size, double densit
     /* store the parameters */
     m_param = par;
 
-    /* initalize the data structure to hold the cells */
-    m_population = SpatialHash<Cell>(1.0);
+    /* create a temporary vector of 'default' state cells */
+    std::vector<Cell*> cells = CreateDefaultCells(size);
+
+    /* seed cells throughout the cell cycle */
+    double cell_area = InitCellCycle(cells);
 
     /* calculate the initial seeding radius */
-    double disk_radius = pow(size / density, 0.5);
+    double disk_radius = pow(cell_area / (M_PI * density), 0.5);
    
     /* create the cell boundary: cells cannot go outside the boundary */
     CreateBoundary(disk_radius);
+
+    /* initalize the data structure to hold the cells */
+    m_population = SpatialHash<Cell>(1.0);
   
-    /* create the cells and seed them randomly throughout the disk */
-    CreateCells(size, disk_radius);
+    /* place the cells and seed them randomly throughout the disk;
+       cells are inserted in m_population during this step */
+    PlaceCells(cells, disk_radius);
 
     /* set the intial growth rates of the cells */
     SetGrowthRates();
-
-    /* seed cells throughout the cell cycle */
-    InitCellCycle();
 
     /* intialize to false: haven't added the drug yet */
     m_drug_added = false;
@@ -49,6 +53,72 @@ CellPopulation::~CellPopulation() {
 
 }
 
+/* create a temporary vector of 'default' state cells */
+std::vector<Cell*> CellPopulation::CreateDefaultCells(unsigned int num) {
+
+    /* create the return vector */
+    std::vector<Cell*> ret_vec;
+
+    /* create 'num' cells */
+    for (unsigned int i = 0; i < num; ++i) {
+
+        /* use default constructor at point (0,0) */
+        ret_vec.push_back(new Cell(Point(0,0), m_param));
+
+    }
+
+    /* return cells */
+    return ret_vec;
+
+}
+
+/* seed cells randomly throughout the cell cycle, return total area
+   occupied by the cells */
+double CellPopulation::InitCellCycle(std::vector<Cell*> cells) {
+
+    /* declare variable for later */
+    double unif, total_area;
+
+    /* get iterator */
+    std::vector<Cell*>::iterator it = cells.begin();
+
+    /* iterate through each cell */
+    for (; it != cells.end(); ++it) {
+
+        /* random number in (0,1) for probability calculations */        
+        unif = R::runif(0,1);
+
+        /* if cells are not synced, start randomly in cell cycle */
+        if (!m_param->GetSyncCellCycle()) {
+        
+            /* probability of being seeded in interphase */
+            if (unif < 0.75) { //interphase
+
+                /* set random radius and resulting axis length */
+                (*it)->SetRadius(R::runif(1,m_param->GetMaxRadius()));
+                (*it)->SetAxisLength((*it)->GetRadius() * 2);
+        
+            /* otherwise seed in mitosis */
+            } else { //mitosis
+
+                /* put the cell in a random point in mitosis */
+                (*it)->EnterRandomPointOfMitosis();
+
+            }
+
+        }
+
+        /* add area of cell to total */
+        total_area += (*it)->GetArea();
+
+    }
+
+    /* return the total area the cells occupy */
+    return total_area;
+
+}
+
+
 /* create the cell boundary */
 void CellPopulation::CreateBoundary(double radius) {
 
@@ -60,29 +130,29 @@ void CellPopulation::CreateBoundary(double radius) {
 
     /* otherwise check if boundary is too small
        (must be bigger than initial seeding radius) */
-    } else if (m_param->GetBoundary() < radius + 2) {
+    } else if (m_param->GetBoundary() < radius) {
 
         /* set boundary to the minimum value */
-        m_param->SetBoundary(radius + 2);
+        m_param->SetBoundary(radius);
 
     }
 
 }
 
 /* create all the cells */
-void CellPopulation::CreateCells(int num, double radius) {
+void CellPopulation::PlaceCells(std::vector<Cell*> cells, double radius) {
+
+    /* get cell iterator */
+    std::vector<Cell*>::iterator it = cells.begin();
 
     /* create 'num' amount of cells */
-    for (unsigned int i = 0; i < num; i++) {
-
-        /* create new cell at point (0,0) */
-        Cell* temp = new Cell(Point(0,0), m_param);
+    for (; it != cells.end(); ++it) {
 
         /* get random location inside the radius and move the cell there */
-        MoveToRandomLocation(temp, radius);
+        MoveToRandomLocation(*it, radius);
 
         /* add cell to the cell population */
-        m_population.Insert(temp->GetCoord(), temp);
+        m_population.Insert((*it)->GetCoord(), *it);
 
         /* check if the user wants to cancel the simulation
            (done from R console) */
@@ -111,13 +181,24 @@ void CellPopulation::MoveToRandomLocation(Cell* cell, double rad) {
         /* move the cell to the new coordinates */
         cell->SetCoord(Point(x,y));
 
+        /* check if the user wants to cancel the simulation
+           (done from R console) */
+        Rcpp::checkUserInterrupt();
+
     /* keep trying points until the cell finds a valid location */
-    } while (!ValidCellPlacement(cell));
+    } while (!ValidCellPlacement(cell, rad));
 
 }
 
 /* check if a cell is placed in a valid location */
-bool CellPopulation::ValidCellPlacement(Cell* cell) {
+bool CellPopulation::ValidCellPlacement(Cell* cell, double rad) {
+
+    /* check if cell exceeds seeding radius */
+    if (CheckBoundary(cell, rad)) {
+
+        return false;
+
+    }
 
     /* get iterator for entire population */
     SpatialHash<Cell>::full_iterator iter = m_population.begin();
@@ -126,7 +207,7 @@ bool CellPopulation::ValidCellPlacement(Cell* cell) {
     for (; iter != m_population.end(); ++iter) {
 
         /* check if this cell overlaps */
-        if ((*iter).CellDistance(*cell) < 2) {
+        if ((*iter).CellDistance(*cell) < 0) {
 
             /* return false if overlap is found */
             return false;
@@ -156,40 +237,6 @@ void CellPopulation::SetGrowthRates() {
 
 }
 
-/* seed cells randomly throughout the cell cycle */
-void CellPopulation::InitCellCycle() {
-
-    /* declare variables for later */
-    double cycle_time, unif;
-
-    /* get full population iterator */
-    SpatialHash<Cell>::full_iterator iter = m_population.begin();
-
-    /* iterate through each cell */
-    for (; iter != m_population.end(); ++iter) {
-
-        /* random number in (0,1) for probability calculations */        
-        unif = R::runif(0,1);
-        
-
-        /* probability of being seeded in interphase */
-        if (unif < m_param->GetCycleSyncProb()) { //interphase
-
-            /* set random radius and resulting axis length */
-            (*iter).SetRadius(R::runif(1,m_param->GetMaxRadius()));
-            (*iter).SetAxisLength((*iter).GetRadius() * 2);
-    
-        /* otherwise seed in mitosis */
-        } else { //mitosis
-
-            /* put the cell in a random point in mitosis */
-            (*iter).EnterRandomPointOfMitosis();
-
-        }
-
-    }
-
-}
 
 /* add the drug to the cell population */
 void CellPopulation::AddDrug() {
@@ -264,7 +311,7 @@ void CellPopulation::AttemptTrial(Cell *cell) {
     bool overlap = CheckForCellOverlap(orig.GetCoord(), cell);
 
     /* if the cell overlaps or crossed the boundary */
-    if (overlap || CheckBoundary(cell)) {
+    if (overlap || CheckBoundary(cell, m_param->GetBoundary())) {
 
         /* reject the trial, revert cell to original state */
         *cell = orig;
@@ -349,7 +396,7 @@ bool CellPopulation::CheckForCellOverlap(Point center, Cell* cell) {
 }
 
 /* check if cell is within the boundary */
-bool CellPopulation::CheckBoundary(Cell* cell) {
+bool CellPopulation::CheckBoundary(Cell* cell, double bound) {
 
     /* get x,y offset of each part of the cell */
     double x_dist = (0.5 * cell->GetAxisLength() - cell->GetRadius())
@@ -364,9 +411,8 @@ bool CellPopulation::CheckBoundary(Cell* cell) {
         cell->GetCoord().y - y_dist);
 
     /* return true if cell is farther from center than the boundary line */
-    return (center_1.dist(Point(0,0)) + cell->GetRadius()
-        > m_param->GetBoundary() || center_2.dist(Point(0,0))
-        + cell->GetRadius() > m_param->GetBoundary());
+    return (center_1.dist(Point(0,0)) + cell->GetRadius() > bound
+            || center_2.dist(Point(0,0)) + cell->GetRadius() > bound);
 
 }
 

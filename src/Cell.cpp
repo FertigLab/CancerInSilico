@@ -10,7 +10,7 @@ Cell::Cell(Point coord, Parameters* par) {
     m_coordinates = coord;
     m_in_mitosis = false;
     m_ready_to_divide = false;
-    m_axis_ang = 0;
+    m_axis_ang = R::runif(0,2 * M_PI);
     m_radius = 1;
     m_axis_len = 2 * m_radius;
     m_growth_rate = 0;
@@ -25,13 +25,13 @@ Cell::Cell(Point coord, Parameters* par, double gr_rate) {
     m_in_mitosis = false;
     m_ready_to_divide = false;
     m_axis_len = 2;
-    m_axis_ang = 0;
+    m_axis_ang = R::runif(0,2 * M_PI);
     m_radius = 1;
     m_growth_rate = gr_rate;
 
 }
 
-//should only be called for daughter cells
+//should only be called for daughter cells (defn probably unneccesary)
 Cell::Cell(const Cell& other, double gr_rate) {
 
     m_param = other.m_param;
@@ -206,8 +206,21 @@ void Cell::EnterRandomPointOfMitosis() {
     m_in_mitosis = true;
     m_axis_len = R::runif(2 * pow(2,0.5),4);
     m_radius = m_param->GetRadius(m_axis_len);
-    m_axis_ang = R::runif(0,2 * M_PI);
     
+}
+
+double Cell::GetArea() const {
+
+    if (!m_in_mitosis) {
+    
+        return M_PI * pow(m_radius, 2);
+  
+    } else {
+
+        return M_PI * pow(m_param->GetMaxRadius(), 2);
+
+    }
+
 }
 
 double Cell::CellDistance(const Cell& other) const {

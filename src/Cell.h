@@ -42,6 +42,7 @@ class Cell {
     double GetGrowth() const;
     void SetCellType(int);
     int GetCellType() const;
+    double GetArea() const;
 
     bool ReadyToDivide() const;
 	void EnterRandomPointOfMitosis();

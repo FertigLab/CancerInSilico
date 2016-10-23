@@ -26,7 +26,7 @@ Rcpp::List CellModel(
 	int recordIncrement,
     double drugTime,
     double boundary,
-    double syncProb
+    bool syncCellCycle
 
 ) {
 
@@ -67,7 +67,7 @@ Rcpp::List CellModel(
     params->StoreDrugEffect(drug_effect);
     params->SetDrugTime(drugTime);
     params->SetBoundary(boundary);
-    params->SetCycleSyncProb(syncProb);
+    params->SetSyncCellCycle(syncCellCycle);
 
     Simulation main_sim = Simulation(params, initialNum, density);
 

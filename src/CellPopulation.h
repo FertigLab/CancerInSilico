@@ -38,23 +38,26 @@ public:
 
     /****** Initialization Functions ******/
 
+    /* create a vector of 'default' state cells */
+    std::vector<Cell*> CreateDefaultCells(unsigned int);
+
+    /* seed cells randomly throughout the cell cycle */
+    double InitCellCycle(std::vector<Cell*>);
+    
     /* create the cell boundary */
     void CreateBoundary(double);
 
     /* create the cells and seed them randomly inside the given radius */
-    void CreateCells(int, double);
+    void PlaceCells(std::vector<Cell*>, double);
 
     /* find a random location inside the disk and move the cell there */
     void MoveToRandomLocation(Cell*, double);
 
     /* check if a cell is placed in a valid location */
-    bool ValidCellPlacement(Cell*);
+    bool ValidCellPlacement(Cell*, double);
 
     /* set the initial growth rates of the cells */
     void SetGrowthRates();
-
-    /* seed cells randomly throughout the cell cycle */
-    void InitCellCycle();
 
     /* add the drug to the cell population */
     void AddDrug();
@@ -79,7 +82,7 @@ public:
     bool CheckForCellOverlap(Point, Cell*);
 
     /* check if cell is within the boundary */
-    bool CheckBoundary(Cell*);
+    bool CheckBoundary(Cell*, double);
 
     /* determine whether or not to accept the trial */
 	bool AcceptTrial(double, double, Cell*);

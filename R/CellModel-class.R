@@ -32,7 +32,7 @@ setClass("CellModel", representation(
                         mRecordIncrement = "numeric",
                         mCycleLengthDist = "numeric",
                         mBoundary = "numeric",
-                        mCycleSyncProb = "numeric" ))
+                        mSyncCycles = "logical" ))
 
 #### getters (parameters) ####
 
@@ -60,7 +60,7 @@ setClass("CellModel", representation(
 
 .boundary <- function(model) { return (model@mBoundary) }
 
-.cycleSyncProb <- function(model) { return (model@mCycleSyncProb) }
+.syncCycles <- function(model) { return (model@mSyncCycles) }
 
 #### getters (cell data) ####
 
@@ -269,7 +269,8 @@ getParameters <- function(model, fullDist=FALSE) {
         nG = .nG(model),
         timeIncrement = .timeIncrement(model),
         recordIncrement = .recordIncrement(model),
-        cycleSyncProb = .cycleSyncProb(model),
+        boundary = .boundary(model),
+        syncCycles = .syncCycles(model),
         cycleLengthDist = retDist
 
     )           
@@ -463,7 +464,8 @@ plotCells <- function(model,time,drawBoundary = TRUE)  {
     # draw boundary
     if (drawBoundary) {
 
-        symbols(0,0,circles=.boundary(model), inches=FALSE, add=TRUE)
+        symbols(0,0,circles=.boundary(model), inches=FALSE, add=TRUE,
+                    lwd = 2)
 
     }
 
