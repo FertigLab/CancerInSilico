@@ -27,7 +27,8 @@ Rcpp::List CellModel(
     double drugTime,
     double boundary,
     bool syncCellCycle,
-    Rcpp::List cellTypes
+    Rcpp::List cellTypes,
+    Rcpp::NumericVector cellTypeDist
 
 ) {
 
@@ -50,6 +51,7 @@ Rcpp::List CellModel(
     params->SetBoundary(boundary);
     params->SetSyncCellCycle(syncCellCycle);
     params->StoreCellTypes(cellTypes);
+    params->StoreCellTypeDistribution(cellTypeDist);
 
     Simulation main_sim = Simulation(params, initialNum, density);
 

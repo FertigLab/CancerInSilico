@@ -21,6 +21,7 @@
 runCancerSim <- function(initialNum,
                          runTime,
                          cellTypes,
+                         cellTypeDist,
                          density = 0.01,
                          cycleLengthDist = 12,
                          drugEffect = getDrugEffect(cycleLengthDist = cycleLengthDist),
@@ -55,6 +56,7 @@ runCancerSim <- function(initialNum,
                              boundary,
                              syncCycles,
                              cellTypes,
+                             cellTypeDist,
                              ...))
 
     }
@@ -78,6 +80,7 @@ runDrasdoHohme <- function(initialNum,
                            boundary,
                            syncCycles,
                            cellTypes,
+                           cellTypeDist,
                            ...)
   
 {
@@ -128,6 +131,8 @@ runDrasdoHohme <- function(initialNum,
 
     }
   
+
+    # calls CellModel.cpp function, returns list of numbers
     output <- CellModel(initialNum,
                       mcSteps,
                       density,
@@ -147,8 +152,11 @@ runDrasdoHohme <- function(initialNum,
                       drugTime, 
                       boundary,
                       syncCycles,
-                      cellTypes)
+                      cellTypes,
+                      cellTypeDist)
     
+
+    # R CellModel-class
     cellMat <- new("CellModel",
                  mCells = output,
                  mInitialNumCells = initialNum,
@@ -165,7 +173,8 @@ runDrasdoHohme <- function(initialNum,
                  mBoundary = calcBoundary(output, density, boundary),
                  mSyncCycles = syncCycles,
                  mBoundary = boundary,
-                 mCellTypes = cellTypes)
+                 mCellTypes = cellTypes,
+                 mCellTypeDist = cellTypeDist)
 
     return(cellMat)
   

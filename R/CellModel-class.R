@@ -20,7 +20,7 @@
 #' @export
 
 setClass("CellModel", representation(
-                        mCells = "list",
+                        mCells = "list", # stores cell data
                         mInitialNumCells = "numeric",
                         mRunTime = "numeric",
                         mInitialDensity = "numeric",
@@ -34,7 +34,8 @@ setClass("CellModel", representation(
                         mCycleLengthDist = "numeric",
                         mBoundary = "numeric",
                         mSyncCycles = "logical",
-                        mCellTypes = "list" ))
+                        mCellTypes = "list",
+                        mCellTypeDist = "numeric"))
 
 #### getters (parameters) ####
 
@@ -65,6 +66,8 @@ setClass("CellModel", representation(
 .syncCycles <- function(model) { return (model@mSyncCycles) }
 
 .cellTypes <- function(model) { return (model@mCellTypes) }
+
+.cellTypeDist <- function(model) { return (model@mCellTypeDist) }
 
 #### getters (cell data) ####
 
@@ -244,12 +247,12 @@ getDensity <- function(model,time) {
 #' @param model a CellModel object
 #' @return a list of factors
 #' @examples
-#' getCellTypes(runCancerSim(1,1))
+#' getCellTypes(runCancerSim(1,1), 20)
 #' @export
 
-getCellTypes <- function(model) {
+getCellTypes <- function(model, time) {
     # add code here
-    # return (model@mCellTypes) <- why doesn't this work?
+    # Get data from mCells
 }
 
 

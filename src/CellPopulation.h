@@ -113,12 +113,8 @@ public:
     /******************************************/
 
     /**** Debugging for setting cell types ****/
-
-    /* Generates a vector of percent distributions of each cell type (sum of all should be 1) */
-    static std::vector<double> GeneratePercentDistribution();
-
-    /* Goes into m_population, sets cells in proportion of each percentage indicated by the parameter */
-    void SetCellTypes(std::vector<double>);
+    
+    void SetCellTypes();
 
 };
 
