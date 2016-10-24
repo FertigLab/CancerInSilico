@@ -249,6 +249,7 @@ getDensity <- function(model,time) {
 
 getCellTypes <- function(model) {
     # add code here
+    # return (model@mCellTypes) <- why doesn't this work?
 }
 
 

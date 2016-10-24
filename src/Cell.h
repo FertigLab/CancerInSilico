@@ -17,7 +17,7 @@ class Cell {
     bool m_in_mitosis;
     double m_growth_rate;
 	double m_axis_len, m_axis_ang;
-    int m_cell_type;
+    int m_cell_type; // Corresponds to index in list of cell types in Parameters
 
   public:
 
