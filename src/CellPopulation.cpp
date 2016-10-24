@@ -593,3 +593,32 @@ int CellPopulation::size() {
     return m_population.size();
 
 }
+
+
+
+/******************************************/
+
+/**** Debugging for setting cell types ****/
+
+/* Generates a vector of percent distributions of each cell type (sum of all should be 1) */
+static std::vector<double> GeneratePercentDistribution() {
+
+    /* Creates partitions summing to 1, each corresponds to proportion of cell type
+       Examples:
+
+       2 cell types : [0.3, 0.7] means 30% type 1, 70% type 2
+       5 cell types : [0.2, 0.3, 0.1, 0.3, 0.1] means 20% type 1, 30% type 2, etc.
+    */
+
+    // Randomly partitions for now
+
+}
+
+/* Goes into m_population, sets cells in proportion of each percentage indicated by the parameter */
+void SetCellTypes(std::vector<double> cell_type_distribution) { // cell_type_distribution created from GeneratePercentDistribution()
+
+    /* for each n in cell_type_distribution:
+            randomly select n of Cells in m_population
+            set m_cell_type = index of n
+    */
+}
