@@ -15,7 +15,8 @@ simulatePathway <- function(model, pathway, type, sampFreq = 1, sampSize = 1, si
     # time window to search for events related to gene expression
     time_window = 1 
 
-    # average cycle time used for determining if cell is growing 'fast' or 'slow'
+    # average cycle time used for determining if cell is growing
+    # 'fast' or 'slow'
     mean_cycle_len = 16
 
     # vector of times to get gene expression for
@@ -77,12 +78,14 @@ simulatePathway <- function(model, pathway, type, sampFreq = 1, sampSize = 1, si
 
 }
 
-#' \code{getGtoSexpression} calculate gene expression for a pathway effected by the G to S transition
+#' \code{getGtoSexpression} calculate gene expression for a pathway
+#'                          effected by the G to S transition
 #'
 #' @param model A CellModel
 #' @param cells the indices of cells to calculate expression for
 #' @param time model time in hours
-#' @param time_window the window of time (model hours) to check if a cell made the transition
+#' @param time_window the window of time (model hours) to check if
+#'        a cell made the transition
 #' @return gene expression for each cell 
 
 getGtoSexpression <- function(model, cells, time, time_window) {
@@ -93,8 +96,9 @@ getGtoSexpression <- function(model, cells, time, time_window) {
     # get the axis lengths of each cell at end of time window
     next_rad <- getRadii(model, time + time_window)[cells]
 
-    # return logical vector (0's and 1's), 1 if cell made the G to S transition in this window
-    # G to S transition is defined by a cell crossing the halfway point of its growth
+    # return logical vector (0's and 1's), 1 if cell made the G to S
+    # transition in this window G to S transition is defined by a cell
+    # crossing the halfway point of its growth
     return (next_rad > sqrt(3/2) & cur_rad < sqrt(3/2))
 
 }
@@ -115,7 +119,8 @@ getGtoMexpression <- function(model, cells, time, time_window) {
     # get the axis lengths of each cell at end of time window
     next_ax <- getAxisLength(model, time + time_window)[cells]
 
-    # return logical vector (0's and 1's), 1 if cell made the G to M transition in this window
+    # return logical vector (0's and 1's), 1 if cell made the
+    # G to M transition in this window
     return (next_ax < cur_ax)
 
 }
