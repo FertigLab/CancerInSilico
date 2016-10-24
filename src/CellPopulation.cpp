@@ -88,23 +88,18 @@ double CellPopulation::InitCellCycle(std::vector<Cell*> cells) {
         /* random number in (0,1) for probability calculations */        
         unif = R::runif(0,1);
 
-        /* if cells are not synced, start randomly in cell cycle */
-        if (!m_param->GetSyncCellCycle()) {
-        
-            /* probability of being seeded in interphase */
-            if (unif < 0.75) { //interphase
+        /* probability of being seeded in interphase */
+        if (m_param->GetSyncCellCycle() || unif < 0.75) { //interphase
 
-                /* set random radius and resulting axis length */
-                (*it)->SetRadius(R::runif(1,m_param->GetMaxRadius()));
-                (*it)->SetAxisLength((*it)->GetRadius() * 2);
-        
-            /* otherwise seed in mitosis */
-            } else { //mitosis
+            /* set random radius and resulting axis length */
+            (*it)->SetRadius(R::runif(1,m_param->GetMaxRadius()));
+            (*it)->SetAxisLength((*it)->GetRadius() * 2);
+    
+        /* otherwise seed in mitosis */
+        } else { //mitosis
 
-                /* put the cell in a random point in mitosis */
-                (*it)->EnterRandomPointOfMitosis();
-
-            }
+            /* put the cell in a random point in mitosis */
+            (*it)->EnterRandomPointOfMitosis();
 
         }
 
