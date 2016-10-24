@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <exception>
 
-#include "ExceptionHandling.h"
 #include "Parameters.h"
 
 #define MIN_AXIS_LEN 1.1716

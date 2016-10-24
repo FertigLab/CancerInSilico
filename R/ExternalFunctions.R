@@ -8,7 +8,8 @@
 
 getDrugEffect <- function(FUN = function(x) {0}, ...) {
 
-    # store either the cycle lengths themselves or a sequence spanning their range
+    # store either the cycle lengths themselves or a sequence
+    # spanning their range
     cycleLengthDist <- list(...)$cycleLengthDist
     cycleLengthSeq <- list(...)$cycleLengthSeq
 
