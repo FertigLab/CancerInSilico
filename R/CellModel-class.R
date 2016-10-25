@@ -17,6 +17,7 @@
 #' @slot mCycleLengthDist initial distribution of cell-cycle lengths 
 #' @slot mCycleSyncProb the probability of cells being seed in interphase (not mitosis)
 #' @slot mCellTypes a list of objects, each representing a type of cell
+#' @slot mCellTypeDist
 #' @export
 
 setClass("CellModel", representation(
@@ -251,8 +252,35 @@ getDensity <- function(model,time) {
 #' @export
 
 getCellTypes <- function(model, time) {
-    # add code here
-    # Get data from mCells
+
+    # doesn't currently consider time
+
+    # get number of different cell types
+    numCellTypes = length(.getCellTypes(model))
+
+    # create factor (with indices of cell types as the levels)
+    fCellTypes = factor(.getCellTypes(model))
+    levels(fCellTypes) = seq(1, fCellTypes, 1) # assumes at least one cell type
+
+    return fCellTypes
+
+}
+
+#' \code{getCellTypesTable} returns table of cell types in the model
+#'
+#' @return a table of the cell types
+#' @param model a CellModel object
+#' @examples
+#' printCellTypes(runCancerSim(1,1), 20)
+#' @export
+
+printCellTypes <- function(model, time) {
+
+    # doesn't currently consider time
+
+    # return table
+    return table(getCellTypes(model, time)
+
 }
 
 
