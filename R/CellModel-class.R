@@ -253,16 +253,20 @@ getDensity <- function(model,time) {
 
 getCellTypes <- function(model, time) {
 
-    # doesn't currently consider time
+    # find the row corresponding to the given time
+    row <- timeToRow(model, time)
+
+    # get the sequence of indices that contain the cell growth rate (starts at 6)
+    indices <- seq(6,length(model@mCellTypes[[row]]),7)
 
     # get number of different cell types
-    numCellTypes = length(.getCellTypes(model))
+    numCellTypes = length(model@mCellTypes[[row]])
 
     # create factor (with indices of cell types as the levels)
-    fCellTypes = factor(.getCellTypes(model))
-    levels(fCellTypes) = seq(1, fCellTypes, 1) # assumes at least one cell type
+    fCellTypes = factor(model@mCells[[row]][indices])
+    levels(fCellTypes) = seq(1, numCellTypes, 1) # assumes at least one cell type
 
-    return fCellTypes
+    return(fCellTypes)
 
 }
 
@@ -276,10 +280,8 @@ getCellTypes <- function(model, time) {
 
 printCellTypes <- function(model, time) {
 
-    # doesn't currently consider time
-
     # return table
-    return table(getCellTypes(model, time)
+    return(table(getCellTypes(model, time)))
 
 }
 
