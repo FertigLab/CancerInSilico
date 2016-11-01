@@ -51,34 +51,63 @@ test_that("getDrugEffect", {
 test_that("simulatePathway", {
 
     # cell models to test
-    m1 <- runCancerSim(1,10)
-    m2 <- runCancerSim(2,20) # goes to size 38
+    m1 <- runCancerSim(2,10)
     m3 <- readRDS("testObj.rds") # how can I access this?
 
-    # pathway
-    p1 <- seq(0, 9, 1) # tests expressions of value integers 0-9
-    zeros <- seq(0, 0, length.out = 10) # vector of all zeros, length 10
+    # pathway of length 10 with random values
+    p1<- rnorm(10,10,1)
+    names(pathway) <- letters[1:10]
+
+    # get gene expression matrix for m1, type S
+    geMatrix_m1_S <- simulatePathway(m2, p1, type = S)
+
+    # check correct pathways for times 1-10
+    for (t in 1:10) {
+        # check correct num neighbors for indices 1-10
+        for (i in 1:10) {
+            cur_rad <- getRadii(m1, t)
+            next_rad <- getRadii(m1, t + .1)
+            transition <- ifelse(next_rad > sqrt(3/2) & cur_rad < sqrt(3/2), 1, 0)
+            expect_equal(geMatrix_S[t,i], p1 * transition)
+        }
+    }
+
+    # get gene expression matrix for m1, type M
+    geMatrix_m1_M <- simulatePathway(m2, p1, type = M)
+
+    # check correct pathways for times 1-10
+    for (t in 1:10) {
+        # check correct num neighbors for indices 1-10
+        for (i in 1:10) {
+            cur_ax <- getAxisLengthLength(m1, t)
+            next_ax <- getAxisLength(m1, t + .1)
+            transition <- ifelse(next_ax < cur_ax, 1, 0)
+            expect_equal(geMatrix_S[t,i], p1 * transition)
+        }
+    }
+
+    # get gene expression matrix for m1, type GROWTH
+    geMatrix_m1_GROWTH <- simulatePathway(m2, p1, type = GROWTH)
+
+    # check correct pathways for times 1-10
+    for (t in 1:10) {
+        # check correct num neighbors for indices 1-10
+        for (i in 1:10) {
+            # smooth out function
+            cycle_len <- getCycleLengths(model,time)
+            expect_equal(geMatrix_GROWTH[t,i], p1 * cycle_len)
+        }
+    }
 
     # get gene expression matrix for m1, type PROX
     geMatrix_m1_PROX <- simulatePathway(m1, p1, type = PROX)
-    expect_equal(geMatrix_PROX[0,], zeros) # no neighbors at t = 0
-    expect_equal(geMatrix_PROX[1,], zeros) # no neighbors at t = 1
-    for (i in 2:9) {
-        expect_equal(geMatrix_PROX[i,], p1/6) # one neighbor at t = 2-9
+ 
+    # check correct pathways for times 1-10
+    for (t in 1:10) {
+        # check correct num neighbors for indices 1-10
+        for (i in 1:10) {
+            neighbors <- getNumNeighbors(m1, t, i)
+            expect_equal(geMatrix_PROX[t,i], p1 * (neighbors/6))
+        }
     }
-    # this 
-    pathway <- rnorm(10,10,1)
-    names(pathway) <- letters[1:10]
-
-    # get gene expression mwwwatrix for m2, type PROX
-    geMatrix_m2_PROX <- simulatePathway(m2, p1, type = PROX)
-
-    # test gene expression matrix for m2
-    for (j in 1:60) {
-        # test gene expression at time i
-   #     currExp_m2_PROX <- geMatrix_m2_PROX[j,]
-   #     expect_equal(?,currExp_m2_PROX) # HOW TO CALCULATE EXPECTED?
-    }
-
-
 })
