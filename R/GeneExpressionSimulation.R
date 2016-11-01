@@ -93,7 +93,7 @@ getGtoSexpression <- function(model, cells, time, time_window) {
     # get the axis lengths of each cell at end of time window
     next_rad <- getRadii(model, time + time_window)[cells]
 
-    # return logical vector (0's and 1's), 1 if cell made the G to S transition in this window
+    # return logical vector, TRUE if cell made the G to S transition in this window
     # G to S transition is defined by a cell crossing the halfway point of its growth
     return (next_rad > sqrt(3/2) & cur_rad < sqrt(3/2))
 
@@ -115,7 +115,7 @@ getGtoMexpression <- function(model, cells, time, time_window) {
     # get the axis lengths of each cell at end of time window
     next_ax <- getAxisLength(model, time + time_window)[cells]
 
-    # return logical vector (0's and 1's), 1 if cell made the G to M transition in this window
+    # return logical vector, TRUE if cell made the G to M transition in this window
     return (next_ax < cur_ax)
 
 }
