@@ -19,6 +19,24 @@ test_that("CellModel getters", {
 
 })
 
+test_that("getCellTypes", {
+
+    # cell models to test
+    m1 <- runCancerSim(2,10)
+    m3 <- readRDS("testObj.rds") # how can I access this?
+
+    # test cell types for m1
+    cell_types <- getCellTypes(m1, t)
+
+    # check correct pathways for times 1-10
+    for (t in 1:10) {
+
+        row <- timeToRow(m1, t)
+
+        expect_equal(cell_types, length(model@mCellTypes[[row]]))
+    }
+}
+
 test_that("getDrugEffect", {
 
     cyc_seq <- seq(8,16,1)
