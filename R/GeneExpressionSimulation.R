@@ -15,6 +15,8 @@ simulatePathway <- function(model, pathway, type, sampFreq = 1, sampSize = 1, si
     # time window to search for events related to gene expression
     time_window = 1 
 
+    # TODO: add check for minimum sampFreq
+
     # vector of times to get gene expression for
     times <- seq(0, .runTime(model) - time_window, sampFreq)
 
@@ -60,7 +62,7 @@ simulatePathway <- function(model, pathway, type, sampFreq = 1, sampSize = 1, si
         if (singleCell) {
 
             # multiply each cells value by each gene in the pathway
-            gsMatrix[i,] = c(t(pathway %*% t(single_cell_exp)))
+            gsMatrix[i,] = c(t(single_cell_exp %*% t(pathway)))
 
         } else {
 
@@ -101,7 +103,8 @@ getGtoSexpression <- function(model, cells, time, time_window) {
 
 }
 
-#' \code{getGtoMexpression} calculate gene expression for a pathway effected by the G to M transition
+#' \code{getGtoMexpression} calculate gene expression for a pathway
+#'                          effected by the G to M transition
 #'
 #' @param model A CellModel
 #' @param cells the indices of cells to calculate expression for

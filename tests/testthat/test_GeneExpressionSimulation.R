@@ -3,9 +3,7 @@ context("Testing Gene Expression Data Simulation")
 test_that("pathway simulation - pooled", {
 
     ## create pathway
-
-    set.seed(0)
-    pathway <- rexp(5, 20)
+    pathway <- rexp(5, 1/20)
     names(pathway) <- letters[1:5]
     
     ## test G to S  
@@ -27,6 +25,17 @@ test_that("pathway simulation - pooled", {
     gs <- simulatePathway(GE_testmod, pathway, 'GROWTH')
     expect_equal(gs[1,], pathway / 1.030972, tolerance=1e-3)
     expect_equal(gs[2,], pathway / 1.030972, tolerance=1e-3)
+
+})
+
+test_that("pathway simulation - single cell", {
+
+    ## create pathway
+    pathway <- rexp(5, 1/20)
+    names(pathway) <- letters[1:5]
+
+
+
 
 })
 
