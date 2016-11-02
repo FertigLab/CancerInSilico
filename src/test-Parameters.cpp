@@ -18,22 +18,22 @@ CATCH_TEST_CASE("Test Parameters with Cell Type") {
     c2.slot("mType") = "CANCER";
 
     /* Add to list */
-    cell_types[1] = c1;
-    cell_types[2] = c2;
-
+    cell_types.push_back(c1);
+    cell_types.push_back(c2);
 
     // Create NumericVector of Cell Type Distributions
-    Rcpp::NumericVector cell_type_dist = Rcpp::NumericVector::create(0.3,0.7);
+    Rcpp::NumericVector cell_type_dist
+            = Rcpp::NumericVector::create(0.3,0.7);
 
     // Set a growth rates
     Rcpp::NumericVector growth_dist = Rcpp::NumericVector::create(1,2);
     
-
     /* Create DrugEffect List */
     Rcpp::List drug_effect;
 
-    drug_effect[1] = Rcpp::NumericVector::create(1, 0.2);
-    drug_effect[2] = Rcpp::NumericVector::create(2, 0.3);
+    /* add distributions for the two growth rates */
+    drug_effect.push_back(Rcpp::NumericVector::create(1, 0.2));
+    drug_effect.push_back(Rcpp::NumericVector::create(2, 0.3));
 
     /* Create a Parameters object */
     Parameters params = Parameters(pow(2,0.5));
@@ -66,7 +66,7 @@ CATCH_TEST_CASE("Test Parameters with Cell Type") {
 
         Rcpp::Environment baseEnv("package:base");
         Rcpp::Function setSeed = baseEnv["set.seed"];
-        setSeed(40);
+        setSeed(25);
 
         CATCH_REQUIRE(params.GetRandomGrowthRate() == 1);
         CATCH_REQUIRE(params.GetRandomGrowthRate() == 2);
