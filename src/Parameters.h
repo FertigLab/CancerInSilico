@@ -33,9 +33,9 @@ class Parameters {
     std::vector<double> m_drug_effect_indices;
 
     void InitializeRadiusSolver();
-	void InitSlowSolver();
-	void InitFastSolver();
-	int HashAxisLength(double);
+    void InitSlowSolver();
+    void InitFastSolver();
+    int HashAxisLength(double);
 
   public:
 
