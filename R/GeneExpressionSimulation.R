@@ -15,10 +15,6 @@ simulatePathway <- function(model, pathway, type, sampFreq = 1, sampSize = 1, si
     # time window to search for events related to gene expression
     time_window = 1 
 
-    # average cycle time used for determining if cell is growing
-    # 'fast' or 'slow'
-    mean_cycle_len = 16
-
     # vector of times to get gene expression for
     times <- seq(0, .runTime(model) - time_window, sampFreq)
 
@@ -28,7 +24,9 @@ simulatePathway <- function(model, pathway, type, sampFreq = 1, sampSize = 1, si
     rownames(gsMatrix) <- times
 
     # loop through each time
-    for (t in times) {
+    for (i in 1:length(times)) {
+
+        t = times[i]
 
         # get a vector of all cells
         cells <- 1:getNumberOfCells(model, t)
@@ -62,12 +60,12 @@ simulatePathway <- function(model, pathway, type, sampFreq = 1, sampSize = 1, si
         if (singleCell) {
 
             # multiply each cells value by each gene in the pathway
-            gsMatrix[t,] = c(t(pathway %*% t(single_cell_exp)))
+            gsMatrix[i,] = c(t(pathway %*% t(single_cell_exp)))
 
         } else {
 
             # average the gene expression across cells
-            gsMatrix[t,] = pathway * mean(single_cell_exp)
+            gsMatrix[i,] = pathway * mean(single_cell_exp)
 
         }
 
@@ -141,7 +139,7 @@ getPROXexpression <- function(model, cells, time) {
     for (i in cells) {
 
         # expression = number of neighboring cells (max 6) divided by 6
-        exp[i] <- getNumNeighbors(model, time, i, 2 * sqrt(3) - 0.01) / 6
+        exp[i] <- getNumNeighbors(model, time, i) / 6
 
     }
 
@@ -163,7 +161,7 @@ getGROWTHexpression <- function(model, cells, time) {
     cycle_len <- getCycleLengths(model,time)[cells]
 
     # this function maps cycle length to [0,1] in a smooth way
-    return (1 - 1 / (1 + exp(-0.25 * (cycle_len - mean_cycle_len))))
+    return (1 - 1 / (1 + exp(-0.25 * (cycle_len - 16))))
 
 }
 

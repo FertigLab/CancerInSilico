@@ -191,16 +191,6 @@ double Cell::GetGrowth() const {
 
 }
 
-int Cell::GetCellType() const {
-
-    return m_cell_type;
-
-}
-
-void Cell::SetCellType(int newCellType) {
-    m_cell_type = newCellType;
-}
-
 void Cell::EnterRandomPointOfMitosis() {
 
     m_in_mitosis = true;

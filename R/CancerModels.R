@@ -20,7 +20,6 @@
 
 runCancerSim <- function(initialNum,
                          runTime,
-                         cellTypes,
                          density = 0.01,
                          cycleLengthDist = 12,
                          drugEffect = getDrugEffect(cycleLengthDist = cycleLengthDist),

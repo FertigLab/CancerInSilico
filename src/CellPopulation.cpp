@@ -564,7 +564,6 @@ void CellPopulation::RecordPopulation() {
         current_pop.push_back((*iter).GetAxisLength());
         current_pop.push_back((*iter).GetAxisAngle());
         current_pop.push_back((*iter).GetGrowth());
-        current_pop.push_back((*iter).GetCellType());
 
     }
 

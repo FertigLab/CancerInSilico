@@ -76,7 +76,7 @@ getCoordinates <- function(model, time) {
     row <- timeToRow(model, time)
 
     # get the sequence of indices that contain x-coordinates
-    indices <- seq(1,length(model@mCells[[row]]),7)
+    indices <- seq(1,length(model@mCells[[row]]),6)
     
     # create return matrix, col 1 = x-coord & col 2 = y-coord
     ret_mat <- matrix(nrow = length(indices), ncol = 2)
@@ -109,7 +109,7 @@ getRadii <- function(model, time) {
     row <- timeToRow(model, time)
 
     # get the sequence of indices that contain the cell radius (starts at 3)
-    indices <- seq(3,length(model@mCells[[row]]),7)
+    indices <- seq(3,length(model@mCells[[row]]),6)
 
     # return the values at these indices
     return(model@mCells[[row]][indices])
@@ -128,7 +128,7 @@ getAxisLength <- function(model, time) {
     row <- timeToRow(model, time)
 
     # get the sequence of indices that contain the axis length (starts at 4)
-    indices <- seq(4,length(model@mCells[[row]]),7)
+    indices <- seq(4,length(model@mCells[[row]]),6)
 
     # return the values at these indices
     return(model@mCells[[row]][indices])
@@ -147,7 +147,7 @@ getAxisAngle <- function(model, time) {
     row <- timeToRow(model, time)
 
     # get the sequence of indices that contain the axis angle (starts at 5)
-    indices <- seq(5,length(model@mCells[[row]]),7)
+    indices <- seq(5,length(model@mCells[[row]]),6)
 
     # return the values at these indices
     return(model@mCells[[row]][indices])
@@ -166,7 +166,7 @@ getGrowthRates <- function(model, time) {
     row <- timeToRow(model, time)
 
     # get the sequence of indices that contain the cell growth rate (starts at 6)
-    indices <- seq(6,length(model@mCells[[row]]),7)
+    indices <- seq(6,length(model@mCells[[row]]),6)
 
     # return the values at these indices
     return(model@mCells[[row]][indices])
@@ -203,7 +203,7 @@ getCycleLengths <- function(model, time) {
 #' getNumberOfCells(runCancerSim(1,1), 1)
 #' @export
 
-getNumberOfCells <-    function(model, time) {
+getNumberOfCells <- function(model, time) {
 
     return (sum(getRadii(model, time) > 0))   
 

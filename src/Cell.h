@@ -17,7 +17,6 @@ class Cell {
     bool m_in_mitosis;
     double m_growth_rate;
 	double m_axis_len, m_axis_ang;
-    int m_cell_type;
 
   public:
 
@@ -40,8 +39,6 @@ class Cell {
     double GetAxisAngle() const;
     void SetGrowth(double);
     double GetGrowth() const;
-    void SetCellType(int);
-    int GetCellType() const;
     double GetArea() const;
 
     bool ReadyToDivide() const;
