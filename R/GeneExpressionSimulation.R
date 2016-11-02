@@ -28,6 +28,7 @@ simulatePathway <- function(model, pathway, type, sampFreq = 1, sampSize = 1, si
     # loop through each time
     for (i in 1:length(times)) {
 
+        # get current time
         t = times[i]
 
         # get a vector of all cells
@@ -37,26 +38,12 @@ simulatePathway <- function(model, pathway, type, sampFreq = 1, sampSize = 1, si
         if (singleCell) {
     
             # get a sample of cells
-            cells <- sample(cells, sampSize)
+            cells <- sort(sample(cells, sampSize))
 
         }
 
-        # switch on type of gene expression
-        switch (type,
-
-            # pathway is related to the G to S transition in the cell cycle
-            S =  { single_cell_exp <- getGtoSexpression(model, cells, t, time_window) },
-
-            # pathway is related to the G to M transition in the cell cycle
-            M = { single_cell_exp <- getGtoMexpression(model, cells, t, time_window) },
-
-            # pathway is related to the growth rate of a cell
-            GROWTH = { single_cell_exp <- getGROWTHexpression(model, cells, t) },
-
-            # pathway is related to number of neighboring cells
-            PROX = { single_cell_exp <- getPROXexpression(model, cells, t) }
-
-        )
+        # get gene single cell gene expression
+        single_cell_exp <- getExpression(model, cells, time, time_windows, type)
 
         # if single cell expression is desired
         if (singleCell) {
@@ -78,16 +65,28 @@ simulatePathway <- function(model, pathway, type, sampFreq = 1, sampSize = 1, si
 
 }
 
-#' \code{getGtoSexpression} calculate gene expression for a pathway
-#'                          effected by the G to S transition
-#'
-#' @param model A CellModel
-#' @param cells the indices of cells to calculate expression for
-#' @param time model time in hours
-#' @param time_window the window of time (model hours) to check if
-#'        a cell made the transition
-#' @return gene expression for each cell 
+getExpression <- function(model, cells, time, time_window, type) {
 
+    # switch on type of gene expression
+    switch (type,
+
+        # pathway is related to the G to S transition in the cell cycle
+        S =  { return (getGtoSexpression(model, cells, t, time_window)) },
+
+        # pathway is related to the G to M transition in the cell cycle
+        M = { return (getGtoMexpression(model, cells, t, time_window)) },
+
+        # pathway is related to the growth rate of a cell
+        GROWTH = { return (getGROWTHexpression(model, cells, t)) },
+
+        # pathway is related to number of neighboring cells
+        PROX = { return (getPROXexpression(model, cells, t) }
+
+    )
+
+}
+
+# calculate gene expression for G to S related pathway
 getGtoSexpression <- function(model, cells, time, time_window) {
 
     # get the axis lengths of each cell at current time 
@@ -97,21 +96,13 @@ getGtoSexpression <- function(model, cells, time, time_window) {
     next_rad <- getRadii(model, time + time_window)[cells]
 
     # return logical vector (0's and 1's), 1 if cell made the G to S
-    # transition in this window G to S transition is defined by a cell
+    # transition in this window. G to S transition is defined by a cell
     # crossing the halfway point of its growth
     return (next_rad > sqrt(3/2) & cur_rad < sqrt(3/2))
 
 }
 
-#' \code{getGtoMexpression} calculate gene expression for a pathway
-#'                          effected by the G to M transition
-#'
-#' @param model A CellModel
-#' @param cells the indices of cells to calculate expression for
-#' @param time model time in hours
-#' @param time_window the window of time (model hours) to check if a cell made the transition
-#' @return gene expression for each cell 
-
+# calculate gene expression G to M related pathway 
 getGtoMexpression <- function(model, cells, time, time_window) {
 
     # get the axis lengths of each cell at current time 
@@ -126,13 +117,7 @@ getGtoMexpression <- function(model, cells, time, time_window) {
 
 }
 
-#' \code{getPROXexpression} calculate gene expression for a pathway effected by neighboring cells
-#'
-#' @param model A CellModel
-#' @param cells the indices of cells to calculate expression for
-#' @param time model time in hours
-#' @return gene expression for each cell 
-
+# calculate gene expression for a pathway effected by neighboring cells
 getPROXexpression <- function(model, cells, time) {
 
     # create empty vector
@@ -151,13 +136,7 @@ getPROXexpression <- function(model, cells, time) {
 
 }
 
-#' \code{getGROWTHexpression} calculate gene expression for a pathway effected by the growth rate of the cells
-#'
-#' @param model A CellModel
-#' @param cells the indices of cells to calculate expression for
-#' @param time model time in hours
-#' @return gene expression for each cell 
-
+# calculate gene expression for a pathway effected by growth rate
 getGROWTHexpression <- function(model, cells, time) {
 
     # get the cycle lengths of each cell
