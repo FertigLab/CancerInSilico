@@ -12,18 +12,21 @@ CATCH_TEST_CASE("Test Parameters with Cell Type") {
     /* Create 2 CellType objects */
     Rcpp::S4 c1 = Rcpp::S4("CellType");
     Rcpp::S4 c2 = Rcpp::S4("CellType");
+    Rcpp::S4 c3 = Rcpp::S4("CellType");
     
     /* Name celltypes, set slots */
     c1.slot("mType") = "NORMAL";
     c2.slot("mType") = "CANCER";
+    c3.slot("mType") = "RESISTANT";
 
     /* Add to list */
     cell_types.push_back(c1);
     cell_types.push_back(c2);
+    cell_types.push_back(c3);
 
     // Create NumericVector of Cell Type Distributions
     Rcpp::NumericVector cell_type_dist
-            = Rcpp::NumericVector::create(0.3,0.7);
+            = Rcpp::NumericVector::create(0.25,0.25,0.5);
 
     // Set a growth rates
     Rcpp::NumericVector growth_dist = Rcpp::NumericVector::create(1,2);
@@ -70,6 +73,20 @@ CATCH_TEST_CASE("Test Parameters with Cell Type") {
 
         CATCH_REQUIRE(params.GetRandomGrowthRate() == 1);
         CATCH_REQUIRE(params.GetRandomGrowthRate() == 2);
+
+    }
+
+    CATCH_SECTION("Test GetRandomCellType") {
+
+        int sum_selected_cell_types = 0;
+
+        for (unsigned int i = 0; i < 100; ++i) {
+
+            sum_selected_cell_types += params.GetRandomCellType();
+
+        }
+
+        CATCH_REQUIRE(sum_selected_cell_types == 0);
 
     }
 
