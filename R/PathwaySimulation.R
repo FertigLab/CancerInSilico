@@ -1,62 +1,58 @@
-#' \code{simulatePathway} Simulates gene expression data for a given pathway
+#' \code{simulatePathway}
 #'
-#' @param model A CellModel
-#' @param pathway The pathway to simulate expression for
-#' @param type the type of cellular function the pathway is related too
-#' @param sampFreq how often to sample the cells and record gene expression data
-#' @param sampSize how many cells to sample in the case of single-cell expression data
-#' @param singleCell whether or not to simulate single-cell expression data
-#' @return gene expression matrix for given pathway 
+#' Simulates gene expression data for a given pathway
+#'
+#' @param model A CellModel object
+#' @param pathway List of genes and range of expression values (fields:
+#'      'genes', 'max', 'min')
+#' @param type Cellular function related to pathway ('S', 'M', 'PROX',
+#'      'GROWTH')
+#' @param sampFreq Time (hrs) between each sample
+#' @param sampSize Size of sample for single cell data
+#' @param singleCell T/F: generate single cell data
+#' @param timeWindow Length of window examined to see if relevant cell
+#'      state changed (for 'S' and 'M' pathways)
+#' @param downReg T/F: pathway is down regulated by cell activity (type)
+#' @return Gene expression matrix for given pathway 
 #' @export
 #'
+simulatePathway <- function(model, pathway, type, sampFreq = 1,
+sampSize, singleCell = FALSE, timeWindow = 1, downReg = FALSE) {
 
-simulatePathway <- function(model, pathway, type, sampFreq = 1, sampSize = 1, singleCell=FALSE) {
+    # if not single cell data, sample size is "1" (only return mean)
+    sampSize <- 1
 
-    # time window to search for events related to gene expression
-    time_window = 1 
-
-    # TODO: add check for minimum sampFreq
+    # find closest, valid, sampling frequency
+    sampFreq <- .recordIncrement(model)
+                    * ceiling(sampFreq / .recordIncrement(model))
 
     # vector of times to get gene expression for
-    times <- seq(0, .runTime(model) - time_window, sampFreq)
+    times <- seq(0, .runTime(model) - timeWindow, sampFreq)
 
     # create return matrix
-    gsMatrix <- matrix(0,length(times),length(pathway) * sampSize)
-    colnames(gsMatrix) <- rep(names(pathway), sampSize)
+    gsMatrix <- matrix(0,length(times),length(pathway[["max"]]) * sampSize)
+    colnames(gsMatrix) <- rep(pathway[["genes"]], sampSize)
     rownames(gsMatrix) <- times
 
     # loop through each time
     for (i in 1:length(times)) {
 
-        # get current time
-        t = times[i]
-
         # get a vector of all cells
-        cells <- 1:getNumberOfCells(model, t)
+        cells <- 1:getNumberOfCells(model, times[i])
 
-        # if doing single cell ...
+        # if doing single cell, get sample of cells
         if (singleCell) {
     
-            # get a sample of cells
             cells <- sort(sample(cells, sampSize))
 
         }
 
-        # get gene single cell gene expression
-        single_cell_exp <- getExpression(model, cells, time, time_windows, type)
+        # get scaling factor for gene expression
+        scalingFactor <- getScalingFactor(model, cells, times[i],
+            timeWindow, type)
 
-        # if single cell expression is desired
-        if (singleCell) {
-
-            # multiply each cells value by each gene in the pathway
-            gsMatrix[i,] = c(t(single_cell_exp %*% t(pathway)))
-
-        } else {
-
-            # average the gene expression across cells
-            gsMatrix[i,] = pathway * mean(single_cell_exp)
-
-        }
+        # get gene expresssion
+        gsMatrix[i,] <- getExpression(scalingFactor, pathway, singleCell)
 
     }
 
@@ -65,16 +61,17 @@ simulatePathway <- function(model, pathway, type, sampFreq = 1, sampSize = 1, si
 
 }
 
-getExpression <- function(model, cells, time, time_window, type) {
+# get scaling factor related to a cellular function
+getScalingFactor <- function(model, cells, t, timeWindow, type) {
 
-    # switch on type of gene expression
+    # switch on type of cellular function
     switch (type,
 
         # pathway is related to the G to S transition in the cell cycle
-        S =  { return (getGtoSexpression(model, cells, t, time_window)) },
+        S =  { return (getGtoSexpression(model, cells, t, timeWindow)) },
 
         # pathway is related to the G to M transition in the cell cycle
-        M = { return (getGtoMexpression(model, cells, t, time_window)) },
+        M = { return (getGtoMexpression(model, cells, t, timeWindow)) },
 
         # pathway is related to the growth rate of a cell
         GROWTH = { return (getGROWTHexpression(model, cells, t)) },
@@ -83,6 +80,27 @@ getExpression <- function(model, cells, time, time_window, type) {
         PROX = { return (getPROXexpression(model, cells, t) }
 
     )
+
+}
+
+# get gene expression, given a pathway and a scaling factor
+getExpression <- function(scalingFactor, pathway, singleCell) {
+
+    # get range of expression values
+    range <- pathway[["max"]] - pathway[["min"]]
+
+    # multiply pathway by scaling factor
+    if (singleCell) {
+
+        # multiply each cells value by each gene in the pathway
+        return (c(t(scalingFactor %*% t(range) + pathway[["min"]])))
+
+    } else {
+
+        # average the gene expression across cells
+        return (mean(scalingFactor) * range + pathway[["min"]])
+
+    }
 
 }
 

@@ -3,8 +3,10 @@ context("Testing Gene Expression Data Simulation")
 test_that("pathway simulation - pooled", {
 
     ## create pathway
-    pathway <- rexp(5, 1/20)
-    names(pathway) <- letters[1:5]
+    pathway <- list()    
+    pathway[["genes"]] <- letters[1:5]
+    pathway[["max"]] <- 4 + rexp(5,1/4)
+    pathway[["min"]] <- pathway[["max"]] - 4
     
     ## test G to S  
     gs <- simulatePathway(GE_testmod, pathway, 'S', sampFreq = 1,
