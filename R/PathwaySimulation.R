@@ -23,8 +23,8 @@ sampSize, singleCell = FALSE, timeWindow = 1, downReg = FALSE) {
     sampSize <- 1
 
     # find closest, valid, sampling frequency
-    sampFreq <- .recordIncrement(model)
-                    * ceiling(sampFreq / .recordIncrement(model))
+    sampFreq <- .recordIncrement(model) *
+                    ceiling(sampFreq / .recordIncrement(model))
 
     # vector of times to get gene expression for
     times <- seq(0, .runTime(model) - timeWindow, sampFreq)
@@ -77,7 +77,7 @@ getScalingFactor <- function(model, cells, t, timeWindow, type) {
         GROWTH = { return (getGROWTHexpression(model, cells, t)) },
 
         # pathway is related to number of neighboring cells
-        PROX = { return (getPROXexpression(model, cells, t) }
+        PROX = { return (getPROXexpression(model, cells, t)) }
 
     )
 
