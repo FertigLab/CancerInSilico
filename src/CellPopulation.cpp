@@ -77,7 +77,7 @@ std::vector<Cell*> CellPopulation::CreateDefaultCells(unsigned int num) {
 double CellPopulation::InitCellCycle(std::vector<Cell*> cells) {
 
     /* declare variable for later */
-    double unif, total_area;
+    double unif, total_area = 0.0;
 
     /* get iterator */
     std::vector<Cell*>::iterator it = cells.begin();
