@@ -20,7 +20,7 @@ simulatePathway <- function(model, pathway, type, sampFreq = 1,
 sampSize, singleCell = FALSE, timeWindow = 1, downReg = FALSE) {
 
     # if not single cell data, sample size is "1" (only return mean)
-    sampSize <- 1
+    if (!singleCell) { sampSize <- 1 }
 
     # find closest, valid, sampling frequency
     sampFreq <- .recordIncrement(model) *
