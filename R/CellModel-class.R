@@ -15,9 +15,10 @@
 #' @slot mTimeIncrement amount of time elapsed in each model step
 #' @slot mRecordIncrement time increment when cell data is recorded
 #' @slot mCycleLengthDist initial distribution of cell-cycle lengths 
-#' @slot mCycleSyncProb the probability of cells being seed in interphase (not mitosis)
+#' @slot mBoundary boundary that cells cannot move past
+#' @slot mSyncCycles sync cycles
 #' @slot mCellTypes a list of objects, each representing a type of cell
-#' @slot mCellTypeDist
+#' @slot mCellTypeDist distribution on cell types
 #' @export
 
 setClass("CellModel", representation(

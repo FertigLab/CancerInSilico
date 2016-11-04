@@ -34,6 +34,12 @@ An S4 class to represent the output of a cell-based model
 
 \item{\code{mCycleLengthDist}}{initial distribution of cell-cycle lengths}
 
-\item{\code{mCycleSyncProb}}{the probability of cells being seed in interphase (not mitosis)}
+\item{\code{mBoundary}}{boundary that cells cannot move past}
+
+\item{\code{mSyncCycles}}{sync cycles}
+
+\item{\code{mCellTypes}}{a list of objects, each representing a type of cell}
+
+\item{\code{mCellTypeDist}}{distribution on cell types}
 }}
 

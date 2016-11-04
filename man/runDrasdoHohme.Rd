@@ -6,7 +6,7 @@
 \usage{
 runDrasdoHohme(initialNum, runTime, density, cycleLengthDist, inheritGrowth,
   outputIncrement, recordIncrement, randSeed, drugEffect, drugTime, boundary,
-  cycleSyncProb, ...)
+  syncCycles, cellTypes, cellTypeDist, ...)
 }
 \description{
 \code{runDrasdoHohme} Runs the model from the Drasdo, Hohme paper
