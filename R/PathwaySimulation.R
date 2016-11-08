@@ -193,8 +193,9 @@ getPathways <- function(pathways = NULL) {
     # warn user if some of the provided pathways were not valid
     } else if (length(validPwys) < length(pathways)) {
 
-        warning(paste('The following pathways are invalid and will not be simulated: ',
-                        names(pathways)[!(names(pathways) %in% names(validPwys))]))
+        warning(paste('The following pathways are invalid and will not,
+            'be simulated: ', names(pathways)[!(names(pathways) %in%
+                                              names(validPwys))]))
 
     }
 
@@ -202,17 +203,11 @@ getPathways <- function(pathways = NULL) {
 
 }
 
-#' \code{getPathwayExpressionValues} Determine the gene expression values to use for each gene in each pathway.
-#' @param pathway A list of genes associated with pathways.
-#' @param ReferenceDataSet Optional; Reference gene expression dataset to use to calculate the gene expression values for genes in the pathway to use as mean values in the simulation. Defaults values randomly selected from an exponential distribution with parameter \code{lambda}. If specified by the user, \code{row.names} of the ReferenceDataset must match gene names in the \code{pathway} argument. In this case, gene expression values will be set as the values for genes in the pathway of the sample with max median value of raw RNA expression and expression Z-score for pathway genes. 
-#' @param lambda Optional; Parameter of the exponential distribution used to determine the maximum expression value of each simulated gene in the pathway. Defaults to 1/3. Not used if values are determined from a dataset in \code{ReferenceDataSet}.
-#' @return list of numeric objects for the maximum expression value of each gene in each pathway. 
-#' 
-
 # Determine the range of gene expression values to use for each pathway
-getPathwayExpressionRange <- function(ReferenceDataset = NULL, lambda = 1/3, pathways) {
+getPathwayExpressionRange <- function(ReferenceDataset = NULL,
+lambda = 1/3, pathways) {
 
-    # if no reference data set provided, sample values from exponential distribution
+    # if no reference data set provided, sample values
     if (is.null(ReferenceDataset)) {
     
         # iterate through each pathway
@@ -221,32 +216,73 @@ getPathwayExpressionRange <- function(ReferenceDataset = NULL, lambda = 1/3, pat
             # get number of genes in pathway
             pwy_len <- length(pathways[[pwy]][["genes"]])
 
-            # sample min and max (min + difference) values from exponential distribution
+            # sample min and max (min + diff) values from exponential
             pathways[[pwy]][["min"]] <- rexp(pwy_len, 1) + 3
-            pathways[[pwy]][["max"]] <- pathways[[pwy]][["min"]] + rexp(pwy_len, 1.9) + 0.75
+            pathways[[pwy]][["max"]] <- pathways[[pwy]][["min"]] +
+                                        rexp(pwy_len, 1.9) + 0.75
 
         }
 
     } else {
-    
-        D <- sweep(ReferenceDataset,1,apply(ReferenceDataset,1,max),FUN="/")
-    
-    # limit pathways to genes contained in the reference dataset
-    pathways <- lapply(pathways, intersect, row.names(ReferenceDataset))
-    
-    # check that the reference dataset is a valid, log transformed dataset
-    checkReferenceDataset(ReferenceDataset,pathways)
-    
-    if (any(sapply(pathways,length)==0)) {
-      stop(paste('The following pathways do not have any genes in the reference dataset: ',
-                 paste(names(which(sapply(pathways,length)==0)), collapse=",")))
-    }
-    
-    # for each pathway return the gene expression values in the reference dataset for the sample
-    # that has the maximum median gene expression for all pathway genes
-    return(lapply(pathways,function(x){ReferenceDataset[x,names(which.max(apply(D[x,],2,median)))]}))
 
-  }
+        # check that the reference dataset is valid
+        checkReferenceDataset(ReferenceDataset)
+
+        # get the names of genes in the data set
+        gene_names <- row.names(ReferenceDataset)
+
+        # iterate through each pathway
+        for (pwy in names(pathways)) {
+
+            # find pathway genes in data set
+            genes <- intersect(gene_names, pathways[[pwy]][["genes"]])
+
+            # get median expression for pathway genes
+            D_path <- ReferenceDataset[genes]
+            med_exp <- unname(apply(D_path, 2, median))
+
+            # remove genes with NA values
+            genes <- genes[!is.na(unname(med_exp[genes]))]
+
+            # if no genes remain, quit with error
+            if (length(genes) == 0) {
+
+                stop(paste("The following pathway had genes without any",
+                            "values in the reference data set: ",
+                            pwy))
+
+            }
+
+            # get min/max expression values by taking the expression
+            # values from the sample with min/max median expression
+            pathways[[pwy]][["min"]] <- unname(D_path[,which.min(med_exp)])
+            pathways[[pwy]][["max"]] <- unname(D_path[,which.max(med_exp)])
+
+        }
+
+    }
+
+}
+
+# verify reference data set
+checkReferenceDataset <- function(ReferenceDataset) {
+
+    # make sure expression data is log transformed
+    if (max(ReferenceDataset) > 50) {
+
+        warning(paste('ReferenceDataset has a maximum value of',
+                      max(ReferenceDataset),
+                      'check that the data is log transformed'))
+
+    }
+
+    # make sure data is positive  
+    if (min(ReferenceDataset) < 0) {
+    
+        warning('ReferenceDataset should be strictly non-negative.')
+
+    }
+  
 }
 
 
