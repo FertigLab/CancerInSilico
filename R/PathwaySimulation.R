@@ -193,9 +193,10 @@ getPathways <- function(pathways = NULL) {
     # warn user if some of the provided pathways were not valid
     } else if (length(validPwys) < length(pathways)) {
 
-        warning(paste('The following pathways are invalid and will not,
-            'be simulated: ', names(pathways)[!(names(pathways) %in%
-                                              names(validPwys))]))
+        warning(paste('The following pathways are invalid and will not ',
+                'be simulated: ',
+                names(pathways)[!(names(pathways) %in%
+                                names(validPwys))]))
 
     }
 
