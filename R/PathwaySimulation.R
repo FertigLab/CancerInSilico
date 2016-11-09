@@ -14,7 +14,6 @@
 #'      state changed (for 'S' and 'M' pathways)
 #' @param downReg T/F: pathway is down regulated by cell activity (type)
 #' @return Gene expression matrix for given pathway 
-#' @export
 #'
 simulatePathway <- function(model, pathway, type, sampFreq = 1,
 sampSize, singleCell = FALSE, timeWindow = 1, downReg = FALSE) {
@@ -30,9 +29,10 @@ sampSize, singleCell = FALSE, timeWindow = 1, downReg = FALSE) {
     times <- seq(0, .runTime(model) - timeWindow, sampFreq)
 
     # create return matrix
-    gsMatrix <- matrix(0,length(times),length(pathway[["max"]]) * sampSize)
-    colnames(gsMatrix) <- rep(pathway[["genes"]], sampSize)
-    rownames(gsMatrix) <- times
+    gsMatrix <- matrix(nrow = length(pathway[["min"]]),
+                       ncol = length(times) * sampSize)
+    colnames(gsMatrix) <- rep(times, each = sampSize)
+    rownames(gsMatrix) <- pathway[["genes"]]
 
     # loop through each time
     for (i in 1:length(times)) {
@@ -51,8 +51,11 @@ sampSize, singleCell = FALSE, timeWindow = 1, downReg = FALSE) {
         scalingFactor <- getScalingFactor(model, cells, times[i],
             timeWindow, type)
 
+        # rows to replace
+        cols <- (sampSize * (i - 1) + 1):(sampSize * i)
+
         # get gene expresssion
-        gsMatrix[i,] <- getExpression(scalingFactor, pathway, singleCell)
+        gsMatrix[,cols] <- getExpression(scalingFactor, pathway, singleCell)
 
     }
 
@@ -68,16 +71,16 @@ getScalingFactor <- function(model, cells, t, timeWindow, type) {
     switch (type,
 
         # pathway is related to the G to S transition in the cell cycle
-        S =  { return (getGtoSexpression(model, cells, t, timeWindow)) },
+        S =  { return (scalingFactorGtoS(model, cells, t, timeWindow)) },
 
         # pathway is related to the G to M transition in the cell cycle
-        M = { return (getGtoMexpression(model, cells, t, timeWindow)) },
+        M = { return (scalingFactorGtoM(model, cells, t, timeWindow)) },
 
         # pathway is related to the growth rate of a cell
-        GROWTH = { return (getGROWTHexpression(model, cells, t)) },
+        GROWTH = { return (scalingFactorGROWTH(model, cells, t)) },
 
         # pathway is related to number of neighboring cells
-        PROX = { return (getPROXexpression(model, cells, t)) }
+        PROX = { return (scalingFactorPROX(model, cells, t)) }
 
     )
 
@@ -93,7 +96,7 @@ getExpression <- function(scalingFactor, pathway, singleCell) {
     if (singleCell) {
 
         # multiply each cells value by each gene in the pathway
-        return (c(t(scalingFactor %*% t(range) + pathway[["min"]])))
+        return (range %*% t(scalingFactor) + pathway[["min"]])
 
     } else {
 
@@ -105,7 +108,7 @@ getExpression <- function(scalingFactor, pathway, singleCell) {
 }
 
 # calculate gene expression for G to S related pathway
-getGtoSexpression <- function(model, cells, time, time_window) {
+scalingFactorGtoS <- function(model, cells, time, time_window) {
 
     # get the axis lengths of each cell at current time 
     cur_rad <- getRadii(model, time)[cells]
@@ -121,7 +124,7 @@ getGtoSexpression <- function(model, cells, time, time_window) {
 }
 
 # calculate gene expression G to M related pathway 
-getGtoMexpression <- function(model, cells, time, time_window) {
+scalingFactorGtoM <- function(model, cells, time, time_window) {
 
     # get the axis lengths of each cell at current time 
     cur_ax <- getAxisLength(model, time)[cells]
@@ -136,7 +139,7 @@ getGtoMexpression <- function(model, cells, time, time_window) {
 }
 
 # calculate gene expression for a pathway effected by neighboring cells
-getPROXexpression <- function(model, cells, time) {
+scalingFactorPROX <- function(model, cells, time) {
 
     # create empty vector
     exp <- c()
@@ -155,7 +158,7 @@ getPROXexpression <- function(model, cells, time) {
 }
 
 # calculate gene expression for a pathway effected by growth rate
-getGROWTHexpression <- function(model, cells, time) {
+scalingFactorGROWTH <- function(model, cells, time) {
 
     # get the cycle lengths of each cell
     cycle_len <- getCycleLengths(model,time)[cells]
