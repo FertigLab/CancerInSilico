@@ -76,10 +76,9 @@ sampFreq = 1, combineFUN = max, ...) {
     # subsetting only to simulated pathways
     pathways <- getPathways(pathways)
 
-    # get gene expression values to use for each pathway
-    pathwayExpRange <- getPathwayExpressionRange(
-                        ReferenceDataSet=ReferenceDataSet, lambda=lambda,
-                        pathways=pathways)
+    # set gene expression values to use for each pathway
+    setPathwayExpressionRange(ReferenceDataSet=ReferenceDataSet,
+                                lambda=lambda, pathways=pathways)
 
     # run simulation for each pathway
     pathwayOutput <- list()
@@ -160,7 +159,7 @@ combineGeneExpression <- function(geneExpression, combineFUN=max) {
     
     # initalize matrix
     output <- matrix(nrow = length(total_genes), ncol = col_num[1]) 
-    row.names(output) <- genes
+    row.names(output) <- total_genes
     colnames(output) <- colnames(geneExpression[[1]])
  
     # combine matrices, iterate through every gene
@@ -175,7 +174,9 @@ combineGeneExpression <- function(geneExpression, combineFUN=max) {
         # combine expression values
         output[g, ] <- apply(exp, 1, combineFUN)
 
-    }
+    }   
+
+    return (output)
  
 }
 
