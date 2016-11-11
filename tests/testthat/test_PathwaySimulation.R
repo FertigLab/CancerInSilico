@@ -1,4 +1,4 @@
-context("Testing Gene Expression Data Simulation")
+context("Testing Gene Expression Data Simulation for Pathways")
 
 test_that("getScalingFactor", {
 
@@ -109,4 +109,67 @@ test_that("simulatePathway - single cell", {
     expect_equal(gs[,4], 4 / 1.027 + base_exp, tolerance = 1e-3)
 
 })
+
+test_that("getPathways - default value", {
+
+    pwys <- getPathways()
+    expect_equal(pwys, inSilicoPathways)
+
+})
+
+test_that("getPathways - custom pathway", {
+
+    # list of pathways
+    pwys <- list()
+
+    # invalid pathway
+    pwys[["invalid"]] <- inSilicoPathways[["GtoM"]]
+
+    # should quit with error
+    expect_error(getPathways(pwys))
+    
+    # add valid pathway to pwys
+    pwys[["Prox"]] <- inSilicoPathways[["Prox"]]
+
+    # should only throw a warning now
+    expect_warning(getPathways(pwys))
+
+    # rename invalid pathway
+    names(pwys) <- c("GtoM", "Prox")
+
+    # no warnings or errors now
+    expect_error(getPathways(pwys), regexp = NA)
+    expect_warning(getPathways(pwys), regexp = NA)
+
+})
+
+test_that("checkReferenceDataset", {
+
+    # create valid dataset
+    data <- replicate(5, runif(5,10,20)) 
+
+    # no warnings or errors
+    expect_error(checkReferenceDataset(data), regexp = NA)
+    expect_warning(checkReferenceDataset(data), regexp = NA)
+
+    # add negative entry
+    data[1,1] <- -1
+
+    # warning for negative number
+    expect_warning(checkReferenceDataset(data))
+
+    # add large entry
+    data[1,1] <- 51
+
+    # warning for non log transformed data
+    expect_warning(checkReferenceDataset(data))
+
+})
+
+
+
+
+
+
+
 

@@ -2,7 +2,7 @@ context("Model Output Testing")
 
 test_that("no NA values in output", {
   
-	output <- runCancerSim(5,1,0.1)
+	output <- runCancerSim(5,3,0.1, nG = 4)
 	expect_equal(sum(is.na(output@mCells)), 0)
 
 })
@@ -15,7 +15,6 @@ test_that("CellModel getters", {
     expect_equal(getParameters(mod)$runTime, 1)
     expect_equal(getParameters(mod)$initialNum, 5)
     expect_equal(getParameters(mod)$initialDensity, 0.1)
-    show(mod)
 
 })
 
