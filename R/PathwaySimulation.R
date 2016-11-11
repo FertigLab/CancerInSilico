@@ -71,16 +71,16 @@ getScalingFactor <- function(model, cells, t, timeWindow, type) {
     switch (type,
 
         # pathway is related to the G to S transition in the cell cycle
-        S =  { return (scalingFactorGtoS(model, cells, t, timeWindow)) },
+        GtoS =  { return (scalingFactorGtoS(model, cells, t, timeWindow)) },
 
         # pathway is related to the G to M transition in the cell cycle
-        M = { return (scalingFactorGtoM(model, cells, t, timeWindow)) },
+        GtoM = { return (scalingFactorGtoM(model, cells, t, timeWindow)) },
 
         # pathway is related to the growth rate of a cell
-        GROWTH = { return (scalingFactorGROWTH(model, cells, t)) },
+        Growth = { return (scalingFactorGROWTH(model, cells, t)) },
 
         # pathway is related to number of neighboring cells
-        PROX = { return (scalingFactorPROX(model, cells, t)) }
+        Prox = { return (scalingFactorPROX(model, cells, t)) }
 
     )
 
@@ -208,11 +208,11 @@ getPathways <- function(pathways = NULL) {
 }
 
 # Determine the range of gene expression values to use for each pathway
-getPathwayExpressionRange <- function(ReferenceDataset = NULL,
+setPathwayExpressionRange <- function(ReferenceDataSet = NULL,
 lambda = 1/3, pathways) {
 
     # if no reference data set provided, sample values
-    if (is.null(ReferenceDataset)) {
+    if (is.null(ReferenceDataSet)) {
     
         # iterate through each pathway
         for (pwy in names(pathways)) {
@@ -229,36 +229,22 @@ lambda = 1/3, pathways) {
 
     } else {
 
-        # check that the reference dataset is valid
-        checkReferenceDataset(ReferenceDataset)
+        # get the names of genes in the pathways
+        gene_names <- unique(unname(unlist(pathways)))
 
-        # get the names of genes in the data set
-        gene_names <- row.names(ReferenceDataset)
+        # check that the reference dataset is valid
+        checkReferenceDataSet(ReferenceDataSet, gene_names)
 
         # iterate through each pathway
         for (pwy in names(pathways)) {
 
-            # find pathway genes in data set
-            genes <- intersect(gene_names, pathways[[pwy]][["genes"]])
-
             # get median expression for pathway genes
-            D_path <- ReferenceDataset[genes]
+            D_path <- ReferenceDataSet[pathways[[pwy]][["genes"]]]
             med_exp <- unname(apply(D_path, 2, median))
-
-            # remove genes with NA values
-            genes <- genes[!is.na(unname(med_exp[genes]))]
-
-            # if no genes remain, quit with error
-            if (length(genes) == 0) {
-
-                stop(paste("The following pathway had genes without any",
-                            "values in the reference data set: ",
-                            pwy))
-
-            }
 
             # get min/max expression values by taking the expression
             # values from the sample with min/max median expression
+            # TODO: does not ensure max > min
             pathways[[pwy]][["min"]] <- unname(D_path[,which.min(med_exp)])
             pathways[[pwy]][["max"]] <- unname(D_path[,which.max(med_exp)])
 
@@ -266,24 +252,41 @@ lambda = 1/3, pathways) {
 
     }
 
+    return (pathways)
+
 }
 
 # verify reference data set
-checkReferenceDataset <- function(ReferenceDataset) {
+checkReferenceDataSet <- function(ReferenceDataSet, genes) {
 
-    # make sure expression data is log transformed
-    if (max(ReferenceDataset) > 50) {
+    # data set contains all neccesary genes
+    if (length(setdiff(genes, row.names(ReferenceDataSet))) > 0) {
 
-        warning(paste('ReferenceDataset has a maximum value of',
-                      max(ReferenceDataset),
+        stop('ReferenceDataSet does not contain all neccesary genes')
+
+    }
+
+    # no NA values for pathway genes (only need to check median)
+    medians <- unname(apply(ReferenceDataSet[genes,], 2, median))
+    if (sum(is.na(medians)) > 0) {
+
+        stop('ReferenceDataSet has NA values for pathway genes')
+
+    }
+    
+    # expression data is log transformed
+    if (max(ReferenceDataSet[!is.na(ReferenceDataSet)]) > 50) {
+
+        warning(paste('ReferenceDataSet has a maximum value of',
+                      max(ReferenceDataSet),
                       'check that the data is log transformed'))
 
     }
 
-    # make sure data is positive  
-    if (min(ReferenceDataset) < 0) {
+    # data is positive  
+    if (min(ReferenceDataSet[!is.na(ReferenceDataSet)]) < 0) {
     
-        warning('ReferenceDataset should be strictly non-negative.')
+        stop('ReferenceDataset should be strictly non-negative.')
 
     }
   
