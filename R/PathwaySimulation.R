@@ -29,7 +29,7 @@ sampSize, singleCell = FALSE, timeWindow = 1, downReg = FALSE) {
     times <- seq(0, .runTime(model) - timeWindow, sampFreq)
 
     # create return matrix
-    gsMatrix <- matrix(nrow = length(pathway[["min"]]),
+    gsMatrix <- matrix(nrow = length(pathway[["genes"]]),
                        ncol = length(times) * sampSize)
     colnames(gsMatrix) <- rep(times, each = sampSize)
     rownames(gsMatrix) <- pathway[["genes"]]

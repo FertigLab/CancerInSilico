@@ -1,6 +1,24 @@
 context("Testing functions in GeneExpressionSimulation.R")
 
-test_that("combineGeneExpression", {
+test_that("combineGeneExpression - single matrix", {
+    
+    # create gene expression matrix
+    gs <- replicate(25, runif(5,2,8)) 
+    row.names(gs) <- letters[1:5]
+
+    # create list
+    gs_list <- list()
+    gs_list[[1]] <- gs
+
+    # 'combine' single matrix
+    expect_error(total_gs <- combineGeneExpression(gs_list), regexp = NA)
+
+    # check its still equal 
+    expect_equal(gs, total_gs)
+
+})
+
+test_that("combineGeneExpression - multiple matrices", {
 
     # create several gene expression matrices
     gs1 <- replicate(25, runif(5,2,8)) 
@@ -41,11 +59,16 @@ test_that("combineGeneExpression", {
 
 })
 
-test_that("simulateExpression", {
+test_that("simulateMeanExpression", {
 
-    exp <- simulateExpression(GE_test_model)
-    
+    # get default expression
+    expect_error(exp <- simulateMeanExpression(GE_test_model), regexp = NA)
+  
+})
 
+test_that("inSilicoGeneExpression", {
 
+    # simulate default gene expression
+    expect_error(exp <- inSilicoGeneExpression(GE_test_model), regexp = NA)
 
 })

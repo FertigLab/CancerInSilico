@@ -18,16 +18,19 @@ lambda = 1/3, sampFreq = 1, perError = 0.1, combineFUN = max,
 attrsep = " ", microArray = FALSE, ...) {
 
     # simulate mean expression values for all pathways
-    simMeanExprs <- simulateExpression(model=model,
+    simMeanExprs <- simulateMeanExpression(model=model,
                         singleCell = singleCell, pathways=pathways, 
                         nCells = nCells, lambda = lambda,
                         ReferenceDataSet = ReferenceDataSet,
                         sampFreq = sampFreq, perError = perError,
                         combineFUN = combineFUN)
+    if (!microArray) {
   
-    # convert to counts from estimated log-transformed data
-    simMeanExprs <- round(2 ^ simMeanExprs - 1)
+        # convert to counts from estimated log-transformed data
+        simMeanExprs <- round(2 ^ simMeanExprs - 1)
     
+    }
+
     if (is.null(fasta)) {
 
         if (microArray) {
@@ -68,7 +71,7 @@ attrsep = " ", microArray = FALSE, ...) {
 
 }
 
-simulateExpression <- function (model, singleCell = FALSE, nCells = 96,
+simulateMeanExpression <- function (model, singleCell = FALSE, nCells = 96,
 pathways = NULL, ReferenceDataSet = NULL, lambda = 1/3, perError = 0.1,
 sampFreq = 1, combineFUN = max, ...) {
 
@@ -77,15 +80,19 @@ sampFreq = 1, combineFUN = max, ...) {
     pathways <- getPathways(pathways)
 
     # set gene expression values to use for each pathway
-    setPathwayExpressionRange(ReferenceDataSet=ReferenceDataSet,
-                                lambda=lambda, pathways=pathways)
+    pathways <- setPathwayExpressionRange(
+                    ReferenceDataSet = ReferenceDataSet, lambda = lambda,
+                    pathways = pathways)
 
     # run simulation for each pathway
     pathwayOutput <- list()
     for (path in names(pathways)) {
 
-        pathwayOutput[[path]] <- simulatePathway(model, pathways[[path]],
-                                    path, sampFreq, nCells, singleCell)
+        pathwayOutput[[path]] <- simulatePathway(model = model,
+                                    pathway = pathways[[path]],
+                                    type = path, sampFreq = sampFreq,
+                                    sampSize = nCells,
+                                    singleCell = singleCell)
 
     }
 
@@ -154,7 +161,7 @@ combineGeneExpression <- function(geneExpression, combineFUN=max) {
     }
 
     # find number of unique genes
-    gene_list <- sapply(geneExpression, row.names)
+    gene_list <- lapply(geneExpression, row.names)
     total_genes <- unique(unlist(gene_list))
     
     # initalize matrix
@@ -166,7 +173,7 @@ combineGeneExpression <- function(geneExpression, combineFUN=max) {
     for (g in total_genes) {
 
         # find which pathways have this gene
-        pwys <- sapply(sapply(gene_list, is.element, g), sum) > 0
+        pwys <- sapply(lapply(gene_list, is.element, g), sum) > 0
     
         # get expression values from each pathway
         exp <- sapply(geneExpression[pwys], function(x) {x[g,]})
