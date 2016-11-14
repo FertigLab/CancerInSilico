@@ -212,6 +212,16 @@ test_that("getPathwayExpressionRange", {
     expect_error(pwys <- setPathwayExpressionRange(pathways = pwys,
                             ReferenceDataSet = data), regexp = NA)
 
+    # check that min < max for each gene
+    expect_equal(sum(pwys[["A"]][["min"]] > pwys[["A"]][["max"]]), 0)
+    expect_equal(sum(pwys[["B"]][["min"]] > pwys[["B"]][["max"]]), 0)
+
+    # check length of min/max
+    expect_equal(length(pwys[["A"]][["min"]]), 10)
+    expect_equal(length(pwys[["A"]][["max"]]), 10)
+    expect_equal(length(pwys[["B"]][["min"]]), 11)
+    expect_equal(length(pwys[["B"]][["max"]]), 11)
+
 })
 
 

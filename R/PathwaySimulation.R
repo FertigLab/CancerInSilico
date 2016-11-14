@@ -238,15 +238,12 @@ lambda = 1/3, pathways) {
         # iterate through each pathway
         for (pwy in names(pathways)) {
 
-            # get median expression for pathway genes
-            D_path <- ReferenceDataSet[pathways[[pwy]][["genes"]]]
-            med_exp <- unname(apply(D_path, 2, median))
+            # get min/max genes in pathway for each sample
+            D_path <- ReferenceDataSet[pathways[[pwy]][["genes"]],]
 
-            # get min/max expression values by taking the expression
-            # values from the sample with min/max median expression
-            # TODO: does not ensure max > min
-            pathways[[pwy]][["min"]] <- unname(D_path[,which.min(med_exp)])
-            pathways[[pwy]][["max"]] <- unname(D_path[,which.max(med_exp)])
+            # get min/max expression values           
+            pathways[[pwy]][["min"]] <- unname(apply(D_path, 1, min))
+            pathways[[pwy]][["max"]] <- unname(apply(D_path, 1, max))
 
         }
 
