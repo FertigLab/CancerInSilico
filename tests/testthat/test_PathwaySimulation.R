@@ -3,27 +3,27 @@ context("Testing functions in PathwaySimulation.R")
 test_that("getScalingFactor", {
 
     # test G to S scaling factor
-    expect_equal(getScalingFactor(GE_testmod, 1:2, 0, 1, 'GtoS'),
+    expect_equal(getScalingFactor(PS_test_model, 1:2, 0, 1, 'GtoS'),
                 c(TRUE, FALSE))
-    expect_equal(getScalingFactor(GE_testmod, 1:2, 1, 1, 'GtoS'),
+    expect_equal(getScalingFactor(PS_test_model, 1:2, 1, 1, 'GtoS'),
                 c(FALSE, FALSE))
     
     # test G to M scaling factor
-    expect_equal(getScalingFactor(GE_testmod, 1:2, 0, 1, 'GtoM'),
+    expect_equal(getScalingFactor(PS_test_model, 1:2, 0, 1, 'GtoM'),
                 c(FALSE, FALSE))
-    expect_equal(getScalingFactor(GE_testmod, 1:2, 1, 1, 'GtoM'),
+    expect_equal(getScalingFactor(PS_test_model, 1:2, 1, 1, 'GtoM'),
                 c(TRUE, FALSE))
 
     # test PROX scaling factor
-    expect_equal(getScalingFactor(GE_testmod, 1:2, 0, 1, 'Prox'),
+    expect_equal(getScalingFactor(PS_test_model, 1:2, 0, 1, 'Prox'),
                 c(1 / 6, 1 / 6))
-    expect_equal(getScalingFactor(GE_testmod, 1:2, 1, 1, 'Prox'),
+    expect_equal(getScalingFactor(PS_test_model, 1:2, 1, 1, 'Prox'),
                 c(1 / 6, 1 / 6))
 
     # test GROWTH scaling factor
-    expect_equal(getScalingFactor(GE_testmod, 1:2, 0, 1, 'Growth'),
+    expect_equal(getScalingFactor(PS_test_model, 1:2, 0, 1, 'Growth'),
                 c(0.966, 0.974), tolerance = 1e-3)
-    expect_equal(getScalingFactor(GE_testmod, 1:2, 1, 1, 'Growth'),
+    expect_equal(getScalingFactor(PS_test_model, 1:2, 1, 1, 'Growth'),
                 c(0.966, 0.974), tolerance = 1e-3)
 
 })
@@ -40,26 +40,26 @@ test_that("simulatePathway - pooled", {
     base_exp <- pathway[["min"]]
     
     ## test G to S  
-    gs <- unname(simulatePathway(GE_testmod, pathway, 'GtoS', sampFreq = 1,
-                          sampSize = 1, singleCell = FALSE))
+    gs <- unname(simulatePathway(PS_test_model, pathway, 'GtoS',
+                    sampFreq = 1, sampSize = 1, singleCell = FALSE))
     expect_equal(gs[,1], 4 * 0.5 + base_exp)
     expect_equal(gs[,2], 4 * 0.0 + base_exp)
 
     ## test G to M
-    gs <- unname(simulatePathway(GE_testmod, pathway, 'GtoM', sampFreq = 1,
-                          sampSize = 1, singleCell = FALSE))
+    gs <- unname(simulatePathway(PS_test_model, pathway, 'GtoM',
+                    sampFreq = 1, sampSize = 1, singleCell = FALSE))
     expect_equal(gs[,1], 4 * 0.0 + base_exp)
     expect_equal(gs[,2], 4 * 0.5 + base_exp)
 
     ## test PROX
-    gs <- unname(simulatePathway(GE_testmod, pathway, 'Prox', sampFreq = 1,
-                          sampSize = 1, singleCell = FALSE))
+    gs <- unname(simulatePathway(PS_test_model, pathway, 'Prox',
+                    sampFreq = 1, sampSize = 1, singleCell = FALSE))
     expect_equal(gs[,1], 4 / 6 + base_exp)
     expect_equal(gs[,2], 4 / 6 + base_exp)
 
     ## test GROWTH
-    gs <- unname(simulatePathway(GE_testmod, pathway, 'Growth', sampFreq=1,
-                          sampSize = 1, singleCell = FALSE))
+    gs <- unname(simulatePathway(PS_test_model, pathway, 'Growth',
+                    sampFreq=1, sampSize = 1, singleCell = FALSE))
     expect_equal(gs[,1], 4 / 1.03 + base_exp, tolerance=1e-3)
     expect_equal(gs[,2], 4 / 1.03 + base_exp, tolerance=1e-3)
 
@@ -77,32 +77,32 @@ test_that("simulatePathway - single cell", {
     base_exp <- pathway[["min"]]
 
     ## test G to S  
-    gs <- unname(simulatePathway(GE_testmod, pathway, 'GtoS', sampFreq = 1,
-                          sampSize = 2, singleCell = TRUE))
+    gs <- unname(simulatePathway(PS_test_model, pathway, 'GtoS',
+                    sampFreq = 1, sampSize = 2, singleCell = TRUE))
     expect_equal(gs[,1], 4 * 1 + base_exp)
     expect_equal(gs[,2], 4 * 0 + base_exp)
     expect_equal(gs[,3], 4 * 0 + base_exp)
     expect_equal(gs[,4], 4 * 0 + base_exp)
 
     ## test G to M
-    gs <- unname(simulatePathway(GE_testmod, pathway, 'GtoM', sampFreq = 1,
-                          sampSize = 2, singleCell = TRUE))
+    gs <- unname(simulatePathway(PS_test_model, pathway, 'GtoM',
+                    sampFreq = 1, sampSize = 2, singleCell = TRUE))
     expect_equal(gs[,1], 4 * 0 + base_exp)
     expect_equal(gs[,2], 4 * 0 + base_exp)
     expect_equal(gs[,3], 4 * 1 + base_exp)
     expect_equal(gs[,4], 4 * 0 + base_exp)
 
     ## test PROX
-    gs <- unname(simulatePathway(GE_testmod, pathway, 'Prox', sampFreq = 1,
-                          sampSize = 2, singleCell = TRUE))
+    gs <- unname(simulatePathway(PS_test_model, pathway, 'Prox',
+                    sampFreq = 1, sampSize = 2, singleCell = TRUE))
     expect_equal(gs[,1], 4 / 6 + base_exp)
     expect_equal(gs[,2], 4 / 6 + base_exp)
     expect_equal(gs[,3], 4 / 6 + base_exp)
     expect_equal(gs[,4], 4 / 6 + base_exp)
 
     ## test GROWTH
-    gs <- unname(simulatePathway(GE_testmod, pathway, 'Growth', sampFreq=1,
-                          sampSize = 2, singleCell = TRUE))
+    gs <- unname(simulatePathway(PS_test_model, pathway, 'Growth',
+                    sampFreq=1, sampSize = 2, singleCell = TRUE))
     expect_equal(gs[,1], 4 / 1.035 + base_exp, tolerance = 1e-3)
     expect_equal(gs[,2], 4 / 1.027 + base_exp, tolerance = 1e-3)
     expect_equal(gs[,3], 4 / 1.035 + base_exp, tolerance = 1e-3)

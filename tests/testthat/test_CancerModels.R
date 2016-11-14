@@ -9,12 +9,10 @@ test_that("no NA values in output", {
 
 test_that("CellModel getters", {
 
-    mod <- runCancerSim(5,1,0.1, cycleLengthDist = 12)
-    
-    expect_equal(getCycleLengths(mod, 1)[1], 12)
-    expect_equal(getParameters(mod)$runTime, 1)
-    expect_equal(getParameters(mod)$initialNum, 5)
-    expect_equal(getParameters(mod)$initialDensity, 0.1)
+    expect_equal(getCycleLengths(CM_test_model, 1)[1], 12)
+    expect_equal(getParameters(CM_test_model)$runTime, 10)
+    expect_equal(getParameters(CM_test_model)$initialNum, 10)
+    expect_equal(getParameters(CM_test_model)$initialDensity, 0.1)
 
 })
 

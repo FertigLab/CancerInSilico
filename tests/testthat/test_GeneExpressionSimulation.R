@@ -43,6 +43,7 @@ test_that("combineGeneExpression", {
 
 test_that("simulateExpression", {
 
+    exp <- simulateExpression(GE_test_model)
     
 
 
