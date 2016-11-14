@@ -50,11 +50,11 @@ cmdtest.R
 *.csv
 
 **.Rcheck/
-**.RData
+
 
 *.log
 *.Rhistory
 *.html
 
-*.DS_Store
+**.DS_Store
 *.Rapp.history
