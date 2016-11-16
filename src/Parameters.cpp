@@ -191,23 +191,22 @@ void Parameters::StoreCellTypeDistribution(Rcpp::NumericVector cellTypeDist) {
 
 int Parameters::GetRandomCellType() {
 
-    //Rcpp::IntegerVector cellTypeSample;
+    double prob = R::runif(0,1);
+    int i = 0;
+    double total = 0;
 
-    int cellTypeSample[3];
-    double prob[3];
+    while (prob > total) {
 
-    prob[0] = 0.25;
-    prob[1] = 0.25;
-    prob[2] = 0.25;
-
-    R::rmultinom(1, prob, 1 , cellTypeSample);
-
-    for (unsigned int i = 0; i < 3; ++i) {
-    
-        //if (cellTypeSample[i]) { // get the index
-            return 1;   
-        //}
+        total += m_cell_type_dist[i++];
 
     }
 
+    return i - 1;
+
 }
+
+
+
+
+
+
