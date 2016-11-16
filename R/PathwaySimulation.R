@@ -15,35 +15,35 @@
 #' @param downReg T/F: pathway is down regulated by cell activity (type)
 #' @return Gene expression matrix for given pathway 
 #'
-simulatePathway <- function(model, pathway, type, sampFreq = 1,
-sampSize, singleCell = FALSE, timeWindow = 1, downReg = FALSE) {
+simulatePathway <- function(args) {
 
     # if not single cell data, sample size is "1" (only return mean)
-    if (!singleCell) { sampSize <- 1 }
+    if (!args[['singleCell']]) { args[['nCells']] <- 1 }
 
     # find closest, valid, sampling frequency
-    sampFreq <- .recordIncrement(model) *
-                    ceiling(sampFreq / .recordIncrement(model))
+    args[['sampFreq']] <- .recordIncrement(args[['model']]) *
+            ceiling(args[['sampFreq']] / .recordIncrement(args[['model']]))
 
     # vector of times to get gene expression for
-    times <- seq(0, .runTime(model) - timeWindow, sampFreq)
+    times <- seq(0, .runTime(args[['model']]) - 
+                    args[['timeWindow']], args[['sampFreq']])
 
     # create return matrix
     gsMatrix <- matrix(nrow = length(pathway[["genes"]]),
-                       ncol = length(times) * sampSize)
-    colnames(gsMatrix) <- rep(times, each = sampSize)
+                       ncol = length(times) * args[['sampSize']])
+    colnames(gsMatrix) <- rep(times, each = args[['sampSize']])
     rownames(gsMatrix) <- pathway[["genes"]]
 
     # loop through each time
     for (i in 1:length(times)) {
 
         # get a vector of all cells
-        cells <- 1:getNumberOfCells(model, times[i])
+        cells <- 1:getNumberOfCells(args[['model']], times[i])
 
         # if doing single cell, get sample of cells
-        if (singleCell) {
+        if (args[['singleCell']]) {
     
-            cells <- sort(sample(cells, sampSize))
+            cells <- sort(sample(cells, args[['sampSize']]))
 
         }
 
