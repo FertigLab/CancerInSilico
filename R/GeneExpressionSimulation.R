@@ -122,74 +122,80 @@ sampFreq = 1, combineFUN = max) {
 
     # determine which pathways to simulate from the input values,
     # subsetting only to simulated pathways
-    args[['pathways']] <- getPathways(args)
+    pathways <- getPathways(pathways)
 
     # set gene expression values to use for each pathway
-    args[['pathways']] <- setPathwayExpressionRange(args)
+    pathways <- setPathwayExpressionRange(
+                    ReferenceDataSet = ReferenceDataSet, lambda = lambda,
+                    pathways = pathways)
 
     # run simulation for each pathway
     pathwayOutput <- list()
-    for (path in names(args[['pathways']])) {
+    for (path in names(pathways)) {
 
-        pathwayOutput[[path]] <- simulatePathway(args)
+        pathwayOutput[[path]] <- simulatePathway(model = model,
+                                    pathway = pathways[[path]],
+                                    type = path, sampFreq = sampFreq,
+                                    sampSize = nCells,
+                                    singleCell = singleCell)
 
     }
 
     # return combined expression
-    return (combineGeneExpression(pathwayOutput, args))
+    return (combineGeneExpression(pathwayOutput, combineFUN))
 
 }
 
 NBsim <- function(mu, ReferenceDataset = NULL, invChisq = TRUE) {
 
-    if (is.null(args[['ReferenceDataset']])) {
+    if (is.null(ReferenceDataset)) {
 
-        ngenes <- length(mu)
+        ngenes<-length(mu)
         mu.Reference <- pmax(mu,1)
 
     } else {
     
-        # check that the reference dataset is valid
-        checkReferenceDataset(list(row.names(mu)), args)
+        # check that the reference dataset is a valid log transformed dataset
+        # with values for every gene in mu
+        checkReferenceDataset(ReferenceDataset, list(row.names(mu)))
 
         #number of genes  
-        ngenes <- dim(args[['ReferenceDataset']])[1]
+        ngenes<-dim(ReferenceDataset)[1]
 
         # assume that the reference dataset is log transformed so 
         # convert to counts
-        mu.Reference <- pmax(round(rowMeans(
-                                2 ^ args[['ReferenceDataset']] - 1)), 1)
+        mu.Reference<-pmax(round(rowMeans(2^ReferenceDataset - 1)),1)
 
     }
 
     # Biological variation
-    BCV0 <- 0.2 + 1 / sqrt(mu.Reference)
+    BCV0 <- 0.2+1/sqrt(mu.Reference)
   
     if (invChisq) {
     
         df.BCV <- 40
-        BCV <- BCV0 * sqrt(df.BCV / rchisq(ngenes, df = df.BCV))
+        BCV <- BCV0*sqrt(df.BCV/rchisq(ngenes,df=df.BCV))
 
     } else {
 
-        BCV <- BCV0 * exp(rnorm(ngenes, mean = 0, sd = 0.25) / 2)
+        BCV <- BCV0*exp(rnorm(ngenes,mean=0,sd=0.25)/2 )
 
     }
 
 
     #if(NCOL(BCV)==1) BCV <- matrix(BCV,ngenes)
-    shape <- 1 / BCV ^ 2
-    scale <- mu / shape
-    mu <- matrix(rgamma(ngenes, shape = shape, scale = scale), ngenes)
+    shape <- 1/BCV^2
+    scale <- mu/shape
+    mu <- matrix(rgamma(ngenes,shape=shape,scale=scale),ngenes)
 
     # Technical variation
-    counts <- matrix(rpois(ngenes, lambda = mu), ngenes)
+    counts <- matrix(rpois(ngenes,lambda=mu),ngenes)
     return(counts)
 
 }
 
 # combine gene expression matrices according to some function
-combineGeneExpression <- function(geneExpression, args) {
+combineGeneExpression <- function(geneExpression, combineFUN=max) {
 
     # verify same number of columns
     col_num <- sapply(geneExpression, ncol)
@@ -218,7 +224,7 @@ combineGeneExpression <- function(geneExpression, args) {
         exp <- sapply(geneExpression[pwys], function(x) {x[g,]})
 
         # combine expression values
-        output[g, ] <- apply(exp, 1, args[['combineFUN']])
+        output[g, ] <- apply(exp, 1, combineFUN)
 
     }   
 
@@ -228,10 +234,10 @@ combineGeneExpression <- function(geneExpression, args) {
 
 simulatePolyester <- function(simMeanExprs=simMeanExprs,fasta=fasta, attrsep = attrsep,
                               idfield='gene_symbol', outdir=".", pathways=NULL) {
-
-    # process fasta to create mean values for transcripts
-    transcripts = readDNAStringSet(fasta) # read in the fasta
-    tmpsplit=strsplit(names(transcripts),split=attrsep) # split the fasta file into elements
+  
+  # process fasta to create mean values for transcripts
+  transcripts = readDNAStringSet(fasta) # read in the fasta
+  tmpsplit=strsplit(names(transcripts),split=attrsep) # split the fasta file into elements
   
   tmpl=unlist(lapply(tmpsplit, function(x) x[grep(idfield,x)])) #grab the gene name element
   

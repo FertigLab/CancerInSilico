@@ -10,13 +10,8 @@ test_that("combineGeneExpression - single matrix", {
     gs_list <- list()
     gs_list[[1]] <- gs
 
-    # set combine function
-    args <- list()
-    args[['combineFUN']] <- max
-
     # 'combine' single matrix
-    expect_error(total_gs <- combineGeneExpression(gs_list, args),
-                                            regexp = NA)
+    expect_error(total_gs <- combineGeneExpression(gs_list), regexp = NA)
 
     # check its still equal 
     expect_equal(gs, total_gs)
@@ -41,13 +36,9 @@ test_that("combineGeneExpression - multiple matrices", {
     gs_list[[2]] <- gs2
     gs_list[[3]] <- gs3
 
-    # set combine function
-    args <- list()
-    args[['combineFUN']] <- max
-
     # combine matrices    
-    expect_error(total_gs <- combineGeneExpression(gs_list, args),
-                                            regexp = NA)
+    expect_error(combineGeneExpression(gs_list), regexp = NA)
+    total_gs <- combineGeneExpression(gs_list)
     
     # check properties of final matrix
     expect_equal(nrow(total_gs), 18)
@@ -71,9 +62,7 @@ test_that("combineGeneExpression - multiple matrices", {
 test_that("simulateMeanExpression", {
 
     # get default expression
-    args <- list()
-    args[['model']] <- GE_test_model
-    expect_error(exp <- simulateMeanExpression(args), regexp = NA)
+    expect_error(exp <- simulateMeanExpression(GE_test_model), regexp = NA)
   
 })
 
