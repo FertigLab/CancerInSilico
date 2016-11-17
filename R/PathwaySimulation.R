@@ -48,14 +48,14 @@ simulatePathway <- function(args) {
         }
 
         # get scaling factor for gene expression
-        scalingFactor <- getScalingFactor(model, cells, times[i],
+        scalingFactor <- getScalingFactor(args[['model']], cells, times[i],
             timeWindow, type)
 
         # rows to replace
-        cols <- (sampSize * (i - 1) + 1):(sampSize * i)
+        cols <- (args[['sampSize']] * (i - 1) + 1):(args[['sampSize']] * i)
 
         # get gene expresssion
-        gsMatrix[,cols] <- getExpression(scalingFactor, pathway, singleCell)
+        gsMatrix[,cols] <- getExpression(scalingFactor, args)
 
     }
 
@@ -87,21 +87,21 @@ getScalingFactor <- function(model, cells, t, timeWindow, type) {
 }
 
 # get gene expression, given a pathway and a scaling factor
-getExpression <- function(scalingFactor, pathway, singleCell) {
+getExpression <- function(scalingFactor, args) {
 
     # get range of expression values
-    range <- pathway[["max"]] - pathway[["min"]]
+    range <- args[['pathway']][["max"]] - args[['pathway']][["min"]]
 
     # multiply pathway by scaling factor
-    if (singleCell) {
+    if (args[['singleCell']]) {
 
         # multiply each cells value by each gene in the pathway
-        return (range %*% t(scalingFactor) + pathway[["min"]])
+        return (range %*% t(scalingFactor) + args[['pathway']][["min"]])
 
     } else {
 
         # average the gene expression across cells
-        return (mean(scalingFactor) * range + pathway[["min"]])
+        return (mean(scalingFactor) * range + args[['pathway']][["min"]])
 
     }
 
@@ -169,13 +169,16 @@ scalingFactorGROWTH <- function(model, cells, time) {
 }
 
 # Determine the pathways from which to simulate gene expression data
-getPathways <- function(pathways = NULL) {
+getPathways <- function(args) {
 
     # possible pathway types
     validTypes <- c('GtoM', 'GtoS', 'Prox', 'Growth')
   
+    # get pathway names
+    pwy_names <- names(args[['pathways']])
+
     # if no user pathways provided
-    if (is.null(pathways)) {
+    if (is.null(args[['pathways']])) {
 
         # use default pathways from the package 
         validPwys <- inSilicoPathways
@@ -183,7 +186,7 @@ getPathways <- function(pathways = NULL) {
     } else {
 
         # keep only valid pathways
-        validPwys <- pathways[names(pathways) %in% validTypes]
+        validPwys <- args[['pathways']][pwy_names %in% validTypes]
     
     }
 
@@ -194,12 +197,11 @@ getPathways <- function(pathways = NULL) {
                  paste(validTypes, collapse=', ')))
 
     # warn user if some of the provided pathways were not valid
-    } else if (length(validPwys) < length(pathways)) {
+    } else if (length(validPwys) < length(pwy_names)) {
 
         warning(paste('The following pathways are invalid and will not ',
-                'be simulated: ',
-                names(pathways)[!(names(pathways) %in%
-                                names(validPwys))]))
+            'be simulated: ', pwy_names[!(pwy_names %in% names(validPwys))]
+        ))
 
     }
 
@@ -208,48 +210,51 @@ getPathways <- function(pathways = NULL) {
 }
 
 # Determine the range of gene expression values to use for each pathway
-setPathwayExpressionRange <- function(ReferenceDataSet = NULL,
-lambda = 1/3, pathways) {
+setPathwayExpressionRange <- function(args) {
 
     # if no reference data set provided, sample values
-    if (is.null(ReferenceDataSet)) {
+    if (is.null(args[['ReferenceDataSet']])) {
     
         # iterate through each pathway
-        for (pwy in names(pathways)) {
+        for (pwy in names(args[['pathways']])) {
 
             # get number of genes in pathway
-            pwy_len <- length(pathways[[pwy]][["genes"]])
+            pwy_len <- length(args[['pathways']][[pwy]][["genes"]])
 
             # sample min and max (min + diff) values from exponential
-            pathways[[pwy]][["min"]] <- rexp(pwy_len, 1) + 3
-            pathways[[pwy]][["max"]] <- pathways[[pwy]][["min"]] +
-                                        rexp(pwy_len, 1.9) + 0.75
+            args[['pathways']][[pwy]][["min"]] <- rexp(pwy_len, 1) + 3
+            args[['pathways']][[pwy]][["max"]] <- 
+                    args[['pathways']][[pwy]][["min"]] +
+                        rexp(pwy_len, 1.9) + 0.75
 
         }
 
     } else {
 
         # get the names of genes in the pathways
-        gene_names <- unique(unname(unlist(pathways)))
+        gene_names <- unique(unname(unlist(args[['pathways']])))
 
         # check that the reference dataset is valid
-        checkReferenceDataSet(ReferenceDataSet, gene_names)
+        checkReferenceDataSet(args[['ReferenceDataSet']], gene_names)
 
         # iterate through each pathway
-        for (pwy in names(pathways)) {
+        for (pwy in names(args[['pathways']])) {
 
             # get min/max genes in pathway for each sample
-            D_path <- ReferenceDataSet[pathways[[pwy]][["genes"]],]
+            D_path <- args[['ReferenceDataSet']][
+                            args[['pathways']][[pwy]][["genes"]], ]
 
             # get min/max expression values           
-            pathways[[pwy]][["min"]] <- unname(apply(D_path, 1, min))
-            pathways[[pwy]][["max"]] <- unname(apply(D_path, 1, max))
+            args[['pathways']][[pwy]][["min"]] <-
+                                    unname(apply(D_path, 1, min))
+            args[['pathways']][[pwy]][["max"]] <-
+                                    unname(apply(D_path, 1, max))
 
         }
 
     }
 
-    return (pathways)
+    return (args[['pathways']])
 
 }
 

@@ -41,7 +41,7 @@ attrsep = " ", microArray = FALSE, timeWindow = 1) {
 
 }
 
-simulateError(meanExp, args) {
+simulateError <- function(meanExp, args) {
 
     if (args[['microArray']]) {
   
@@ -90,7 +90,7 @@ simulateMeanExpression <- function(args) {
 
     # run simulation for each pathway
     pathwayOutput <- list()
-    for (path in names(pathways)) {
+    for (path in names(args[['pathways']])) {
 
         pathwayOutput[[path]] <- simulatePathway(args)
 
