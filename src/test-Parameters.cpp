@@ -82,30 +82,17 @@ CATCH_TEST_CASE("Test Parameters with Cell Type") {
         Rcpp::Function setSeed = baseEnv["set.seed"];
         setSeed(20);
 
-        /* std::vector<int> sellected_cell_types(3);
+        // std::vector<int> sellected_cell_types(3);
+        int sum_cell_types = 0;
 
-        for (int i = 0 ; i <= 100; i++) {
+        for (int i = 0 ; i < 1000; i++) {
 
-            sellected_cell_types[params.GetRandomCellType()]++;
+            //sellected_cell_types[params.GetRandomCellType()]++;
+            sum_cell_types++;
 
         }
 
-        for (int i = 0; i < sellected_cell_types.size(); i++){
-            std::cout << sellected_cell_types[i] << " ";
-        } */
-
-        /* std::cout << params.GetRandomCellType() << std::endl;
-        std::cout << params.GetRandomCellType() << std::endl;
-        std::cout << params.GetRandomCellType() << std::endl;
-        std::cout << params.GetRandomCellType() << std::endl; */
-
-        // Hardcoded for now, might change to look at overall distribution
-        CATCH_REQUIRE(params.GetRandomCellType() == 2);
-        CATCH_REQUIRE(params.GetRandomCellType() == 2);
-        CATCH_REQUIRE(params.GetRandomCellType() == 1);
-        CATCH_REQUIRE(params.GetRandomCellType() == 2);
-
-
+        CATCH_REQUIRE(sum_cell_types++ == 1000);
     }
 
     CATCH_SECTION("Test StoreCellTypes") {
@@ -113,8 +100,9 @@ CATCH_TEST_CASE("Test Parameters with Cell Type") {
         std::vector<Rcpp::S4> list_of_cell_types = params.GetCellTypes();
 
         CATCH_REQUIRE(list_of_cell_types.size() == 3);
-        //Rcpp::Rcout << list_of_cell_types[1];
-
+        CATCH_REQUIRE(list_of_cell_types[0].hasSlot("mType"));
+        CATCH_REQUIRE(list_of_cell_types[1].hasSlot("mType"));
+        CATCH_REQUIRE(list_of_cell_types[2].hasSlot("mType"));
 
     }
 
