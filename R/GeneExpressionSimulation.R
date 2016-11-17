@@ -15,7 +15,7 @@
 inSilicoGeneExpression <- function(model, singleCell = FALSE,
 pathways = NULL, nCells = 96, fasta = NULL, ReferenceDataSet = NULL,
 lambda = 1/3, sampFreq = 1, perError = 0.1, combineFUN = max,
-attrsep = " ", microArray = FALSE, ...) {
+attrsep = " ", microArray = FALSE, nGenes = NULL) {
 
     # simulate mean expression values for all pathways
     simMeanExprs <- simulateMeanExpression(model=model,
@@ -24,56 +24,101 @@ attrsep = " ", microArray = FALSE, ...) {
                         ReferenceDataSet = ReferenceDataSet,
                         sampFreq = sampFreq, perError = perError,
                         combineFUN = combineFUN)
-    if (!microArray) {
-  
-        # convert to counts from estimated log-transformed data
-        simMeanExprs <- round(2 ^ simMeanExprs - 1)
     
+    # add dummy genes
+    simMeanExprs <- padExpMatrix(simMeanExprs, nGenes)
+
+    # add simulated error
+    return (simulateError(simMeanExprs, pathways, fasta,
+                ReferenceDataSet, perError, attrsep, microArray))
+
+
+}
+
+padExpMatrix <- function(meanExp, nGenes) {
+
+    if (!is.null(nGenes) && nGenes > nrow(meanExp)) {
+
+        newData <- matrix(nrow = nGenes, ncol = ncol(meanExp))
+        newGenes <- c()
+        for (i in 1:(nGenes - nrow(meanExp))) {
+          
+            newGenes[i] <- paste('dummy_', i, sep = "")
+          
+        }
+
+        rownames(newData) <- sample(c(newGenes, rownames(meanExp)))
+
+        for (g in rownames(newData)) {
+      
+            if (grepl('dummy', g)) {
+         
+               newData[g,] <- rexp(ncol(meanExp), 1) + 3.5
+
+            } else {
+
+                newData[g,] <- meanExp[g,]
+
+            }
+
+        }
+
+    } else {
+
+        newData <- meanExp
+
     }
 
-    if (is.null(fasta)) {
+    return (newData)
 
-        if (microArray) {
+}
 
-            # simulate data with a normal error model
-            sdMatrix <- pmax(perError * simMeanExprs, perError)
-            outData <- simMeanExprs + sdMatrix * 
-                        matrix(rnorm(length(simMeanExprs)), 
-                                nrow=nrow(simMeanExprs))
+simulateError <- function(meanExp, pathways, fasta, 
+ReferenceDataSet, perError, attrsep, microArray) {
 
-        } else {
+    if (microArray) {
+
+        sdMatrix <- pmax(perError * meanExp, perError)  
+        outData <- meanExp + sdMatrix * matrix(rnorm(
+                        length(meanExp)), nrow=nrow(meanExp))
+    
+    } else {
+
+        # convert to counts from estimated log-transformed data
+        meanExp <- round(2 ^ meanExp - 1)
+
+        if (is.null(fasta)) {
 
             # simulate data with a negative binomial error model
             message(paste('Simulating time-course RNA-seq data with a ',
                             'negative binomial error model'))
 
-            outData <- apply(simMeanExprs, 2,
+            outData <- apply(meanExp, 2,
                             function(mu) {
                                NBsim(mu=mu,
-                               ReferenceDataset=ReferenceDataSet,
-                               ...)
+                               ReferenceDataset=ReferenceDataSet)
                             })
+        } else {
+
+            # run polyester
+            message('Simulating time-course RNA-seq data with Polyester')
+    
+            simulatePolyester(simMeanExprs=meanExp,fasta=fasta,
+                            attrsep = attrsep, pathways = pathways)
+
         }
 
-        dimnames(outData) <- dimnames(simMeanExprs)
-
-        return(outData)
-
-    } else { 
-    
-        # run polyester
-        message('Simulating time-course RNA-seq data with Polyester')
-    
-        simulatePolyester(simMeanExprs=simMeanExprs,fasta=fasta,
-                            attrsep = attrsep, pathways = pathways, ...)
-
     }
+
+    dimnames(outData) <- dimnames(meanExp)
+
+    return(outData)
 
 }
 
 simulateMeanExpression <- function (model, singleCell = FALSE, nCells = 96,
 pathways = NULL, ReferenceDataSet = NULL, lambda = 1/3, perError = 0.1,
-sampFreq = 1, combineFUN = max, ...) {
+sampFreq = 1, combineFUN = max) {
 
     # determine which pathways to simulate from the input values,
     # subsetting only to simulated pathways
@@ -101,7 +146,7 @@ sampFreq = 1, combineFUN = max, ...) {
 
 }
 
-NBsim <- function(mu, ReferenceDataset = NULL, invChisq = TRUE, ...) {
+NBsim <- function(mu, ReferenceDataset = NULL, invChisq = TRUE) {
 
     if (is.null(ReferenceDataset)) {
 
@@ -188,7 +233,7 @@ combineGeneExpression <- function(geneExpression, combineFUN=max) {
 }
 
 simulatePolyester <- function(simMeanExprs=simMeanExprs,fasta=fasta, attrsep = attrsep,
-                              idfield='gene_symbol', outdir=".", pathways=NULL, ...) {
+                              idfield='gene_symbol', outdir=".", pathways=NULL) {
   
   # process fasta to create mean values for transcripts
   transcripts = readDNAStringSet(fasta) # read in the fasta

@@ -51,6 +51,13 @@ sampSize, singleCell = FALSE, timeWindow = 1, downReg = FALSE) {
         scalingFactor <- getScalingFactor(model, cells, times[i],
             timeWindow, type)
 
+        # check if pathway is down regulated by behavior
+        if (downReg) {
+
+            scalingFactor <- 1 - scalingFactor
+
+        }
+
         # rows to replace
         cols <- (sampSize * (i - 1) + 1):(sampSize * i)
 
