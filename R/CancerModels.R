@@ -168,8 +168,8 @@ runDrasdoHohme <- function(initialNum,
 calcBoundary <- function(rawOutput, density, boundary) {
 
     len <- length(rawOutput[[1]])
-    radii <- rawOutput[[1]][seq(3,len,7)]
-    axis <- rawOutput[[1]][seq(4,len,7)]
+    radii <- rawOutput[[1]][seq(3,len,6)]
+    axis <- rawOutput[[1]][seq(4,len,6)]
     cellArea <- 0
 
     for (i in 1:length(radii)) {

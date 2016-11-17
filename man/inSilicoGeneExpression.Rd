@@ -7,7 +7,7 @@
 inSilicoGeneExpression(model, singleCell = FALSE, pathways = NULL,
   nCells = 96, fasta = NULL, ReferenceDataSet = NULL, lambda = 1/3,
   sampFreq = 1, perError = 0.1, combineFUN = max, attrsep = " ",
-  microArray = FALSE, ...)
+  microArray = FALSE, nGenes = NULL)
 }
 \arguments{
 \item{model}{a CellModel object}
