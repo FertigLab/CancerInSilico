@@ -65,7 +65,7 @@ CATCH_TEST_CASE("Test Parameters with Cell Type") {
 
     }
 
-    CATCH_SECTION("Test Getters") {
+    CATCH_SECTION("Test GetRandomGrowthRate") {
 
         Rcpp::Environment baseEnv("package:base");
         Rcpp::Function setSeed = baseEnv["set.seed"];
@@ -78,15 +78,43 @@ CATCH_TEST_CASE("Test Parameters with Cell Type") {
 
     CATCH_SECTION("Test GetRandomCellType") {
 
-        int sum_selected_cell_types = 0;
+        Rcpp::Environment baseEnv("package:base");
+        Rcpp::Function setSeed = baseEnv["set.seed"];
+        setSeed(20);
 
-        for (unsigned int i = 0; i < 100; ++i) {
+        /* std::vector<int> sellected_cell_types(3);
 
-            sum_selected_cell_types += params.GetRandomCellType();
+        for (int i = 0 ; i <= 100; i++) {
+
+            sellected_cell_types[params.GetRandomCellType()]++;
 
         }
 
-        CATCH_REQUIRE(sum_selected_cell_types == 0);
+        for (int i = 0; i < sellected_cell_types.size(); i++){
+            std::cout << sellected_cell_types[i] << " ";
+        } */
+
+        /* std::cout << params.GetRandomCellType() << std::endl;
+        std::cout << params.GetRandomCellType() << std::endl;
+        std::cout << params.GetRandomCellType() << std::endl;
+        std::cout << params.GetRandomCellType() << std::endl; */
+
+        // Hardcoded for now, might change to look at overall distribution
+        CATCH_REQUIRE(params.GetRandomCellType() == 2);
+        CATCH_REQUIRE(params.GetRandomCellType() == 2);
+        CATCH_REQUIRE(params.GetRandomCellType() == 1);
+        CATCH_REQUIRE(params.GetRandomCellType() == 2);
+
+
+    }
+
+    CATCH_SECTION("Test StoreCellTypes") {
+
+        std::vector<Rcpp::S4> list_of_cell_types = params.GetCellTypes();
+
+        CATCH_REQUIRE(list_of_cell_types.size() == 3);
+        //Rcpp::Rcout << list_of_cell_types[1];
+
 
     }
 
