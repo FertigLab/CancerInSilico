@@ -601,10 +601,18 @@ int CellPopulation::size() {
 /**** Debugging for setting cell types ****/
 
 /* For each cell in m_population, set a cell type reference */
-void SetCellTypes() {
+void CellPopulation::SetCellTypes() {
 
-    /* for each Cell c in m_population:
-            t = getRandomCellType() from m_param
-            set c.setCellType(t);
-    */
+    /* get a iterator to the entire population */    
+    SpatialHash<Cell>::full_iterator iter = m_population.begin();
+    
+    /* iterate through every cell */
+    for (; iter != m_population.end(); ++iter) {
+
+    
+        /* get a random cell type from parameters and set it */
+        (*iter).SetCellType(m_param->GetRandomCellType());
+
+    }
+
 }
