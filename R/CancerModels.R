@@ -21,78 +21,86 @@
 runCancerSim <- function(initialNum,
                          runTime,
                          density = 0.01,
-                         cycleLengthDist = 12,
-                         drugEffect = getDrugEffect(cycleLengthDist = cycleLengthDist),
+                         cycleLengthDist = 48,
                          inheritGrowth = FALSE,
+                         modelType = "DrasdoHohme2003",
+                         drugEffect = getDrugEffect(cycleLengthDist = cycleLengthDist),
+                         drugTime = 0.0,
+                         boundary = TRUE,
+                         randSeed = 0,
+                         syncCycles = TRUE,
                          outputIncrement = 6,
                          recordIncrement = 0.25,
-                         randSeed = 0,
-                         modelType = "DrasdoHohme2003",
-                         drugTime = 0.0,
-                         boundary = 1,
-                         syncCycles = TRUE,
                          ...)
 
 {
 
-    if (modelType != "DrasdoHohme2003") {
+    # store parameters in a list
+    params <- list()
+    params[['initialNum']] <- initialNum
+    params[['runTime']] <- runTime
+    params[['density']] <- density
+    params[['cycleLengthDist']] <- cycleLengthDist
+    params[['drugEffect']] <- drugEffect
+    params[['inheritGrowth']] <- inheritGrowth
+    params[['outputIncrement']] <- outputIncrement
+    params[['recordIncrement']] <- recordIncrement
+    params[['randSeed']] <- randSeed
+    params[['modelType']] <- modelType
+    params[['drugTime']] <- drugTime
+    params[['boundary']] <- boundary
+    params[['syncCycles']] <- syncCycles
+    params[['...']] <- list(...)
+
+    # make sure all arguments are valid
+    checkParameters(params)
+
+    # run model
+    runModel(params)
+
+}
+    
+runModel <- function(params) {
+
+    # list of valid model types
+    validMods <- c('DrasdoHohme2003')
+
+    # check that model is valid type
+    if (!(params[['modelType']] %in% validMods)) {
 
       stop("invalid model type")
 
-    } else {
+    # call specific model
+    } else if (params[['modelType']] == 'DrasdoHohme2003') {
 
-      return (runDrasdoHohme(initialNum,
-                             runTime,
-                             density,
-                             cycleLengthDist,
-                             inheritGrowth, 
-                             outputIncrement,
-                             recordIncrement,
-                             randSeed,
-                             drugEffect,
-                             drugTime,
-                             boundary,
-                             syncCycles,
-                             ...))
+        return (runDrasdoHohme(params))
 
     }
 
 }
 
-#' \code{runDrasdoHohme} Runs the model from the Drasdo, Hohme paper
-#'
-#' @details  
+checkParameters <- function(params) {
 
-runDrasdoHohme <- function(initialNum,
-                           runTime,
-                           density,
-                           cycleLengthDist,
-                           inheritGrowth,
-                           outputIncrement,
-                           recordIncrement,
-                           randSeed,
-                           drugEffect,
-                           drugTime,
-                           boundary,
-                           syncCycles,
-                           ...)
-  
-{
-  
-    nG <- list(...)$nG
-    if (is.null(nG)) {nG = 24}
+    # general parameters check
+    if (params[['density']] > 0.9) {
 
-    epsilon <- list(...)$epsilon
-    if (is.null(epsilon)) {epsilon = 10}
-
-    if (density > 0.9) {
-
-        message("density too high to seed efficiently\n")
-        stop()
+        stop("density too high to seed efficiently\n")
 
     }
+
+}
+
+runDrasdoHohme <- function(params) {
   
-    delta <- 0.2 ## must be less than 4 or calculations break
+    # get model specific parameters
+    nG <- params[['...']]$nG
+    if (is.null(nG)) {nG = 24}
+
+    epsilon <- params[['...']]$epsilon
+    if (is.null(epsilon)) {epsilon = 10}
+
+    delta <- params[['...']]$delta
+    if (is.null(delta)) {delta = 0.2}
   
     #timeIncrement is the time between each timestep
     timeIncrement = delta / (4 * nG * (4 - sqrt(2)))
