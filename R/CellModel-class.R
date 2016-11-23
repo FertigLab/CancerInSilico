@@ -64,112 +64,57 @@ setClass("CellModel", representation(
 
 #### getters (cell data) ####
 
-#' \code{getCoordinates} get a two dimensional matrix of all the cell coordinates
-#'
-#' @param model A CellModel
-#' @param time time in model hours
-#' @return an N X 2 matrix of cell coordinates at time
+# get column of data for each cell
+getColumn <- function(model, time, col) {
 
+    # find row corresponding to time
+    row <- timeToRow(model, time)
+
+    # get the sequence of indices that correspond to column
+    indices <- seq(col,length(model@mCells[[row]]), 6)
+
+    # return the values at these indices
+    return(model@mCells[[row]][indices])
+
+}    
+
+# return an N X 2 matrix of cell coordinates at time
 getCoordinates <- function(model, time) {
 
-    # find the row corresponding to the given time 
-    row <- timeToRow(model, time)
+    # get x and y coordinates
+    x_coord <- getColumn(model, time, 1)
+    y_coord <- getColumn(model, time, 2)
 
-    # get the sequence of indices that contain x-coordinates
-    indices <- seq(1,length(model@mCells[[row]]),6)
-    
-    # create return matrix, col 1 = x-coord & col 2 = y-coord
-    ret_mat <- matrix(nrow = length(indices), ncol = 2)
+    # return matrix with coordinates
+    return (matrix(c(x_coord, y_coord), nrow = length(x_coord)))
 
-    # for each cell (each index), store the x and y coordinate
-    for (i in 1:length(indices)) {
-
-        # store x-coordinate
-        ret_mat[i,1] = model@mCells[[row]][indices[i]]
-
-        # store y-coordinate (x-coord index + 1)
-        ret_mat[i,2] = model@mCells[[row]][indices[i]+1]
-
-    }
-
-    # return the coordinate matrix
-    return (ret_mat)
-         
 }
 
-#' \code{getRadii} get the radius of each cell
-#'
-#' @param model A CellModel
-#' @param time time in model hours
-#' @return vector containing the radius of each cell at time
-
+# get a vector containing the radius of each cell at time
 getRadii <- function(model, time) {
 
-    # find the row corresponding to the given time
-    row <- timeToRow(model, time)
-
-    # get the sequence of indices that contain the cell radius (starts at 3)
-    indices <- seq(3,length(model@mCells[[row]]),6)
-
-    # return the values at these indices
-    return(model@mCells[[row]][indices])
+    return (getColumn(model, time, 3))
 
 }
 
-#' \code{getAxisLength} get the axis length of each cell
-#'
-#' @param model A CellModel
-#' @param time time in model hours
-#' @return vector containing the axis length of each cell at time
-         
+# get a vector containing the radius of each cell at time
 getAxisLength <- function(model, time) {
 
-    # find the row corresponding to the given time
-    row <- timeToRow(model, time)
-
-    # get the sequence of indices that contain the axis length (starts at 4)
-    indices <- seq(4,length(model@mCells[[row]]),6)
-
-    # return the values at these indices
-    return(model@mCells[[row]][indices])
+    return (getColumn(model, time, 4))
 
 }
 
-#' \code{getAxisAngle} get the axis angle of each cell
-#'
-#' @param model A CellModel
-#' @param time time in model hours
-#' @return vector containing the axis angle of each cell at time
-
+# get a vector containing the radius of each cell at time
 getAxisAngle <- function(model, time) {
 
-    # find the row corresponding to the given time
-    row <- timeToRow(model, time)
-
-    # get the sequence of indices that contain the axis angle (starts at 5)
-    indices <- seq(5,length(model@mCells[[row]]),6)
-
-    # return the values at these indices
-    return(model@mCells[[row]][indices])
+    return (getColumn(model, time, 5))
 
 }
 
-#' \code{getGrowthRates} get the model growth rates of each cell
-#'
-#' @param model A CellModel
-#' @param time time in model hours
-#' @return vector containing the growth rate of each cell at time
-
+# get a vector containing the radius of each cell at time
 getGrowthRates <- function(model, time) {
 
-    # find the row corresponding to the given time
-    row <- timeToRow(model, time)
-
-    # get the sequence of indices that contain the cell growth rate (starts at 6)
-    indices <- seq(6,length(model@mCells[[row]]),6)
-
-    # return the values at these indices
-    return(model@mCells[[row]][indices])
+    return (getColumn(model, time, 6))
 
 }
 
@@ -190,7 +135,8 @@ getCycleLengths <- function(model, time) {
     gr_rates <- getGrowthRates(model, time)
 
     # convert the raw growth rates to cell cycle time in hours
-    return (1 + 2 * (sqrt(2) - 1) * .timeIncrement(model) * .nG(model) / gr_rates)
+    return (1 + 2 * (sqrt(2) - 1) * .timeIncrement(model) *
+        .nG(model) / gr_rates)
 
 }
 
@@ -361,7 +307,8 @@ interactivePlot <- function(model, time = 0) {
                     cat("n ARG = forward ARG timesteps (default ARG = 1)\n")
                     cat("t ARG - jump to timestep ARG (default ARG = 1)\n")
                     cat("i ARG - change default ARG for other commands\n")
-                    cat("s = summary of cells\nq = quit\nh = basic command help\n")
+                    cat(paste("s = summary of cells\nq = quit\n",
+                                "h = basic command help\n"))
                 }
 
             )
@@ -398,7 +345,8 @@ getNumNeighbors <- function(model, time, index) {
     for (i in setdiff(1:nrow(coords), index)) {
 
         # if radius is within distance of inner ring of neighbors
-        if ((coords[i,1] - coords[index,1])^2 + (coords[i,2] - coords[index,2])^2 < 12) {
+        if ((coords[i,1] - coords[index,1])^2 + (coords[i,2] -
+            coords[index,2])^2 < 12) {
 
             # add to neighbor count
             num <- num + 1
@@ -445,7 +393,8 @@ plotCells <- function(model,time,drawBoundary = TRUE)  {
     mx <- max(coords) + 2
     
     # create the plot template
-    plot(c(mn,mx),c(mn,mx),main=paste("Plot of CellModel At Time",time),xlab = "",ylab="",type="n",asp=1)
+    plot(c(mn, mx), c(mn, mx), main = paste("Plot of CellModel At Time",
+        time), xlab = "", ylab = "", type = "n", asp = 1)
           
     # get all (x,y) pairs for each of the two circles that make up a cell
     x_1 <- coords[,1] + (0.5 * axis_len - radii) * cos(axis_ang)
@@ -459,7 +408,8 @@ plotCells <- function(model,time,drawBoundary = TRUE)  {
     rad <- c(radii, radii)
     
     # plot the cells
-    symbols(x,y, circles=rad, inches=FALSE, add=TRUE, bg="bisque4", fg="bisque4")
+    symbols(x,y, circles=rad, inches=FALSE, add=TRUE, bg="bisque4",
+        fg="bisque4")
 
     # draw boundary
     if (drawBoundary) {
