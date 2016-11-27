@@ -58,7 +58,10 @@ Cell Cell::Divide() {
     m_ready_to_divide = false;
     m_in_mitosis = false;
 
-    return Cell(Point(x,y), m_param, m_growth_rate);
+    Cell daughter_cell = Cell(Point(x,y), m_param, m_growth_rate);
+    daughter_cell.SetCellType(this->GetCellType());
+
+    return daughter_cell;
 
 }
 
