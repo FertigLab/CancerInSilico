@@ -9,12 +9,24 @@
 
 CATCH_TEST_CASE("Test Cell") {
 
-/*    Parameters params = Parameters(pow(2,0.5));
+    Parameters params = Parameters(pow(2,0.5));
 
     params.SetMaxTranslation(0.3);
     params.SetMaxRotate(2.0);
     params.SetMaxDeform(0.1);
 
+    CATCH_SECTION("Divide inherits parent cell type") {
+
+        Cell parent_cell = Cell(Point(0,0), &params);
+        parent_cell.SetCellType(7);
+        Cell daughter_cell = parent_cell.Divide();
+
+        CATCH_REQUIRE(daughter_cell.GetCellType() == 7);
+
+    }
+    
+
+/*
     std::vector<Cell> cells;
 
     Rcpp::Environment baseEnv("package:base");
