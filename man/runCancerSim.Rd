@@ -4,11 +4,11 @@
 \alias{runCancerSim}
 \title{\code{runCancerSim} Runs the model}
 \usage{
-runCancerSim(initialNum, runTime, density = 0.01, cycleLengthDist = 12,
-  drugEffect = getDrugEffect(cycleLengthDist = cycleLengthDist),
-  inheritGrowth = FALSE, outputIncrement = 6, recordIncrement = 0.25,
-  randSeed = 0, modelType = "DrasdoHohme2003", drugTime = 0,
-  boundary = 1, syncCycles = TRUE, ...)
+runCancerSim(initialNum, runTime, density = 0.01, cycleLengthDist = 48,
+  inheritGrowth = FALSE, modelType = "DrasdoHohme2003",
+  drugEffect = function(x) {     return(0) }, drugTime = 0,
+  boundary = TRUE, randSeed = 0, syncCycles = TRUE, outputIncrement = 6,
+  recordIncrement = 0.25, ...)
 }
 \arguments{
 \item{initialNum}{how many cells initially}
@@ -19,15 +19,15 @@ runCancerSim(initialNum, runTime, density = 0.01, cycleLengthDist = 12,
 
 \item{cycleLengthDist}{cycle time distribution}
 
-\item{drugEffect}{distribution of drug effects}
-
 \item{inheritGrowth}{whether or not daughter cells have the same cycle-length as parents}
 
-\item{outputIncrement}{time increment to print status at}
+\item{modelType}{the name of the cell-based model to use}
+
+\item{drugEffect}{distribution of drug effects}
 
 \item{randSeed}{seed for the model}
 
-\item{modelType}{the name of the cell-based model to use}
+\item{outputIncrement}{time increment to print status at}
 
 \item{...}{model specific parameters (depends on modelType)}
 

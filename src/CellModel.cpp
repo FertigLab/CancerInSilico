@@ -8,53 +8,36 @@
 // [[Rcpp::export]]
 Rcpp::List CellModel(
 
-    int initialNum,
-    int numMCSteps,
-    double density,
-    double maxTranslation,
-    double maxDeform,
-    double maxRotate,
-    double epsilon,
-    double delta,
-    int outIncrement,
-    int randSeed,
-    Rcpp::List drugEffect,
-	Rcpp::NumericVector growthRates,
-	bool inheritGrowth,
-	double nG,
-	double timeIncrement,
-	int recordIncrement,
-    double drugTime,
-    double boundary,
-    bool syncCellCycle
+    Rcpp::List params
 
 ) {
 
     Rcpp::Environment baseEnv("package:base");
     Rcpp::Function setSeed = baseEnv["set.seed"];
-    setSeed(randSeed);
+    setSeed(params["randSeed"]);
 
-    Parameters* params = new Parameters(pow(2, 0.5));
+    Parameters* parameters = new Parameters(pow(2, 0.5));
 
-    params->SetMaxTranslation(maxTranslation);
-    params->SetMaxDeform(maxDeform);
-    params->SetMaxRotate(maxRotate);
-    params->SetResistanceEPSILON(epsilon);
-    params->SetCompressionDELTA(delta);
-	params->StoreGrowthDistribution(growthRates);
-	params->SetInheritGrowth(inheritGrowth);
-	params->SetNG(nG);
-    params->StoreDrugEffect(drugEffect);
-    params->SetDrugTime(drugTime);
-    params->SetBoundary(boundary);
-    params->SetSyncCellCycle(syncCellCycle);
+    parameters->SetMaxTranslation(params["maxTranslation"]);
+    parameters->SetMaxDeform(params["maxDeform"]);
+    parameters->SetMaxRotate(params["maxRotate"]);
+    parameters->SetResistanceEPSILON(params["epsilon"]);
+    parameters->SetCompressionDELTA(params["delta"]);
+	parameters->StoreGrowthDistribution(params["maxGrowth"]);
+	parameters->SetInheritGrowth(params["inheritGrowth"]);
+	parameters->SetNG(params["nG"]);
+    parameters->StoreDrugEffect(params["drugEffect"]);
+    parameters->SetDrugTime(params["drugTime"]);
+    parameters->SetBoundary(params["boundary"]);
+    parameters->SetSyncCellCycle(params["syncCellCycle"]);
 
-    Simulation main_sim = Simulation(params, initialNum, density);
+    Simulation main_sim = Simulation(parameters, params["initialNum"],
+        params["density"]);
 
-    main_sim.Run(numMCSteps, outIncrement, timeIncrement, recordIncrement);
+    main_sim.Run(params);
     Rcpp::List ret_val = main_sim.GetCellsAsList();
     
-    delete params;
+    delete parameters;
     return ret_val;
 
 }

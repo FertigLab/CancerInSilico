@@ -26,4 +26,13 @@ CATCH_TEST_CASE("Test Parameters and Radius Solver") {
 
     }
 */
+
+    CATCH_SECTION("Test drug effect") {
+
+        //Rcpp::Environment env = Rcpp::Environment::Rcpp_namespace();
+        //Rcpp::Function f = env["testFunc"];
+        //CATCH_REQUIRE(1 == 1);
+
+    }
+
 }

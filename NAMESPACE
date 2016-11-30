@@ -2,7 +2,6 @@
 
 export(getCycleLengths)
 export(getDensity)
-export(getDrugEffect)
 export(getNumberOfCells)
 export(getParameters)
 export(inSilicoGeneExpression)

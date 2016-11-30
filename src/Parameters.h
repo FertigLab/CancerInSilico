@@ -6,9 +6,6 @@
 #include <vector>
 #include <testthat.h>
 #include <Rcpp.h>
-#include <boost/unordered_map.hpp>
-
-typedef boost::unordered_map<double, std::vector<double> > DrugEffectMap;
 
 class Parameters {
 
@@ -27,15 +24,14 @@ class Parameters {
 	std::vector<double> m_fast_solver;
 	std::vector<double> m_growth_dist;
 
-    DrugEffectMap m_drug_effect_map;
-    std::vector<double> m_drug_effect_indices;
+    Rcpp::Function m_drug_effect;
 
     void InitializeRadiusSolver();
 	void InitSlowSolver();
 	void InitFastSolver();
 	int HashAxisLength(double);
 
-  public:
+public:
 
     Parameters(double max_rad) {
 		m_max_radius = max_rad;
@@ -51,7 +47,7 @@ class Parameters {
 	void SetInheritGrowth(bool gr) { m_inherit_growth = gr;}
 	void StoreGrowthDistribution(Rcpp::NumericVector);
 	void SetNG(double ng) { m_nG = ng;}
-    void StoreDrugEffect(Rcpp::List);
+    void SetDrugEffect(Rcpp::Function de) {m_drug_effect = de;}
     void SetDrugTime(double dt) { m_drug_time = dt;}
     void SetBoundary(double rad) { m_boundary = rad;}
     void SetSyncCellCycle(bool b) { m_sync_cell_cycle = b;}
@@ -65,7 +61,7 @@ class Parameters {
 	bool InheritGrowth() { return m_inherit_growth;}
 	double GetNG() { return m_nG;}
 	double GetMaxRadius() { return m_max_radius;}
-    double GetDrugEffect(double);
+    double GetDrugEffect(double gr) { return m_drug_effect(gr);}
     double GetDrugTime() { return m_drug_time;}
     double GetBoundary() { return m_boundary;}
     bool GetSyncCellCycle() { return m_sync_cell_cycle;}

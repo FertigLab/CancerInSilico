@@ -24,7 +24,7 @@ runCancerSim <- function(initialNum,
                          cycleLengthDist = 48,
                          inheritGrowth = FALSE,
                          modelType = "DrasdoHohme2003",
-                         drugEffect = getDrugEffect(cycleLengthDist = cycleLengthDist),
+                         drugEffect = function(x) {return(0)},
                          drugTime = 0.0,
                          boundary = TRUE,
                          randSeed = 0,
@@ -41,16 +41,18 @@ runCancerSim <- function(initialNum,
     params[['runTime']] <- runTime
     params[['density']] <- density
     params[['cycleLengthDist']] <- cycleLengthDist
-    params[['drugEffect']] <- drugEffect
     params[['inheritGrowth']] <- inheritGrowth
-    params[['outputIncrement']] <- outputIncrement
-    params[['recordIncrement']] <- recordIncrement
-    params[['randSeed']] <- randSeed
     params[['modelType']] <- modelType
+    params[['drugEffect']] <- drugEffect
     params[['drugTime']] <- drugTime
     params[['boundary']] <- boundary
+    params[['randSeed']] <- randSeed
     params[['syncCycles']] <- syncCycles
+    params[['outputIncrement']] <- outputIncrement
+    params[['recordIncrement']] <- recordIncrement
     params[['...']] <- list(...)
+
+    # call model
 
     # make sure all arguments are valid
     checkParameters(params)
@@ -82,7 +84,7 @@ runModel <- function(params) {
 checkParameters <- function(params) {
 
     # general parameters check
-    if (params[['density']] > 0.9) {
+    if (params[['density']] > 0.7) {
 
         stop("density too high to seed efficiently\n")
 
@@ -92,82 +94,33 @@ checkParameters <- function(params) {
 
 runDrasdoHohme <- function(params) {
   
-    # get model specific parameters
-    nG <- params[['...']]$nG
-    if (is.null(nG)) {nG = 24}
+    ## get model specific parameters
+    params[['nG']] <- params[['...']]$nG
+    params[['epsilon']] <- params[['...']]$epsilon
+    params[['delta']] <- params[['...']]$delta
 
-    epsilon <- params[['...']]$epsilon
-    if (is.null(epsilon)) {epsilon = 10}
-
-    delta <- params[['...']]$delta
-    if (is.null(delta)) {delta = 0.2}
+    ## set to defaults if not provided
+    if (is.null(params[['nG']])) {nG = 24}
+    if (is.null(params[['epsilon']])) {epsilon = 10}
+    if (is.null(params[['delta']])) {delta = 0.2}
   
-    #timeIncrement is the time between each timestep
-    timeIncrement = delta / (4 * nG * (4 - sqrt(2)))
-    max_incr = delta * (min(cycleLengthDist) - 1) / (8 * nG * (sqrt(2) - 1))
+    # timeIncrement is the time between each timestep
+    params[['timeIncrement']] <- 
+        min(params[['delta']] / (4 * params[['nG']] * (4 - sqrt(2))),
+            params[['delta']] * (min(params[['cycleLengthDist']]) - 1) /
+            (8 * params[['nG']] * (sqrt(2) - 1)))
 
-    if (timeIncrement > max_incr) {
-
-        timeIncrement = max_incr
-
-    }
-    
-    maxDeform <- 2 * timeIncrement * nG * (4 - sqrt(2))
-    grRates <- 2 * (sqrt(2) - 1) * timeIncrement * nG / (cycleLengthDist - 1)
-    mcSteps <- ceiling(runTime / timeIncrement)
-    maxTranslation <- delta / 2
-    maxRotate <- acos((16 + delta ^ 2 - 4 * delta) / 16)
-
-    outputIncrement2 <- floor(outputIncrement / timeIncrement)
-    recordIncrement2 <- floor(recordIncrement / timeIncrement)  
-
-    if (recordIncrement == 0) {
-
-        recordIncrement2 <- 1
-
-    }
+    # calculate model parameters
+    params[['maxGrowth']] <- 2 * (sqrt(2) - 1) * params[['timeIncrement']] *
+        params[['nG']] / (params[['cycleLengthDist']] - 1)
+    params[['maxDeform']] <- 2 * params[['timeIncrement']] *
+        params[['nG']] * (4 - sqrt(2))
+    params[['maxTranslation']] <- params[['delta']] / 2
+    params[['maxRotate']] <- acos((16 + params[['delta']] ^ 2 - 4 *
+        params[['delta']]) / 16)
   
-    for (i in 1:length(drugEffect)) {
-
-        drugEffect[[i]][1] <- 2 * (sqrt(2) - 1) * timeIncrement * nG / (drugEffect[[i]][1] - 1)
-
-    }
-  
-    output <- CellModel(initialNum,
-                      mcSteps,
-                      density,
-                      maxTranslation,
-                      maxDeform,
-                      maxRotate,
-                      epsilon, 
-                      delta, 
-                      outputIncrement2,
-                      randSeed,
-                      drugEffect, 
-                      grRates, 
-                      inheritGrowth,
-                      nG, 
-                      timeIncrement, 
-                      recordIncrement2, 
-                      drugTime, 
-                      boundary,
-                      syncCycles)
-    
-    cellMat <- new("CellModel",
-                 mCells = output,
-                 mInitialNumCells = initialNum,
-                 mRunTime = runTime,
-                 mInitialDensity = density,
-                 mInheritGrowth = inheritGrowth,
-                 mOutputIncrement = outputIncrement,
-                 mRandSeed = randSeed,
-                 mEpsilon = epsilon,
-                 mNG = nG,
-                 mTimeIncrement = timeIncrement,
-                 mRecordIncrement = recordIncrement,
-                 mCycleLengthDist = cycleLengthDist,
-                 mBoundary = calcBoundary(output, density, boundary),
-                 mSyncCycles = syncCycles)
+    output <- CellModel(params)
+    cellMat <- createCellModel(params, output)
 
     return(cellMat)
   
@@ -206,52 +159,3 @@ calcBoundary <- function(rawOutput, density, boundary) {
 
 }
 
-#'\code{getDrugEffect} 
-#'
-#' @param cycleLengthSeq A sequence spanning the range of cycle lengths
-#' @return A list of vectors specifying the distribution of drug effects depending on the growth rate of the cell
-#' @examples
-#' getDrugEffect(0.3, seq(2,12,0.1))
-#' @export
-
-getDrugEffect <- function(FUN = function(x) {0}, ...) {
-
-    # store either the cycle lengths themselves or a sequence
-    # spanning their range
-    cycleLengthDist <- list(...)$cycleLengthDist
-    cycleLengthSeq <- list(...)$cycleLengthSeq
-
-    # check which parameters are provided
-    if (is.null(cycleLengthDist)) {
-
-        if (is.null(cycleLengthSeq)) {
-
-            # need at least one
-            stop("must specifiy either cycleLengthDist or cycleLengthSeq")
-
-        }
-
-    # if only cycle lengths are provided ...
-    } else if (is.null(cycleLengthSeq)) {
-
-        # create a sequence that spans their range
-        cycleLengthSeq <- seq(min(cycleLengthDist), max(cycleLengthDist), 0.1)
-
-    } 
-
-    # create return list    
-    ret_list <- vector("list", length(cycleLengthSeq))
-
-    # for each element in the sequence
-    for (i in 1:length(ret_list)) {
-
-        # apply the function to the growth rate, note that FUN could return
-        # vector of values which the model then uses to sample from
-        ret_list[[i]] = c(cycleLengthSeq[i], FUN(cycleLengthSeq[i]))
-
-    }
-
-    # return the list
-    return (ret_list)
-
-}

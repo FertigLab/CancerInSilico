@@ -16,14 +16,18 @@ Simulation::~Simulation() {
 
 }
 
-void Simulation::Run(int MCsteps, int out_incr, double time_incr, int rec_incr) {
+void Simulation::Run(Rcpp::List params) {
 
 	double time = 0.0;
     bool drug_added = false;
-	
-    for (int i = 0; i < MCsteps; i++) {
+    double timeIncrement = params["timeIncrement"];
+    int recordStep = (double) params["recordIncrement"] / timeIncrement;
+    int outputStep = (double) params["outputIncrement"] / timeIncrement;
+    int totalSteps = (double) params["runtime"] / timeIncrement;
 
-        if (i % rec_incr == 0) {
+    for (int i = 0; i < totalSteps; i++) {
+
+        if (i % (recordStep ? recordStep : 1) == 0) {
 
             m_cells->RecordPopulation();
         
@@ -38,7 +42,7 @@ void Simulation::Run(int MCsteps, int out_incr, double time_incr, int rec_incr) 
         
         Rcpp::checkUserInterrupt();
 
-        if (i % out_incr == 0) {
+        if (i % outputStep == 0) {
 
             Rprintf("time = %.2f\n", ceil(time));
             Rprintf("size = %d\n", m_cells->size());
@@ -46,7 +50,7 @@ void Simulation::Run(int MCsteps, int out_incr, double time_incr, int rec_incr) 
         }
 
         m_cells->OneTimeStep();
-		time += time_incr;
+		time += timeIncrement;
 
     }
 

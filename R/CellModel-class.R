@@ -1,68 +1,37 @@
 #### class definition ####
 
 #' @title CellModel
-#' @description An S4 class to represent the output of a cell-based model
-#'
-#' @slot mCells A list object where each row of the list describes the state of all the cells in the model at a given time. Each cell is described over 6 columns: [1] x-coordinate, [2] y-coordinate, [3] radius, [4] axis length, [5] axis angle, [6] growth rate. For instance, the x-coordinates of the first 3 cells will be in columns 1,7,13.
-#' @slot mInitialNumCells the initial number of cells in the model
-#' @slot mRunTime the total run time (hours) of the model
-#' @slot mInitialDensity the density the cells were seeded at
-#' @slot mInheritGrowth whether or not cells inherit growth rates from their parent
-#' @slot mOutputIncrement the frequency of print statements during the run
-#' @slot mRandSeed the random seed 
-#' @slot mEpsilon model specific parameter 
-#' @slot mNG model specific parameter
-#' @slot mTimeIncrement amount of time elapsed in each model step
-#' @slot mRecordIncrement time increment when cell data is recorded
-#' @slot mCycleLengthDist initial distribution of cell-cycle lengths 
-#' @slot mCycleSyncProb the probability of cells being seed in interphase (not mitosis)
+#' @description An S4 class that contains the output of a cell simulation,
+#'      along with all the parameters used to generate the simulation
+#' @slot mCells A list object where each row of the list describes the
+#'      state of all the cells in the model at a given time. Each cell is
+#'      described over 6 columns: [1] x-coordinate, [2] y-coordinate, [3]
+#'      radius, [4] axis length, [5] axis angle, [6] growth rate. For
+#'      instance, the x-coordinates of the first 3 cells will be in columns
+#'      1,7,13.
+#' @slot mParameters A list object containing all parameters used to run
+#'      the model
 #' @export
 
-setClass("CellModel", representation(
-                        mCells = "list",
-                        mInitialNumCells = "numeric",
-                        mRunTime = "numeric",
-                        mInitialDensity = "numeric",
-                        mInheritGrowth = "logical",
-                        mOutputIncrement = "numeric",
-                        mRandSeed = "numeric",
-                        mEpsilon = "numeric",
-                        mNG = "numeric",
-                        mTimeIncrement = "numeric",
-                        mRecordIncrement = "numeric",
-                        mCycleLengthDist = "numeric",
-                        mBoundary = "numeric",
-                        mSyncCycles = "logical" ))
+setClass("CellModel", representation(mCells = "list", mParameters = "list"))
 
-#### getters (parameters) ####
+#### constructor ####
 
-.initialNumCells <- function(model) { return (model@mInitialNumCells) }
+createCellModel <- function(params, output) {
 
-.runTime <- function(model) { return (model@mRunTime) }
+    return (new("CellModel", mCells = output, mParameters = params))
 
-.initialDensity <- function(model) { return (model@mInitialDensity) }
+}
 
-.inheritGrowth <- function(model) { return (model@mInheritGrowth) }
+#### getters ####
 
-.outputIncrement <- function(model) { return (model@mOutputIncrement) }
+# helper function to find corresponding row of a given time
+timeToRow <- function(model, time) {
 
-.randSeed <- function(model) { return (model@mRandSeed) }
+    return (floor(time / .recordIncrement(model)) + 1)
 
-.epsilon <- function(model) { return (model@mEpsilon) }
+}
 
-.nG <- function(model) { return (model@mNG) }
-
-.timeIncrement <- function(model) { return (model@mTimeIncrement) }
-
-.recordIncrement <- function(model) { return (model@mRecordIncrement) }
-
-.cycleLengthDist <- function(model) { return (model@mCycleLengthDist) }
-
-.boundary <- function(model) { return (model@mBoundary) }
-
-.syncCycles <- function(model) { return (model@mSyncCycles) }
-
-#### getters (cell data) ####
 
 # get column of data for each cell
 getColumn <- function(model, time, col) {
@@ -82,11 +51,11 @@ getColumn <- function(model, time, col) {
 getCoordinates <- function(model, time) {
 
     # get x and y coordinates
-    x_coord <- getColumn(model, time, 1)
-    y_coord <- getColumn(model, time, 2)
+    xCoord <- getColumn(model, time, 1)
+    yCoord <- getColumn(model, time, 2)
 
     # return matrix with coordinates
-    return (matrix(c(x_coord, y_coord), nrow = length(x_coord)))
+    return (matrix(c(xCoord, yCoord), nrow = length(xCoord)))
 
 }
 
@@ -132,11 +101,11 @@ getGrowthRates <- function(model, time) {
 getCycleLengths <- function(model, time) {
 
     # get the raw model growth rates
-    gr_rates <- getGrowthRates(model, time)
+    grRates <- getGrowthRates(model, time)
 
     # convert the raw growth rates to cell cycle time in hours
-    return (1 + 2 * (sqrt(2) - 1) * .timeIncrement(model) *
-        .nG(model) / gr_rates)
+    return (1 + 2 * (sqrt(2) - 1) * model@mParameters["timeIncrement"] *
+        model@mParameters["nG"] / gRates)
 
 }
 
@@ -190,39 +159,9 @@ getDensity <- function(model,time) {
 #' getParameters(runCancerSim(1,1))
 #' @export
 
-getParameters <- function(model, fullDist=FALSE) {
+getParameters <- function(model) {
 
-    # get the average cell cycle time
-    retDist = mean(.cycleLengthDist(model))
-
-    # if the full distribution is requested, store the entire distribution
-    if (fullDist) {
-
-        retDist = .cycleLengthDist(model)
-
-    }
-
-    # create a named list of all the parameters
-    ret_val = list(
-
-        initialNum = .initialNumCells(model),
-        runTime = .runTime(model),           
-        initialDensity = .initialDensity(model),           
-        inheritGrowth = .inheritGrowth(model),           
-        outputIncrement = .outputIncrement(model),           
-        randSeed = .randSeed(model),           
-        epsilon = .epsilon(model),           
-        nG = .nG(model),
-        timeIncrement = .timeIncrement(model),
-        recordIncrement = .recordIncrement(model),
-        boundary = .boundary(model),
-        syncCycles = .syncCycles(model),
-        cycleLengthDist = retDist
-
-    )           
-
-    # return named list
-    return(ret_val)
+    return (model@mParameters)
 
 }
 
@@ -346,7 +285,7 @@ getNumNeighbors <- function(model, time, index) {
 
         # if radius is within distance of inner ring of neighbors
         if ((coords[i,1] - coords[index,1])^2 + (coords[i,2] -
-            coords[index,2])^2 < 12) {
+            coords[index,2])^2 < 12.25) {
 
             # add to neighbor count
             num <- num + 1
@@ -357,18 +296,6 @@ getNumNeighbors <- function(model, time, index) {
 
     # return neighbor count
     return (num)
-
-}
-
-#' \code{timeToRow} return the correct row in the mCells list corresponding to a given time
-#'
-#' @param model A CellModel
-#' @param time time in model hours
-#' @return corresponding row in mCells list
-
-timeToRow <- function(model, time) {
-
-    return (floor(time / .recordIncrement(model)) + 1)
 
 }
 
