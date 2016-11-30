@@ -15,7 +15,7 @@ class Parameters {
     Rcpp::List mParams;
 
     /* max radius of cell in Drasdo model */
-    mMaxRadius;
+    double mMaxRadius;
 
     /* lookup tables for radius-axis values */
 	std::vector<double> mSlowSolver;
@@ -64,7 +64,9 @@ public:
     double maxTranslation() { return mParams["maxGrowth"];}
     double maxRotate() { return mParams["maxGrowth"];}
    
-    double GetDrugEffect(double gr) { return mDrugEffect(gr);}
+    double maxRadius() { return mMaxRadius;}
+
+    double GetDrugEffect(double);
 	double GetRandomGrowthRate();
 
     double GetRadius(double);

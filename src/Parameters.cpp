@@ -105,4 +105,10 @@ double Parameters::GetRandomGrowthRate() {
 
 }
 
+double Parameters::GetDrugEffect(double growthRate) {
+
+    return Rcpp::as<double>(mDrugEffect(growthRate));
+
+}
+
 

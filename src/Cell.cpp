@@ -6,69 +6,69 @@
 //used only for the initial population of cells
 Cell::Cell(Point coord, Parameters* par) {
 
-    m_param = par;
-    m_coordinates = coord;
-    m_in_mitosis = false;
-    m_ready_to_divide = false;
-    m_axis_ang = R::runif(0,2 * M_PI);
-    m_radius = 1;
-    m_axis_len = 2 * m_radius;
-    m_growth_rate = 0;
+    mParams = par;
+    mCoordinates = coord;
+    mInMitosis = false;
+    mReadyToDivide = false;
+    mAxisAng = R::runif(0,2 * M_PI);
+    mRadius = 1;
+    mAxisLen = 2 * mRadius;
+    mGrowthRate = 0;
 
 }
 
 //used only for daughter cells
 Cell::Cell(Point coord, Parameters* par, double gr_rate) {
 
-    m_param = par;
-    m_coordinates = coord;
-    m_in_mitosis = false;
-    m_ready_to_divide = false;
-    m_axis_len = 2;
-    m_axis_ang = R::runif(0,2 * M_PI);
-    m_radius = 1;
-    m_growth_rate = gr_rate;
+    mParams = par;
+    mCoordinates = coord;
+    mInMitosis = false;
+    mReadyToDivide = false;
+    mAxisLen = 2;
+    mAxisAng = R::runif(0,2 * M_PI);
+    mRadius = 1;
+    mGrowthRate = gr_rate;
 
 }
 
 //should only be called for daughter cells (defn probably unneccesary)
 Cell::Cell(const Cell& other, double gr_rate) {
 
-    m_param = other.m_param;
-    m_coordinates = other.m_coordinates;
-    m_in_mitosis = other.m_in_mitosis;
-    m_ready_to_divide = other.m_ready_to_divide;
-    m_axis_len = other.m_axis_len;
-    m_axis_ang = other.m_axis_ang;
-    m_radius = other.m_radius;
-    m_growth_rate = gr_rate;
+    mParams = other.mParams;
+    mCoordinates = other.mCoordinates;
+    mInMitosis = other.mInMitosis;
+    mReadyToDivide = other.mReadyToDivide;
+    mAxisLen = other.mAxisLen;
+    mAxisAng = other.mAxisAng;
+    mRadius = other.mRadius;
+    mGrowthRate = gr_rate;
 
 }
 
 Cell Cell::Divide() {
 
-    double x = m_coordinates.x - cos(m_axis_ang);
-    double y = m_coordinates.y - sin(m_axis_ang);
+    double x = mCoordinates.x - cos(mAxisAng);
+    double y = mCoordinates.y - sin(mAxisAng);
 
-    m_coordinates.x += cos(m_axis_ang);
-    m_coordinates.y += sin(m_axis_ang);
-    m_axis_len = 2;
-    m_axis_ang = 0;
-    m_radius = 1;
-    m_ready_to_divide = false;
-    m_in_mitosis = false;
+    mCoordinates.x += cos(mAxisAng);
+    mCoordinates.y += sin(mAxisAng);
+    mAxisLen = 2;
+    mAxisAng = 0;
+    mRadius = 1;
+    mReadyToDivide = false;
+    mInMitosis = false;
 
-    return Cell(Point(x,y), m_param, m_growth_rate);
+    return Cell(Point(x,y), mParams, mGrowthRate);
 
 }
 
 bool Cell::DoTrial() {
 
     double unif = R::runif(0, 1);
-    double nG = m_param->GetNG();
+    double nG = mParams->nG();
     bool growth = false;
 
-    if (!m_in_mitosis) { //Interphase
+    if (!mInMitosis) { //Interphase
 
         if (unif <= (1.0 / (nG + 1.0))) { growth = true; Growth();}
         else { Translation();}
@@ -77,7 +77,7 @@ bool Cell::DoTrial() {
 
         if (unif <= (1.0 / (nG + 1.0))) { growth = true; Deformation();}
         else if ((nG + 1.0) * unif <= 1.0 + nG / 2.0) { Rotation();}
-        else if (!m_ready_to_divide) { Translation();}
+        else if (!mReadyToDivide) { Translation();}
 
     }
 
@@ -87,23 +87,23 @@ bool Cell::DoTrial() {
 
 void Cell::Translation() {
 
-    double length = m_param->GetMaxTranslation() * pow(R::runif(0, 1), 0.5);
+    double length = mParams->maxTranslation() * pow(R::runif(0, 1), 0.5);
     double direction = R::runif(0, 2 * M_PI);
-    m_coordinates.x += length * cos(direction);
-    m_coordinates.y += length * sin(direction);
+    mCoordinates.x += length * cos(direction);
+    mCoordinates.y += length * sin(direction);
 
 }
 
 void Cell::Growth() {
 
-    double growth = R::runif(0,m_growth_rate);
-    m_radius = std::min(pow(2,0.5), m_radius + growth);
-    m_axis_len = 2 * m_radius;
+    double growth = R::runif(0,mGrowthRate);
+    mRadius = std::min(pow(2,0.5), mRadius + growth);
+    mAxisLen = 2 * mRadius;
 
-    if (m_radius == pow(2,0.5)) {
+    if (mRadius == pow(2,0.5)) {
 
-        m_axis_ang = R::runif(0,2 * M_PI);
-        m_in_mitosis = true;
+        mAxisAng = R::runif(0,2 * M_PI);
+        mInMitosis = true;
 
     }
 
@@ -111,21 +111,21 @@ void Cell::Growth() {
 
 void Cell::Rotation() {
 
-    double rotate = R::runif(-m_param->GetMaxRotate(), m_param->GetMaxRotate());
-    m_axis_ang += rotate;
+    double rotate = R::runif(-mParams->maxRotate(), mParams->maxRotate());
+    mAxisAng += rotate;
 
 }
 
 
 void Cell::Deformation() {
 
-    double deform = R::runif(0, m_param->GetMaxDeform());
-    m_axis_len = std::min(4.0, m_axis_len + deform);
-    m_radius = m_param->GetRadius(m_axis_len);
+    double deform = R::runif(0, mParams->maxDeform());
+    mAxisLen = std::min(4.0, mAxisLen + deform);
+    mRadius = mParams->GetRadius(mAxisLen);
 
-    if (m_axis_len == 4.0) {
+    if (mAxisLen == 4.0) {
 
-        m_ready_to_divide = true;
+        mReadyToDivide = true;
 
     }
 
@@ -133,81 +133,81 @@ void Cell::Deformation() {
 
 bool Cell::ReadyToDivide() const {
 
-    return m_ready_to_divide;
+    return mReadyToDivide;
 
 }
 
 Point Cell::GetCoord() const {
 
-    return m_coordinates;
+    return mCoordinates;
 
 }
 
 void Cell::SetCoord(Point pt) {
     
-    m_coordinates = pt;
+    mCoordinates = pt;
 
 }
 
 double Cell::GetRadius() const {
 
-    return m_radius;
+    return mRadius;
 
 }
 
 void Cell::SetRadius(double rad) {
 
-    m_radius = rad;
+    mRadius = rad;
 
 }
 
 void Cell::SetAxisLength(double len) {
 
-    m_axis_len = len;
+    mAxisLen = len;
 
 }
 
 double Cell::GetAxisLength() const {
 
-    return m_axis_len;
+    return mAxisLen;
 
 }
 
 double Cell::GetAxisAngle() const {
 
-    return m_axis_ang;
+    return mAxisAng;
 
 }
 
 void Cell::SetGrowth(double rate) {
 
-    m_growth_rate = rate;
+    mGrowthRate = rate;
 
 }
 
 double Cell::GetGrowth() const {
 
-    return m_growth_rate;
+    return mGrowthRate;
 
 }
 
 void Cell::EnterRandomPointOfMitosis() {
 
-    m_in_mitosis = true;
-    m_axis_len = R::runif(2 * pow(2,0.5),4);
-    m_radius = m_param->GetRadius(m_axis_len);
+    mInMitosis = true;
+    mAxisLen = R::runif(2 * pow(2,0.5),4);
+    mRadius = mParams->GetRadius(mAxisLen);
     
 }
 
 double Cell::GetArea() const {
 
-    if (!m_in_mitosis) {
+    if (!mInMitosis) {
     
-        return M_PI * pow(m_radius, 2);
+        return M_PI * pow(mRadius, 2);
   
     } else {
 
-        return M_PI * pow(m_param->GetMaxRadius(), 2);
+        return M_PI * pow(mParams->maxRadius(), 2);
 
     }
 
