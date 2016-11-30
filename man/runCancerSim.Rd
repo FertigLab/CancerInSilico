@@ -2,7 +2,7 @@
 % Please edit documentation in R/CancerModels.R
 \name{runCancerSim}
 \alias{runCancerSim}
-\title{\code{runCancerSim} Runs the model}
+\title{\code{runCancerSim} Runs a cancer simulation given parameters}
 \usage{
 runCancerSim(initialNum, runTime, density = 0.01, cycleLengthDist = 48,
   inheritGrowth = FALSE, modelType = "DrasdoHohme2003",
@@ -19,7 +19,8 @@ runCancerSim(initialNum, runTime, density = 0.01, cycleLengthDist = 48,
 
 \item{cycleLengthDist}{cycle time distribution}
 
-\item{inheritGrowth}{whether or not daughter cells have the same cycle-length as parents}
+\item{inheritGrowth}{whether or not daughter cells have the same
+cycle-length as parents}
 
 \item{modelType}{the name of the cell-based model to use}
 
@@ -31,18 +32,27 @@ runCancerSim(initialNum, runTime, density = 0.01, cycleLengthDist = 48,
 
 \item{...}{model specific parameters (depends on modelType)}
 
-\item{cellTypes}{an array of S4 objects (each representing a different cell type)}
+\item{cellTypes}{an array of S4 objects (each representing a different
+cell type)}
 
-\item{cycleSyncProb}{the probability of cells being seed in interphase (not mitosis)}
+\item{cycleSyncProb}{the probability of cells being seed in interphase
+(not mitosis)}
 }
 \value{
 A CellModel containing all info from the model run
 }
 \description{
-\code{runCancerSim} Runs the model
+\code{runCancerSim} Runs a cancer simulation given parameters
 }
 \details{
-This function provides a centralized R interface to run c++ code for cell-based models implemented in this package. Standard parameters, as well as model-specific parameters, are passed in to this function along with a model name. This function then runs the model and returns a CellModel object containing all of the information from the model. This object can then be accessed with various functions designed to interact with the class. To see a list of available functions, there is a show() command implemented for CellModel objects.
+This function provides a centralized R interface to run c++
+code for cell-based models implemented in this package. Standard
+parameters, as well as model-specific parameters, are passed in to this
+function along with a model name. This function then runs the model and
+returns a CellModel object containing all of the information from the
+model. This object can then be accessed with various functions designed
+to interact with the class. To see a list of available functions, there
+is a show() command implemented for CellModel objects.
 }
 \examples{
 runCancerSim(1,8)

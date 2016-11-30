@@ -4,7 +4,7 @@
 \alias{getParameters}
 \title{\code{getParameters} get a named list of parameters in the model}
 \usage{
-getParameters(model, fullDist = FALSE)
+getParameters(model)
 }
 \arguments{
 \item{model}{A CellModel}

@@ -5,35 +5,20 @@
 \alias{CellModel-class}
 \title{CellModel}
 \description{
-An S4 class to represent the output of a cell-based model
+An S4 class that contains the output of a cell simulation,
+     along with all the parameters used to generate the simulation
 }
 \section{Slots}{
 
 \describe{
-\item{\code{mCells}}{A list object where each row of the list describes the state of all the cells in the model at a given time. Each cell is described over 6 columns: [1] x-coordinate, [2] y-coordinate, [3] radius, [4] axis length, [5] axis angle, [6] growth rate. For instance, the x-coordinates of the first 3 cells will be in columns 1,7,13.}
+\item{\code{mCells}}{A list object where each row of the list describes the
+state of all the cells in the model at a given time. Each cell is
+described over 6 columns: [1] x-coordinate, [2] y-coordinate, [3]
+radius, [4] axis length, [5] axis angle, [6] growth rate. For
+instance, the x-coordinates of the first 3 cells will be in columns
+1,7,13.}
 
-\item{\code{mInitialNumCells}}{the initial number of cells in the model}
-
-\item{\code{mRunTime}}{the total run time (hours) of the model}
-
-\item{\code{mInitialDensity}}{the density the cells were seeded at}
-
-\item{\code{mInheritGrowth}}{whether or not cells inherit growth rates from their parent}
-
-\item{\code{mOutputIncrement}}{the frequency of print statements during the run}
-
-\item{\code{mRandSeed}}{the random seed}
-
-\item{\code{mEpsilon}}{model specific parameter}
-
-\item{\code{mNG}}{model specific parameter}
-
-\item{\code{mTimeIncrement}}{amount of time elapsed in each model step}
-
-\item{\code{mRecordIncrement}}{time increment when cell data is recorded}
-
-\item{\code{mCycleLengthDist}}{initial distribution of cell-cycle lengths}
-
-\item{\code{mCycleSyncProb}}{the probability of cells being seed in interphase (not mitosis)}
+\item{\code{mParameters}}{A list object containing all parameters used to run
+the model}
 }}
 

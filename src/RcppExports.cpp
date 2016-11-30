@@ -5,14 +5,14 @@
 
 using namespace Rcpp;
 
-// CellModel
-Rcpp::List CellModel(Rcpp::List params);
-RcppExport SEXP CancerInSilico_CellModel(SEXP paramsSEXP) {
+// runCellSimulation
+Rcpp::List runCellSimulation(Rcpp::List Rparams);
+RcppExport SEXP CancerInSilico_runCellSimulation(SEXP RparamsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List >::type params(paramsSEXP);
-    rcpp_result_gen = Rcpp::wrap(CellModel(params));
+    Rcpp::traits::input_parameter< Rcpp::List >::type Rparams(RparamsSEXP);
+    rcpp_result_gen = Rcpp::wrap(runCellSimulation(Rparams));
     return rcpp_result_gen;
 END_RCPP
 }
