@@ -11,65 +11,63 @@ class Parameters {
 
   private:
 
-    double m_max_translation, m_max_rotate, m_max_deform;
-    double m_epsilon, m_delta;
-	double m_max_radius;
-	bool m_inherit_growth;
-	double m_nG;
-    double m_drug_time;
-    double m_boundary;
-    bool m_sync_cell_cycle;
+    /* list of parameters from R */
+    Rcpp::List mParams;
 
-	std::vector<double> m_slow_solver;
-	std::vector<double> m_fast_solver;
-	std::vector<double> m_growth_dist;
+    /* max radius of cell in Drasdo model */
+    mMaxRadius;
 
-    Rcpp::Function m_drug_effect;
+    /* lookup tables for radius-axis values */
+	std::vector<double> mSlowSolver;
+	std::vector<double> mFastSolver;
 
+    /* distribution of growth rates */
+	std::vector<double> mGrowthDist;
+
+    /* function that applies effect of drug to a growth rate */
+    Rcpp::Function mDrugEffect;
+
+    /* initialize lookup tables for radius-axis values */
     void InitializeRadiusSolver();
 	void InitSlowSolver();
 	void InitFastSolver();
+
+    /* get theta (radius) given axis length, use slow lookup */
+	double GetThetaSlow(double); 
+
+    /* hash axis length for fast lookup table */
 	int HashAxisLength(double);
+
 
 public:
 
-    Parameters(double max_rad) {
-		m_max_radius = max_rad;
-		InitializeRadiusSolver();
-	}
+    Parameters(double, Rcpp::List);
 
-    //Setters
-    void SetMaxTranslation(double trans) { m_max_translation = trans;}
-    void SetMaxRotate(double rot) { m_max_rotate = rot;}
-    void SetMaxDeform(double def) { m_max_deform = def;}
-    void SetResistanceEPSILON(double ep) { m_epsilon = ep;}
-    void SetCompressionDELTA(double dt) { m_delta = dt;}
-	void SetInheritGrowth(bool gr) { m_inherit_growth = gr;}
-	void StoreGrowthDistribution(Rcpp::NumericVector);
-	void SetNG(double ng) { m_nG = ng;}
-    void SetDrugEffect(Rcpp::Function de) {m_drug_effect = de;}
-    void SetDrugTime(double dt) { m_drug_time = dt;}
-    void SetBoundary(double rad) { m_boundary = rad;}
-    void SetSyncCellCycle(bool b) { m_sync_cell_cycle = b;}
+    /* general model parameters */
+    double initialNum() { return mParams["initialNum"];}
+    double runTime() { return mParams["runTime"];}
+    double density() { return mParams["density"];}
+    double inheritGrowth() { return mParams["inheritGrowth"];}
+    double drugTime() { return mParams["drugTime"];}
+    double boundary() { return mParams["boundary"];}
+    double randSeed() { return mParams["randSeed"];}
+    double syncCycles() { return mParams["syncCycles"];}
+    double outputIncrement() { return mParams["outputIncrement"];}
+    double recordIncrement() { return mParams["recordIncrement"];}
+    double timeIncrement() { return mParams["timeIncrement"];}
 
-    //Getters
-    double GetMaxTranslation() { return m_max_translation;}
-    double GetMaxRotate() { return m_max_rotate;}
-    double GetMaxDeform() { return m_max_deform;}
-    double GetResistanceEPSILON() { return m_epsilon;}
-    double GetCompressionDELTA() { return m_delta;}
-	bool InheritGrowth() { return m_inherit_growth;}
-	double GetNG() { return m_nG;}
-	double GetMaxRadius() { return m_max_radius;}
-    double GetDrugEffect(double gr) { return m_drug_effect(gr);}
-    double GetDrugTime() { return m_drug_time;}
-    double GetBoundary() { return m_boundary;}
-    bool GetSyncCellCycle() { return m_sync_cell_cycle;}
-
+    /* Drasdo specific parameters */
+    double nG() { return mParams["nG"];}
+    double epsilon() { return mParams["epsilon"];}
+    double delta() { return mParams["delta"];}
+    double maxDeform() { return mParams["maxGrowth"];}
+    double maxTranslation() { return mParams["maxGrowth"];}
+    double maxRotate() { return mParams["maxGrowth"];}
+   
+    double GetDrugEffect(double gr) { return mDrugEffect(gr);}
 	double GetRandomGrowthRate();
-	double GetMaxGrowth();
+
     double GetRadius(double);
-	double GetThetaSlow(double); //
 
 };
 
