@@ -77,7 +77,7 @@ class TestSpatialHash {
 };
 
 CATCH_TEST_CASE("Test Spatial Hash and its components") {
-/*
+
     CATCH_SECTION("Point Functions") {
 
         Point p1 = Point(1,1);
@@ -114,7 +114,7 @@ CATCH_TEST_CASE("Test Spatial Hash and its components") {
         hash.Insert(obj_2.coord, &obj_2);
         hash.Insert(obj_3.coord, &obj_3);
 
-        CATCH_SECTION("hash cells to points") {
+/*        CATCH_SECTION("hash cells to points") {
 
             CATCH_REQUIRE(pt_1.x == TEST_APPROX(0.348));
             CATCH_REQUIRE(pt_1.y == TEST_APPROX(0.348));
@@ -125,7 +125,7 @@ CATCH_TEST_CASE("Test Spatial Hash and its components") {
 
         }
 
-       CATCH_SECTION("add objects to hash map") {
+/*       CATCH_SECTION("add objects to hash map") {
 
             CATCH_REQUIRE(hash.size() == 3);
             CATCH_REQUIRE(internal_map->size() == 3);
@@ -195,7 +195,7 @@ CATCH_TEST_CASE("Test Spatial Hash and its components") {
 
             CATCH_REQUIRE_NOTHROW(hash.Delete(obj_2.coord, &obj_2));
             CATCH_REQUIRE_NOTHROW(hash.Delete(obj_3.coord, &obj_3));
-//            CATCH_REQUIRE_THROWS(hash.Delete(obj_3.coord, &obj_3));
+            CATCH_REQUIRE_THROWS(hash.Delete(obj_3.coord, &obj_3));
             CATCH_REQUIRE(internal_map->size() == 1);
             CATCH_REQUIRE(internal_list->size() == 1);
             CATCH_REQUIRE(internal_map->count(new_2) == 0);
@@ -322,9 +322,9 @@ CATCH_TEST_CASE("Test Spatial Hash and its components") {
 
             delete &del_iter;            
     
-        }
+        }*/
 
     }
-*/
+
 }
 

@@ -12,6 +12,8 @@ Rcpp::List runCellSimulation(
 
 ) {
 
+    std::cout << Rparams.size() << std::endl;
+
     Rcpp::Environment baseEnv("package:base");
     Rcpp::Function setSeed = baseEnv["set.seed"];
     setSeed(Rparams["randSeed"]);
@@ -20,7 +22,7 @@ Rcpp::List runCellSimulation(
 
     Simulation mainSim = Simulation(Cparams);
 
-    main_sim.Run();
+    mainSim.Run();
     Rcpp::List cellData = mainSim.GetCellsAsList();
     
     delete Cparams;

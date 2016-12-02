@@ -1,10 +1,13 @@
 #include <cmath>
+#include <testthat.h> 
 
 #include "Cell.h"
 #include "CellPopulation.h"
 #include "Parameters.h"
 #include "SpatialHash.h"
 #include "Point.h"
+
+#define TEST_APPROX(x) Approx(x).epsilon(0.01)
 
 class TestCellPopulation {
 
@@ -42,14 +45,17 @@ class TestCellPopulation {
 };
 
 CATCH_TEST_CASE("Test Cell Population") {
-/*
-    Parameters *params = new Parameters(pow(2,0.5));
 
-    params->SetMaxTranslation(1.0);
-    params->SetMaxDeform(0.15);
-    params->SetMaxRotate(2.0);
-    params->SetResistanceEPSILON(0.05);
-    params->SetCompressionDELTA(5.0);
+    Rcpp::Environment env;
+    env = Rcpp::Environment::namespace_env("CancerInSilico");
+
+    Rcpp::List Rparams = env.find("testParams");
+
+    CATCH_REQUIRE(Rparams.size() == 16);
+
+    Parameters* params;
+
+    CATCH_REQUIRE_NOTHROW(params = new Parameters(pow(2, 0.5), Rparams));
 
     Rcpp::Environment baseEnv("package:base");
     Rcpp::Function setSeed = baseEnv["set.seed"];
@@ -65,7 +71,6 @@ CATCH_TEST_CASE("Test Cell Population") {
 
     }
 
-    params->StoreGrowthDistribution(std::vector<double> (100,0.1));
     CATCH_REQUIRE_NOTHROW(pop.AddDrug());    
 
     CATCH_SECTION("Test Add Drug") {
@@ -74,7 +79,7 @@ CATCH_TEST_CASE("Test Cell Population") {
                 
         for (; iter != test_pop.hash->end(); ++iter) {
         
-            CATCH_REQUIRE((*iter).GetGrowth() == 0.1);
+            CATCH_REQUIRE((*iter).GetGrowth() == TEST_APPROX(0.00100129));
 
         }
 
@@ -99,10 +104,10 @@ CATCH_TEST_CASE("Test Cell Population") {
 
     CATCH_SECTION("Test ValidCellPlacement") {
 
-        CATCH_REQUIRE(!pop.ValidCellPlacement(&temp));
+        CATCH_REQUIRE(!pop.ValidCellPlacement(&temp, 100));
         existing_loc.x += 1.99;
         temp.SetCoord(existing_loc);
-        CATCH_REQUIRE(!pop.ValidCellPlacement(&temp));
+        CATCH_REQUIRE(!pop.ValidCellPlacement(&temp, 100));
 
     }
 
@@ -180,5 +185,5 @@ CATCH_TEST_CASE("Test Cell Population") {
     }
 
     delete params;
-*/
+
 }

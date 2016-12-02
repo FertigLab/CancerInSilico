@@ -5,32 +5,50 @@
 
 #include "Parameters.h"
 
-Parameters(double maxRad, Rcpp::List Rparams) {
+Parameters::Parameters(double maxRad, Rcpp::List Rparams) {
 
     mParams = Rparams;
     mMaxRadius = maxRad;
 	InitializeRadiusSolver();
 
+    StoreTimeIncrement();
+    StoreUpdateParameters();
+    StoreGrowthDistribution();
+
+}
+
+void Parameters::StoreTimeIncrement() {
+
+    Rcpp::NumericVector cycleDist = mParams["cycleLengthDist"];
+    double minCycle = Rcpp::min(cycleDist);
+
     double t1 = delta() / (4 * nG() * (4 - pow(2, 0.5)));
-    double minCycle = Rcpp::min(mParams["cycleLengthDist"]);
     double t2 = delta() * (minCycle - 1) / (8 * nG() * (pow(2, 0.5) - 1));
+
     mParams["timeIncrement"] = std::min(t1, t2);
+
+}
+
+void Parameters::StoreUpdateParameters() {
 
     mParams["maxDeform"] = 2 * timeIncrement() * nG() * (4 - pow(2, 0.5));
     mParams["maxTranslation"] = delta() / 2;
     mParams["maxRotate"] = acos((16 + pow(delta(), 2) - 4 * delta()) / 16);
 
-    for (unsigned int i = 0; i < mParams["cycleLengthDist"].size(); ++i) {
+}
+
+void Parameters::StoreGrowthDistribution() {
+
+    Rcpp::NumericVector cycleDist = mParams["cycleLengthDist"];
+
+    for (unsigned int i = 0; i < cycleDist.size(); ++i) {
 
         double numer = 2 * (pow(2, 0.5) - 1) * timeIncrement() * nG();
-        mGrowthDist.push_back(numer / mParams["cycleLengthDist"][i]);
+        mGrowthDist.push_back(numer / cycleDist[i]);
 
     }
 
-    mDrugEffect = mParams["drugEffect"];
-
 }
-
 
 void Parameters::InitializeRadiusSolver() {
 
@@ -42,7 +60,7 @@ void Parameters::InitializeRadiusSolver() {
 //hardcoded for max radius = sqrt(2)
 void Parameters::InitSlowSolver() {
 
-    double theta, num, denom;
+    double theta, numer, denom;
 
     for (int i = 0; i <= 31400; ++i) {
 
@@ -59,7 +77,8 @@ void Parameters::InitSlowSolver() {
 double Parameters::GetThetaSlow(double axis) {
 
     std::vector<double>::iterator lower;
-    lower = std::lower_bound(mSlowSolver.begin(), mSlowSolver.end(), axis)
+    lower = std::lower_bound(mSlowSolver.begin(), mSlowSolver.end(),
+                                axis, GreaterThan());
 
     return (double) (lower - mSlowSolver.begin()) / 10000;
 
@@ -107,7 +126,8 @@ double Parameters::GetRandomGrowthRate() {
 
 double Parameters::GetDrugEffect(double growthRate) {
 
-    return Rcpp::as<double>(mDrugEffect(growthRate));
+    Rcpp::Function de = mParams["drugEffect"];
+    return Rcpp::as<double>(de(growthRate));
 
 }
 

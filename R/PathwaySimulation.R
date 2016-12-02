@@ -22,11 +22,11 @@ sampSize, singleCell = FALSE, timeWindow = 1, downReg = FALSE) {
     if (!singleCell) { sampSize <- 1 }
 
     # find closest, valid, sampling frequency
-    sampFreq <- .recordIncrement(model) *
-                    ceiling(sampFreq / .recordIncrement(model))
+    sampFreq <- model@params[['recordIncrement']] *
+                    ceiling(sampFreq / model@params[['recordIncrement']])
 
     # vector of times to get gene expression for
-    times <- seq(0, .runTime(model) - timeWindow, sampFreq)
+    times <- seq(0, model@params[['runTime']] - timeWindow, sampFreq)
 
     # create return matrix
     gsMatrix <- matrix(nrow = length(pathway[["genes"]]),

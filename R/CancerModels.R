@@ -60,17 +60,16 @@ runCancerSim <- function(initialNum,
     params[['syncCycles']] <- syncCycles
     params[['outputIncrement']] <- outputIncrement
     params[['recordIncrement']] <- recordIncrement
-    params[['...']] <- list(...)
 
     # make sure all arguments are valid
-    checkParameters(params)
+    checkParameters(params, ...)
 
     # run model
-    runModel(params)
+    return (runModel(params, ...))
 
 }
     
-checkParameters <- function(params) {
+checkParameters <- function(params, ...) {
 
     # general parameters check
     if (params[['density']] > 0.7) {
@@ -81,7 +80,7 @@ checkParameters <- function(params) {
 
 }
 
-runModel <- function(params) {
+runModel <- function(params, ...) {
 
     # list of valid model types
     validMods <- c('DrasdoHohme2003')
@@ -94,23 +93,23 @@ runModel <- function(params) {
     # call specific model
     } else if (params[['modelType']] == 'DrasdoHohme2003') {
 
-        return (runDrasdoHohme(params))
+        return (runDrasdoHohme(params, ...))
 
     }
 
 }
 
-runDrasdoHohme <- function(params) {
+runDrasdoHohme <- function(params, ...) {
   
     ## get model specific parameters
-    params[['nG']] <- params[['...']]$nG
-    params[['epsilon']] <- params[['...']]$epsilon
-    params[['delta']] <- params[['...']]$delta
+    params[['nG']] <- list(...)$nG
+    params[['epsilon']] <- list(...)$epsilon
+    params[['delta']] <- list(...)$delta
 
     ## set to defaults if not provided
-    if (is.null(params[['nG']])) {nG = 24}
-    if (is.null(params[['epsilon']])) {epsilon = 10}
-    if (is.null(params[['delta']])) {delta = 0.2}
+    if (is.null(params[['nG']])) {params[['nG']] = 24}
+    if (is.null(params[['epsilon']])) {params[['epsilon']] = 10}
+    if (is.null(params[['delta']])) {params[['delta']] = 0.2}
   
     output <- runCellSimulation(params)
     cellMat <- createCellModel(params, output)

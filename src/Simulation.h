@@ -10,15 +10,15 @@ class Simulation {
 
   private:
 
-    CellPopulation* m_cells;
-    Parameters* m_param;
+    CellPopulation* mCells;
+    Parameters* mParams;
 
   public:
 
-    Simulation(Parameters*, int, double);
+    Simulation(Parameters*);
     ~Simulation();
 
-    void Run(Rcpp::List);
+    void Run();
     Rcpp::List GetCellsAsList();
 
 };

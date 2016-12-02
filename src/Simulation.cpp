@@ -3,39 +3,39 @@
 #include <Rcpp.h>
 #include <cmath>
 
-Simulation::Simulation(Parameters *par, int init_num, double den) {
+Simulation::Simulation(Parameters *par) {
 
-    m_param = par;
-    m_cells = new CellPopulation(m_param, init_num, den);
+    mParams = par;
+    mCells = new CellPopulation(mParams, mParams->initialNum(),
+                                mParams->density());
 
 }
 
 Simulation::~Simulation() {
 
-	delete m_cells;
+	delete mCells;
 
 }
 
-void Simulation::Run(Rcpp::List params) {
+void Simulation::Run() {
 
 	double time = 0.0;
     bool drug_added = false;
-    double timeIncrement = params["timeIncrement"];
-    int recordStep = (double) params["recordIncrement"] / timeIncrement;
-    int outputStep = (double) params["outputIncrement"] / timeIncrement;
-    int totalSteps = (double) params["runtime"] / timeIncrement;
+    int recordStep = mParams->recordIncrement() / mParams->timeIncrement();
+    int outputStep = mParams->outputIncrement() / mParams->timeIncrement();
+    int totalSteps = mParams->runTime() / mParams->timeIncrement();
 
     for (int i = 0; i < totalSteps; i++) {
 
         if (i % (recordStep ? recordStep : 1) == 0) {
 
-            m_cells->RecordPopulation();
+            mCells->RecordPopulation();
         
         }
 
-        if (!drug_added && time > m_param->GetDrugTime()) {
+        if (!drug_added && time > mParams->drugTime()) {
     
-            m_cells->AddDrug();
+            mCells->AddDrug();
             drug_added = true;
 
         }
@@ -45,22 +45,22 @@ void Simulation::Run(Rcpp::List params) {
         if (i % outputStep == 0) {
 
             Rprintf("time = %.2f\n", ceil(time));
-            Rprintf("size = %d\n", m_cells->size());
+            Rprintf("size = %d\n", mCells->size());
 
         }
 
-        m_cells->OneTimeStep();
-		time += timeIncrement;
+        mCells->OneTimeStep();
+		time += mParams->timeIncrement();
 
     }
 
     Rprintf("time = %.2f\n", time);
-    Rprintf("size = %d\n", m_cells->size());
+    Rprintf("size = %d\n", mCells->size());
 
 }
 
 Rcpp::List Simulation::GetCellsAsList() {
 
-    return m_cells->GetPopulationAsList();
+    return mCells->GetPopulationAsList();
 
 }

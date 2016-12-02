@@ -3,7 +3,6 @@
 export(getCycleLengths)
 export(getDensity)
 export(getNumberOfCells)
-export(getParameters)
 export(inSilicoGeneExpression)
 export(interactivePlot)
 export(plotCells)

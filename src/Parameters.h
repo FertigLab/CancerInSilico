@@ -4,8 +4,17 @@
 #define PARAMETERS_HPP
 
 #include <vector>
-#include <testthat.h>
 #include <Rcpp.h>
+
+struct GreaterThan {
+
+    bool operator()(double a, double b) const {
+        
+        return a > b;
+
+    }
+
+};
 
 class Parameters {
 
@@ -24,20 +33,18 @@ class Parameters {
     /* distribution of growth rates */
 	std::vector<double> mGrowthDist;
 
-    /* function that applies effect of drug to a growth rate */
-    Rcpp::Function mDrugEffect;
-
     /* initialize lookup tables for radius-axis values */
     void InitializeRadiusSolver();
 	void InitSlowSolver();
 	void InitFastSolver();
 
-    /* get theta (radius) given axis length, use slow lookup */
-	double GetThetaSlow(double); 
-
     /* hash axis length for fast lookup table */
 	int HashAxisLength(double);
 
+    /* process parameters */
+    void StoreTimeIncrement();   
+    void StoreUpdateParameters();
+    void StoreGrowthDistribution();
 
 public:
 
@@ -60,16 +67,21 @@ public:
     double nG() { return mParams["nG"];}
     double epsilon() { return mParams["epsilon"];}
     double delta() { return mParams["delta"];}
-    double maxDeform() { return mParams["maxGrowth"];}
-    double maxTranslation() { return mParams["maxGrowth"];}
-    double maxRotate() { return mParams["maxGrowth"];}
+    double maxDeform() { return mParams["maxDeform"];}
+    double maxTranslation() { return mParams["maxTranslation"];}
+    double maxRotate() { return mParams["maxRotate"];}
    
     double maxRadius() { return mMaxRadius;}
+
+    void setBoundary(double b) { mParams["boundary"] = b;}
 
     double GetDrugEffect(double);
 	double GetRandomGrowthRate();
 
     double GetRadius(double);
+
+    /* get theta (radius) given axis length, use slow lookup */
+	double GetThetaSlow(double); 
 
 };
 

@@ -13,13 +13,13 @@
 #'      the model
 #' @export
 
-setClass("CellModel", representation(mCells = "list", mParameters = "list"))
+setClass("CellModel", representation(cells = "list", params = "list"))
 
 #### constructor ####
 
 createCellModel <- function(params, output) {
 
-    return (new("CellModel", mCells = output, mParameters = params))
+    return (new("CellModel", cells = output, params = params))
 
 }
 
@@ -28,7 +28,7 @@ createCellModel <- function(params, output) {
 # helper function to find corresponding row of a given time
 timeToRow <- function(model, time) {
 
-    return (floor(time / .recordIncrement(model)) + 1)
+    return (floor(time / model@params[['recordIncrement']] + 1))
 
 }
 
@@ -40,10 +40,10 @@ getColumn <- function(model, time, col) {
     row <- timeToRow(model, time)
 
     # get the sequence of indices that correspond to column
-    indices <- seq(col,length(model@mCells[[row]]), 6)
+    indices <- seq(col,length(model@cells[[row]]), 6)
 
     # return the values at these indices
-    return(model@mCells[[row]][indices])
+    return(model@cells[[row]][indices])
 
 }    
 
@@ -104,8 +104,8 @@ getCycleLengths <- function(model, time) {
     grRates <- getGrowthRates(model, time)
 
     # convert the raw growth rates to cell cycle time in hours
-    return (1 + 2 * (sqrt(2) - 1) * model@mParameters["timeIncrement"] *
-        model@mParameters["nG"] / gRates)
+    return (1 + 2 * (sqrt(2) - 1) * model@params[["timeIncrement"]] *
+        model@params[["nG"]] / grRates)
 
 }
 
@@ -149,22 +149,6 @@ getDensity <- function(model,time) {
 
 }
 
-
-#' \code{getParameters} get a named list of parameters in the model
-#'
-#' @param model A CellModel
-#' @param fullDist [bool] return full distribution of cycle length
-#' @return a named list of parameters in the model
-#' @examples
-#' getParameters(runCancerSim(1,1))
-#' @export
-
-getParameters <- function(model) {
-
-    return (model@mParameters)
-
-}
-
 #' \code{interactivePlot} plots a CellModel and allows the user to control the plot with various commands
 #'
 #' @param model A CellModel
@@ -178,7 +162,7 @@ interactivePlot <- function(model, time = 0) {
     default_arg = 1
 
     # while time is valid
-    while (time <= .runTime(model) && time >= 0) {
+    while (time <= model@params[['runTime']] && time >= 0) {
       
         # call internal function which plots cells at current time
         plotCells(model,time)
@@ -341,7 +325,7 @@ plotCells <- function(model,time,drawBoundary = TRUE)  {
     # draw boundary
     if (drawBoundary) {
 
-        symbols(0,0,circles=.boundary(model), inches=FALSE, add=TRUE,
+        symbols(0,0,circles= model@params[['boundary']], inches=FALSE, add=TRUE,
                     lwd = 2)
 
     }
