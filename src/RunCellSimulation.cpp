@@ -12,8 +12,6 @@ Rcpp::List runCellSimulation(
 
 ) {
 
-    std::cout << Rparams.size() << std::endl;
-
     Rcpp::Environment baseEnv("package:base");
     Rcpp::Function setSeed = baseEnv["set.seed"];
     setSeed(Rparams["randSeed"]);

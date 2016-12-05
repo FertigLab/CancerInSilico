@@ -21,17 +21,27 @@ void Simulation::Run() {
 
 	double time = 0.0;
     bool drug_added = false;
-    int recordStep = mParams->recordIncrement() / mParams->timeIncrement();
-    int outputStep = mParams->outputIncrement() / mParams->timeIncrement();
-    int totalSteps = mParams->runTime() / mParams->timeIncrement();
+    double recordTime = 0.0, outputTime = 0.0;
 
-    for (int i = 0; i < totalSteps; i++) {
+    while (time <= mParams->runTime()) {
 
-        if (i % (recordStep ? recordStep : 1) == 0) {
+        Rcpp::checkUserInterrupt();
+
+        if (time >= recordTime) {
 
             mCells->RecordPopulation();
+            recordTime += mParams->recordIncrement();
         
         }
+
+        if (time >= outputTime) {
+
+            Rprintf("time = %.2f\n", ceil(time));
+            Rprintf("size = %d\n", mCells->size());
+
+            outputTime += mParams->outputIncrement();
+
+        }            
 
         if (!drug_added && time > mParams->drugTime()) {
     
@@ -40,22 +50,19 @@ void Simulation::Run() {
 
         }
         
-        Rcpp::checkUserInterrupt();
-
-        if (i % outputStep == 0) {
-
-            Rprintf("time = %.2f\n", ceil(time));
-            Rprintf("size = %d\n", mCells->size());
-
-        }
-
         mCells->OneTimeStep();
 		time += mParams->timeIncrement();
 
-    }
+        if (time >= mParams->runTime()
+                && time < mParams->runTime() + mParams->timeIncrement()) {
 
-    Rprintf("time = %.2f\n", time);
-    Rprintf("size = %d\n", mCells->size());
+            time = mParams->runTime();
+            outputTime = time;
+            recordTime = time;
+
+        }
+
+    }
 
 }
 

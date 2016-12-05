@@ -28,7 +28,15 @@ createCellModel <- function(params, output) {
 # helper function to find corresponding row of a given time
 timeToRow <- function(model, time) {
 
-    return (floor(time / model@params[['recordIncrement']] + 1))
+    if (time == model@params[['runTime']]) {
+
+        return (length(model@cells))
+
+    } else {
+
+        return (floor(time / model@params[['recordIncrement']] + 1))
+
+    }
 
 }
 
@@ -135,17 +143,27 @@ getNumberOfCells <- function(model, time) {
 
 getDensity <- function(model,time) {
 
-    # get coordinates of each cell
-    coords <- getCoordinates(model, time)
-
-    #get radius of each cell
+    # get radius of each cell
     radii <- getRadii(model, time)
-    
-    # farthest distance from (0,0) of cell
-    d <- max(sqrt(coords[,1]**2 + coords[,2]**2) + radii)
 
-    # ratio of area of all cells and the disk which contains them       
-    return(sum(radii ** 2) / (d ^ 2))
+    # not sure about how R treats non-logical values, so this is safe
+    if (model@params[['boundary']] != FALSE) {
+
+        # ratio of area of all cells and the disk which contains them       
+        return(sum(radii ** 2) / (model@params[['boundary']] ^ 2))
+        
+    } else {
+
+        # get coordinates of each cell
+        coords <- getCoordinates(model, time)
+
+        # farthest distance from (0,0) of cell
+        d <- max(sqrt(coords[,1]**2 + coords[,2]**2) + radii)
+
+        # ratio of area of all cells and the disk which contains them       
+        return(sum(radii ** 2) / (d ^ 2))
+
+    }
 
 }
 
