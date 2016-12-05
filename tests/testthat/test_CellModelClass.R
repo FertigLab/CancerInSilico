@@ -55,7 +55,8 @@ test_that("getGrowthRates", {
 
 test_that("getCycleLengths", {
 
-    expect_equal(getCycleLengths(PS_test_model, 2), c(4.77, 4.77))
+    expect_equal(getCycleLengths(PS_test_model, 2), c(6.3, 6.3),
+        tolerance = 0.01)
 
 })
 
@@ -67,7 +68,17 @@ test_that("getNumberOfCells", {
 
 test_that("getDensity", {
 
-        expect_equal(getDensity(PS_test_model, 2), 2)
+    expect_equal(getDensity(PS_test_model, 2), 0.02)
 
 })
+
+test_that("getNumNeighbors", {
+
+
+    expect_equal(getNumNeighbors(PS_test_model, 2, 1), 1)    
+
+})
+
+
+
 

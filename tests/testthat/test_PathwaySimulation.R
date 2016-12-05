@@ -22,9 +22,9 @@ test_that("getScalingFactor", {
 
     # test GROWTH scaling factor
     expect_equal(getScalingFactor(PS_test_model, 1:2, 0, 1, 'Growth'),
-                c(0.966, 0.974), tolerance = 1e-3)
+                c(0.444, 0.919), tolerance = 1e-3)
     expect_equal(getScalingFactor(PS_test_model, 1:2, 1, 1, 'Growth'),
-                c(0.966, 0.974), tolerance = 1e-3)
+                c(0.444, 0.919), tolerance = 1e-3)
 
 })
 
@@ -60,8 +60,8 @@ test_that("simulatePathway - pooled", {
     ## test GROWTH
     gs <- unname(simulatePathway(PS_test_model, pathway, 'Growth',
                     sampFreq=1, sampSize = 1, singleCell = FALSE))
-    expect_equal(gs[,1], 4 / 1.03 + base_exp, tolerance=1e-3)
-    expect_equal(gs[,2], 4 / 1.03 + base_exp, tolerance=1e-3)
+    expect_equal(gs[,1], 2.725 + base_exp, tolerance=1e-3)
+    expect_equal(gs[,2], 2.725 + base_exp, tolerance=1e-3)
 
 })
 
@@ -103,10 +103,10 @@ test_that("simulatePathway - single cell", {
     ## test GROWTH
     gs <- unname(simulatePathway(PS_test_model, pathway, 'Growth',
                     sampFreq=1, sampSize = 2, singleCell = TRUE))
-    expect_equal(gs[,1], 4 / 1.035 + base_exp, tolerance = 1e-3)
-    expect_equal(gs[,2], 4 / 1.027 + base_exp, tolerance = 1e-3)
-    expect_equal(gs[,3], 4 / 1.035 + base_exp, tolerance = 1e-3)
-    expect_equal(gs[,4], 4 / 1.027 + base_exp, tolerance = 1e-3)
+    expect_equal(gs[,1], 1.775 + base_exp, tolerance = 1e-3)
+    expect_equal(gs[,2], 3.675 + base_exp, tolerance = 1e-3)
+    expect_equal(gs[,3], 1.775 + base_exp, tolerance = 1e-3)
+    expect_equal(gs[,4], 3.675 + base_exp, tolerance = 1e-3)
 
 })
 
