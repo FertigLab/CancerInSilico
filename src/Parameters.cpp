@@ -127,7 +127,8 @@ double Parameters::GetRandomGrowthRate() {
 double Parameters::GetDrugEffect(double growthRate) {
 
     Rcpp::Function de = mParams["drugEffect"];
-    return Rcpp::as<double>(de(growthRate));
+    double cycleLength = 1 + 2 * (pow(2, 0.5) - 1) * timeIncrement() * nG() / growthRate;
+    return Rcpp::as<double>(de(cycleLength));
 
 }
 

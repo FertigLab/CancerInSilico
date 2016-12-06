@@ -21,10 +21,12 @@ Rcpp::List runCellSimulation(
     Simulation mainSim = Simulation(Cparams);
 
     mainSim.Run();
-    Rcpp::List cellData = mainSim.GetCellsAsList();
+    Rcpp::List cellModel;
+    cellModel["cells"] = mainSim.GetCellsAsList();
+    cellModel["params"] = Cparams->GetRparameters();
     
     delete Cparams;
-    return cellData;
+    return cellModel;
 
 }
 

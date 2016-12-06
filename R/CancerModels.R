@@ -112,7 +112,7 @@ runDrasdoHohme <- function(params, ...) {
     if (is.null(params[['delta']])) {params[['delta']] = 0.2}
   
     output <- runCellSimulation(params)
-    cellMat <- createCellModel(params, output)
+    cellMat <- createCellModel(output[['params']], output[['cells']])
 
     return(cellMat)
   

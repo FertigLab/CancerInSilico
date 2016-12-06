@@ -50,6 +50,8 @@ public:
 
     Parameters(double, Rcpp::List);
 
+    Rcpp::List GetRparameters() { return mParams;}
+
     /* general model parameters */
     double initialNum() { return mParams["initialNum"];}
     double runTime() { return mParams["runTime"];}
