@@ -317,10 +317,19 @@ plotCells <- function(model,time,drawBoundary = TRUE)  {
     axis_len <- getAxisLength(model, time)
     axis_ang <- getAxisAngle(model, time)
 
-    # find a square that contains all cells
-    mn <- min(coords) - 2
-    mx <- max(coords) + 2
-    
+    if (model@params[['boundary']]) {
+
+        mn <- -model@params[['boundary']] - 2
+        mx <- model@params[['boundary']] + 2
+
+    } else {
+
+        mn <- min(coords) - 2
+        mx <- max(coords) + 2
+
+    }
+
+     
     # create the plot template
     plot(c(mn, mx), c(mn, mx), main = paste("Plot of CellModel At Time",
         time), xlab = "", ylab = "", type = "n", asp = 1)

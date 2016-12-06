@@ -79,7 +79,7 @@ CATCH_TEST_CASE("Test Cell Population") {
                 
         for (; iter != test_pop.hash->end(); ++iter) {
         
-            CATCH_REQUIRE((*iter).GetGrowth() == TEST_APPROX(0.00100129));
+            CATCH_REQUIRE((*iter).GetGrowth() == TEST_APPROX(0.01735));
 
         }
 
