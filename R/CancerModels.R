@@ -20,7 +20,7 @@
 
 runCancerSim <- function(initialNum,
                          runTime,
-                         cellTypes,
+                         cellTypes = NULL,
                          cellTypeDist,
                          density = 0.01,
                          cycleLengthDist = 12,
@@ -43,6 +43,9 @@ runCancerSim <- function(initialNum,
 
     } else {
 
+      # Make a vector of CellType S4 objects based on user input
+      user_cellTypes <- getCellTypesObj(cellTypes, ...)
+
       return (runDrasdoHohme(initialNum,
                              runTime,
                              density,
@@ -55,7 +58,7 @@ runCancerSim <- function(initialNum,
                              drugTime,
                              boundary,
                              syncCycles,
-                             cellTypes,
+                             user_cellTypes,
                              cellTypeDist,
                              ...))
 
@@ -210,5 +213,38 @@ calcBoundary <- function(rawOutput, density, boundary) {
         return (max(sqrt(cellArea / (pi * density)), boundary))
 
     }
+
+}
+
+#' \code{getCellTypesObj} Returns a vector of CellType S4 objects specified by parameter cellTypes
+#'
+#' @details Used to set default cellTypes in runCancerSim
+#' @param cellTypes a vector representing the types of cells to create. Can be NULL, a vector of characters, or a vector of the S4 Objects themselves
+#' @return a vector of CellType S4 objects
+
+getCellTypesObj <- function(cellTypes=NULL, ...) {
+
+  # If no cellTypes specified, return vector of single NORMAL cell type
+  if (is.null(cellTypes)) {
+
+    return(new("CellType", mType="NORMAL"))
+
+  }
+  
+  # cellTypes as cell type names
+  if (all(is.character(cellTypes))) {
+
+    return(sapply(cellTypes, function(ct) {return(new("CellType", mType=ct))}))
+
+  }
+    
+  # cellTypes as CellType S4 objects
+  if (all(class(cellTypes) == 'CellType')) {
+  
+    return(cellTypes)
+
+  }
+  
+  stop(class(cellTypes), 'is an invalid class for CellTypes')
 
 }
