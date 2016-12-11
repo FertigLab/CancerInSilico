@@ -114,18 +114,18 @@ CATCH_TEST_CASE("Test Spatial Hash and its components") {
         hash.Insert(obj_2.coord, &obj_2);
         hash.Insert(obj_3.coord, &obj_3);
 
-/*        CATCH_SECTION("hash cells to points") {
+        CATCH_SECTION("hash function") {
 
-            CATCH_REQUIRE(pt_1.x == TEST_APPROX(0.348));
-            CATCH_REQUIRE(pt_1.y == TEST_APPROX(0.348));
-            CATCH_REQUIRE(pt_2.x == TEST_APPROX(3.137));
-            CATCH_REQUIRE(pt_2.y == TEST_APPROX(0.348));
-            CATCH_REQUIRE(pt_3.x == TEST_APPROX(-7.319));
-            CATCH_REQUIRE(pt_3.y == TEST_APPROX(-1.743));
+            CATCH_REQUIRE(pt_1.x == 0);
+            CATCH_REQUIRE(pt_1.y == 0);
+            CATCH_REQUIRE(pt_2.x == 4);
+            CATCH_REQUIRE(pt_2.y == 0);
+            CATCH_REQUIRE(pt_3.x == -10);
+            CATCH_REQUIRE(pt_3.y == -3);
 
         }
 
-/*       CATCH_SECTION("add objects to hash map") {
+       CATCH_SECTION("add objects to hash map") {
 
             CATCH_REQUIRE(hash.size() == 3);
             CATCH_REQUIRE(internal_map->size() == 3);
@@ -176,12 +176,12 @@ CATCH_TEST_CASE("Test Spatial Hash and its components") {
         Point new_1 = test_hash.TestHash(obj_1);
         Point new_2 = test_hash.TestHash(obj_2);
 
-        CATCH_REQUIRE_NOTHROW(hash.Update(orig_1, new_1));
-        CATCH_REQUIRE_NOTHROW(hash.Update(orig_2, new_2));
+        CATCH_REQUIRE_NOTHROW(hash.Update(orig_1, obj_1.coord));
+        CATCH_REQUIRE_NOTHROW(hash.Update(orig_2, obj_2.coord));
 
         CATCH_SECTION("update objects") {
 
-            CATCH_REQUIRE_THROWS(hash.Update(orig_1, new_1));
+            CATCH_REQUIRE_THROWS(hash.Update(orig_1, obj_1.coord));
             CATCH_REQUIRE(internal_map->size() == 3);
             CATCH_REQUIRE(internal_list->size() == 3);
             CATCH_REQUIRE(internal_map->count(pt_1) == 0);
@@ -322,7 +322,7 @@ CATCH_TEST_CASE("Test Spatial Hash and its components") {
 
             delete &del_iter;            
     
-        }*/
+        }
 
     }
 

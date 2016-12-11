@@ -1,4 +1,4 @@
-context("Model Output Testing")
+context("Testing functions in CancerModels.R")
 
 test_that("no NA values in output", {
   
