@@ -9,30 +9,24 @@
 
 CATCH_TEST_CASE("Test Cell") {
 
-    Parameters params = Parameters(pow(2,0.5));
+    Rcpp::Environment env;
+    env = Rcpp::Environment::namespace_env("CancerInSilico");
 
-    params.SetMaxTranslation(0.3);
-    params.SetMaxRotate(2.0);
-    params.SetMaxDeform(0.1);
+    Rcpp::List Rparams = env.find("testParams");
 
-    CATCH_SECTION("Divide inherits parent cell type") {
+    CATCH_REQUIRE(Rparams.size() == 16);
 
-        Cell parent_cell = Cell(Point(0,0), &params);
-        parent_cell.SetCellType(7);
-        Cell daughter_cell = parent_cell.Divide();
+    Parameters* params;
 
-        CATCH_REQUIRE(daughter_cell.GetCellType() == 7);
+    CATCH_REQUIRE_NOTHROW(params = new Parameters(pow(2, 0.5), Rparams));
 
-    }
-    
-
-/*
     std::vector<Cell> cells;
 
     Rcpp::Environment baseEnv("package:base");
     Rcpp::Function setSeed = baseEnv["set.seed"];
     setSeed(40);
-    cells.push_back(Cell(Point(0,0), &params));
+
+    cells.push_back(Cell(Point(0,0), params));
     CATCH_REQUIRE(cells[0].GetGrowth() == 0.0);
     cells[0].SetGrowth(0.03);    
 
@@ -41,13 +35,13 @@ CATCH_TEST_CASE("Test Cell") {
         CATCH_REQUIRE(cells[0].GetCoord() == Point(0,0));
         CATCH_REQUIRE(cells[0].GetRadius() == TEST_APPROX(1.0));
         CATCH_REQUIRE(cells[0].GetAxisLength() == TEST_APPROX(2.0));
-        CATCH_REQUIRE(cells[0].GetAxisAngle() == 0);
+        CATCH_REQUIRE(cells[0].GetAxisAngle() == TEST_APPROX(4.30));
         CATCH_REQUIRE(cells[0].GetGrowth() == 0.03);
         CATCH_REQUIRE(!cells[0].ReadyToDivide());
         
     }
 
-    cells.push_back(Cell(Point(6,8), &params, 0.01));
+    cells.push_back(Cell(Point(6,8), params, 0.01));
     
     CATCH_SECTION("test simple distance calculation") {
 
@@ -58,8 +52,8 @@ CATCH_TEST_CASE("Test Cell") {
 
     double r0, r1, a0, a1;
 
-    while (cells[0].GetRadius() < params.GetMaxRadius()
-            || cells[1].GetRadius() < params.GetMaxRadius()) {
+    while (cells[0].GetRadius() < params->maxRadius()
+            || cells[1].GetRadius() < params->maxRadius()) {
 
         r0 = cells[0].GetRadius();
         r1 = cells[1].GetRadius();
@@ -72,8 +66,8 @@ CATCH_TEST_CASE("Test Cell") {
 
     CATCH_SECTION("test cell growth") {
 
-        CATCH_REQUIRE(cells[0].GetRadius() == params.GetMaxRadius());
-        CATCH_REQUIRE(cells[1].GetRadius() == params.GetMaxRadius());
+        CATCH_REQUIRE(cells[0].GetRadius() == params->maxRadius());
+        CATCH_REQUIRE(cells[1].GetRadius() == params->maxRadius());
 
     }
 
@@ -90,8 +84,8 @@ CATCH_TEST_CASE("Test Cell") {
         a1 = cells[1].GetAxisLength();
         cells[0].Deformation();
         cells[1].Deformation();
-        CATCH_REQUIRE(cells[0].GetAxisLength() > a0 - params.GetMaxDeform());
-        CATCH_REQUIRE(cells[1].GetAxisLength() > a1 - params.GetMaxDeform());
+        CATCH_REQUIRE(cells[0].GetAxisLength() > a0 - params->maxDeform());
+        CATCH_REQUIRE(cells[1].GetAxisLength() > a1 - params->maxDeform());
 
     }
 
@@ -99,8 +93,8 @@ CATCH_TEST_CASE("Test Cell") {
     
         CATCH_REQUIRE(cells[0].GetRadius() == TEST_APPROX(1.0));
         CATCH_REQUIRE(cells[1].GetRadius() == TEST_APPROX(1.0));
-        CATCH_REQUIRE(cells[0].GetAxisAngle() == TEST_APPROX(2.29));
-        CATCH_REQUIRE(cells[1].GetAxisAngle() == TEST_APPROX(2.31));
+        CATCH_REQUIRE(cells[0].GetAxisAngle() == TEST_APPROX(0.46));
+        CATCH_REQUIRE(cells[1].GetAxisAngle() == TEST_APPROX(4.98));
 
     }
 
@@ -110,26 +104,25 @@ CATCH_TEST_CASE("Test Cell") {
 
     CATCH_SECTION("test cell rotation") {
 
-        CATCH_REQUIRE(cells[0].GetAxisAngle() == TEST_APPROX(2.69));
-        CATCH_REQUIRE(cells[1].GetAxisAngle() == TEST_APPROX(1.09));
+        CATCH_REQUIRE(cells[0].GetAxisAngle() == TEST_APPROX(0.53));
+        CATCH_REQUIRE(cells[1].GetAxisAngle() == TEST_APPROX(4.79));
 
     }
 
-    params.SetMaxTranslation(2.0);
     cells[0].Translation();
     cells[1].Translation();
 
     CATCH_SECTION("test dividing cell movement") {
 
-        CATCH_REQUIRE(cells[0].GetCoord() == Point(-1.14662,-1.59722));
-        CATCH_REQUIRE(cells[1].GetCoord() == Point(7.20876,7.91525));
+        CATCH_REQUIRE(cells[0].GetCoord() == Point(-0.05733,-0.07986));
+        CATCH_REQUIRE(cells[1].GetCoord() == Point(6.06044,7.99576));
 
     }
 
     CATCH_SECTION("test complicated distance calculation") {
 
         CATCH_REQUIRE(cells[0].CellDistance(cells[1])
-                        == TEST_APPROX(9.44));
+                        == TEST_APPROX(6.47));
 
     }
     
@@ -151,12 +144,12 @@ CATCH_TEST_CASE("Test Cell") {
 
         CATCH_REQUIRE(cells[2].GetRadius() == 1);
         CATCH_REQUIRE(cells[2].GetAxisLength() == 2.0);
-        CATCH_REQUIRE(cells[2].GetAxisAngle() == 0);
+        CATCH_REQUIRE(cells[2].GetAxisAngle() == TEST_APPROX(5.122));
         CATCH_REQUIRE(cells[2].GetGrowth() == 0.03);
         CATCH_REQUIRE(!cells[2].ReadyToDivide());
 
         CATCH_REQUIRE(cells[0].CellDistance(cells[2]) == TEST_APPROX(0));
 
     }
-*/
+
 }

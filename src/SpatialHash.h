@@ -4,12 +4,12 @@
 #define SPATIAL_HASH_HPP
 
 #include <R.h>
+#include <Rcpp.h>
 #include <boost/unordered_map.hpp>
 #include <cmath>
 #include <vector>
 
 #include "Point.h"
-#include "ExceptionHandling.h"
 
 template <class T>
 class SpatialHash {
@@ -23,7 +23,8 @@ public:
 
     public:
 
-        circular_iterator(SpatialHash<T>* hash, Point& center, double radius, bool end = false) {
+        circular_iterator(SpatialHash<T>* hash, Point& center,
+                            double radius, bool end = false) {
     
             m_hash = hash;
             m_center = m_hash->Hash(center);
@@ -72,9 +73,11 @@ public:
 
         bool operator!=(const circular_iterator& other) const {
 
-            if (!(m_center == other.m_center && m_radius == other.m_radius)) {
+            if (!(m_center == other.m_center
+                    && m_radius == other.m_radius)) {
 
-                RCPP_STOP_TRACE("comparison between incompatible circular iterators");
+                throw std::invalid_argument(
+                    "comparison between incompatible circular iterators");
 
             } 
             
@@ -110,7 +113,8 @@ public:
 
         void construct_box(double radius) {
             
-            double adj_radius = floor((radius + m_hash->m_bucket_size / 2) / m_hash->m_bucket_size) + 1;
+            double adj_radius = floor((radius + m_hash->m_bucket_size / 2)
+                                        / m_hash->m_bucket_size) + 1;
 
             m_box.left = m_center.x - adj_radius;
             m_box.right = m_center.x + adj_radius;
@@ -310,16 +314,7 @@ template <class T>
 void SpatialHash<T>::Insert(Point pt, T* val) {
 
     m_value_list.push_back(val);
-
-    try {
-
-        AddKey(pt, val);
-
-    } catch (std::invalid_argument &e) {
-
-        RCPP_STOP_TRACE("can't insert cell: key already mapped\n");
-
-    }
+    AddKey(pt, val);
 
 }
 
@@ -339,7 +334,7 @@ void SpatialHash<T>::Delete(Point pt, T* val) {
 
     } else {
 
-        RCPP_STOP_TRACE("can't delete: cell does not exis\n");
+        throw std::invalid_argument("can't delete: cell does not exist\n");
 
     }
 
@@ -363,7 +358,7 @@ int SpatialHash<T>::size() {
 
     if (m_hash_map.size() != m_value_list.size()) {
 
-        RCPP_STOP_TRACE("hash map sizes out of sync\n");
+        throw std::logic_error("hash map sizes out of sync\n");
 
     }
 

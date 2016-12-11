@@ -3,60 +3,71 @@
 #include <Rcpp.h>
 #include <cmath>
 
-Simulation::Simulation(Parameters *par, int init_num, double den) {
+Simulation::Simulation(Parameters *par) {
 
-    m_param = par;
-    m_cells = new CellPopulation(m_param, init_num, den);
+    mParams = par;
+    mCells = new CellPopulation(mParams, mParams->initialNum(),
+                                mParams->density());
 
 }
 
 Simulation::~Simulation() {
 
-	delete m_cells;
+	delete mCells;
 
 }
 
-void Simulation::Run(int MCsteps, int out_incr, double time_incr, int rec_incr) {
+void Simulation::Run() {
 
 	double time = 0.0;
     bool drug_added = false;
-	
-    for (int i = 0; i < MCsteps; i++) {
+    double recordTime = 0.0, outputTime = 0.0;
 
-        if (i % rec_incr == 0) {
+    while (time <= mParams->runTime()) {
 
-            m_cells->RecordPopulation();
+        Rcpp::checkUserInterrupt();
+
+        if (time >= recordTime) {
+
+            mCells->RecordPopulation();
+            recordTime += mParams->recordIncrement();
         
         }
 
-        if (!drug_added && time > m_param->GetDrugTime()) {
+        if (time >= outputTime) {
+
+            Rprintf("time = %.2f\n", ceil(time));
+            Rprintf("size = %d\n", mCells->size());
+
+            outputTime += mParams->outputIncrement();
+
+        }            
+
+        if (!drug_added && time > mParams->drugTime()) {
     
-            m_cells->AddDrug();
+            mCells->AddDrug();
             drug_added = true;
 
         }
         
-        Rcpp::checkUserInterrupt();
+        mCells->OneTimeStep();
+		time += mParams->timeIncrement();
 
-        if (i % out_incr == 0) {
+        if (time >= mParams->runTime()
+                && time < mParams->runTime() + mParams->timeIncrement()) {
 
-            Rprintf("time = %.2f\n", ceil(time));
-            Rprintf("size = %d\n", m_cells->size());
+            time = mParams->runTime();
+            outputTime = time;
+            recordTime = time;
 
         }
 
-        m_cells->OneTimeStep();
-		time += time_incr;
-
     }
-
-    Rprintf("time = %.2f\n", time);
-    Rprintf("size = %d\n", m_cells->size());
 
 }
 
 Rcpp::List Simulation::GetCellsAsList() {
 
-    return m_cells->GetPopulationAsList();
+    return mCells->GetPopulationAsList();
 
 }

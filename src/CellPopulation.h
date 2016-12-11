@@ -107,15 +107,6 @@ public:
     /* return the size of the cell population */
     int size();
 
-
-
-
-    /******************************************/
-
-    /**** Debugging for setting cell types ****/
-    
-    void SetCellTypes();
-
 };
 
 #endif

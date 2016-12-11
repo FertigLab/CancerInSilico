@@ -4,82 +4,86 @@
 #define PARAMETERS_HPP
 
 #include <vector>
-#include <testthat.h>
 #include <Rcpp.h>
-#include <boost/unordered_map.hpp>
 
-typedef boost::unordered_map<double, std::vector<double> > DrugEffectMap;
+struct GreaterThan {
+
+    bool operator()(double a, double b) const {
+        
+        return a > b;
+
+    }
+
+};
 
 class Parameters {
 
   private:
 
-    double m_max_translation, m_max_rotate, m_max_deform;
-    double m_epsilon, m_delta;
-	double m_max_radius;
-	bool m_inherit_growth;
-	double m_nG;
-    double m_drug_time;
-    double m_boundary;
-    bool m_sync_cell_cycle;
+    /* list of parameters from R */
+    Rcpp::List mParams;
 
-	std::vector<double> m_slow_solver;
-	std::vector<double> m_fast_solver;
-	std::vector<double> m_growth_dist;
-    std::vector<Rcpp::S4> m_cell_types;
-    Rcpp::NumericVector m_cell_type_dist;
+    /* max radius of cell in Drasdo model */
+    double mMaxRadius;
 
-    DrugEffectMap m_drug_effect_map;
-    std::vector<double> m_drug_effect_indices;
+    /* lookup tables for radius-axis values */
+	std::vector<double> mSlowSolver;
+	std::vector<double> mFastSolver;
 
+    /* distribution of growth rates */
+	std::vector<double> mGrowthDist;
+
+    /* initialize lookup tables for radius-axis values */
     void InitializeRadiusSolver();
-    void InitSlowSolver();
-    void InitFastSolver();
-    int HashAxisLength(double);
+	void InitSlowSolver();
+	void InitFastSolver();
 
-  public:
+    /* hash axis length for fast lookup table */
+	int HashAxisLength(double);
 
-    Parameters(double max_rad) {
-		m_max_radius = max_rad;
-		InitializeRadiusSolver();
-	}
+    /* process parameters */
+    void StoreTimeIncrement();   
+    void StoreUpdateParameters();
+    void StoreGrowthDistribution();
 
-    //Setters
-    void SetMaxTranslation(double trans) { m_max_translation = trans;}
-    void SetMaxRotate(double rot) { m_max_rotate = rot;}
-    void SetMaxDeform(double def) { m_max_deform = def;}
-    void SetResistanceEPSILON(double ep) { m_epsilon = ep;}
-    void SetCompressionDELTA(double dt) { m_delta = dt;}
-	void SetInheritGrowth(bool gr) { m_inherit_growth = gr;}
-	void StoreGrowthDistribution(Rcpp::NumericVector);
-	void SetNG(double ng) { m_nG = ng;}
-    void StoreDrugEffect(Rcpp::List);
-    void SetDrugTime(double dt) { m_drug_time = dt;}
-    void SetBoundary(double rad) { m_boundary = rad;}
-    void SetSyncCellCycle(bool b) { m_sync_cell_cycle = b;}
-    void StoreCellTypes(Rcpp::List);
-    void StoreCellTypeDistribution(Rcpp::NumericVector);
+public:
 
-    //Getters
-    double GetMaxTranslation() { return m_max_translation;}
-    double GetMaxRotate() { return m_max_rotate;}
-    double GetMaxDeform() { return m_max_deform;}
-    double GetResistanceEPSILON() { return m_epsilon;}
-    double GetCompressionDELTA() { return m_delta;}
-	bool InheritGrowth() { return m_inherit_growth;}
-	double GetNG() { return m_nG;}
-	double GetMaxRadius() { return m_max_radius;}
+    Parameters(double, Rcpp::List);
+
+    Rcpp::List GetRparameters() { return mParams;}
+
+    /* general model parameters */
+    double initialNum() { return mParams["initialNum"];}
+    double runTime() { return mParams["runTime"];}
+    double density() { return mParams["density"];}
+    double inheritGrowth() { return mParams["inheritGrowth"];}
+    double drugTime() { return mParams["drugTime"];}
+    double boundary() { return mParams["boundary"];}
+    double randSeed() { return mParams["randSeed"];}
+    double syncCycles() { return mParams["syncCycles"];}
+    double outputIncrement() { return mParams["outputIncrement"];}
+    double recordIncrement() { return mParams["recordIncrement"];}
+    double timeIncrement() { return mParams["timeIncrement"];}
+
+    /* Drasdo specific parameters */
+    double nG() { return mParams["nG"];}
+    double epsilon() { return mParams["epsilon"];}
+    double delta() { return mParams["delta"];}
+    double maxDeform() { return mParams["maxDeform"];}
+    double maxTranslation() { return mParams["maxTranslation"];}
+    double maxRotate() { return mParams["maxRotate"];}
+   
+    double maxRadius() { return mMaxRadius;}
+
+    void setBoundary(double b) { mParams["boundary"] = b;}
+
     double GetDrugEffect(double);
-    double GetDrugTime() { return m_drug_time;}
-    double GetBoundary() { return m_boundary;}
-    bool GetSyncCellCycle() { return m_sync_cell_cycle;}
-    std::vector<Rcpp::S4> GetCellTypes(); // list all possible cell types
-    int GetRandomCellType(); // pick a cell type using the distribution
-
 	double GetRandomGrowthRate();
-	double GetMaxGrowth();
+
     double GetRadius(double);
-	double GetThetaSlow(double); //
+
+    /* get theta (radius) given axis length, use slow lookup */
+	double GetThetaSlow(double); 
 
 };
 

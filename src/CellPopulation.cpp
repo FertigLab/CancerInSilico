@@ -77,7 +77,7 @@ std::vector<Cell*> CellPopulation::CreateDefaultCells(unsigned int num) {
 double CellPopulation::InitCellCycle(std::vector<Cell*> cells) {
 
     /* declare variable for later */
-    double unif, total_area;
+    double unif, total_area = 0.0;
 
     /* get iterator */
     std::vector<Cell*>::iterator it = cells.begin();
@@ -88,23 +88,18 @@ double CellPopulation::InitCellCycle(std::vector<Cell*> cells) {
         /* random number in (0,1) for probability calculations */        
         unif = R::runif(0,1);
 
-        /* if cells are not synced, start randomly in cell cycle */
-        if (!m_param->GetSyncCellCycle()) {
-        
-            /* probability of being seeded in interphase */
-            if (unif < 0.75) { //interphase
+        /* probability of being seeded in interphase */
+        if (m_param->syncCycles() || unif < 0.75) { //interphase
 
-                /* set random radius and resulting axis length */
-                (*it)->SetRadius(R::runif(1,m_param->GetMaxRadius()));
-                (*it)->SetAxisLength((*it)->GetRadius() * 2);
-        
-            /* otherwise seed in mitosis */
-            } else { //mitosis
+            /* set random radius and resulting axis length */
+            (*it)->SetRadius(R::runif(1,m_param->maxRadius()));
+            (*it)->SetAxisLength((*it)->GetRadius() * 2);
+    
+        /* otherwise seed in mitosis */
+        } else { //mitosis
 
-                /* put the cell in a random point in mitosis */
-                (*it)->EnterRandomPointOfMitosis();
-
-            }
+            /* put the cell in a random point in mitosis */
+            (*it)->EnterRandomPointOfMitosis();
 
         }
 
@@ -123,17 +118,17 @@ double CellPopulation::InitCellCycle(std::vector<Cell*> cells) {
 void CellPopulation::CreateBoundary(double radius) {
 
     /* if boundary is zero (no boundary) */
-    if (m_param->GetBoundary() == 0.0) {
+    if (m_param->boundary() == 0.0) {
 
         /* set boundary value to maximum allowed */
-        m_param->SetBoundary(std::numeric_limits<double>::max());
+        m_param->setBoundary(std::numeric_limits<double>::max());
 
     /* otherwise check if boundary is too small
        (must be bigger than initial seeding radius) */
-    } else if (m_param->GetBoundary() < radius) {
+    } else if (m_param->boundary() < radius) {
 
         /* set boundary to the minimum value */
-        m_param->SetBoundary(radius);
+        m_param->setBoundary(radius);
 
     }
 
@@ -311,7 +306,7 @@ void CellPopulation::AttemptTrial(Cell *cell) {
     bool overlap = CheckForCellOverlap(orig.GetCoord(), cell);
 
     /* if the cell overlaps or crossed the boundary */
-    if (overlap || CheckBoundary(cell, m_param->GetBoundary())) {
+    if (overlap || CheckBoundary(cell, m_param->boundary())) {
 
         /* reject the trial, revert cell to original state */
         *cell = orig;
@@ -343,7 +338,7 @@ int CellPopulation::CalculateNumberOfNeighbors(Cell *cell) {
 
     /* serach radius, all cells in this radius could have a
        non-zero interaction with the current cell (defn of neighbor) */
-    double radius = m_param->GetCompressionDELTA() + 1;
+    double radius = m_param->delta() + 1;
     
     /* iterator in search radius */
     SpatialHash<Cell>::circular_iterator iter
@@ -353,7 +348,7 @@ int CellPopulation::CalculateNumberOfNeighbors(Cell *cell) {
     for (; iter != m_population.end(cell->GetCoord(), radius); ++iter) {
 
         /* check if cell is indeed inside this radius */
-        if (cell->CellDistance(*iter) <= m_param->GetCompressionDELTA()) {
+        if (cell->CellDistance(*iter) <= m_param->delta()) {
 
             /* increment the neighbor count */
             neighbors++;
@@ -371,8 +366,8 @@ int CellPopulation::CalculateNumberOfNeighbors(Cell *cell) {
 bool CellPopulation::CheckForCellOverlap(Point center, Cell* cell) {
 
     /* calculate maximum search radius for overlapping cells */
-    double max_search = std::max(m_param->GetMaxTranslation(),
-        m_param->GetMaxRadius());
+    double max_search = std::max(m_param->maxTranslation(),
+        m_param->maxRadius());
 
     /* get iterator for cells in search radius */
     SpatialHash<Cell>::circular_iterator iter
@@ -412,7 +407,7 @@ bool CellPopulation::CheckBoundary(Cell* cell, double bound) {
 
     /* return true if cell is farther from center than the boundary line */
     return (center_1.dist(Point(0,0)) + cell->GetRadius() > bound
-            || center_2.dist(Point(0,0)) + cell->GetRadius() > bound);
+        || center_2.dist(Point(0,0)) + cell->GetRadius() > bound);
 
 }
 
@@ -459,7 +454,7 @@ double CellPopulation::CalculateTotalInteraction(Cell *cell) {
     double sum = 0.0;
 
     /* get search radius for cells that could have positive interactions */
-    double rad = m_param->GetCompressionDELTA() + 1;
+    double rad = m_param->delta() + 1;
 
     /* get iterator for cells in this radius */    
     SpatialHash<Cell>::circular_iterator iter
@@ -485,7 +480,7 @@ double CellPopulation::CalculateInteraction(Cell* a, Cell* b) {
     double dist = a->CellDistance(*b);
 
     /* if distance is too far, no interaction happens */
-    if (dist > m_param->GetCompressionDELTA()) {
+    if (dist > m_param->delta()) {
 
         return 0.0;
     
@@ -493,10 +488,10 @@ double CellPopulation::CalculateInteraction(Cell* a, Cell* b) {
     } else {
 
         /* get one component of the interaction */
-        double part = 2 * dist / m_param->GetCompressionDELTA() - 1;
+        double part = 2 * dist / m_param->delta() - 1;
 
         /* calculate interaction */
-        return m_param->GetResistanceEPSILON() * (pow(part,2) - 1);
+        return m_param->epsilon() * (pow(part,2) - 1);
 
     }
 
@@ -512,7 +507,7 @@ void CellPopulation::CheckMitosis(Cell* cell) {
         double gr_rate;    
 
         /* if cells inherit growth from parent */
-        if (m_param->InheritGrowth()) {
+        if (m_param->inheritGrowth()) {
 
             /* get parents growth rate */
             gr_rate = cell->GetGrowth();
@@ -526,8 +521,7 @@ void CellPopulation::CheckMitosis(Cell* cell) {
             /* if drug has already been added */
             if (m_drug_added) {
 
-                //TODO: randomness breaks this 
-                /* account for effect in parents growth rate */
+                /* affect the growth rate with the drug */
                 gr_rate *= m_param->GetDrugEffect(gr_rate);
 
             }
@@ -546,7 +540,7 @@ void CellPopulation::CheckMitosis(Cell* cell) {
         /* update parents coordinates to new position */
         m_population.Update(old_key, cell->GetCoord());
 
-}
+    }
 
 }
 
@@ -569,7 +563,6 @@ void CellPopulation::RecordPopulation() {
         current_pop.push_back((*iter).GetAxisLength());
         current_pop.push_back((*iter).GetAxisAngle());
         current_pop.push_back((*iter).GetGrowth());
-        current_pop.push_back((*iter).GetCellType());
 
     }
 
@@ -591,28 +584,5 @@ int CellPopulation::size() {
 
     /* return size */
     return m_population.size();
-
-}
-
-
-
-/******************************************/
-
-/**** Debugging for setting cell types ****/
-
-/* For each cell in m_population, set a cell type reference */
-void CellPopulation::SetCellTypes() {
-
-    /* get a iterator to the entire population */    
-    SpatialHash<Cell>::full_iterator iter = m_population.begin();
-    
-    /* iterate through every cell */
-    for (; iter != m_population.end(); ++iter) {
-
-    
-        /* get a random cell type from parameters and set it */
-        (*iter).SetCellType(m_param->GetRandomCellType());
-
-    }
 
 }
