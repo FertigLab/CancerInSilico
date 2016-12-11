@@ -1,184 +1,97 @@
 #### class definition ####
 
 #' @title CellModel
-#' @description An S4 class to represent the output of a cell-based model
-#'
-#' @slot mCells A list object where each row of the list describes the state of all the cells in the model at a given time. Each cell is described over 6 columns: [1] x-coordinate, [2] y-coordinate, [3] radius, [4] axis length, [5] axis angle, [6] growth rate. For instance, the x-coordinates of the first 3 cells will be in columns 1,7,13.
-#' @slot mInitialNumCells the initial number of cells in the model
-#' @slot mRunTime the total run time (hours) of the model
-#' @slot mInitialDensity the density the cells were seeded at
-#' @slot mInheritGrowth whether or not cells inherit growth rates from their parent
-#' @slot mOutputIncrement the frequency of print statements during the run
-#' @slot mRandSeed the random seed 
-#' @slot mEpsilon model specific parameter 
-#' @slot mNG model specific parameter
-#' @slot mTimeIncrement amount of time elapsed in each model step
-#' @slot mRecordIncrement time increment when cell data is recorded
-#' @slot mCycleLengthDist initial distribution of cell-cycle lengths 
-#' @slot mBoundary boundary that cells cannot move past
-#' @slot mSyncCycles sync cycles
-#' @slot mCellTypes a list of objects, each representing a type of cell
-#' @slot mCellTypeDist distribution on cell types
+#' @description An S4 class that contains the output of a cell simulation,
+#'      along with all the parameters used to generate the simulation
+#' @slot mCells A list object where each row of the list describes the
+#'      state of all the cells in the model at a given time. Each cell is
+#'      described over 6 columns: [1] x-coordinate, [2] y-coordinate, [3]
+#'      radius, [4] axis length, [5] axis angle, [6] growth rate. For
+#'      instance, the x-coordinates of the first 3 cells will be in columns
+#'      1,7,13.
+#' @slot mParameters A list object containing all parameters used to run
+#'      the model
 #' @export
 
-setClass("CellModel", representation(
-                        mCells = "list", # stores cell data
-                        mInitialNumCells = "numeric",
-                        mRunTime = "numeric",
-                        mInitialDensity = "numeric",
-                        mInheritGrowth = "logical",
-                        mOutputIncrement = "numeric",
-                        mRandSeed = "numeric",
-                        mEpsilon = "numeric",
-                        mNG = "numeric",
-                        mTimeIncrement = "numeric",
-                        mRecordIncrement = "numeric",
-                        mCycleLengthDist = "numeric",
-                        mBoundary = "numeric",
-                        mSyncCycles = "logical",
-                        mCellTypes = "list",
-                        mCellTypeDist = "numeric"))
+setClass("CellModel", representation(cells = "list", params = "list"))
 
-#### getters (parameters) ####
+#### constructor ####
 
-.initialNumCells <- function(model) { return (model@mInitialNumCells) }
+createCellModel <- function(params, output) {
 
-.runTime <- function(model) { return (model@mRunTime) }
+    return (new("CellModel", cells = output, params = params))
 
-.initialDensity <- function(model) { return (model@mInitialDensity) }
+}
 
-.inheritGrowth <- function(model) { return (model@mInheritGrowth) }
+#### getters ####
 
-.outputIncrement <- function(model) { return (model@mOutputIncrement) }
+# helper function to find corresponding row of a given time
+timeToRow <- function(model, time) {
 
-.randSeed <- function(model) { return (model@mRandSeed) }
+    if (time == model@params[['runTime']]) {
 
-.epsilon <- function(model) { return (model@mEpsilon) }
+        return (length(model@cells))
 
-.nG <- function(model) { return (model@mNG) }
+    } else {
 
-.timeIncrement <- function(model) { return (model@mTimeIncrement) }
-
-.recordIncrement <- function(model) { return (model@mRecordIncrement) }
-
-.cycleLengthDist <- function(model) { return (model@mCycleLengthDist) }
-
-.boundary <- function(model) { return (model@mBoundary) }
-
-.syncCycles <- function(model) { return (model@mSyncCycles) }
-
-.cellTypes <- function(model) { return (model@mCellTypes) }
-
-.cellTypeDist <- function(model) { return (model@mCellTypeDist) }
-
-#### getters (cell data) ####
-
-#' \code{getCoordinates} get a two dimensional matrix of all the cell coordinates
-#'
-#' @param model A CellModel
-#' @param time time in model hours
-#' @return an N X 2 matrix of cell coordinates at time
-
-getCoordinates <- function(model, time) {
-
-    # find the row corresponding to the given time 
-    row <- timeToRow(model, time)
-
-    # get the sequence of indices that contain x-coordinates
-    indices <- seq(1,length(model@mCells[[row]]),7)
-    
-    # create return matrix, col 1 = x-coord & col 2 = y-coord
-    ret_mat <- matrix(nrow = length(indices), ncol = 2)
-
-    # for each cell (each index), store the x and y coordinate
-    for (i in 1:length(indices)) {
-
-        # store x-coordinate
-        ret_mat[i,1] = model@mCells[[row]][indices[i]]
-
-        # store y-coordinate (x-coord index + 1)
-        ret_mat[i,2] = model@mCells[[row]][indices[i]+1]
+        return (floor(time / model@params[['recordIncrement']] + 1))
 
     }
 
-    # return the coordinate matrix
-    return (ret_mat)
-         
 }
 
-#' \code{getRadii} get the radius of each cell
-#'
-#' @param model A CellModel
-#' @param time time in model hours
-#' @return vector containing the radius of each cell at time
 
+# get column of data for each cell
+getColumn <- function(model, time, col) {
+
+    # find row corresponding to time
+    row <- timeToRow(model, time)
+
+    # get the sequence of indices that correspond to column
+    indices <- seq(col,length(model@cells[[row]]), 6)
+
+    # return the values at these indices
+    return(model@cells[[row]][indices])
+
+}    
+
+# return an N X 2 matrix of cell coordinates at time
+getCoordinates <- function(model, time) {
+
+    # get x and y coordinates
+    xCoord <- getColumn(model, time, 1)
+    yCoord <- getColumn(model, time, 2)
+
+    # return matrix with coordinates
+    return (matrix(c(xCoord, yCoord), nrow = length(xCoord)))
+
+}
+
+# get a vector containing the radius of each cell at time
 getRadii <- function(model, time) {
 
-    # find the row corresponding to the given time
-    row <- timeToRow(model, time)
-
-    # get the sequence of indices that contain the cell radius (starts at 3)
-    indices <- seq(3,length(model@mCells[[row]]),7)
-
-    # return the values at these indices
-    return(model@mCells[[row]][indices])
+    return (getColumn(model, time, 3))
 
 }
 
-#' \code{getAxisLength} get the axis length of each cell
-#'
-#' @param model A CellModel
-#' @param time time in model hours
-#' @return vector containing the axis length of each cell at time
-         
+# get a vector containing the radius of each cell at time
 getAxisLength <- function(model, time) {
 
-    # find the row corresponding to the given time
-    row <- timeToRow(model, time)
-
-    # get the sequence of indices that contain the axis length (starts at 4)
-    indices <- seq(4,length(model@mCells[[row]]),7)
-
-    # return the values at these indices
-    return(model@mCells[[row]][indices])
+    return (getColumn(model, time, 4))
 
 }
 
-#' \code{getAxisAngle} get the axis angle of each cell
-#'
-#' @param model A CellModel
-#' @param time time in model hours
-#' @return vector containing the axis angle of each cell at time
-
+# get a vector containing the radius of each cell at time
 getAxisAngle <- function(model, time) {
 
-    # find the row corresponding to the given time
-    row <- timeToRow(model, time)
-
-    # get the sequence of indices that contain the axis angle (starts at 5)
-    indices <- seq(5,length(model@mCells[[row]]),7)
-
-    # return the values at these indices
-    return(model@mCells[[row]][indices])
+    return (getColumn(model, time, 5))
 
 }
 
-#' \code{getGrowthRates} get the model growth rates of each cell
-#'
-#' @param model A CellModel
-#' @param time time in model hours
-#' @return vector containing the growth rate of each cell at time
-
+# get a vector containing the radius of each cell at time
 getGrowthRates <- function(model, time) {
 
-    # find the row corresponding to the given time
-    row <- timeToRow(model, time)
-
-    # get the sequence of indices that contain the cell growth rate (starts at 6)
-    indices <- seq(6,length(model@mCells[[row]]),7)
-
-    # return the values at these indices
-    return(model@mCells[[row]][indices])
+    return (getColumn(model, time, 6))
 
 }
 
@@ -196,10 +109,11 @@ getGrowthRates <- function(model, time) {
 getCycleLengths <- function(model, time) {
 
     # get the raw model growth rates
-    gr_rates <- getGrowthRates(model, time)
+    grRates <- getGrowthRates(model, time)
 
     # convert the raw growth rates to cell cycle time in hours
-    return (1 + 2 * (sqrt(2) - 1) * .timeIncrement(model) * .nG(model) / gr_rates)
+    return (1 + 2 * (sqrt(2) - 1) * model@params[["timeIncrement"]] *
+        model@params[["nG"]] / grRates)
 
 }
 
@@ -212,7 +126,7 @@ getCycleLengths <- function(model, time) {
 #' getNumberOfCells(runCancerSim(1,1), 1)
 #' @export
 
-getNumberOfCells <-    function(model, time) {
+getNumberOfCells <- function(model, time) {
 
     return (sum(getRadii(model, time) > 0))   
 
@@ -229,106 +143,27 @@ getNumberOfCells <-    function(model, time) {
 
 getDensity <- function(model,time) {
 
-    # get coordinates of each cell
-    coords <- getCoordinates(model, time)
-
-    #get radius of each cell
+    # get radius of each cell
     radii <- getRadii(model, time)
-    
-    # farthest distance from (0,0) of cell
-    d <- max(sqrt(coords[,1]**2 + coords[,2]**2) + radii)
 
-    # ratio of area of all cells and the disk which contains them       
-    return(sum(radii ** 2) / (d ^ 2))
+    # not sure about how R treats non-logical values, so this is safe
+    if (model@params[['boundary']] != FALSE) {
 
-}
+        # ratio of area of all cells and the disk which contains them       
+        return(sum(radii ** 2) / (model@params[['boundary']] ^ 2))
+        
+    } else {
 
+        # get coordinates of each cell
+        coords <- getCoordinates(model, time)
 
-#' \code{getCellTypes} get a list of all the cell types in the model
-#'
-#' @param model a CellModel object
-#' @return a list of factors
-#' @examples
-#' getCellTypes(runCancerSim(1,1), 20)
-#' @export
+        # farthest distance from (0,0) of cell
+        d <- max(sqrt(coords[,1]**2 + coords[,2]**2) + radii)
 
-getCellTypes <- function(model, time) {
-
-    # find the row corresponding to the given time
-    row <- timeToRow(model, time)
-
-    # get the sequence of indices that contain the cell growth rate (starts at 6)
-    indices <- seq(6,length(model@mCellTypes[[row]]),7)
-
-    # get number of different cell types
-    numCellTypes = length(model@mCellTypes[[row]])
-
-    # create factor (with indices of cell types as the levels)
-    fCellTypes = factor(model@mCells[[row]][indices])
-    levels(fCellTypes) = seq(1, numCellTypes, 1) # assumes at least one cell type
-
-    return(fCellTypes)
-
-}
-
-#' \code{getCellTypesTable} returns table of cell types in the model
-#'
-#' @return a table of the cell types
-#' @param model a CellModel object
-#' @examples
-#' printCellTypes(runCancerSim(1,1), 20)
-#' @export
-
-printCellTypes <- function(model, time) {
-
-    # return table
-    return(table(getCellTypes(model, time)))
-
-}
-
-
-#' \code{getParameters} get a named list of parameters in the model
-#'
-#' @param model A CellModel
-#' @param fullDist [bool] return full distribution of cycle length
-#' @return a named list of parameters in the model
-#' @examples
-#' getParameters(runCancerSim(1,1))
-#' @export
-
-getParameters <- function(model, fullDist=FALSE) {
-
-    # get the average cell cycle time
-    retDist = mean(.cycleLengthDist(model))
-
-    # if the full distribution is requested, store the entire distribution
-    if (fullDist) {
-
-        retDist = .cycleLengthDist(model)
+        # ratio of area of all cells and the disk which contains them       
+        return(sum(radii ** 2) / (d ^ 2))
 
     }
-
-    # create a named list of all the parameters
-    ret_val = list(
-
-        initialNum = .initialNumCells(model),
-        runTime = .runTime(model),           
-        initialDensity = .initialDensity(model),           
-        inheritGrowth = .inheritGrowth(model),           
-        outputIncrement = .outputIncrement(model),           
-        randSeed = .randSeed(model),           
-        epsilon = .epsilon(model),           
-        nG = .nG(model),
-        timeIncrement = .timeIncrement(model),
-        recordIncrement = .recordIncrement(model),
-        boundary = .boundary(model),
-        syncCycles = .syncCycles(model),
-        cycleLengthDist = retDist,
-        cellTypes = .cellTypes(model)
-    )           
-
-    # return named list
-    return(ret_val)
 
 }
 
@@ -345,7 +180,7 @@ interactivePlot <- function(model, time = 0) {
     default_arg = 1
 
     # while time is valid
-    while (time <= .runTime(model) && time >= 0) {
+    while (time <= model@params[['runTime']] && time >= 0) {
       
         # call internal function which plots cells at current time
         plotCells(model,time)
@@ -413,7 +248,8 @@ interactivePlot <- function(model, time = 0) {
                     cat("n ARG = forward ARG timesteps (default ARG = 1)\n")
                     cat("t ARG - jump to timestep ARG (default ARG = 1)\n")
                     cat("i ARG - change default ARG for other commands\n")
-                    cat("s = summary of cells\nq = quit\nh = basic command help\n")
+                    cat(paste("s = summary of cells\nq = quit\n",
+                                "h = basic command help\n"))
                 }
 
             )
@@ -450,7 +286,8 @@ getNumNeighbors <- function(model, time, index) {
     for (i in setdiff(1:nrow(coords), index)) {
 
         # if radius is within distance of inner ring of neighbors
-        if ((coords[i,1] - coords[index,1])^2 + (coords[i,2] - coords[index,2])^2 < 12) {
+        if ((coords[i,1] - coords[index,1])^2 + (coords[i,2] -
+            coords[index,2])^2 < 12.25) {
 
             # add to neighbor count
             num <- num + 1
@@ -461,18 +298,6 @@ getNumNeighbors <- function(model, time, index) {
 
     # return neighbor count
     return (num)
-
-}
-
-#' \code{timeToRow} return the correct row in the mCells list corresponding to a given time
-#'
-#' @param model A CellModel
-#' @param time time in model hours
-#' @return corresponding row in mCells list
-
-timeToRow <- function(model, time) {
-
-    return (floor(time / .recordIncrement(model)) + 1)
 
 }
 
@@ -492,12 +317,22 @@ plotCells <- function(model,time,drawBoundary = TRUE)  {
     axis_len <- getAxisLength(model, time)
     axis_ang <- getAxisAngle(model, time)
 
-    # find a square that contains all cells
-    mn <- min(coords) - 2
-    mx <- max(coords) + 2
-    
+    if (model@params[['boundary']]) {
+
+        mn <- -model@params[['boundary']] - 2
+        mx <- model@params[['boundary']] + 2
+
+    } else {
+
+        mn <- min(coords) - 2
+        mx <- max(coords) + 2
+
+    }
+
+     
     # create the plot template
-    plot(c(mn,mx),c(mn,mx),main=paste("Plot of CellModel At Time",time),xlab = "",ylab="",type="n",asp=1)
+    plot(c(mn, mx), c(mn, mx), main = paste("Plot of CellModel At Time",
+        time), xlab = "", ylab = "", type = "n", asp = 1)
           
     # get all (x,y) pairs for each of the two circles that make up a cell
     x_1 <- coords[,1] + (0.5 * axis_len - radii) * cos(axis_ang)
@@ -511,12 +346,13 @@ plotCells <- function(model,time,drawBoundary = TRUE)  {
     rad <- c(radii, radii)
     
     # plot the cells
-    symbols(x,y, circles=rad, inches=FALSE, add=TRUE, bg="bisque4", fg="bisque4")
+    symbols(x,y, circles=rad, inches=FALSE, add=TRUE, bg="bisque4",
+        fg="bisque4")
 
     # draw boundary
     if (drawBoundary) {
 
-        symbols(0,0,circles=.boundary(model), inches=FALSE, add=TRUE,
+        symbols(0,0,circles= model@params[['boundary']], inches=FALSE, add=TRUE,
                     lwd = 2)
 
     }
