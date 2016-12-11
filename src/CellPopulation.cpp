@@ -407,7 +407,7 @@ bool CellPopulation::CheckBoundary(Cell* cell, double bound) {
 
     /* return true if cell is farther from center than the boundary line */
     return (center_1.dist(Point(0,0)) + cell->GetRadius() > bound
-            || center_2.dist(Point(0,0)) + cell->GetRadius() > bound);
+        || center_2.dist(Point(0,0)) + cell->GetRadius() > bound);
 
 }
 
@@ -521,8 +521,7 @@ void CellPopulation::CheckMitosis(Cell* cell) {
             /* if drug has already been added */
             if (m_drug_added) {
 
-                //TODO: randomness breaks this 
-                /* account for effect in parents growth rate */
+                /* affect the growth rate with the drug */
                 gr_rate *= m_param->GetDrugEffect(gr_rate);
 
             }
@@ -541,7 +540,7 @@ void CellPopulation::CheckMitosis(Cell* cell) {
         /* update parents coordinates to new position */
         m_population.Update(old_key, cell->GetCoord());
 
-}
+    }
 
 }
 
