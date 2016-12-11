@@ -10,7 +10,8 @@ setClass('Drug', representation(
                         name = 'character',
                         timeAdded = 'numeric'))
 
-newDrug <- function(name, timeAdded) {
+newDrug <- function(name, timeAdded)
+{
 
     return (new('Drug', name = name, timeAdded = timeAdded))
 

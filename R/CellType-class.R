@@ -1,26 +1,61 @@
 #### class definition ####
 
 #' @title CellType
-#' @description An S4 class to represent the type of cell (and its consequent behavior) 
+#' @description An S4 class to the properties of a cell type
 #'
-#' @slot mType the type of cell as a character
+#' @slot mType the name of the cell type
+#' @slot mCycleLenth distribution of cycle lengths for this cell
+#' @slot mDrugEffect function descibing effect of a drug
 #' @export
 
-setClass("CellType", representation(
-                        mType = "character" ))
+setClass('CellType', representation(
+                        type = 'character',
+                        cycleLength = 'function',
+                        drugEffect = 'function',
+                        inheritCycleLength = 'logical',
+                        inheritDrugEffect = 'function'))
 
-#### getters (parameters) ####
-#' nothing at the moment
+newCellType <- function(name, cycleLength = NULL, drugEffect = NULL,
+inheritCycleLength = FALSE, inheritDrugEffect = NULL)
+{
 
-#### getters (cell type data) ####
+    newType <- new('CellType')
+    newType@type <- name
+    newType@cycleLength <- cycleLength
+    newType@drugEffect <- drugEffect
+    newType@inheritCycleLength <- inheritCycleLength
+    newType@inheritDrugEffect <- inheritDrugEffect
+    
+    if (cycleLengthDist == NULL)
+    {
 
-#' gets the cell type
-#'
-#' @return cell type
+        newType@cycleLength <- function() {return(48)}
 
-getCellType <- function(model) {
+    }
 
-    return (model@mType)
+    if (drugEffect == NULL)
+    {
+
+        ## cell is list of info about cell
+        newType@drugEffect <- function(drug, cell) {return(cell)}
+
+    }
+
+    if (inheritCycleLength == NULL)
+    {
+
+        newType@inheritCycleLength <- FALSE
+
+    } 
+
+    if (inheritDrugEffect == NULL) {
+
+
+        newType@inheritDrugEffect <- function(drug) {return(FALSE)}
+
+    }
+
+    return (newType)
 
 }
 

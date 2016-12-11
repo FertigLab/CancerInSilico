@@ -5,11 +5,15 @@
 \alias{CellType-class}
 \title{CellType}
 \description{
-An S4 class to represent the type of cell (and its consequent behavior)
+An S4 class to the properties of a cell type
 }
 \section{Slots}{
 
 \describe{
-\item{\code{mType}}{the type of cell as a character}
+\item{\code{mType}}{the name of the cell type}
+
+\item{\code{mCycleLenth}}{distribution of cycle lengths for this cell}
+
+\item{\code{mDrugEffect}}{function descibing effect of a drug}
 }}
 

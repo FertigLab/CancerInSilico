@@ -1,17 +1,27 @@
-#'\code{runCancerSim} Runs the model
+#'\code{runCancerSim} Runs a cancer simulation given parameters
 #'
-#' @details This function provides a centralized R interface to run c++ code for cell-based models implemented in this package. Standard parameters, as well as model-specific parameters, are passed in to this function along with a model name. This function then runs the model and returns a CellModel object containing all of the information from the model. This object can then be accessed with various functions designed to interact with the class. To see a list of available functions, there is a show() command implemented for CellModel objects.
+#' @details This function provides a centralized R interface to run c++
+#' code for cell-based models implemented in this package. Standard
+#' parameters, as well as model-specific parameters, are passed in to this
+#' function along with a model name. This function then runs the model and
+#' returns a CellModel object containing all of the information from the
+#' model. This object can then be accessed with various functions designed
+#' to interact with the class. To see a list of available functions, there
+#' is a show() command implemented for CellModel objects.
 #' @param initialNum how many cells initially
 #' @param runTime how long the simulation runs in real cellular time (hours)
-#' @param cellTypes an array of S4 objects (each representing a different cell type)
+#' @param cellTypes an array of S4 objects (each representing a different
+#' cell type)
 #' @param density the density the cells are seeded at
 #' @param cycleLengthDist cycle time distribution
 #' @param drugEffect distribution of drug effects
-#' @param inheritGrowth whether or not daughter cells have the same cycle-length as parents
+#' @param inheritGrowth whether or not daughter cells have the same
+#' cycle-length as parents
 #' @param outputIncrement time increment to print status at
 #' @param randSeed seed for the model
 #' @param modelType the name of the cell-based model to use
-#' @param cycleSyncProb the probability of cells being seed in interphase (not mitosis)
+#' @param cycleSyncProb the probability of cells being seed in interphase
+#' (not mitosis)
 #' @param ... model specific parameters (depends on modelType)
 #' @return A CellModel containing all info from the model run
 #' @examples
@@ -20,231 +30,88 @@
 
 runCancerSim <- function(initialNum,
                          runTime,
-                         cellTypes = NULL,
-                         cellTypeDist,
+                         cellTypes = newCellType('DEFAULT'),
+                         cellTypeInitFreq = c(1),
+                         modelType = "DrasdoHohme2003",
                          density = 0.01,
-                         cycleLengthDist = 12,
-                         drugEffect = getDrugEffect(cycleLengthDist = cycleLengthDist),
-                         inheritGrowth = FALSE,
+                         boundary = TRUE,
+                         randSeed = 0,
+                         syncCycles = TRUE,
                          outputIncrement = 6,
                          recordIncrement = 0.25,
-                         randSeed = 0,
-                         modelType = "DrasdoHohme2003",
-                         drugTime = 0.0,
-                         boundary = 1,
-                         syncCycles = TRUE,
                          ...)
 
 {
 
-    if (modelType != "DrasdoHohme2003") {
+    # store parameters in a list
+    params <- list()
+    params[['initialNum']] <- initialNum
+    params[['runTime']] <- runTime
+    params[['cellTypes']] <- cellTypes
+    params[['cellTypeInitFreq']] <- cellTypeInitFreq
+    params[['modelType']] <- modelType
+    params[['density']] <- density
+    params[['boundary']] <- boundary
+    params[['randSeed']] <- randSeed
+    params[['syncCycles']] <- syncCycles
+    params[['outputIncrement']] <- outputIncrement
+    params[['recordIncrement']] <- recordIncrement
 
-      stop("invalid model type")
+    # make sure all arguments are valid
+    checkParameters(params, ...)
 
-    } else {
+    # run model
+    return (runModel(params, ...))
 
-      # Make a vector of CellType S4 objects based on user input
-      user_cellTypes <- getCellTypesObj(cellTypes, ...)
+}
+    
+checkParameters <- function(params, ...) {
 
-      return (runDrasdoHohme(initialNum,
-                             runTime,
-                             density,
-                             cycleLengthDist,
-                             inheritGrowth, 
-                             outputIncrement,
-                             recordIncrement,
-                             randSeed,
-                             drugEffect,
-                             drugTime,
-                             boundary,
-                             syncCycles,
-                             user_cellTypes,
-                             cellTypeDist,
-                             ...))
+    # general parameters check
+    if (params[['density']] > 0.7) {
+
+        stop("density too high to seed efficiently\n")
 
     }
 
 }
 
-#' \code{runDrasdoHohme} Runs the model from the Drasdo, Hohme paper
-#'
-#' @details  
+runModel <- function(params, ...) {
 
-runDrasdoHohme <- function(initialNum,
-                           runTime,
-                           density,
-                           cycleLengthDist,
-                           inheritGrowth,
-                           outputIncrement,
-                           recordIncrement,
-                           randSeed,
-                           drugEffect,
-                           drugTime,
-                           boundary,
-                           syncCycles,
-                           cellTypes,
-                           cellTypeDist,
-                           ...)
-  
-{
-  
-    nG <- list(...)$nG
-    if (is.null(nG)) {nG = 24}
+    # list of valid model types
+    validMods <- c('DrasdoHohme2003')
 
-    epsilon <- list(...)$epsilon
-    if (is.null(epsilon)) {epsilon = 10}
+    # check that model is valid type
+    if (!(params[['modelType']] %in% validMods)) {
 
-    if (density > 0.9) {
+      stop("invalid model type")
 
-        message("density too high to seed efficiently\n")
-        stop()
+    # call specific model
+    } else if (params[['modelType']] == 'DrasdoHohme2003') {
+
+        return (runDrasdoHohme(params, ...))
 
     }
+
+}
+
+runDrasdoHohme <- function(params, ...) {
   
-    delta <- 0.2 ## must be less than 4 or calculations break
+    ## get model specific parameters
+    params[['nG']] <- list(...)$nG
+    params[['epsilon']] <- list(...)$epsilon
+    params[['delta']] <- list(...)$delta
+    params[['drugs']] <- list(...)$drugs
+
+    ## set to defaults if not provided
+    if (is.null(params[['nG']])) {params[['nG']] = 24}
+    if (is.null(params[['epsilon']])) {params[['epsilon']] = 10}
+    if (is.null(params[['delta']])) {params[['delta']] = 0.2}
   
-    #timeIncrement is the time between each timestep
-    timeIncrement = delta / (4 * nG * (4 - sqrt(2)))
-    max_incr = delta * (min(cycleLengthDist) - 1) / (8 * nG * (sqrt(2) - 1))
-
-    if (timeIncrement > max_incr) {
-
-        timeIncrement = max_incr
-
-    }
-    
-    maxDeform <- 2 * timeIncrement * nG * (4 - sqrt(2))
-    grRates <- 2 * (sqrt(2) - 1) * timeIncrement * nG / (cycleLengthDist - 1)
-    mcSteps <- ceiling(runTime / timeIncrement)
-    maxTranslation <- delta / 2
-    maxRotate <- acos((16 + delta ^ 2 - 4 * delta) / 16)
-
-    outputIncrement2 <- floor(outputIncrement / timeIncrement)
-    recordIncrement2 <- floor(recordIncrement / timeIncrement)  
-
-    if (recordIncrement == 0) {
-
-        recordIncrement2 <- 1
-
-    }
-  
-    for (i in 1:length(drugEffect)) {
-
-        drugEffect[[i]][1] <- 2 * (sqrt(2) - 1) * timeIncrement * nG / (drugEffect[[i]][1] - 1)
-
-    }
-  
-
-    # calls CellModel.cpp function, returns list of numbers
-    output <- CellModel(initialNum,
-                      mcSteps,
-                      density,
-                      maxTranslation,
-                      maxDeform,
-                      maxRotate,
-                      epsilon, 
-                      delta, 
-                      outputIncrement2,
-                      randSeed,
-                      drugEffect, 
-                      grRates, 
-                      inheritGrowth,
-                      nG, 
-                      timeIncrement, 
-                      recordIncrement2, 
-                      drugTime, 
-                      boundary,
-                      syncCycles,
-                      cellTypes,
-                      cellTypeDist)
-    
-
-    # R CellModel-class
-    cellMat <- new("CellModel",
-                 mCells = output,
-                 mInitialNumCells = initialNum,
-                 mRunTime = runTime,
-                 mInitialDensity = density,
-                 mInheritGrowth = inheritGrowth,
-                 mOutputIncrement = outputIncrement,
-                 mRandSeed = randSeed,
-                 mEpsilon = epsilon,
-                 mNG = nG,
-                 mTimeIncrement = timeIncrement,
-                 mRecordIncrement = recordIncrement,
-                 mCycleLengthDist = cycleLengthDist,
-                 mBoundary = calcBoundary(output, density, boundary),
-                 mSyncCycles = syncCycles,
-                 mBoundary = boundary,
-                 mCellTypes = cellTypes,
-                 mCellTypeDist = cellTypeDist)
+    output <- runCellSimulation(params)
+    cellMat <- createCellModel(output[['params']], output[['cells']])
 
     return(cellMat)
   
 }
 
-calcBoundary <- function(rawOutput, density, boundary) {
-
-    len <- length(rawOutput[[1]])
-    radii <- rawOutput[[1]][seq(3,len,7)]
-    axis <- rawOutput[[1]][seq(4,len,7)]
-    cellArea <- 0
-
-    for (i in 1:length(radii)) {
-
-        if (axis[i] > 2.828) {
-
-            cellArea <- cellArea + 2 * pi
-
-        } else {
-
-            cellArea <- cellArea + pi * radii[i] ^ 2
-
-        } 
-
-    }
-
-    if (boundary == 0) {
-
-        return (0)
-
-    } else {
-
-        return (max(sqrt(cellArea / (pi * density)), boundary))
-
-    }
-
-}
-
-#' \code{getCellTypesObj} Returns a vector of CellType S4 objects specified by parameter cellTypes
-#'
-#' @details Used to set default cellTypes in runCancerSim
-#' @param cellTypes a vector representing the types of cells to create. Can be NULL, a vector of characters, or a vector of the S4 Objects themselves
-#' @return a vector of CellType S4 objects
-
-getCellTypesObj <- function(cellTypes=NULL, ...) {
-
-  # If no cellTypes specified, return vector of single NORMAL cell type
-  if (is.null(cellTypes)) {
-
-    return(new("CellType", mType="NORMAL"))
-
-  }
-  
-  # cellTypes as cell type names
-  if (all(is.character(cellTypes))) {
-
-    return(sapply(cellTypes, function(ct) {return(new("CellType", mType=ct))}))
-
-  }
-    
-  # cellTypes as CellType S4 objects
-  if (all(class(cellTypes) == 'CellType')) {
-  
-    return(cellTypes)
-
-  }
-  
-  stop(class(cellTypes), 'is an invalid class for CellTypes')
-
-}
