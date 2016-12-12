@@ -28,31 +28,23 @@ inheritCycleLength = FALSE, inheritDrugEffect = NULL)
     
     if (cycleLengthDist == NULL)
     {
-
         newType@cycleLength <- function() {return(48)}
-
     }
 
     if (drugEffect == NULL)
     {
-
         ## cell is list of info about cell
         newType@drugEffect <- function(drug, cell) {return(cell)}
-
     }
 
     if (inheritCycleLength == NULL)
     {
-
         newType@inheritCycleLength <- FALSE
-
     } 
 
-    if (inheritDrugEffect == NULL) {
-
-
+    if (inheritDrugEffect == NULL)
+    {
         newType@inheritDrugEffect <- function(drug) {return(FALSE)}
-
     }
 
     return (newType)
