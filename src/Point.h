@@ -31,7 +31,7 @@ typedef struct point {
 		y = in_y;
 	}
 
-	double dist(const struct point& other) const {
+	double distance(const struct point& other) const {
 		return pow(pow(x - other.x,2) + pow(y - other.y,2),0.5);
 	}
 
