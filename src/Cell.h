@@ -4,57 +4,65 @@
 #include "Point.h"
 #include "Parameters.h"
 
-class Cell {
+#include <Rcpp.h>
 
-  private:
+class Cell
+{
+
+private:
 
     /* copy of parameters object */
     Parameters* mParams;
 
+    /* R object with all info about the cell's type */
+    Rcpp::S4* mCellType;    
+
+    /* geometric properties */
     Point mCoordinates;
     double mRadius;
-    bool mReadyToDivide;
-    bool mInMitosis;
+	double mAxisLength, mAxisAngle;
+
+    /* growth rate */
     double mGrowthRate;
-	double mAxisLen, mAxisAng;
+    
+    /* phase in the cell cycle */
+    enum CellPhase {I, M, G0, G1, S, G2};
+    CellPhase mPhase;
 
-  public:
+public:
 
-	Cell(const Cell&, double);
-    Cell(Point, Parameters*);
-	Cell(Point, Parameters*, double);
+    /* constructor used for initial cell population */
+    Cell(Point, Parameters*, Rcpp::S4*);
 
-    bool DoTrial(); //return true if growth
-    void Translation();
-    void Growth();
-    void Rotation();
-    void Deformation();
+    /* constructor for daughter cell, pass reference to parent */
+    Cell(Point, Cell&);
 
-    Point GetCoord() const;
-    void SetCoord(Point);
-    double GetRadius() const;
-	void SetRadius(double);
-	void SetAxisLength(double);
-    double GetAxisLength() const;
-    double GetAxisAngle() const;
-    void SetGrowth(double);
-    double GetGrowth() const;
-    double GetArea() const;
+    /* getters */
+    Point coord() { return mCoordinates;}
+    double radius() { return mRadius;}
+    double axisLength() { return mAxisLength;}
+    double axisAngle() { return mAxisAngle;}
+    double growthRate() { return mGrowthRate;}
+    CellPhase phase() { return mPhase;}
+    Rcpp::S4* cellType() { return mCellType;}
+    Parameters* parameters() {return mParameters;}
+    double area() { return M_PI * pow(mRadius, 2);}
+    
+    /* setters */   
+    void setCoordinates(Point c) { mCoordinates = c;}
+    void setRadius(double r) { mRadius = r;}
+    void setAxisLength(double al) { mAxisLength = al;}
+    void setAxisAngle(double aa) { mAxisAngle = aa;}
+    void setGrowthRate(double gr) { mGrowthRate = gr;}
+    void setPhase(CellPhase p) { mPhase = p;}
 
-    bool ReadyToDivide() const;
-	void EnterRandomPointOfMitosis();
-
+    /* undergo cell division, return daughter cell */
  	Cell Divide();
 
-    double CellDistance(const Cell&) const;
-
-    bool operator!=(const Cell& b) const {
-        return mCoordinates != b.mCoordinates;
-    }
-
-    bool operator==(const Cell& b) const {
-        return mCoordinates == b.mCoordinates;
-    }
+    /* operator definitions */
+    bool operator!=(const Cell&) const;
+    bool operator==(const Cell&) const;
+    double distance(const Cell&) const;
 
 };
 

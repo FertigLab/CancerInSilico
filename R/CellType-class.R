@@ -10,17 +10,19 @@
 
 setClass('CellType', representation(
                         type = 'character',
+                        size = 'numeric',
                         cycleLength = 'function',
                         drugEffect = 'function',
                         inheritCycleLength = 'logical',
                         inheritDrugEffect = 'function'))
 
-newCellType <- function(name, cycleLength = NULL, drugEffect = NULL,
-inheritCycleLength = FALSE, inheritDrugEffect = NULL)
+newCellType <- function(type, size = 1, cycleLength = NULL,
+drugEffect = NULL, inheritCycleLength = FALSE, inheritDrugEffect = NULL)
 {
 
     newType <- new('CellType')
-    newType@type <- name
+    newType@type <- type
+    newType@size <- size
     newType@cycleLength <- cycleLength
     newType@drugEffect <- drugEffect
     newType@inheritCycleLength <- inheritCycleLength
