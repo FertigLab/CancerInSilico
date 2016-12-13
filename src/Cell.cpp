@@ -8,6 +8,13 @@ Cell::Cell(Point coords, Parameters* params, Rcpp::S4* type)
     mCoordinates = coords;
     mParams = params;
     mCellType = type;
+
+    mRadius = pow(type.slot("size"), 0.5);
+    mAxisLength = 2 * mRadius;    
+    mAxisAngle = R::runif(0, 2 * M_PI);
+
+    Rcpp::Function cycleLength = type.slot("cycleLength");
+    mGrowthRate = 
 }
 
 /* constructor for daughter cell, pass reference to parent */
@@ -16,6 +23,7 @@ Cell::Cell(Point coords, Cell& parent)
     mCoordinates = coords;
     mParams = parent.parameters();
     mCellType = parent.cellType();
+    mAxisAngle = R::runif(0, 2 * M_PI);
 }
 
 Cell Cell::Divide()
@@ -29,9 +37,7 @@ Cell Cell::Divide()
                          coordinates().y + sin(axisAngle()));
 
     /* reset properties of parent */
-    setAxisLength(2);
-    setAxisAngle(0);
-    setRadius(1);
+    mAxisAngle = R::runif(0, 2 * M_PI);
 
     return Cell(daughterCoords, *this);
 }
