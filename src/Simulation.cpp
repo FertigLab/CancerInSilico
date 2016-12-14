@@ -36,7 +36,7 @@ void Simulation::Run() {
 
         if (time >= outputTime) {
 
-            Rprintf("time = %.2f\n", ceil(time));
+            Rprintf("time = %.2f\n", outputTime);
             Rprintf("size = %d\n", mCells->size());
 
             outputTime += mParams->outputIncrement();

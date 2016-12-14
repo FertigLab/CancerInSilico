@@ -6,7 +6,7 @@
 \usage{
 runCancerSim(initialNum, runTime, density = 0.01, cycleLengthDist = 48,
   inheritGrowth = FALSE, modelType = "DrasdoHohme2003",
-  drugEffect = function(x) {     return(0) }, drugTime = 0,
+  drugEffect = function(x) {     return(1) }, drugTime = 0,
   boundary = TRUE, randSeed = 0, syncCycles = TRUE, outputIncrement = 6,
   recordIncrement = 0.25, ...)
 }

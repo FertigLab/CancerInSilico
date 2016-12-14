@@ -371,11 +371,10 @@ setMethod("show", "CellModel",
     function (object) {
 
         cat("model parameters:")
-        print(getParameters(object))
+        print(object@params)
         cat("available functions:\n")
         cat("interactivePlot\n")
         cat("plotCells\n")
-        cat("getParameters\n")
         cat("getDensity\n")
         cat("getCycleLengths\n")
         cat("getNumberOfCells\n")
