@@ -6,19 +6,20 @@
 
 #include <Rcpp.h>
 
-class Simulation {
+class CellBasedModel {
 
-  private:
+private:
 
     CellPopulation* mCells;
     Parameters* mParams;
 
-  public:
+public:
 
-    Simulation(Parameters*);
-    ~Simulation();
+    CellBasedModel(Parameters*);
+    ~CellBasedModel();
 
     void Run();
+    virtual void OneTimeStep() = 0;
     Rcpp::List GetCellsAsList();
 
 };

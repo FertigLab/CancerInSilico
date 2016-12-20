@@ -12,7 +12,7 @@ class Cell
 private:
 
     /* copy of parameters object */
-    Parameters* mParams;
+    Parameters* mParameters;
 
     /* R object with all info about the cell's type */
     Rcpp::S4* mCellType;    
@@ -22,8 +22,8 @@ private:
     double mRadius;
 	double mAxisLength, mAxisAngle;
 
-    /* growth rate */
-    double mGrowthRate;
+    /* average length of the cell cycle */
+    double mCycleLength;
     
     /* phase in the cell cycle */
     enum CellPhase {I, M, G0, G1, S, G2};
@@ -38,22 +38,22 @@ public:
     Cell(Point, Cell&);
 
     /* getters */
-    Point coord() { return mCoordinates;}
-    double radius() { return mRadius;}
-    double axisLength() { return mAxisLength;}
-    double axisAngle() { return mAxisAngle;}
-    double growthRate() { return mGrowthRate;}
-    CellPhase phase() { return mPhase;}
-    Rcpp::S4* cellType() { return mCellType;}
-    Parameters* parameters() {return mParameters;}
-    double area() { return M_PI * pow(mRadius, 2);}
+    Point coordinates() const { return mCoordinates;}
+    double radius() const { return mRadius;}
+    double axisLength() const { return mAxisLength;}
+    double axisAngle() const { return mAxisAngle;}
+    double cycleLength() const { return mCycleLength;}
+    CellPhase phase() const { return mPhase;}
+    Rcpp::S4* cellType() const { return mCellType;}
+    Parameters* parameters() const {return mParameters;}
+    double area() const { return M_PI * pow(mRadius, 2);}
     
     /* setters */   
     void setCoordinates(Point c) { mCoordinates = c;}
     void setRadius(double r) { mRadius = r;}
     void setAxisLength(double al) { mAxisLength = al;}
     void setAxisAngle(double aa) { mAxisAngle = aa;}
-    void setGrowthRate(double gr) { mGrowthRate = gr;}
+    void setCycleLength(double cl) { mCycleLength = cl;}
     void setPhase(CellPhase p) { mPhase = p;}
 
     /* undergo cell division, return daughter cell */

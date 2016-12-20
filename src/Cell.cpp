@@ -3,27 +3,49 @@
 
 #include "Cell.h"
 
+/* constructor for initial cells */
 Cell::Cell(Point coords, Parameters* params, Rcpp::S4* type)
 {
     mCoordinates = coords;
-    mParams = params;
+    mParameters = params;
     mCellType = type;
 
-    mRadius = pow(type.slot("size"), 0.5);
+    mRadius = pow(type->slot("size"), 0.5);
     mAxisLength = 2 * mRadius;    
     mAxisAngle = R::runif(0, 2 * M_PI);
+    mPhase = I;
 
-    Rcpp::Function cycleLength = type.slot("cycleLength");
-    mGrowthRate = 
+    if (!params->syncCellCycles()) {
+
+        gotoRandomCyclePoint();
+
+    }
+
+    Rcpp::Function cycleLengthDist = type->slot("cycleLength");
+    mCycleLength = Rcpp::as<double>(cycleLengthDist());
 }
 
 /* constructor for daughter cell, pass reference to parent */
 Cell::Cell(Point coords, Cell& parent)
 {
     mCoordinates = coords;
-    mParams = parent.parameters();
+    mParameters = parent.parameters();
     mCellType = parent.cellType();
+
+    mRadius = pow(mCellType->slot("size"), 0.5);
+    mAxisLength = 2 * mRadius;
     mAxisAngle = R::runif(0, 2 * M_PI);
+    mPhase = I;
+    
+    if (mCellType->slot("inheritCycleLength"))
+    {
+        mCycleLength = parent.cycleLength();
+    }
+    else
+    {
+        Rcpp::Function cycleLengthDist = type->slot("cycleLength");
+        mCycleLength = Rcpp::as<double>(cycleLengthDist());
+    }
 }
 
 Cell Cell::Divide()
@@ -33,11 +55,14 @@ Cell Cell::Divide()
                                  coordinates().y - sin(axisAngle()));
 
     /* update coordinates of parent cell */
-    setCoordinates(Point(coordinates().x + cos(axisAngle()),
-                         coordinates().y + sin(axisAngle()));
+    mCoordinates = Point(coordinates().x + cos(axisAngle()),
+                         coordinates().y + sin(axisAngle())));
 
     /* reset properties of parent */
+    mRadius = pow(mCellType->slot("size"), 0.5);
+    mAxisLength = 2 * mRadius;
     mAxisAngle = R::runif(0, 2 * M_PI);
+    mPhase = I;
 
     return Cell(daughterCoords, *this);
 }
@@ -70,7 +95,6 @@ double Cell::distance(const Cell& b) const
     }
 
     return minDist - radius() - b.radius();
-
 }
 
 bool Cell::operator!=(const Cell& other) const

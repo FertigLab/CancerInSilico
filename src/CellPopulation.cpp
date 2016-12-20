@@ -3,40 +3,25 @@
 
 #include "CellPopulation.h"
 
-/****** CONSTRUCTOR/DESTRUCTOR AND INITIALIZATION FUNCTIONS ******/
-
 /* constructor; takes a Parameters object, initial size and
    density of the  population */
-CellPopulation::CellPopulation(Parameters *par, unsigned int size, double density) {
-
+CellPopulation::CellPopulation(Parameters* params)
+{
     /* store the parameters */
-    m_param = par;
+    mParameters = par;
 
     /* create a temporary vector of 'default' state cells */
-    std::vector<Cell*> cells = CreateDefaultCells(size);
+    std::vector<Cell*> cells = createDefaultCells(size);
 
-    /* seed cells throughout the cell cycle */
-    double cell_area = InitCellCycle(cells);
-
-    /* calculate the initial seeding radius */
-    double disk_radius = pow(cell_area / (M_PI * density), 0.5);
-   
     /* create the cell boundary: cells cannot go outside the boundary */
-    CreateBoundary(disk_radius);
+    calculateBoundary(cells);
 
     /* initalize the data structure to hold the cells */
     m_population = SpatialHash<Cell>(1.0);
   
     /* place the cells and seed them randomly throughout the disk;
        cells are inserted in m_population during this step */
-    PlaceCells(cells, disk_radius);
-
-    /* set the intial growth rates of the cells */
-    SetGrowthRates();
-
-    /* intialize to false: haven't added the drug yet */
-    m_drug_added = false;
-
+    placeCells(cells);
 }
 
 /* deconstructor */
