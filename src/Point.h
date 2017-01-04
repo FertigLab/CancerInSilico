@@ -47,19 +47,19 @@ struct Point
 	}
 };
 
-/*struct iequal_to
-    : std::binary_function<Point, Point, bool> {
-
-    bool operator()(const Point &p1, const Point &p2) const {
-        return p1.x == p2.x && p1.y == p2.y;
+/* neccesary for boost::unordered_map */
+struct iequal_to : std::binary_function<Point, Point, bool>
+{
+    bool operator() (const Point& p1, const Point& p2) const
+    {
+        return p1 == p2;
     }
-
-};*/
+};
 
 /* hash function - used in SpatialHash */
 struct ihash : std::unary_function<Point, std::size_t>
 {
-    std::size_t operator()(const Point &p) const
+    std::size_t operator() (const Point& p) const
     {
         /* use boost to hash point coordinates */
         boost::hash<int> int_hash;
