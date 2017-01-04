@@ -23,16 +23,16 @@ private:
 	SpatialHash<Cell> mPopulation;
 
     /* record of the cell information */
-	std::vector<std::vector<double> > mPopulationRecord;
+	std::vector< std::vector<double> > mPopulationRecord;
 
     /* create a vector of 'default' state cells */
     std::vector<Cell*> createDefaultCells(unsigned int);
 
-    /* create the cell boundary */
-    void createBoundary(std::vector<Cell*>);
+    /* calc boundary, return seeding radius - different if no boundary */
+    double calculateBoundary(std::vector<Cell*>&);
 
     /* create the cells and seed them randomly inside the given radius */
-    void placeCells(std::vector<Cell*>);
+    void placeCells(std::vector<Cell*>&, double);
 
 public:
     
@@ -46,7 +46,7 @@ public:
     /* find a random location inside the disk and move the cell there */
     void placeRandomly(Cell*);
 
-    /* check is cell is in valid location */
+    /* check if cell is in valid location */
     bool validCellLocation(Cell*);
 
     /* calculate how many neighbors the cell has */
@@ -60,7 +60,6 @@ public:
 
     /* return the size of the cell population */
     int size();
-
 };
 
 #endif

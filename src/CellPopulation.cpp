@@ -8,58 +8,89 @@
 CellPopulation::CellPopulation(Parameters* params)
 {
     /* store the parameters */
-    mParameters = par;
+    mParameters = params;
 
     /* create a temporary vector of 'default' state cells */
     std::vector<Cell*> cells = createDefaultCells(size);
 
     /* create the cell boundary: cells cannot go outside the boundary */
-    calculateBoundary(cells);
+    double radius = calculateBoundary(cells);
 
     /* initalize the data structure to hold the cells */
-    m_population = SpatialHash<Cell>(1.0);
+    mPopulation = SpatialHash<Cell>(1.0);
   
     /* place the cells and seed them randomly throughout the disk;
-       cells are inserted in m_population during this step */
-    placeCells(cells);
+       cells are inserted in mPopulation during this step */
+    placeCells(cells, radius);
 }
 
 /* deconstructor */
-CellPopulation::~CellPopulation() {
-    
+CellPopulation::~CellPopulation()
+{
     /* iterate through entire cell population */
-    SpatialHash<Cell>::full_iterator iter = m_population.begin();
-    for (; iter != m_population.end(); ++iter) {
-
+    SpatialHash<Cell>::iterator it = mPopulation.begin();
+    for (; it != mPopulation.end(); ++it)
+    {
         /* free memory of cell */
-        delete &iter;
-
+        delete *it;
     }
-
 }
 
 /* create a temporary vector of 'default' state cells */
-std::vector<Cell*> CellPopulation::CreateDefaultCells(unsigned int num) {
-
+std::vector<Cell*> CellPopulation::CreateDefaultCells(unsigned num)
+{
     /* create the return vector */
-    std::vector<Cell*> ret_vec;
+    std::vector<Cell*> cells;
 
     /* create 'num' cells */
-    for (unsigned int i = 0; i < num; ++i) {
-
+    for (unsigned i = 0; i < num; ++i)
+    {
         /* use default constructor at point (0,0) */
-        ret_vec.push_back(new Cell(Point(0,0), m_param));
-
+        cells.push_back(new Cell(Point(0,0), mParameters));
     }
 
-    /* return cells */
-    return ret_vec;
-
+    /* return vector of cells */
+    return cells;
 }
+
+/* create the cell boundary */
+double CellPopulation::calculateBoundary(std::vector<Cell*>& cells)
+{
+    /* iterate through entire cell population */
+    double area = 0.0;
+    SpatialHash<Cell>::iterator it = mPopulation.begin();
+    for (; it != mPopulation.end(); ++it)
+    {
+        /* add up area */
+        area += (*it)->area();
+    }
+
+    /* calculate seeding radius */
+    double radius = pow(area / (M_PI * mParameters->density()), 0.5);
+    mParameters->setBoundary(radius);
+
+    /* if boundary is zero (no boundary) */
+    if (mParameters->boundary() == 0.0)
+    {
+        /* set boundary value to maximum allowed */
+        mParameters->setBoundary(std::numeric_limits<double>::max());
+    }
+
+    /* return seeding radius */
+    return radius;
+}
+
+
+
+
+
+
+
+
 
 /* seed cells randomly throughout the cell cycle, return total area
    occupied by the cells */
-double CellPopulation::InitCellCycle(std::vector<Cell*> cells) {
+double CellPopulation::InitCellCycle(std::vector<Cell*>& cells) {
 
     /* declare variable for later */
     double unif, total_area = 0.0;
@@ -99,25 +130,7 @@ double CellPopulation::InitCellCycle(std::vector<Cell*> cells) {
 }
 
 
-/* create the cell boundary */
-void CellPopulation::CreateBoundary(double radius) {
 
-    /* if boundary is zero (no boundary) */
-    if (m_param->boundary() == 0.0) {
-
-        /* set boundary value to maximum allowed */
-        m_param->setBoundary(std::numeric_limits<double>::max());
-
-    /* otherwise check if boundary is too small
-       (must be bigger than initial seeding radius) */
-    } else if (m_param->boundary() < radius) {
-
-        /* set boundary to the minimum value */
-        m_param->setBoundary(radius);
-
-    }
-
-}
 
 /* create all the cells */
 void CellPopulation::PlaceCells(std::vector<Cell*> cells, double radius) {

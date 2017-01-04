@@ -12,20 +12,20 @@ struct Point
     double x, y;
 
     /* "less than" means closer to origin */
-    bool operator<(const struct point& other) const
+    bool operator<(const Point& other) const
     {
         return pow(x, 2) + pow(y, 2) < pow(other.x, 2) + pow(other.y, 2);
     }
 
     /* close enough points within some tolerance */
-    bool operator==(const struct point& other) const
+    bool operator==(const Point& other) const
     {
         return (x < other.x + 0.0001 && x > other.x - 0.0001)
             && (y < other.y + 0.0001 && y > other.y - 0.0001);
     }
 
     /* default definition of != */
-    bool operator!=(const struct point& other) const
+    bool operator!=(const Point& other) const
     {
         return !(other == *this);
     }
@@ -34,14 +34,14 @@ struct Point
 	Point() { x = 0.0; y = 0.0;}
 
     /* constructor given specific coordinates */
-	point(double in_x, double in_y)
+	Point(double inX, double inY)
     {
-		x = in_x;
-		y = in_y;
+		x = inX;
+		y = inY;
 	}
 
     /* euclidean distance between two points */
-	double distance(const struct point& other) const
+	double distance(const Point& other) const
     {
 		return pow(pow(x - other.x,2) + pow(y - other.y,2), 0.5);
 	}

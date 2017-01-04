@@ -54,7 +54,7 @@ public:
     void setBoundary(double b) { mParams["boundary"] = b;}
 
     /* get a random cell type from initial distribution */
-    Rcpp::S4 getRandomCellType();    
+    Rcpp::S4* randomCellType();    
 
     /* return radius given axis length, perserves area of dumbell */
     double GetRadius(double a) { return mSolver.GetRadius(a);}

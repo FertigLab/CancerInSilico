@@ -24,6 +24,9 @@ private:
 
     /* average length of the cell cycle */
     double mCycleLength;
+
+    /* seed used to calculate drug effect */
+    double mDrugEffectSeed;
     
     /* phase in the cell cycle */
     enum CellPhase {I, M, G0, G1, S, G2};
@@ -35,7 +38,7 @@ public:
     Cell(Point, Parameters*, Rcpp::S4*);
 
     /* constructor for daughter cell, pass reference to parent */
-    Cell(Point, Cell&);
+    Cell(Point, const Cell&);
 
     /* getters */
     Point coordinates() const { return mCoordinates;}
@@ -43,27 +46,31 @@ public:
     double axisLength() const { return mAxisLength;}
     double axisAngle() const { return mAxisAngle;}
     double cycleLength() const { return mCycleLength;}
+    double drugEffectSeed() const { return mDrugEffectSeed;}
     CellPhase phase() const { return mPhase;}
     Rcpp::S4* cellType() const { return mCellType;}
     Parameters* parameters() const {return mParameters;}
     double area() const { return M_PI * pow(mRadius, 2);}
     
     /* setters */   
-    void setCoordinates(Point c) { mCoordinates = c;}
-    void setRadius(double r) { mRadius = r;}
-    void setAxisLength(double al) { mAxisLength = al;}
-    void setAxisAngle(double aa) { mAxisAngle = aa;}
-    void setCycleLength(double cl) { mCycleLength = cl;}
-    void setPhase(CellPhase p) { mPhase = p;}
+    void setCoordinates(Point coords) { mCoordinates = coords;}
+    void setRadius(double radius) { mRadius = radius;}
+    void setAxisLength(double length) { mAxisLength = length;}
+    void setAxisAngle(double angle) { mAxisAngle = angle;}
+    void setCycleLength(double length) { mCycleLength = length;}
+    void drugEffectSeed(double seed) { mDrugEffectSeed = seed;}
+    void setPhase(CellPhase phase) { mPhase = phase;}
 
-    /* undergo cell division, return daughter cell */
- 	Cell Divide();
-
-    /* operator definitions */
+    /* operators */
     bool operator!=(const Cell&) const;
     bool operator==(const Cell&) const;
     double distance(const Cell&) const;
 
+    /* undergo cell division, return daughter cell */
+ 	Cell divide();
+
+    /* go to random point in the cell cycle */
+    void gotoRandomCyclePoint();
 };
 
 #endif
