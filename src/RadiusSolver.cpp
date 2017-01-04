@@ -9,7 +9,7 @@ RadiusSolver::RadiusSolver()
 }
 
 /* initialize slow solver angle -> axis (given axis, angle is O(log n)) */
-void RadiusSolver::InitSlowSolver()
+void RadiusSolver::initSlowSolver()
 {
     /* for each angle in (0, PI) */
     double theta = 0.0;
@@ -28,7 +28,7 @@ void RadiusSolver::InitSlowSolver()
 }
 
 /* initialize fast solver axis -> angle (given axis, angle is O(1) */
-void RadiusSolver::InitFastSolver()
+void RadiusSolver::initFastSolver()
 {
     /* for each axis length in (2.8284, 4) */
     double axis = 2.8284;
@@ -43,7 +43,7 @@ void RadiusSolver::InitFastSolver()
 }
 
 /* get angle given axis, O(log n) */
-double RadiusSolver::GetThetaSlow(double axis)
+double RadiusSolver::getThetaSlow(double axis)
 {
     /* find closest value of axis in angle -> axis table */
     std::vector<double>::iterator lower;
@@ -55,7 +55,7 @@ double RadiusSolver::GetThetaSlow(double axis)
 }
 
 /* get radius given axis O(1), perserves area of dumbell */
-double RadiusSolver::GetRadius(double axis)
+double RadiusSolver::radius(double axis)
 {
     /* check if axis is below minimum */    
     if (axis < 2 * pow(2,0.5))
@@ -74,7 +74,7 @@ double RadiusSolver::GetRadius(double axis)
 }
 
 /* hash axis length to index in vector (int) */
-int RadiusSolver::HashAxisLength(double axis)
+int RadiusSolver::hashAxisLength(double axis)
 {
     /* finds index given the scale of the vector */
 	return floor((axis - 2 * pow(2, 0.5)) * 10000);

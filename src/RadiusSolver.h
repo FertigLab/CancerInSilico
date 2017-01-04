@@ -30,16 +30,16 @@ private:
 	std::vector<double> mFastSolver;
 
     /* initialize slow solver table (given axis, angle is O(log n)) */
-    void InitSlowSolver();
+    void initSlowSolver();
 
     /* initialize fast solver table (given axis, angle is O(1) */
-    void InitFastSolver();
+    void initFastSolver();
 
     /* get angle given axis, O(log n) */
-    double GetThetaSlow(double axis);
+    double getThetaSlow(double axis);
 
     /* hash axis length to index in vector (int) */
-    int HashAxisLength(double axis);
+    int hashAxisLength(double axis);
 
 public:
 
@@ -47,7 +47,7 @@ public:
     RadiusSolver();
 
     /* get radius given axis O(1), perserves area of dumbell */
-    double GetRadius(double);
+    double radius(double);
 };
 
 #endif
