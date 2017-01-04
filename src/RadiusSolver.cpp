@@ -1,66 +1,82 @@
 #include "RadiusSolver.h"
 
+/* constructor */
 RadiusSolver::RadiusSolver()
 {
+    /* initialize lookup tables */
 	InitSlowSolver();
 	InitFastSolver();
 }
 
+/* initialize slow solver angle -> axis (given axis, angle is O(log n)) */
 void RadiusSolver::InitSlowSolver()
 {
-    double theta, numer, denom;
-
-    for (int i = 0; i <= 31400; ++i)
+    /* for each angle in (0, PI) */
+    double theta = 0.0;
+    while (theta <= 3.1416)
     {
-        theta = (double) i / 10000;
-        numer = pow(2 * M_PI, 0.5) * 2 * (1 + cos(theta / 2));
-        denom = pow(sin(theta) - theta + 2 * M_PI, 0.5);
+        /* calculate numerator and denominator of axis */
+        double numer = pow(2 * M_PI, 0.5) * 2 * (1 + cos(theta / 2));
+        double denom = pow(sin(theta) - theta + 2 * M_PI, 0.5);
+
+        /* add axis length to lookup table for this value of theta */
         mSlowSolver.push_back(numer / denom);
+
+        /* increment angle - makes size of vector == 31417 */
+        theta += 0.0001
     }
 }
 
-void RadiusSolver::InitFastSolver() {
-
-	double theta;
-
-	for (int i = 0; i <= 11716; ++i) {
-
-		theta = GetThetaSlow(2 * pow(2,0.5) + (double) i / 10000);
-		mFastSolver.push_back(theta);
-
-	}
-
+/* initialize fast solver axis -> angle (given axis, angle is O(1) */
+void RadiusSolver::InitFastSolver()
+{
+    /* for each axis length in (2.8284, 4) */
+    double axis = 2.8284;
+    while (axis <= 4.0)
+    {
+        /* add theta value for this axis length */
+		mFastSolver.push_back(GetThetaSlow(axis));
+        
+        /* increment axis - makes size of vector == 11717 */
+        axis += 0.0001;
+    }
 }
 
-double RadiusSolver::GetThetaSlow(double axis) {
-
+/* get angle given axis, O(log n) */
+double RadiusSolver::GetThetaSlow(double axis)
+{
+    /* find closest value of axis in angle -> axis table */
     std::vector<double>::iterator lower;
     lower = std::lower_bound(mSlowSolver.begin(), mSlowSolver.end(),
-                                axis, GreaterThan());
+        axis, GreaterThan());
 
+    /* vector size is 31417 so dividing scales the angle back to (0, PI) */
     return (double) (lower - mSlowSolver.begin()) / 10000;
-
 }
 
-double RadiusSolver::GetRadius(double axis) {
-
-    if (axis < 2 * pow(2,0.5)) {
-
+/* get radius given axis O(1), perserves area of dumbell */
+double RadiusSolver::GetRadius(double axis)
+{
+    /* check if axis is below minimum */    
+    if (axis < 2 * pow(2,0.5))
+    {
         throw std::invalid_argument("called deformation function with axis"
             " length less than min\n");
-
-    } else {
-
-       	double theta = mFastSolver[HashAxisLength(axis)];
-        return axis / (2 + 2 * cos(theta / 2));        
-
     }
+    else
+    {
+        /* get angle for this axis length */
+       	double theta = mFastSolver[HashAxisLength(axis)];
 
+        /* calculate radius based on this angle */
+        return axis / (2 + 2 * cos(theta / 2));        
+    }
 }
 
-int RadiusSolver::HashAxisLength(double axis) {
-
-	return floor((axis - 2 * pow(2,0.5)) * 10000);
-
+/* hash axis length to index in vector (int) */
+int RadiusSolver::HashAxisLength(double axis)
+{
+    /* finds index given the scale of the vector */
+	return floor((axis - 2 * pow(2, 0.5)) * 10000);
 }
 
