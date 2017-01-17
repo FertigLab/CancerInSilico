@@ -18,11 +18,13 @@ class Cell {
     double mGrowthRate;
 	double mAxisLen, mAxisAng;
 
+    /* type of cell */
+    char mType;
+
   public:
 
-	Cell(const Cell&, double);
     Cell(Point, Parameters*);
-	Cell(Point, Parameters*, double);
+	Cell(Point, const Cell&);
 
     bool DoTrial(); //return true if growth
     void Translation();
@@ -40,6 +42,7 @@ class Cell {
     void SetGrowth(double);
     double GetGrowth() const;
     double GetArea() const;
+    char GetType() const;
 
     bool ReadyToDivide() const;
 	void EnterRandomPointOfMitosis();

@@ -30,9 +30,6 @@ class Parameters {
 	std::vector<double> mSlowSolver;
 	std::vector<double> mFastSolver;
 
-    /* distribution of growth rates */
-	std::vector<double> mGrowthDist;
-
     /* initialize lookup tables for radius-axis values */
     void InitializeRadiusSolver();
 	void InitSlowSolver();
@@ -44,7 +41,6 @@ class Parameters {
     /* process parameters */
     void StoreTimeIncrement();   
     void StoreUpdateParameters();
-    void StoreGrowthDistribution();
 
 public:
 
@@ -78,7 +74,7 @@ public:
     void setBoundary(double b) { mParams["boundary"] = b;}
 
     double GetDrugEffect(double);
-	double GetRandomGrowthRate();
+	double GetRandomGrowthRate(char);
 
     double GetRadius(double);
 

@@ -13,7 +13,6 @@ Parameters::Parameters(double maxRad, Rcpp::List Rparams) {
 
     StoreTimeIncrement();
     StoreUpdateParameters();
-    StoreGrowthDistribution();
 
 }
 
@@ -34,19 +33,6 @@ void Parameters::StoreUpdateParameters() {
     mParams["maxDeform"] = 2 * timeIncrement() * nG() * (4 - pow(2, 0.5));
     mParams["maxTranslation"] = delta() / 2;
     mParams["maxRotate"] = acos((16 + pow(delta(), 2) - 4 * delta()) / 16);
-
-}
-
-void Parameters::StoreGrowthDistribution() {
-
-    Rcpp::NumericVector cycleDist = mParams["cycleLengthDist"];
-
-    for (unsigned int i = 0; i < cycleDist.size(); ++i) {
-
-        double numer = 2 * (pow(2, 0.5) - 1) * timeIncrement() * nG();
-        mGrowthDist.push_back(numer / cycleDist[i]);
-
-    }
 
 }
 
@@ -118,9 +104,12 @@ double Parameters::GetRadius(double axis) {
 
 }
 
-double Parameters::GetRandomGrowthRate() {
+double Parameters::GetRandomGrowthRate(char type) {
 
-	return mGrowthDist[floor(R::runif(0, mGrowthDist.size()))];
+    Rcpp::Function cl = mParams["cycleLengthDist"];
+    double cycleLength = Rcpp::as<double>(cl(type));
+    double numer = 2 * (pow(2, 0.5) - 1) * timeIncrement() * nG();
+    return numer / cycleLength;
 
 }
 
@@ -132,4 +121,15 @@ double Parameters::GetDrugEffect(double growthRate) {
 
 }
 
+char Parameters::GetRandomCellType() {
+
+    Rcpp::NumericVector freq = mParams["cellTypeInitFreq"];
+    double total = 0.0, u = R::runif(0, 1);
+    unsigned char i = 0;
+    
+    while (u > total) { total += freq[i++];}
+
+    return 'A' + i - 1;
+
+}
 

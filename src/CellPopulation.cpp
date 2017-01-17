@@ -31,9 +31,6 @@ CellPopulation::CellPopulation(Parameters *par, unsigned int size, double densit
        cells are inserted in m_population during this step */
     PlaceCells(cells, disk_radius);
 
-    /* set the intial growth rates of the cells */
-    SetGrowthRates();
-
     /* intialize to false: haven't added the drug yet */
     m_drug_added = false;
 
@@ -215,23 +212,6 @@ bool CellPopulation::ValidCellPlacement(Cell* cell, double rad) {
     return true;
 
 }
-
-/* set the inital growth rates of the cells */
-void CellPopulation::SetGrowthRates() {
-
-    /* iterator for the whole population */
-    SpatialHash<Cell>::full_iterator iter = m_population.begin();
-
-    /* iterate through each cell */
-    for (; iter != m_population.end(); ++iter) {
-
-        /* set each growth rate from distribution given as parameter */
-        (*iter).SetGrowth(m_param->GetRandomGrowthRate());
-
-    }
-
-}
-
 
 /* add the drug to the cell population */
 void CellPopulation::AddDrug() {
@@ -563,6 +543,7 @@ void CellPopulation::RecordPopulation() {
         current_pop.push_back((*iter).GetAxisLength());
         current_pop.push_back((*iter).GetAxisAngle());
         current_pop.push_back((*iter).GetGrowth());
+        current_pop.push_back((*iter).GetType());
 
     }
 

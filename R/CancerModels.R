@@ -31,8 +31,9 @@
 runCancerSim <- function(initialNum,
                          runTime,
                          density = 0.01,
-                         cycleLengthDist = 48,
+                         cycleLengthDist = function(type) {return(48)},
                          inheritGrowth = FALSE,
+                         cellTypeInitFreq = c(1),
                          modelType = "DrasdoHohme2003",
                          drugEffect = function(x) {return(1)},
                          drugTime = 0.0,
@@ -51,6 +52,7 @@ runCancerSim <- function(initialNum,
     params[['runTime']] <- runTime
     params[['density']] <- density
     params[['cycleLengthDist']] <- cycleLengthDist
+    params[['cellTypeInitFreq']] <- cellTypeInitFreq
     params[['inheritGrowth']] <- inheritGrowth
     params[['modelType']] <- modelType
     params[['drugEffect']] <- drugEffect

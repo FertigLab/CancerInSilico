@@ -13,35 +13,28 @@ Cell::Cell(Point coord, Parameters* par) {
     mAxisAng = R::runif(0,2 * M_PI);
     mRadius = 1;
     mAxisLen = 2 * mRadius;
-    mGrowthRate = 0;
+    mType = par->GetRandomCellType();
+    mGrowthRate = par->GetRandomGrowthRate(mType);
 
 }
 
 //used only for daughter cells
-Cell::Cell(Point coord, Parameters* par, double gr_rate) {
+Cell::Cell(Point coord, const Cell& parent) {
 
-    mParams = par;
+    mParams = parent.mParams;
     mCoordinates = coord;
     mInMitosis = false;
     mReadyToDivide = false;
     mAxisLen = 2;
     mAxisAng = R::runif(0,2 * M_PI);
     mRadius = 1;
-    mGrowthRate = gr_rate;
+    mType = parent.mType;
 
-}
-
-//should only be called for daughter cells (defn probably unneccesary)
-Cell::Cell(const Cell& other, double gr_rate) {
-
-    mParams = other.mParams;
-    mCoordinates = other.mCoordinates;
-    mInMitosis = other.mInMitosis;
-    mReadyToDivide = other.mReadyToDivide;
-    mAxisLen = other.mAxisLen;
-    mAxisAng = other.mAxisAng;
-    mRadius = other.mRadius;
-    mGrowthRate = gr_rate;
+    if (mParams->inheritGrowth()) {
+        mGrowthRate = parent.mGrowthRate;
+    } else {
+        mGrowthRate = mParams->GetRandomGrowthRate(mType);
+    }
 
 }
 
@@ -53,12 +46,12 @@ Cell Cell::Divide() {
     mCoordinates.x += cos(mAxisAng);
     mCoordinates.y += sin(mAxisAng);
     mAxisLen = 2;
-    mAxisAng = 0;
+    mAxisAng = R::runif(0, 2 * M_PI);
     mRadius = 1;
     mReadyToDivide = false;
     mInMitosis = false;
 
-    return Cell(Point(x,y), mParams, mGrowthRate);
+    return Cell(Point(x,y), *this);
 
 }
 
@@ -188,6 +181,12 @@ void Cell::SetGrowth(double rate) {
 double Cell::GetGrowth() const {
 
     return mGrowthRate;
+
+}
+
+char Cell::GetType() const {
+
+    return mType;
 
 }
 
