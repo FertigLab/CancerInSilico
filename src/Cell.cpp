@@ -19,7 +19,7 @@ Cell::Cell(Point coord, Parameters* par) {
 }
 
 //used only for daughter cells
-Cell::Cell(Point coord, const Cell& parent) {
+Cell::Cell(Point coord, const Cell& parent, bool drug) {
 
     mParams = parent.mParams;
     mCoordinates = coord;
@@ -34,11 +34,12 @@ Cell::Cell(Point coord, const Cell& parent) {
         mGrowthRate = parent.mGrowthRate;
     } else {
         mGrowthRate = mParams->GetRandomGrowthRate(mType);
+        if (drug) {mGrowthRate *= mParams->GetDrugEffect(mGrowthRate);}
     }
 
 }
 
-Cell Cell::Divide() {
+Cell Cell::Divide(bool drug) {
 
     double x = mCoordinates.x - cos(mAxisAng);
     double y = mCoordinates.y - sin(mAxisAng);
@@ -51,7 +52,7 @@ Cell Cell::Divide() {
     mReadyToDivide = false;
     mInMitosis = false;
 
-    return Cell(Point(x,y), *this);
+    return Cell(Point(x,y), *this, drug);
 
 }
 

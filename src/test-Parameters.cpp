@@ -40,7 +40,7 @@ CATCH_TEST_CASE("parameters class") {
         CATCH_REQUIRE(par->maxRotate() == TEST_APPROX(0.3095));
         CATCH_REQUIRE(par->timeIncrement() == TEST_APPROX(0.008));
 
-        CATCH_REQUIRE(par->GetRandomGrowthRate() == TEST_APPROX(0.0003));
+        CATCH_REQUIRE(par->GetRandomGrowthRate('A') == TEST_APPROX(0.0003));
         CATCH_REQUIRE(par->GetDrugEffect(0.01) == TEST_APPROX(5.6019));
 
     }

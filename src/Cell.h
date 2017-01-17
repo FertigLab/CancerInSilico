@@ -24,7 +24,7 @@ class Cell {
   public:
 
     Cell(Point, Parameters*);
-	Cell(Point, const Cell&);
+	Cell(Point, const Cell&, bool);
 
     bool DoTrial(); //return true if growth
     void Translation();
@@ -47,7 +47,7 @@ class Cell {
     bool ReadyToDivide() const;
 	void EnterRandomPointOfMitosis();
 
- 	Cell Divide();
+ 	Cell Divide(bool);
 
     double CellDistance(const Cell&) const;
 

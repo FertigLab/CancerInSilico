@@ -75,6 +75,7 @@ public:
 
     double GetDrugEffect(double);
 	double GetRandomGrowthRate(char);
+    char GetRandomCellType();
 
     double GetRadius(double);
 

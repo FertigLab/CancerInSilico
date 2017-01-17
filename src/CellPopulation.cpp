@@ -483,36 +483,11 @@ void CellPopulation::CheckMitosis(Cell* cell) {
     /* if cell is ready to divide */
     if (cell->ReadyToDivide()) {
 
-        /* declare variable here (proper scope) */        
-        double gr_rate;    
-
-        /* if cells inherit growth from parent */
-        if (m_param->inheritGrowth()) {
-
-            /* get parents growth rate */
-            gr_rate = cell->GetGrowth();
-
-        /* otherwise, growth rates random */
-        } else {
-
-            /* get growth rate based on distribution specified by user */
-            gr_rate = m_param->GetRandomGrowthRate();
-
-            /* if drug has already been added */
-            if (m_drug_added) {
-
-                /* affect the growth rate with the drug */
-                gr_rate *= m_param->GetDrugEffect(gr_rate);
-
-            }
-
-        }
-
         /* get coordinates of parent cell */
         Point old_key = cell->GetCoord();
 
         /* create daughter cell */
-        Cell* daughter_cell = new Cell(cell->Divide(), gr_rate);
+        Cell* daughter_cell = new Cell(cell->Divide(m_drug_added));
 
         /* add daughter cell to population */
         m_population.Insert(daughter_cell->GetCoord(), daughter_cell);
