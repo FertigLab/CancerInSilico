@@ -307,6 +307,7 @@ getNumNeighbors <- function(model, time, index) {
 #' @param time time in model hours
 #' @return plot a visual representation of cells 
 #' @examples plotCells(runCancerSim(10,1), 1)
+# TODO: voroni
 #' @export
 
 plotCells <- function(model,time,drawBoundary = TRUE)  {

@@ -3,9 +3,14 @@
 #' @title CellType
 #' @description An S4 class to the properties of a cell type
 #'
-#' @slot mType the name of the cell type
-#' @slot mCycleLenth distribution of cycle lengths for this cell
-#' @slot mDrugEffect function descibing effect of a drug
+#' @slot type the name of the cell type
+#' @slot size the relative size (volume) of the cell
+#' @slot cycleLenth function that returns the average (target) cycle
+#'      length of this cell
+#' @slot drugEffect function that returns the effect a drug has on the
+#'      the cell properties
+#' @slot inheritCycleLength bool - inherit cycle length from parent
+#' @slot inheritDrugEffect bool - inherit drug effect from parent
 #' @export
 
 setClass('CellType', representation(

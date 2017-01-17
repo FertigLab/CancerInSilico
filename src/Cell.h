@@ -22,14 +22,18 @@ private:
     double mRadius;
 	double mAxisLength, mAxisAngle;
 
-    /* average length of the cell cycle */
-    double mCycleLength;
+    /* cell properties that can be effected by drug - must be R
+       object so that R function can handl information, includes;
+       - cycle length of cell */
+    Rcpp::List mProperties;
 
-    /* seed used to calculate drug effect */
-    double mDrugEffectSeed;
-    
+    /* for each drug in the simulation, record the seed used to 
+       calcualte effect (if random), that way even random effects
+       can be inherited */
+    Rcpp::List mDrugSeeds;
+
     /* phase in the cell cycle */
-    enum CellPhase {I, M, G0, G1, S, G2};
+    enum CellPhase {I, M};
     CellPhase mPhase;
 
 public:
