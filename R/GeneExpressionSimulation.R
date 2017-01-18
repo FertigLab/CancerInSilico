@@ -10,12 +10,13 @@
 #' @param perError unknown
 #' @param combineFUN function used to combine gene expression data
 #' @param attrsep separation character
+#' @param cellTypes the cell types for the model
 #' @export
 #'
 inSilicoGeneExpression <- function(model, singleCell = FALSE,
 pathways = NULL, nCells = 96, fasta = NULL, ReferenceDataSet = NULL,
 lambda = 1/3, sampFreq = 1, perError = 0.1, combineFUN = max,
-attrsep = " ", microArray = FALSE, nGenes = NULL) {
+attrsep = " ", microArray = FALSE, nGenes = NULL, cellTypes = getCellTypes(model, 0)) {
 
     # simulate mean expression values for all pathways
     simMeanExprs <- simulateMeanExpression(model=model,
