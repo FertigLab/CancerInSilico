@@ -13,7 +13,7 @@ CATCH_TEST_CASE("parameters class") {
 
     Rcpp::List Rparams = env.find("testParams");
 
-    CATCH_REQUIRE(Rparams.size() == 16);
+    CATCH_REQUIRE(Rparams.size() == 17);
 
     Parameters* par;
 
@@ -69,3 +69,5 @@ CATCH_TEST_CASE("parameters class") {
     }
 
 }
+
+

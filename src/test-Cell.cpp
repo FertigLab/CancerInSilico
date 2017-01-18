@@ -7,8 +7,6 @@
 
 #define TEST_APPROX(x) Approx(x).epsilon(0.01)
 
-#if 0
-
 CATCH_TEST_CASE("Test Cell") {
 
     Rcpp::Environment env;
@@ -16,7 +14,7 @@ CATCH_TEST_CASE("Test Cell") {
 
     Rcpp::List Rparams = env.find("testParams");
 
-    CATCH_REQUIRE(Rparams.size() == 16);
+    CATCH_REQUIRE(Rparams.size() == 17);
 
     Parameters* params;
 
@@ -29,7 +27,7 @@ CATCH_TEST_CASE("Test Cell") {
     setSeed(40);
 
     cells.push_back(Cell(Point(0,0), params));
-    CATCH_REQUIRE(cells[0].GetGrowth() == 0.0);
+    CATCH_REQUIRE(cells[0].GetGrowth() == TEST_APPROX(0.000334));
     cells[0].SetGrowth(0.03);    
 
     CATCH_SECTION("new cell constructor works properly") {
@@ -95,8 +93,8 @@ CATCH_TEST_CASE("Test Cell") {
     
         CATCH_REQUIRE(cells[0].GetRadius() == TEST_APPROX(1.0));
         CATCH_REQUIRE(cells[1].GetRadius() == TEST_APPROX(1.0));
-        CATCH_REQUIRE(cells[0].GetAxisAngle() == TEST_APPROX(0.46));
-        CATCH_REQUIRE(cells[1].GetAxisAngle() == TEST_APPROX(4.98));
+        CATCH_REQUIRE(cells[0].GetAxisAngle() == TEST_APPROX(5.60));
+        CATCH_REQUIRE(cells[1].GetAxisAngle() == TEST_APPROX(5.94));
 
     }
 
@@ -106,8 +104,8 @@ CATCH_TEST_CASE("Test Cell") {
 
     CATCH_SECTION("test cell rotation") {
 
-        CATCH_REQUIRE(cells[0].GetAxisAngle() == TEST_APPROX(0.53));
-        CATCH_REQUIRE(cells[1].GetAxisAngle() == TEST_APPROX(4.79));
+        CATCH_REQUIRE(cells[0].GetAxisAngle() == TEST_APPROX(5.66));
+        CATCH_REQUIRE(cells[1].GetAxisAngle() == TEST_APPROX(5.76));
 
     }
 
@@ -124,7 +122,7 @@ CATCH_TEST_CASE("Test Cell") {
     CATCH_SECTION("test complicated distance calculation") {
 
         CATCH_REQUIRE(cells[0].CellDistance(cells[1])
-                        == TEST_APPROX(6.47));
+                        == TEST_APPROX(8.03));
 
     }
     
@@ -140,14 +138,14 @@ CATCH_TEST_CASE("Test Cell") {
 
         CATCH_REQUIRE(cells[0].GetRadius() == 1);
         CATCH_REQUIRE(cells[0].GetAxisLength() == 2.0);
-        CATCH_REQUIRE(cells[0].GetAxisAngle() == 0);
+        CATCH_REQUIRE(cells[0].GetAxisAngle() == TEST_APPROX(5.122));
         CATCH_REQUIRE(cells[0].GetGrowth() == 0.03);
         CATCH_REQUIRE(!cells[0].ReadyToDivide());
 
         CATCH_REQUIRE(cells[2].GetRadius() == 1);
         CATCH_REQUIRE(cells[2].GetAxisLength() == 2.0);
-        CATCH_REQUIRE(cells[2].GetAxisAngle() == TEST_APPROX(5.122));
-        CATCH_REQUIRE(cells[2].GetGrowth() == 0.03);
+        CATCH_REQUIRE(cells[2].GetAxisAngle() == TEST_APPROX(1.596));
+        CATCH_REQUIRE(cells[2].GetGrowth() == TEST_APPROX(0.000333));
         CATCH_REQUIRE(!cells[2].ReadyToDivide());
 
         CATCH_REQUIRE(cells[0].CellDistance(cells[2]) == TEST_APPROX(0));
@@ -155,5 +153,3 @@ CATCH_TEST_CASE("Test Cell") {
     }
 
 }
-
-#endif
