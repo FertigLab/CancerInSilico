@@ -265,6 +265,18 @@ interactivePlot <- function(model, time = 0) {
 
 }
 
+#' \code{getCellTypes} return the list of cell types
+#'
+#' @param model A CellModel
+#' @param time time in model hours
+#' @return the list of cell types for the model
+
+getCellTypes <- function(model, time) {
+
+    return (model@params[['cellTypeInitFreq']])
+
+}
+
 #### helper (non-exported) functions ####
 
 #' \code{getNumNeighbors} return the number of neighboring cells
