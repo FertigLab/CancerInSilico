@@ -48,7 +48,7 @@ getColumn <- function(model, time, col) {
     row <- timeToRow(model, time)
 
     # get the sequence of indices that correspond to column
-    indices <- seq(col,length(model@cells[[row]]), 6)
+    indices <- seq(col,length(model@cells[[row]]), 7)
 
     # return the values at these indices
     return(model@cells[[row]][indices])
@@ -92,6 +92,13 @@ getAxisAngle <- function(model, time) {
 getGrowthRates <- function(model, time) {
 
     return (getColumn(model, time, 6))
+
+}
+
+# get a vector containing the cell types of each cell at time
+getCellTypes <- function(model, time) {
+
+    return (getColumn(model, time, 7))
 
 }
 
@@ -262,18 +269,6 @@ interactivePlot <- function(model, time = 0) {
         }
 
     }
-
-}
-
-#' \code{getCellTypes} return the list of cell types
-#'
-#' @param model A CellModel
-#' @param time time in model hours
-#' @return the list of cell types for the model
-
-getCellTypes <- function(model, time) {
-
-    return (model@params[['cellTypeInitFreq']])
 
 }
 
