@@ -4,6 +4,7 @@
 #include <Rcpp.h>
 #include "Parameters.h"
 
+
 #define TEST_APPROX(x) Approx(x).epsilon(0.01)
 
 CATCH_TEST_CASE("parameters class") {
@@ -12,6 +13,8 @@ CATCH_TEST_CASE("parameters class") {
     env = Rcpp::Environment::namespace_env("CancerInSilico");
 
     Rcpp::List Rparams = env.find("testParams");
+
+    Rparams["cellTypeInitFreq"] = Rcpp::NumericVector::create(0.01, 0.01, 0.01, 0.01, 0.96);
 
     CATCH_REQUIRE(Rparams.size() == 17);
 
@@ -42,7 +45,8 @@ CATCH_TEST_CASE("parameters class") {
 
         CATCH_REQUIRE(par->GetRandomGrowthRate('A') == TEST_APPROX(0.0003));
         CATCH_REQUIRE(par->GetDrugEffect(0.01) == TEST_APPROX(5.6019));
-
+        CATCH_REQUIRE(par->GetRandomCellType() == 'E');
+        
     }
 
     CATCH_SECTION("max error of radius solver") {
