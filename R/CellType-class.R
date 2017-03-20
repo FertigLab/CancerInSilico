@@ -24,7 +24,6 @@ setClass('CellType', representation(
 newCellType <- function(type, size = 1, cycleLength = NULL,
 drugEffect = NULL, inheritCycleLength = FALSE, inheritDrugEffect = NULL)
 {
-
     newType <- new('CellType')
     newType@type <- type
     newType@size <- size
@@ -55,7 +54,6 @@ drugEffect = NULL, inheritCycleLength = FALSE, inheritDrugEffect = NULL)
     }
 
     return (newType)
-
 }
 
 

@@ -8,14 +8,18 @@
 
 class Parameters
 {
-
-protected:
+private:
 
     /* list of parameters from R */
     Rcpp::List mParams;
 
-    /* calculate time increment based on provided parameters */
-    virtual void CalculateTimeIncrement() = 0;
+    /* radius solver for cell geometry calculations, declared static here 
+       to prevent initialization process from running more than once */
+    static RadiusSolver mSolver;
+
+    /* process parameters */
+    void StoreTimeIncrement();   
+    void StoreDrasdoParameters();
 
 public:
 
@@ -23,7 +27,7 @@ public:
     Parameters(Rcpp::List);
 
     /* return all parameters */
-    Rcpp::List GetRparameters() {return mParams;}
+    Rcpp::List GetRparameters() { return mParams;}
 
     /* general model parameters */
     double initialNum()         {return mParams["initialNum"];}
@@ -36,12 +40,22 @@ public:
     double recordIncrement()    {return mParams["recordIncrement"];}
     double timeIncrement()      {return mParams["timeIncrement"];}
 
+    /* Drasdo specific parameters */
+    double nG() { return mParams["nG"];}
+    double epsilon() { return mParams["epsilon"];}
+    double delta() { return mParams["delta"];}
+    double maxDeform() { return mParams["maxDeform"];}
+    double maxTranslation() { return mParams["maxTranslation"];}
+    double maxRotate() { return mParams["maxRotate"];}
+   
     /* set the boundary to a numeric value */
-    void setBoundary(double b) {mParams["boundary"] = b;}
+    void setBoundary(double b) { mParams["boundary"] = b;}
 
     /* get a random cell type from initial distribution */
     Rcpp::S4* randomCellType();    
 
+    /* return radius given axis length, perserves area of dumbell */
+    double GetRadius(double a) { return mSolver.GetRadius(a);}
 };
 
 #endif

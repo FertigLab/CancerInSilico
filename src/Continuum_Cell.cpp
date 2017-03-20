@@ -6,7 +6,15 @@
 /* constructor for initial cells */
 Cell::Cell(Point coords, Parameters* params)
 {
+    /* store variables */
+    mCoordinates = coords;
+    mParameters = params;
     mCellType = params->randomCellType();
+
+    /* calculate geometric properties */
+    mRadius = pow(type->slot("size"), 0.5);
+    mAxisLength = 2 * mRadius;    
+    mAxisAngle = R::runif(0, 2 * M_PI);
     mPhase = I;
 
     /* go to random point in cycle if not synced */
@@ -20,16 +28,18 @@ Cell::Cell(Point coords, Parameters* params)
     mCycleLength = Rcpp::as<double>(cycleLengthDist());
 }
 
-Cell::Cell(const Cell* parent)
-{
-    divide(this, parent);
-}
-
 /* constructor for daughter cell, pass reference to parent */
 Cell::Cell(Point coords, Cell& parent)
 {
     /* store variables */
+    mCoordinates = coords;
+    mParameters = parent.parameters();
     mCellType = parent.cellType();
+
+    /* calculate geometric properties */
+    mRadius = pow(mCellType->slot("size"), 0.5);
+    mAxisLength = 2 * mRadius;
+    mAxisAngle = R::runif(0, 2 * M_PI);
     mPhase = I;
     
     /* check if cycle length is inherited */
@@ -42,6 +52,27 @@ Cell::Cell(Point coords, Cell& parent)
         Rcpp::Function cycleLengthDist = type->slot("cycleLength");
         mCycleLength = Rcpp::as<double>(cycleLengthDist());
     }
+}
+
+/* undergo cell division, return daughter cell */
+Cell Cell::divide()
+{
+    /* store coordinates of daughter cell */
+    Point daughterCoords = Point(coordinates().x - cos(axisAngle()),
+        coordinates().y - sin(axisAngle()));
+
+    /* update coordinates of parent cell */
+    mCoordinates = Point(coordinates().x + cos(axisAngle()),
+        coordinates().y + sin(axisAngle())));
+
+    /* reset properties of parent */
+    mRadius = pow(mCellType->slot("size"), 0.5);
+    mAxisLength = 2 * mRadius;
+    mAxisAngle = R::runif(0, 2 * M_PI);
+    mPhase = I;
+
+    /* return daughter cell */
+    return Cell(daughterCoords, *this);
 }
 
 /* go to random point in the cell cycle */

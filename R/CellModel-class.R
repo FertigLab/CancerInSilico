@@ -12,7 +12,6 @@
 #' @slot mParameters A list object containing all parameters used to run
 #'      the model
 #' @export
-
 setClass("CellModel", representation(cells = "list", params = "list"))
 
 #### constructor ####
@@ -21,6 +20,11 @@ createCellModel <- function(params, output) {
 
     return (new("CellModel", cells = output, params = params))
 
+}
+
+getCellPhase(phaseID)
+{
+    return (c('I', 'M', 'G0', 'G1', 'S', 'G2')[phaseID + 1])
 }
 
 #### getters ####

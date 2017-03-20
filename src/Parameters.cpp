@@ -5,13 +5,11 @@
 
 #include "Parameters.h"
 
-Parameters::Parameters(Rcpp::List Rparams) {
-
+Parameters::Parameters(Rcpp::List Rparams)
+{
     mParams = Rparams;
-    
-    StoreTimeIncrement();
-    StoreDrasdoParameters();
 
+    CalculateTimeIncrement();
 }
 
 void Parameters::StoreTimeIncrement() {

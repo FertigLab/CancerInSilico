@@ -1,7 +1,7 @@
 // [[Rcpp::depends(BH)]]
 
-#ifndef POINT_HPP
-#define POINT_HPP
+#ifndef CIS_POINT_H
+#define CIS_POINT_H
 
 #include <cmath>
 #include <boost/functional/hash.hpp>

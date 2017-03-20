@@ -1,7 +1,7 @@
 // [[Rcpp::depends(BH)]]
 
-#ifndef SPATIAL_HASH_HPP
-#define SPATIAL_HASH_HPP
+#ifndef CIS_SPATIAL_HASH_HPP
+#define CIS_SPATIAL_HASH_HPP
 
 #include <R.h>
 #include <Rcpp.h>
@@ -21,11 +21,8 @@
     not actual coordinates, i.e. (0,0) - (1,0) - (2,0) - etc..
 */
 template <class T>
-class SpatialHash
+class Lattice
 {
-
-friend class TestSpatialHash;
-friend class TestCellPopulation; //bad
 
 private:
 
@@ -50,6 +47,14 @@ private:
 
 public:
 
+
+
+template <class T>
+Grid<T>::circuar_iterator::circular_iterator()
+{
+
+}
+
     /* iterator around a point */
     class circular_iterator
     {
@@ -60,6 +65,7 @@ public:
         struct box
         {
             double left, right, top, bottom;
+
         } mSearchRegion;
 
         /* reference to hash map */
@@ -87,12 +93,10 @@ public:
         {
             do
             {
-                /* if outside region, stop iterator */
                 if (mCurrent.x > mSearchRegion.right)
                 {
                     break;
                 }
-
                 /* move down one */
                 mCurrent.y -= 1.0;
                 if (mCurrent.y < mSearchRegion.bottom)

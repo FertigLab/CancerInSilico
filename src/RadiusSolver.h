@@ -1,5 +1,5 @@
-#ifndef RADIUS_SOLVER_H
-#define RADIUS_SOLVER_H
+#ifndef CIS_RADIUS_SOLVER_H
+#define CIS_RADIUS_SOLVER_H
 
 #include <vector>
 
@@ -32,21 +32,18 @@ private:
     /* initialize slow solver table (given axis, angle is O(log n)) */
     void initSlowSolver();
 
-    /* initialize fast solver table (given axis, angle is O(1) */
+    /* initialize fast solver table (given axis, angle is O(1)) */
     void initFastSolver();
 
     /* get angle given axis, O(log n) */
     double getThetaSlow(double axis);
-
-    /* hash axis length to index in vector (int) */
-    int hashAxisLength(double axis);
 
 public:
 
     /* constructor */
     RadiusSolver();
 
-    /* get radius given axis O(1), perserves area of dumbell */
+    /* get radius given axis in O(1), perserves area of dumbell */
     double radius(double);
 };
 

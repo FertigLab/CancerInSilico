@@ -8,14 +8,12 @@
 #' @export
 
 setClass('Drug', representation(
-                        name = 'character',
-                        timeAdded = 'numeric'))
+                    name = 'character',
+                    timeAdded = 'numeric'))
 
-newDrug <- function(name, timeAdded)
+newDrug <- function(in_name, in_timeAdded)
 {
-
-    return (new('Drug', name = name, timeAdded = timeAdded))
-
+    return (new('Drug', name = in_name, timeAdded = in_timeAdded))
 }
 
 
