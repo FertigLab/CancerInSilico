@@ -10,10 +10,18 @@ An S4 class to the properties of a cell type
 \section{Slots}{
 
 \describe{
-\item{\code{mType}}{the name of the cell type}
+\item{\code{type}}{the name of the cell type}
 
-\item{\code{mCycleLenth}}{distribution of cycle lengths for this cell}
+\item{\code{size}}{the relative size (volume) of the cell}
 
-\item{\code{mDrugEffect}}{function descibing effect of a drug}
+\item{\code{cycleLenth}}{function that returns the average (target) cycle
+length of this cell}
+
+\item{\code{drugEffect}}{function that returns the effect a drug has on the
+the cell properties}
+
+\item{\code{inheritCycleLength}}{bool - inherit cycle length from parent}
+
+\item{\code{inheritDrugEffect}}{bool - inherit drug effect from parent}
 }}
 

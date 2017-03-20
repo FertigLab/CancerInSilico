@@ -10,6 +10,8 @@ An S4 class to describe the properties of a drug
 \section{Slots}{
 
 \describe{
-\item{\code{mName}}{name of drug}
+\item{\code{name}}{name of drug}
+
+\item{\code{timeAdded}}{the time at which this drug is added to the simulation}
 }}
 

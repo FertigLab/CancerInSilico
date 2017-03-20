@@ -26,4 +26,3 @@ gene expression matrix for given pathway
 \description{
 \code{simulatePathway} Simulates gene expression data for a given pathway
 }
-

@@ -5,9 +5,9 @@
 \title{\code{runCancerSim} Runs a cancer simulation given parameters}
 \usage{
 runCancerSim(initialNum, runTime, cellTypes = newCellType("DEFAULT"),
-  cellTypeInitFreq = c(1), modelType = "DrasdoHohme2003", density = 0.01,
-  boundary = TRUE, randSeed = 0, syncCycles = TRUE, outputIncrement = 6,
-  recordIncrement = 0.25, ...)
+  cellTypeInitFreq = c(1), drugs = NULL, modelType = "Continuum",
+  density = 0.01, boundary = TRUE, randSeed = 0, syncCycles = TRUE,
+  outputIncrement = 6, recordIncrement = 0.25, ...)
 }
 \arguments{
 \item{initialNum}{how many cells initially}
@@ -56,4 +56,3 @@ is a show() command implemented for CellModel objects.
 \examples{
 runCancerSim(1,8)
 }
-
