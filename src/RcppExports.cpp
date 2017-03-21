@@ -6,13 +6,13 @@
 using namespace Rcpp;
 
 // runCellSimulation
-Rcpp::List runCellSimulation(Rcpp::List Rparams);
-RcppExport SEXP CancerInSilico_runCellSimulation(SEXP RparamsSEXP) {
+Rcpp::List runCellSimulation(Rcpp::List rParams);
+RcppExport SEXP CancerInSilico_runCellSimulation(SEXP rParamsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List >::type Rparams(RparamsSEXP);
-    rcpp_result_gen = Rcpp::wrap(runCellSimulation(Rparams));
+    Rcpp::traits::input_parameter< Rcpp::List >::type rParams(rParamsSEXP);
+    rcpp_result_gen = Rcpp::wrap(runCellSimulation(rParams));
     return rcpp_result_gen;
 END_RCPP
 }

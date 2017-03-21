@@ -1,7 +1,7 @@
 #ifndef CIS_CELL_HPP
 #define CIS_CELL_HPP
 
-#include <vector.h>
+#include <vector>
 #include <Rcpp.h>
 
 #include "Point.h"

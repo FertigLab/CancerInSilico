@@ -14,11 +14,9 @@
 
 typedef Point GridPoint;
 
-/*
-    This class handles objects placed in the 2-D plane. It allows
+/*  This class handles objects placed in the 2-D plane. It allows
     for fast iterator access to objects located in a neighborhood 
-    around a point. 
-*/
+    around a point. */
 template <class T>
 class Grid
 {
@@ -84,9 +82,9 @@ public:
 
     circular_iterator operator++(int);
     circular_iterator operator++();
-    T& operator*();
-    T* operator&();
-    GridPoint location();
+    T& operator*() const;
+    T* operator&() const;
+    GridPoint location() const;
 
     bool operator!=(const circular_iterator& other) const;
     void gotoEnd();
