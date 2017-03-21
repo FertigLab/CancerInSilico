@@ -22,7 +22,7 @@ createCellModel <- function(params, output) {
 
 }
 
-getCellPhase(phaseID)
+getCellPhase <- function(phaseID)
 {
     return (c('I', 'M', 'G0', 'G1', 'S', 'G2')[phaseID + 1])
 }
