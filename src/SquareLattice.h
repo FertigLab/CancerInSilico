@@ -27,7 +27,15 @@ private:
 
 public:
     
+    class local_iterator
+    {
+
+    };
+
     SquareLattice(double width) {mGridWidth = width;}
+
+    local_iterator begin();
+    local_iterator end();
 };
 
 #endif

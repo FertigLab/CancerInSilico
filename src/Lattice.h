@@ -8,13 +8,14 @@
 #include <cmath>
 #include <vector>
 #include <utility>
+#include <exception>
 
 #include "Point.h"
 
 typedef Point GridPoint;
 
-// This data structure handles values placed in the 2D plane. It allows
-// for fast iterator access to values located in a neighborhood around a point.
+// This data structure handles values placed in the 2D plane. It allows for
+// fast iterator access to values located in a neighborhood around a point.
 template <class T>
 class Lattice
 {
@@ -35,7 +36,7 @@ private:
 
 public:
 
-    // iterates through values within a search radius
+    /********** iterator within a search radius **********/
     class local_iterator
     {    
     private:
@@ -46,23 +47,22 @@ public:
         Point mCenter;
         double mRadius;
 
-//        virtual void advance() = 0;
-
     public:
 
-        local_iterator(Lattice<T>*, Point&, double, bool = false);
-
-        local_iterator operator++(int);
-        local_iterator operator++();
-        bool operator!=(const local_iterator& other) const;
-        T& operator*();
-
-//       virtual void gotoEnd() = 0;
+        local_iterator(Lattice<T>*, Point&, double);
+        local_iterator(const local_iterator&);
+        ~local_iterator() {}
+    
+        virtual local_iterator& operator=(const local_iterator&);
+        virtual local_iterator& operator++() = 0;
+        virtual bool operator!=(const local_iterator&) const;
+        T& operator*() {return mValues[mGrid.at(mCurrent)];}
     };
+    /******************************************************/
 
+    /******************* full iterator ********************/
     typedef typename std::vector< std::pair<GridPoint, T> >::iterator Iter;
 
-    // full iterator
     class iterator
     {
     private:
@@ -73,11 +73,12 @@ public:
     
         iterator(Iter internal) : it (internal) {}
 
-        iterator operator++() {++it; return *this;}
-        iterator operator++(int) {iterator old = *this; ++it; return old;}
-        bool operator!=(const iterator& other) const {return other.it != it;}
+        iterator& operator++() {++it; return *this;}
+        iterator operator++(int) {iterator tmp(*this); ++it; return tmp;}
+        bool operator!=(const iterator& itr) const {return itr.it != it;}
         T& operator*() {return (*it).second;}
     };
+    /******************************************************/
 
     // default constructor
     Lattice() {}
@@ -96,8 +97,6 @@ public:
     int size() const;
 
     // iterators
-    local_iterator begin(const Point&, double) const;
-    local_iterator end(const Point&, double) const;
     iterator begin() {return iterator(mValues.begin());}
     iterator end() {return iterator(mValues.end());}
 };
@@ -143,12 +142,18 @@ void Lattice<T>::erase(const Point& pt)
     GridPoint hashedPt = hash(pt);
     unsigned index = mGrid.at(hashedPt);
     mGrid.erase(hashedPt);
+
+    // update key of moved object
+    if (index < mValues.size() - 1)
+    {
+        mGrid.erase(mValues.back().first);
+        mGrid.insert(std::pair<GridPoint, unsigned>(mValues.back().first,
+            index));
+    }
+    
+    // delete value
     mValues[index] = mValues.back();
     mValues.pop_back();
-
-    // update key of moved object in previous step
-    mGrid.erase(mValues[index].first);
-    mGrid.insert(std::pair<GridPoint, unsigned>(mValues[index].first, index));
 }
 
 // Update a value after it moves
@@ -175,6 +180,52 @@ template <class T>
 int Lattice<T>::size() const
 {
     return mValues.size();
+}
+
+// local iterator constructor
+template <class T>
+Lattice<T>::local_iterator::local_iterator(Lattice<T>* grid,
+Point& center, double radius)
+{
+    mGrid = grid;
+    mCenter = center;
+    mRadius = radius;
+}
+
+// local iterator copy constructor
+template <class T>
+Lattice<T>::local_iterator::local_iterator(
+const Lattice<T>::local_iterator& it)
+{
+    mGrid = it.mGrid;
+    mCenter = it.mCenter;
+    mRadius = it.mRadius;
+}
+
+// local iterator assignment
+template <class T>
+typename Lattice<T>::local_iterator& Lattice<T>::local_iterator::operator=
+(const Lattice<T>::local_iterator& it)
+{
+    mGrid = it.mGrid;
+    mCenter = it.mCenter;
+    mRadius = it.mRadius;
+}
+
+// local iterator comparision
+template <class T>
+bool Lattice<T>::local_iterator::operator!=(
+const Lattice<T>::local_iterator& it) const
+{
+    if ((mCenter != it.mCenter) || (mRadius != it.mRadius))
+    {
+        throw std::invalid_argument("comparison between incompatible"
+            " local_iterators");
+    }
+    else
+    {
+        return mCurrent != it.mCurrent;
+    }
 }
 
 #endif

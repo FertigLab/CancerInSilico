@@ -20,3 +20,4 @@ plot a visual representation of cells
 \examples{
 plotCells(runCancerSim(10,1), 1)
 }
+
