@@ -4,11 +4,12 @@
 \alias{runCancerSim}
 \title{\code{runCancerSim} Runs a cancer simulation given parameters}
 \usage{
-runCancerSim(initialNum, runTime, density = 0.01, cycleLengthDist = 48,
-  inheritGrowth = FALSE, modelType = "DrasdoHohme2003",
-  drugEffect = function(x) {     return(1) }, drugTime = 0,
-  boundary = TRUE, randSeed = 0, syncCycles = TRUE, outputIncrement = 6,
-  recordIncrement = 0.25, ...)
+runCancerSim(initialNum, runTime, density = 0.01,
+  cycleLengthDist = function(type) {     return(48) },
+  inheritGrowth = FALSE, cellTypeInitFreq = c(1),
+  modelType = "DrasdoHohme2003", drugEffect = function(x) {     return(1) },
+  drugTime = 0, boundary = TRUE, randSeed = 0, syncCycles = TRUE,
+  outputIncrement = 6, recordIncrement = 0.25, ...)
 }
 \arguments{
 \item{initialNum}{how many cells initially}
@@ -57,4 +58,3 @@ is a show() command implemented for CellModel objects.
 \examples{
 runCancerSim(1,8)
 }
-

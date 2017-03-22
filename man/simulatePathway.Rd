@@ -33,4 +33,3 @@ Gene expression matrix for given pathway
 \description{
 Simulates gene expression data for a given pathway
 }
-

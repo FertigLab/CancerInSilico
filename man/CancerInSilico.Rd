@@ -18,4 +18,3 @@ License: \tab LGPL\cr
 Maintainer: Elana J. Fertig \email{ejfertig@jhmi.edu},
             Thomas D. Sherman \email{tsherma4@jhu.edu}
 }
-

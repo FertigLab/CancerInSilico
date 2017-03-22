@@ -20,4 +20,3 @@ the cycle lengths of each cell at time
 \examples{
 getCycleLengths(runCancerSim(1,1), 1)
 }
-

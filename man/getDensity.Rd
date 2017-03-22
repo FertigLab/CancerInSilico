@@ -20,4 +20,3 @@ The density of cells at that time (not quite the same as confluency)
 \examples{
 getDensity(runCancerSim(1,1),1)
 }
-

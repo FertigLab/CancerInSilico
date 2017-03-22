@@ -35,4 +35,3 @@ inSilicoGeneExpression(model, singleCell = FALSE, pathways = NULL,
 \description{
 \code{inSilicoGeneExpression}
 }
-
