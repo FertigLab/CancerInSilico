@@ -19,4 +19,3 @@ the number of neighbors around the cell at index
 \description{
 \code{getNumNeighbors} return the number of neighboring cells
 }
-

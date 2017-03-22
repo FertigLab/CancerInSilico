@@ -13,12 +13,12 @@ CATCH_TEST_CASE("Test SquareLattice.h (and Lattice.h) with doubles")
     SquareLattice<double> testLat1 (1.0);
 
     // test insert
-    CATCH_REQUIRE_NOTHROW(testLat1.insert(Point(0.5, 0), 0.0));
-    CATCH_REQUIRE_NOTHROW(testLat1.insert(Point(1.5, 0), 1.0));
-    CATCH_REQUIRE_NOTHROW(testLat1.insert(Point(2.5, 0), 2.0));
+    CATCH_REQUIRE_NOTHROW(testLat1.insert(Point<double>(0.5, 0), 0.0));
+    CATCH_REQUIRE_NOTHROW(testLat1.insert(Point<double>(1.5, 0), 1.0));
+    CATCH_REQUIRE_NOTHROW(testLat1.insert(Point<double>(2.5, 0), 2.0));
 
     CATCH_REQUIRE(testLat1.size() == 3);
-    CATCH_REQUIRE_THROWS(testLat1.insert(Point(0,0), 1.0));
+    CATCH_REQUIRE_THROWS(testLat1.insert(Point<double>(0,0), 1.0));
 
     /// test iterator
     double sum = 0.0;
@@ -27,8 +27,8 @@ CATCH_TEST_CASE("Test SquareLattice.h (and Lattice.h) with doubles")
     CATCH_REQUIRE(sum == 3.0);
 
     // test erase
-    CATCH_REQUIRE_NOTHROW(testLat1.erase(Point(1.5, 0)));
-    CATCH_REQUIRE_THROWS(testLat1.erase(Point(1.5, 0)));
+    CATCH_REQUIRE_NOTHROW(testLat1.erase(Point<double>(1.5, 0)));
+    CATCH_REQUIRE_THROWS(testLat1.erase(Point<double>(1.5, 0)));
     CATCH_REQUIRE(testLat1.size() == 2);
 
     sum = 0.0;
@@ -37,9 +37,9 @@ CATCH_TEST_CASE("Test SquareLattice.h (and Lattice.h) with doubles")
     CATCH_REQUIRE(sum == 2.0);
 
     // test update
-    CATCH_REQUIRE_NOTHROW(testLat1.update(Point(2.5, 0), Point(0, 5)));
+    CATCH_REQUIRE_NOTHROW(testLat1.update(Point<double>(2.5, 0), Point<double>(0, 5)));
     CATCH_REQUIRE(testLat1.size() == 2);
-    CATCH_REQUIRE_THROWS(testLat1.erase(Point(2.5, 0)));
+    CATCH_REQUIRE_THROWS(testLat1.erase(Point<double>(2.5, 0)));
 
     sum = 0.0;
     it = testLat1.begin();

@@ -20,4 +20,3 @@ the number of cells at this time
 \examples{
 getNumberOfCells(runCancerSim(1,1), 1)
 }
-
