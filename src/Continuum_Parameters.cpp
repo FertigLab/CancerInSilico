@@ -1,3 +1,5 @@
+#if 0
+
 #ifndef CIS_PARAMETERS_H
 #define CIS_PARAMETERS_H
 
@@ -55,7 +57,9 @@ public:
     Rcpp::S4* randomCellType();    
 
     /* return radius given axis length, perserves area of dumbell */
-    double GetRadius(double a) { return mSolver.GetRadius(a);}
+    double getRadius(double a) { return mSolver.getRadius(a);}
 };
+
+#endif
 
 #endif

@@ -1,3 +1,5 @@
+#if 0
+
 #include "RadiusSolver.h"
 
 #define MIN_AXIS 2.8284
@@ -75,3 +77,4 @@ double RadiusSolver::radius(double axis)
         return axis / (2 + 2 * cos(theta / 2));        
     }
 }
+#endif

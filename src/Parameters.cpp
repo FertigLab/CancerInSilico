@@ -1,3 +1,5 @@
+#if 0
+
 #include <cmath>
 #include <Rcpp.h>
 #include <algorithm>
@@ -33,3 +35,4 @@ Rcpp::S4 Parameters::getRandomCellType()
 {
 
 }
+#endif
