@@ -55,10 +55,10 @@ public:
         iterator(const iterator& other) {it = other.it;}
         ~iterator() {}
 
-        iterator& operator=(const iterator& itr) {it = itr.it; return *this;}
+        iterator& operator=(const iterator& i) {it = i.it; return *this;}
         iterator& operator++() {++it; return *this;}
         iterator operator++(int) {iterator tmp(*this); ++it; return tmp;}
-        bool operator!=(const iterator& itr) const {return itr.it != it;}
+        bool operator!=(const iterator& i) const {return i.it != it;}
         T& operator*() {return (*it).second;}
     };
     /******************************************************/

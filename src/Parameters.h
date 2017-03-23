@@ -4,28 +4,26 @@
 #include <vector>
 #include <Rcpp.h>
 
-#include "RadiusSolver.h"
-
 class Parameters
 {
 
 protected:
 
-    /* list of parameters from R */
+    // list of parameters from R 
     Rcpp::List mParams;
 
-    /* calculate time increment based on provided parameters */
+    // calculate time increment based on provided parameters
     virtual void CalculateTimeIncrement() = 0;
 
 public:
 
-    /* constructor */
+    // constructor
     Parameters(Rcpp::List);
 
-    /* return all parameters */
+    // return all parameters
     Rcpp::List GetRparameters() {return mParams;}
 
-    /* general model parameters */
+    // general model parameters
     double initialNum()         {return mParams["initialNum"];}
     double runTime()            {return mParams["runTime"];}
     double density()            {return mParams["density"];}
@@ -36,12 +34,11 @@ public:
     double recordIncrement()    {return mParams["recordIncrement"];}
     double timeIncrement()      {return mParams["timeIncrement"];}
 
-    /* set the boundary to a numeric value */
+    // set the boundary to a numeric value
     void setBoundary(double b) {mParams["boundary"] = b;}
 
-    /* get a random cell type from initial distribution */
+    // get a random cell type from initial distribution
     Rcpp::S4* randomCellType();    
-
 };
 
 #endif
