@@ -12,15 +12,13 @@ struct GreaterThan
     }
 };
 
-/*
-   This class manages the calculation of radius values after the axis
+/* This class manages the calculation of radius values after the axis
    has been deformed. A dumbell shaped cell has 3 variables that are
    dependent on each other. Axis, Angle, Radius always have the same
    relationship no matter the stage of division the cell is in. This
    class provides the new Radius after the Axis has been changed. The
    calculation in done by calculating the value of the Angle given the
-   Axis, and the Radius given the Angle
-*/
+   Axis, and the Radius given the Angle */
 class RadiusSolver
 {
 private:

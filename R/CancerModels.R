@@ -30,7 +30,7 @@
 
 runCancerSim <- function(initialNum,
                          runTime,
-                         cellTypes = newCellType('DEFAULT'),
+                         cellTypes = c(newCellType('DEFAULT')),
                          cellTypeInitFreq = c(1),
                          drugs = NULL,
                          modelType = "Continuum",

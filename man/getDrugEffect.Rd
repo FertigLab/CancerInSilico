@@ -18,3 +18,4 @@ A list of vectors specifying the distribution of drug effects depending on the g
 \examples{
 getDrugEffect(0.3, seq(2,12,0.1))
 }
+

@@ -23,12 +23,16 @@ CATCH_TEST_CASE("Test SquareLattice.h (and Lattice.h) with doubles")
     SquareLattice<TestObject> testLat1 (1.0);
 
     // test insert
-    CATCH_REQUIRE_NOTHROW(testLat1.insert(TestObject(0.5, 0, 0)));
-    CATCH_REQUIRE_NOTHROW(testLat1.insert(TestObject(1.5, 0, 1)));
-    CATCH_REQUIRE_NOTHROW(testLat1.insert(TestObject(2.5, 0, 2)));
+    TestObject obj0 (0.5, 0, 0);
+    TestObject obj1 (1.5, 0, 1);
+    TestObject obj2 (2.5, 0, 2);
+
+    CATCH_REQUIRE_NOTHROW(testLat1.insert(obj0.coords, obj0));
+    CATCH_REQUIRE_NOTHROW(testLat1.insert(obj1.coords, obj1));
+    CATCH_REQUIRE_NOTHROW(testLat1.insert(obj2.coords, obj2));
 
     CATCH_REQUIRE(testLat1.size() == 3);
-    CATCH_REQUIRE_NOTHROW(testLat1.insert(TestObject(0.5, 0, 0)));
+    CATCH_REQUIRE_NOTHROW(testLat1.insert(obj0.coords, obj0));
 
     /// test iterator
     int sum = 0;
@@ -58,7 +62,7 @@ CATCH_TEST_CASE("Test SquareLattice.h (and Lattice.h) with doubles")
     CATCH_REQUIRE(sum == 2);
 
     // test randomValue
-    CATCH_REQUIRE(testLat1.randomValue() == 2);
+    CATCH_REQUIRE(testLat1.randomValue().val == 2);
     testLat1.randomValue().val = 4;
 
     sum = 0;

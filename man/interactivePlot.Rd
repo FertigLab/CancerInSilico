@@ -17,3 +17,4 @@ plot a visual representation of cells that takes in command-line-like inputs, ty
 \description{
 \code{interactivePlot} plots a CellModel and allows the user to control the plot with various commands
 }
+

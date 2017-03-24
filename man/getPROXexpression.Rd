@@ -19,3 +19,4 @@ gene expression for each cell
 \description{
 \code{getPROXexpression} calculate gene expression for a pathway effected by neighboring cells
 }
+

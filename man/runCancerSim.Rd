@@ -4,7 +4,7 @@
 \alias{runCancerSim}
 \title{\code{runCancerSim} Runs a cancer simulation given parameters}
 \usage{
-runCancerSim(initialNum, runTime, cellTypes = newCellType("DEFAULT"),
+runCancerSim(initialNum, runTime, cellTypes = c(newCellType("DEFAULT")),
   cellTypeInitFreq = c(1), drugs = NULL, modelType = "Continuum",
   density = 0.01, boundary = TRUE, randSeed = 0, syncCycles = TRUE,
   outputIncrement = 6, recordIncrement = 0.25, ...)
@@ -56,3 +56,4 @@ is a show() command implemented for CellModel objects.
 \examples{
 runCancerSim(1,8)
 }
+

@@ -6,14 +6,13 @@
 
 class Parameters
 {
-
 protected:
 
     // list of parameters from R 
     Rcpp::List mParams;
 
-    // calculate time increment based on provided parameters
-    virtual void CalculateTimeIncrement() = 0;
+    // cell type objects
+    std::vector<Rcpp::S4> mCellTypes;
 
 public:
 
@@ -21,7 +20,7 @@ public:
     Parameters(Rcpp::List);
 
     // return all parameters
-    Rcpp::List GetRparameters() {return mParams;}
+    Rcpp::List getRParameters() {return mParams;}
 
     // general model parameters
     double initialNum()         {return mParams["initialNum"];}
