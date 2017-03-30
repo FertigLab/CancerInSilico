@@ -9,11 +9,23 @@
 
 setClass('Drug', representation(
                     name = 'character',
-                    timeAdded = 'numeric'))
+                    timeAdded = 'numeric',
+                    cycleLengthEffect = 'function'))
 
-newDrug <- function(in_name, in_timeAdded)
+newDrug <- function(name, timeAdded)
 {
-    return (new('Drug', name = in_name, timeAdded = in_timeAdded))
+    newDrug <- new('Drug')
+    newDrug@name <- name
+    newDrug@timeAdded <- timeAdded
+    newDrug@cycleLengthEffect <- cycleLengthEffect
+
+    if (cycleLengthEffect == NULL)
+    {
+        cycleLengthEffect <- function(type, cycleLength, phase)
+        {
+            return (cycleLength)
+        }
+    }
 }
 
 

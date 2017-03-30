@@ -19,4 +19,3 @@ gene expression for each cell
 \description{
 \code{getGROWTHexpression} calculate gene expression for a pathway effected by the growth rate of the cells
 }
-

@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <stdexcept>
 
-#include "RadiusSolver.h"
+#include "Continuum_RadiusSolver.h"
 
 #define MIN_AXIS 2.8284271247
 #define MAX_AXIS 4.0

@@ -5,7 +5,7 @@
 #include <Rcpp.h>
 
 #include "Parameters.h"
-#include "RadiusSolver.h"
+#include "Continuum_RadiusSolver.h"
 
 class ContinuumParameters : public Parameters
 {

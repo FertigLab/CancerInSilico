@@ -1,5 +1,5 @@
-#ifndef CIS_RADIUS_SOLVER_H
-#define CIS_RADIUS_SOLVER_H
+#ifndef CIS_CONTINUMM_RADIUS_SOLVER_H
+#define CIS_CONTINUUM_RADIUS_SOLVER_H
 
 #include <vector>
 

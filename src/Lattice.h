@@ -1,7 +1,7 @@
-// [[Rcpp::depends(BH)]]
-
 #ifndef CIS_LATTICE_H
 #define CIS_LATTICE_H
+
+// [[Rcpp::depends(BH)]]
 
 #include <Rcpp.h>
 #include <boost/unordered_map.hpp>
@@ -11,6 +11,7 @@
 #include <exception>
 
 #include "Point.h"
+#include "Random.h"
 
 typedef Point<int> GridPoint;
 template <class T> class BaseLocalIterator;
@@ -219,7 +220,7 @@ void Lattice<T>::update(const Point<double>& oldPt, const Point<double>& newPt)
 template <class T>
 T& Lattice<T>::randomValue()
 {
-    return mValues[floor(R::runif(0, size()))].second;
+    return mValues[Random::uniformInt(0, size())].second;
 }
 
 // return size of lattice
