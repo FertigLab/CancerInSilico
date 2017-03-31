@@ -8,24 +8,19 @@
 #' @export
 
 setClass('Drug', representation(
-                    name = 'character',
-                    timeAdded = 'numeric',
-                    cycleLengthEffect = 'function'))
+    name = 'character',
+    timeAdded = 'numeric',
+    cycleLengthEffect = 'function'))
 
-newDrug <- function(name, timeAdded)
+newDrug <- function(name, timeAdded, 
+cycleLengthEffect = function(type, length, phase) {return(length)}
 {
     newDrug <- new('Drug')
     newDrug@name <- name
     newDrug@timeAdded <- timeAdded
     newDrug@cycleLengthEffect <- cycleLengthEffect
 
-    if (cycleLengthEffect == NULL)
-    {
-        cycleLengthEffect <- function(type, cycleLength, phase)
-        {
-            return (cycleLength)
-        }
-    }
+    return (newDrug)
 }
 
 

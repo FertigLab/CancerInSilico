@@ -2,21 +2,22 @@
 #define CIS_CONTINUUM_MODEL_H
 
 #include "CellBasedModel.h"
-#include "SpatialHash.h"
+#include "SquareLattice.h"
 #include "Parameters.h"
 
 class ContinuumModel : public CellBasedModel
 {
 private:
 
-    SpatialHash<Cell> mCellPopulation;
-
+    SquareLattice<Cell> mCellPopulation;
+    
 public:
 
-    ContinuumModel(Parameters*);
+    ContinuumModel(ContinuumParameters*);
 
     void oneTimeStep(double time);
     void updateDrugs(double time);
+    void recordPopulation();
 };
 
 #endif

@@ -16,25 +16,15 @@ setClass('CellType', representation(
                         cycleLength = 'function',
                         inheritCycleLength = 'logical'))
 
-newCellType <- function(name, size = 1, cycleLength = NULL,
-inheritCycleLength = FALSE)
+newCellType <- function(name, size = 1, inheritCycleLength = FALSE,
+cycleLength = function() {return(48)})
 {
     newType <- new('CellType')
-    newType@type <- type
+    newType@name <- name
     newType@size <- size
     newType@cycleLength <- cycleLength
     newType@inheritCycleLength <- inheritCycleLength
     
-    if (cycleLengthDist == NULL)
-    {
-        newType@cycleLength <- function() {return(48)}
-    }
-
-    if (inheritCycleLength == NULL)
-    {
-        newType@inheritCycleLength <- FALSE
-    } 
-
     return (newType)
 }
 

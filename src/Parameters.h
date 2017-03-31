@@ -4,6 +4,9 @@
 #include <vector>
 #include <Rcpp.h>
 
+#include "Drug.h"
+#include "CellType.h"
+
 class Parameters
 {
 protected:
@@ -11,8 +14,11 @@ protected:
     // list of parameters from R 
     Rcpp::List mParams;
 
-    // cell type objects
-    std::vector<Rcpp::S4> mCellTypes;
+    // drugs used in the simulation
+    std::vector<Drug> mDrugs;
+
+    // possible cell types
+    std::vector<CellType> mCellTypes;
 
 public:
 
@@ -37,7 +43,7 @@ public:
     void setBoundary(double b) {mParams["boundary"] = b;}
 
     // get a random cell type from initial distribution
-    Rcpp::S4* randomCellType();    
+    CellType* randomCellType();    
 };
 
 #endif

@@ -1,11 +1,16 @@
 #include <Rcpp.h>
 
 #include "Continuum_Parameters.h"
+#include "CellType.h"
 
 void ContinuumParameters::CalculateTimeIncrement()
 {
-    Rcpp::NumericVector cycleDist = mParams["cycleLengthDist"];
-    double minCycle = Rcpp::min(cycleDist);
+    double minCycle = std::numeric_limits<double>::max();
+    std::vector<CellType>::iterator it = mCellTypes.begin();
+    for (; it != mCellTypes.end(); ++it)
+    {
+        minCycle = std::min(minCycle, (*it).minCycleLength());
+    }
 
     double t1 = delta() / (4 * nG() * (4 - pow(2, 0.5)));
     double t2 = delta() * (minCycle - 1) / (8 * nG() * (pow(2, 0.5) - 1));

@@ -5,11 +5,9 @@
 #include "Parameters.h"
 #include "CellPopulation.h"
 
-CellBasedModel::CellBasedModel(Parameters *par)
+CellBasedModel::CellBasedModel(Parameters* par)
 {
     mParams = par;
-    mCells = new CellPopulation(mParams, mParams->initialNum(),
-        mParams->density());
 }
 
 CellBasedModel::~CellBasedModel()

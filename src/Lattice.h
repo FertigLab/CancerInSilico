@@ -182,6 +182,7 @@ void Lattice<T>::insert(const Point<double>& pt, const T& val)
 }
 
 // Delete value from lattice
+// Can disrupt existing cell references/pointers
 // Average Case: O(1)
 template <class T>
 void Lattice<T>::erase(const Point<double>& pt)
@@ -207,12 +208,14 @@ void Lattice<T>::erase(const Point<double>& pt)
 // Update a value after it moves
 // Average Case: O(1)
 template <class T>
-void Lattice<T>::update(const Point<double>& oldPt, const Point<double>& newPt)
+void Lattice<T>::update(const Point<double>& oldPt,
+const Point<double>& newPt)
 {
-    T val = mValues[mGrid.at(hash(oldPt))].second;
+    GridPoint hashed = hash(oldPt);
+    unsigned index = mGrid.at(hashed);
     
-    erase(oldPt);
-    insert(newPt, val);
+    removeKey(hashed);
+    addKey(hash(newPt), index);
 }
 
 // Return a random value in the lattice

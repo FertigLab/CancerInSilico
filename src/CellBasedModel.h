@@ -3,8 +3,9 @@
 
 #include <Rcpp.h>
 
-#include "CellPopulation.h"
 #include "Parameters.h"
+#include "CellType.h"
+#include "Drug.h"
 
 class CellBasedModel
 {
@@ -12,13 +13,13 @@ protected:
 
 	std::vector< std::vector<double> > mPopulationRecord;
 
-    CellPopulation* mCells;
     Parameters* mParams;
+    std::vector<CellType> mCellTypes;
+    std::vector<Drug> mDrugs;
 
 public:
 
-    CellBasedModel(Parameters*);
-    ~CellBasedModel();
+    CellBasedModel(Parameters* p) : mParams(p) {}
 
     /* run the entire model */
     void run();

@@ -13,9 +13,6 @@ CellBasedModel*& model)
 // [[Rcpp::export]]
 Rcpp::List runCellSimulation(Rcpp::List rParams)
 {
-    Rcpp::Environment baseEnv("package:base");
-    Rcpp::Function setSeed = baseEnv["set.seed"];
-    setSeed(rParams["randSeed"]);
     Random::setSeed(rParams["randSeed"]);
 
     Parameters* modelParams; 

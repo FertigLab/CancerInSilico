@@ -1,6 +1,8 @@
 #ifndef CIS_CELL_TYPE_H
 #define CIS_CELL_TYPE_H
 
+#define DIST_SIZE 1000
+
 class CellType
 {
 private:
@@ -11,8 +13,8 @@ private:
     // relative size of cell
     double mSize;
 
-    // distribution of cycle lengths
-    double mCycleLengths[1000];
+    // distribution of cycle length
+    double mCycleLength[DIST_SIZE];
 
     // whether or not daughter cells inherit cycle length
     bool mInheritCycle;
@@ -26,6 +28,7 @@ public:
     bool inheritCycle() const {return mInheritCycle;}
     
     double cycleLength() const;
+    double minCycleLength() const;
 };
 
 #endif
