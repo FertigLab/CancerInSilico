@@ -10,10 +10,9 @@ class ContinuumCell : public Cell
 {
 private:
 
-    // coordinates of cell center
-    Point<double> mCoordinates;
-    double mAxisLength, mAxisAngle;
-    double mRadius;
+    Point<double> mCoordinates; // coordinates of cell center
+    double mRadius; // radius of the cell (hard boundary)
+    double mAxisLength, mAxisAngle; // axis of dumbell (used in division)
 
 public:
 

@@ -1,0 +1,8 @@
+OBJECTS =   Core/Cell.o \
+            Core/CellBasedModel.o \
+            Core/CellType.o \
+            Core/Drug.o \
+            Core/Parameters.o \ 
+            Core/Random.o \
+            Tests/test-runner.o \
+            Tests/test-Random.o

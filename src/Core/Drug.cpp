@@ -1,3 +1,5 @@
+#include <Rcpp.h>
+
 #include "Drug.h"
 
 Drug::Drug(unsigned id, Rcpp::S4 drug) : mID(id)

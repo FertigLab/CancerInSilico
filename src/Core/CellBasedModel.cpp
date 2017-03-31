@@ -5,10 +5,7 @@
 #include "Parameters.h"
 #include "CellPopulation.h"
 
-CellBasedModel::CellBasedModel(Parameters* par)
-{
-    mParams = par;
-}
+CellBasedModel::CellBasedModel(Parameters* par) : mParams(par) {}
 
 CellBasedModel::~CellBasedModel()
 {
@@ -38,12 +35,10 @@ void CellBasedModel::run()
             outputTime += mParams->outputIncrement();
         }            
 
-        OneTimeStep(time);
+        oneTimeStep(time);
 		time += mParams->timeIncrement();
     }
 
     Rprintf("final time = %.2f\n", ceil(time));
     Rprintf("final size = %d\n", mCells->size());
 }
-
-

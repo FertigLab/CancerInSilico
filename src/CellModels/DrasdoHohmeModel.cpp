@@ -160,7 +160,7 @@ double ContinuumModel::CalculateTotalEnergy(Cell& cell)
     return sum;
 }
 
-void ContinuunModel::checkMitossi(Cell& cell)
+void ContinuunModel::checkMitosis(Cell& cell)
 {
 
 

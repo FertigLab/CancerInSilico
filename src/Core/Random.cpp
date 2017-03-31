@@ -1,6 +1,8 @@
 // [[Rcpp::depends(BH)]]
 
 #include <boost/random.hpp>
+//#include <boost/random/normal_distribution.hpp>
+//#include <boost/random/uniform.hpp>
 #include <stdint.h>
 
 #include "Random.h"
@@ -26,7 +28,7 @@ int Random::uniformInt(int a, int b)
 
 double Random::uniform(double a, double b)
 {
-    boost::random::uniform_distribution<> dist(a,b);
+    boost::random::uniform_real_distribution<> dist(a,b);
     return dist(rng);
 }
 

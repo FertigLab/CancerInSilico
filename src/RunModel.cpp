@@ -10,12 +10,8 @@ CellBasedModel*& model)
     model = new ContinuumModel(params);
 }
 
-// [[Rcpp::export]]
-Rcpp::List runCellSimulation(Rcpp::List rParams)
+Rcpp::List runModel(Rcpp::List rParams)
 {
-    Rcpp::Environment baseEnv("package:base");
-    Rcpp::Function setSeed = baseEnv["set.seed"];
-    setSeed(rParams["randSeed"]);
     Random::setSeed(rParams["randSeed"]);
 
     Parameters* modelParams; 

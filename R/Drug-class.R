@@ -13,7 +13,7 @@ setClass('Drug', representation(
     cycleLengthEffect = 'function'))
 
 newDrug <- function(name, timeAdded, 
-cycleLengthEffect = function(type, length, phase) {return(length)}
+cycleLengthEffect = function(type, length, phase) {return(length)})
 {
     newDrug <- new('Drug')
     newDrug@name <- name
