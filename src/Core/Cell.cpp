@@ -13,8 +13,9 @@ Cell::Cell(const CellType& type)
     mPhase = INTERPHASE;
 }
 
-void Cell::applyDrug(const Drug& d)
+void Cell::applyDrug(const Drug& drug)
 {
-
+    mCycleLength = drug.cycleLengthEffect(type(), cycleLength(),
+        phase());
 }
 
