@@ -13,6 +13,7 @@ CellBasedModel*& model)
     Random::setSeed(params->randSeed());
 }
 
+// [[Rcpp::export]]
 Rcpp::List runModel(Rcpp::List rParams)
 {
     Parameters* modelParams; 
