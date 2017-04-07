@@ -1,0 +1,23 @@
+PKG_CPPFLAGS = -Wall -Wextra -pedantic
+OBJECTS =   RunModel.o \
+            CellModels/DrasdoHohmeModel.o \
+            OffLatticeModel/OffLatticeCell.o \
+            OffLatticeModel/OffLatticeCellBasedModel.o \
+            OffLatticeModel/OffLatticeParameters.o \
+            OffLatticeModel/OffLatticeRadiusSolver.o \
+            Core/Cell.o \
+            Core/CellBasedModel.o \
+            Core/CellType.o \
+            Core/Drug.o \
+            Core/Parameters.o \
+            Core/Random.o \
+            Tests/Core/test-Cell.o \
+            Tests/Core/test-CellBasedModel.o \
+            Tests/Core/test-CellType.o \
+            Tests/Core/test-Drug.o \
+            Tests/Core/test-Parameters.o \
+            Tests/Core/test-Point.o \
+            Tests/Core/test-Random.o \
+            Tests/Core/test-SquareLattice.o \
+            Tests/test-runner.o
+

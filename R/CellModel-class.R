@@ -12,38 +12,39 @@
 #' @slot mParameters A list object containing all parameters used to run
 #'      the model
 #' @export
-
 setClass("CellModel", representation(cells = "list", params = "list"))
 
 #### constructor ####
-
-createCellModel <- function(params, output) {
-
+createCellModel <- function(params, output)
+{
     return (new("CellModel", cells = output, params = params))
+}
 
+getCellPhase <- function(phaseID)
+{
+    return (c('I', 'M', 'G0', 'G1', 'S', 'G2')[phaseID + 1])
 }
 
 #### getters ####
 
 # helper function to find corresponding row of a given time
-timeToRow <- function(model, time) {
-
-    if (time == model@params[['runTime']]) {
-
+timeToRow <- function(model, time)
+{
+    if (time == model@params[['runTime']])
+    {
         return (length(model@cells))
 
-    } else {
-
-        return (floor(time / model@params[['recordIncrement']] + 1))
-
     }
-
+    else
+    {
+        return (floor(time / model@params[['recordIncrement']] + 1))
+    }
 }
 
 
 # get column of data for each cell
-getColumn <- function(model, time, col) {
-
+getColumn <- function(model, time, col)
+{
     # find row corresponding to time
     row <- timeToRow(model, time)
 
@@ -52,54 +53,47 @@ getColumn <- function(model, time, col) {
 
     # return the values at these indices
     return(model@cells[[row]][indices])
-
 }    
 
 # return an N X 2 matrix of cell coordinates at time
-getCoordinates <- function(model, time) {
-
+getCoordinates <- function(model, time)
+{
     # get x and y coordinates
     xCoord <- getColumn(model, time, 1)
     yCoord <- getColumn(model, time, 2)
 
     # return matrix with coordinates
     return (matrix(c(xCoord, yCoord), nrow = length(xCoord)))
-
 }
 
 # get a vector containing the radius of each cell at time
-getRadii <- function(model, time) {
-
+getRadii <- function(model, time)
+{
     return (getColumn(model, time, 3))
-
 }
 
 # get a vector containing the radius of each cell at time
-getAxisLength <- function(model, time) {
-
+getAxisLength <- function(model, time)
+{
     return (getColumn(model, time, 4))
-
 }
 
 # get a vector containing the radius of each cell at time
-getAxisAngle <- function(model, time) {
-
+getAxisAngle <- function(model, time)
+{
     return (getColumn(model, time, 5))
-
 }
 
 # get a vector containing the radius of each cell at time
-getGrowthRates <- function(model, time) {
-
+getGrowthRates <- function(model, time)
+{
     return (getColumn(model, time, 6))
-
 }
 
 # get a vector containing the cell types of each cell at time
-getCellTypes <- function(model, time) {
-
+getCellTypes <- function(model, time)
+{
     return (getColumn(model, time, 7))
-
 }
 
 #### exported functions for this class ####
@@ -314,6 +308,7 @@ getNumNeighbors <- function(model, time, index) {
 #' @param time time in model hours
 #' @return plot a visual representation of cells 
 #' @examples plotCells(runCancerSim(10,1), 1)
+# TODO: voroni
 #' @export
 
 plotCells <- function(model,time,drawBoundary = TRUE)  {

@@ -133,13 +133,11 @@ sampFreq = 1, combineFUN = max) {
     pathwayOutput <- list()
     for (path in names(pathways)) {
 
-        pathwayOutput[[path]] <- simulatePathway(model = model,
-                                    pathway = pathways[[path]],
-                                    type = path, sampFreq = sampFreq,
-                                    sampSize = nCells,
-                                    singleCell = singleCell)
-
-    }
+    pathwayOutput[[path]] <- simulatePathway(model = model,
+                                pathway = pathways[[path]],
+                                type = path, sampFreq = sampFreq,
+                                sampSize = nCells,
+                                singleCell = singleCell)
 
     # return combined expression
     return (combineGeneExpression(pathwayOutput, combineFUN))

@@ -4,11 +4,17 @@
 \alias{runCancerSim}
 \title{\code{runCancerSim} Runs a cancer simulation given parameters}
 \usage{
+<<<<<<< HEAD
 runCancerSim(initialNum, runTime, density = 0.01,
   cycleLengthDist = function(type) {     return(48) },
   inheritGrowth = FALSE, cellTypeInitFreq = c(1),
   modelType = "DrasdoHohme2003", drugEffect = function(x) {     return(1) },
   drugTime = 0, boundary = TRUE, randSeed = 0, syncCycles = TRUE,
+=======
+runCancerSim(initialNum, runTime, cellTypes = c(newCellType("DEFAULT")),
+  cellTypeInitFreq = c(1), drugs = NULL, modelType = "Continuum",
+  density = 0.01, boundary = TRUE, randSeed = 0, syncCycles = TRUE,
+>>>>>>> devel-cellTypes
   outputIncrement = 6, recordIncrement = 0.25, ...)
 }
 \arguments{
@@ -16,25 +22,41 @@ runCancerSim(initialNum, runTime, density = 0.01,
 
 \item{runTime}{how long the simulation runs in real cellular time (hours)}
 
-\item{density}{the density the cells are seeded at}
+\item{cellTypes}{an array of S4 objects (each representing a different
+cell type)}
 
-\item{cycleLengthDist}{cycle time distribution}
+\item{modelType}{the name of the cell-based model to use}
 
+<<<<<<< HEAD
 \item{inheritGrowth}{whether or not daughter cells have the same
 cycle-length as parents}
 
 \item{modelType}{the name of the cell-based model to use}
+=======
+\item{density}{the density the cells are seeded at}
+
+\item{randSeed}{seed for the model}
+>>>>>>> devel-cellTypes
 
 \item{drugEffect}{distribution of drug effects}
 
-\item{randSeed}{seed for the model}
+\item{...}{model specific parameters (depends on modelType)}
 
+<<<<<<< HEAD
 \item{outputIncrement}{time increment to print status at}
 
 \item{...}{model specific parameters (depends on modelType)}
 
 \item{cellTypes}{an array of S4 objects (each representing a different
 cell type)}
+=======
+\item{cycleLengthDist}{cycle time distribution}
+
+\item{drugEffect}{distribution of drug effects}
+
+\item{inheritGrowth}{whether or not daughter cells have the same
+cycle-length as parents}
+>>>>>>> devel-cellTypes
 
 \item{cycleSyncProb}{the probability of cells being seed in interphase
 (not mitosis)}

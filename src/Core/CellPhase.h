@@ -1,0 +1,6 @@
+#ifndef CIS_CELL_PHASE_H
+#define CIS_CELL_PHASE_H
+
+enum CellPhase {INTERPHASE, MITOSIS, G0_PHASE, G1_PHASE, S_PHASE, G2_PHASE};
+
+#endif

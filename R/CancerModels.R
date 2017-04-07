@@ -30,33 +30,26 @@
 
 runCancerSim <- function(initialNum,
                          runTime,
-                         density = 0.01,
-                         cycleLengthDist = function(type) {return(48)},
-                         inheritGrowth = FALSE,
+                         cellTypes = c(newCellType('DEFAULT')),
                          cellTypeInitFreq = c(1),
-                         modelType = "DrasdoHohme2003",
-                         drugEffect = function(x) {return(1)},
-                         drugTime = 0.0,
+                         drugs = NULL,
+                         modelType = "DrasdoHohme",
+                         density = 0.01,
                          boundary = TRUE,
                          randSeed = 0,
                          syncCycles = TRUE,
                          outputIncrement = 6,
                          recordIncrement = 0.25,
                          ...)
-
 {
-
     # store parameters in a list
     params <- list()
     params[['initialNum']] <- initialNum
     params[['runTime']] <- runTime
-    params[['density']] <- density
-    params[['cycleLengthDist']] <- cycleLengthDist
+    params[['cellTypes']] <- cellTypes
     params[['cellTypeInitFreq']] <- cellTypeInitFreq
-    params[['inheritGrowth']] <- inheritGrowth
     params[['modelType']] <- modelType
-    params[['drugEffect']] <- drugEffect
-    params[['drugTime']] <- drugTime
+    params[['density']] <- density
     params[['boundary']] <- boundary
     params[['randSeed']] <- randSeed
     params[['syncCycles']] <- syncCycles
@@ -68,45 +61,40 @@ runCancerSim <- function(initialNum,
 
     # run model
     return (runModel(params, ...))
-
 }
     
-checkParameters <- function(params, ...) {
-
+checkParameters <- function(params, ...)
+{
     # general parameters check
-    if (params[['density']] > 0.7) {
-
-        stop("density too high to seed efficiently\n")
-
+    if (params[['density']] > 0.7)
+    {
+       stop("density too high to seed efficiently\n")
     }
-
 }
 
-runModel <- function(params, ...) {
-
+runModel <- function(params, ...)
+{
     # list of valid model types
     validMods <- c('DrasdoHohme2003')
 
     # check that model is valid type
-    if (!(params[['modelType']] %in% validMods)) {
-
+    if (!(params[['modelType']] %in% validMods))
+    {
       stop("invalid model type")
-
-    # call specific model
-    } else if (params[['modelType']] == 'DrasdoHohme2003') {
-
-        return (runDrasdoHohme(params, ...))
-
     }
-
+    else if (params[['modelType']] == 'DrasdoHohme2003')
+    {
+        return (runDrasdoHohme(params, ...))
+    }
 }
 
-runDrasdoHohme <- function(params, ...) {
-  
+runDrasdoHohme <- function(params, ...)
+{  
     ## get model specific parameters
     params[['nG']] <- list(...)$nG
     params[['epsilon']] <- list(...)$epsilon
     params[['delta']] <- list(...)$delta
+    params[['drugs']] <- list(...)$drugs
 
     ## set to defaults if not provided
     if (is.null(params[['nG']])) {params[['nG']] = 24}
@@ -117,6 +105,5 @@ runDrasdoHohme <- function(params, ...) {
     cellMat <- createCellModel(output[['params']], output[['cells']])
 
     return(cellMat)
-  
 }
 
