@@ -28,19 +28,18 @@
 #' runCancerSim(1,8)
 #' @export
 
-runCancerSim <- function(initialNum,
-                         runTime,
-                         cellTypes = c(newCellType('DEFAULT')),
-                         cellTypeInitFreq = c(1),
-                         drugs = NULL,
-                         modelType = "DrasdoHohme",
-                         density = 0.01,
-                         boundary = TRUE,
-                         randSeed = 0,
-                         syncCycles = TRUE,
-                         outputIncrement = 6,
-                         recordIncrement = 0.25,
-                         ...)
+runCellSimulation <- function(initialNum, runTime,
+                              cellTypes = c(newCellType('DEFAULT')),
+                              cellTypeInitFreq = c(1),
+                              drugs = NULL,
+                              modelType = "DrasdoHohme",
+                              density = 0.01,
+                              boundary = TRUE,
+                              randSeed = 0,
+                              syncCycles = TRUE,
+                              outputIncrement = 6,
+                              recordIncrement = 0.25,
+                              ...)
 {
     # store parameters in a list
     params <- list()
@@ -56,54 +55,9 @@ runCancerSim <- function(initialNum,
     params[['outputIncrement']] <- outputIncrement
     params[['recordIncrement']] <- recordIncrement
 
-    # make sure all arguments are valid
-    checkParameters(params, ...)
-
-    # run model
-    return (runModel(params, ...))
-}
+    # create cell model object
+    model <- createCellModel(params, ...)
     
-checkParameters <- function(params, ...)
-{
-    # general parameters check
-    if (params[['density']] > 0.7)
-    {
-       stop("density too high to seed efficiently\n")
-    }
+    # run model and return result
+    return (run(model))
 }
-
-runModel <- function(params, ...)
-{
-    # list of valid model types
-    validMods <- c('DrasdoHohme2003')
-
-    # check that model is valid type
-    if (!(params[['modelType']] %in% validMods))
-    {
-      stop("invalid model type")
-    }
-    else if (params[['modelType']] == 'DrasdoHohme2003')
-    {
-        return (runDrasdoHohme(params, ...))
-    }
-}
-
-runDrasdoHohme <- function(params, ...)
-{  
-    ## get model specific parameters
-    params[['nG']] <- list(...)$nG
-    params[['epsilon']] <- list(...)$epsilon
-    params[['delta']] <- list(...)$delta
-    params[['drugs']] <- list(...)$drugs
-
-    ## set to defaults if not provided
-    if (is.null(params[['nG']])) {params[['nG']] = 24}
-    if (is.null(params[['epsilon']])) {params[['epsilon']] = 10}
-    if (is.null(params[['delta']])) {params[['delta']] = 0.2}
-  
-    output <- runCellSimulation(params)
-    cellMat <- createCellModel(output[['params']], output[['cells']])
-
-    return(cellMat)
-}
-

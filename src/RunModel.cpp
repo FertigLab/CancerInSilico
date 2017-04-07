@@ -8,13 +8,13 @@ void createModel(Rcpp::List rParams, Parameters*& params,
 CellBasedModel*& model)
 {
     params = new DrasdoHohmeParameters(rParams);
-    model = new DrasdoHohmeModel(
-        static_cast<DrasdoHohmeParameters*>(params));
+    model = new DrasdoHohmeModel(static_cast<DrasdoHohmeParameters*>
+        (params));
     Random::setSeed(params->randSeed());
 }
 
 // [[Rcpp::export]]
-Rcpp::List runModel(Rcpp::List rParams)
+Rcpp::List cppRunModel(Rcpp::List rParams)
 {
     Parameters* modelParams; 
     CellBasedModel* model;
