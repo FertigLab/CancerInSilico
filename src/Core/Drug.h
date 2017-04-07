@@ -1,10 +1,13 @@
 #ifndef CIS_DRUG_H
 #define CIS_DRUG_H
 
+#include <Rcpp.h>
+
+#include "CellType.h"
+#include "CellPhase.h"
+
 class Drug
 {
-private:
-
 private:
 
     // numerical id of this type
@@ -13,21 +16,18 @@ private:
     // time this drug is added to the simulation
     double mTimeAdded;
 
-    // whether or not the same effect is inherited through generations
-    bool mInheritedEffect;
-
     // drug effect on cycle length
-    Rcpp::Function mCycleLengthEffect;
+    Rcpp::S4 mDrugClass;
 
 public:
 
-    Drug(unsigned, Rcpp::S4);
+    Drug() {}
+    Drug(unsigned, const Rcpp::S4&);
 
     unsigned id() const {return mID;}
-    double timeAdded() const {return mSize;}
-    bool inheritEffect() const {return mInheritCycle;}
+    double timeAdded() const {return mTimeAdded;}
     
-    double cycleLengthEffect(const CellType*, double, CellPhase) const;
+    double cycleLengthEffect(const CellType&, double, CellPhase) const;
 };
 
 #endif

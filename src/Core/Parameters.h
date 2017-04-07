@@ -32,18 +32,22 @@ public:
     double initialNum()         {return mParams["initialNum"];}
     double runTime()            {return mParams["runTime"];}
     double density()            {return mParams["density"];}
-    double boundary()           {return mParams["boundary"];}
     double randSeed()           {return mParams["randSeed"];}
-    double syncCycles()         {return mParams["syncCycles"];}
+    bool syncCycles()           {return mParams["syncCycles"];}
     double outputIncrement()    {return mParams["outputIncrement"];}
     double recordIncrement()    {return mParams["recordIncrement"];}
     double timeIncrement()      {return mParams["timeIncrement"];}
+    bool boundary()    {return Rcpp::as<double>(mParams["boundary"]) >= 0.0;}
+
+    // iterator to drug list
+    std::vector<Drug>::iterator drugsBegin() {return mDrugs.begin();}
+    std::vector<Drug>::iterator drugsEnd() {return mDrugs.end();}
 
     // set the boundary to a numeric value
     void setBoundary(double b) {mParams["boundary"] = b;}
 
     // get a random cell type from initial distribution
-    CellType* randomCellType();    
+    const CellType& randomCellType();
 };
 
 #endif

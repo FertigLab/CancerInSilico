@@ -1,39 +1,27 @@
-#ifndef CIS_CONTINUUM_PARAMETERS_H
-#define CIS_CONTINUUM_PARAMETERS_H
+#ifndef CIS_OFF_LATTICE_PARAMETERS_H
+#define CIS_OFF_LATTICE_PARAMETERS_H
 
 #include <vector>
 #include <Rcpp.h>
 
-#include "Parameters.h"
-#include "Continuum_RadiusSolver.h"
+#include "../Core/Parameters.h"
+#include "OffLatticeRadiusSolver.h"
 
-class ContinuumParameters : public Parameters
+class OffLatticeParameters : public Parameters
 {
-private:
-
-    // radius solver for cell geometry calculations, declared static here 
-    // to prevent initialization process from running more than once
-    static RadiusSolver mSolver;
-
-    // calculate time increment based on provided parameters
-    void CalculateTimeIncrement();
-
 public:
 
-    /* constructor */
-    ContinuumParameters(Rcpp::List p) : Parameters(p) 
-        {CalculateTimeIncrement();}
+    // constructors
+    OffLatticeParameters(Rcpp::List p) : Parameters(p) {}
 
-    // get parameters
-    double nG()             {return mParams["nG"];}
-    double epsilon()        {return mParams["epsilon"];}
-    double delta()          {return mParams["delta"];}
+    // basic off lattice parameters
     double maxDeform()      {return mParams["maxDeform"];}
     double maxTranslation() {return mParams["maxTranslation"];}
     double maxRotate()      {return mParams["maxRotate"];}
-   
-    /* return radius given axis length, perserves area of dumbell */
-    double getRadius(double a) {return mSolver.radius(a);}
+    double maxGrowth()      {return mParams["maxGrowth"];}
+    
+    // get the largest possible radius
+    double maxRadius();
 };
 
 #endif

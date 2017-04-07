@@ -1,19 +1,20 @@
 #include <Rcpp.h>
 
 #include "Cell.h"
+#include "CellType.h"
 
 // constructor for initial cells
-Cell::Cell(Rcpp::S4* type)
+Cell::Cell(const CellType& type)
 {
-    mCellType = type;
-
-    Rcpp::Function cycleLengthDist = type->slot("cycleLength");
-    mProperties["CycleLength"] = Rcpp::as<double>(cycleLengthDist());
+    mType = &type;
+    mCycleLength = mType->cycleLength();
+    mDrugApplied = 0;
+    mReadyToDivide = false;
+    mPhase = INTERPHASE;
 }
 
-// constructor for daughter cell
-Cell::Cell(const Cell* parent)
+void Cell::applyDrug(const Drug& d)
 {
-    divide(this, parent);
+
 }
 

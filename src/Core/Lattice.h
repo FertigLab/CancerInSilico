@@ -3,8 +3,12 @@
 
 // [[Rcpp::depends(BH)]]
 
-#include <Rcpp.h>
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wlong-long"
 #include <boost/unordered_map.hpp>
+#pragma GCC diagnostic pop
+
+#include <Rcpp.h>
 #include <cmath>
 #include <vector>
 #include <utility>
@@ -36,8 +40,8 @@ protected:
     virtual GridPoint hash(const Point<double>&) const = 0;
 
     // add & remove keys to the grid
-    void addKey(GridPoint&, unsigned);
-    void removeKey(GridPoint&);
+    void addKey(const GridPoint&, unsigned);
+    void removeKey(const GridPoint&);
 
 public:
 
@@ -129,12 +133,14 @@ public:
 
     BaseLocalIterator(Lattice<T>* l, const Point<double>& c, double r)
         : mLattice(l), mCenter(c), mRadius(r) {}
+    
+    virtual ~BaseLocalIterator() {}
 
     virtual BaseLocalIterator* newCopy() const = 0;
     virtual void operator++() = 0;
 
     T& operator*()
-        {return mLattice->mValues[mLattice->mGrid.at(mCurrent)];}
+        {return mLattice->mValues[mLattice->mGrid.at(mCurrent)].second;}
 
     bool operator!=(const BaseLocalIterator* i) const
     {
@@ -152,7 +158,7 @@ public:
 // Adds key to the grid
 // Average Case: O(1)
 template <class T>
-void Lattice<T>::addKey(GridPoint& key, unsigned index)
+void Lattice<T>::addKey(const GridPoint& key, unsigned index)
 {
     if (!mGrid.insert(std::pair<GridPoint, unsigned>(key, index)).second)
     {
@@ -163,7 +169,7 @@ void Lattice<T>::addKey(GridPoint& key, unsigned index)
 // Removes key from the grid
 // Average Case: O(1)
 template <class T>
-void Lattice<T>::removeKey(GridPoint& key)
+void Lattice<T>::removeKey(const GridPoint& key)
 {
     if (mGrid.erase(key) == 0)
     {

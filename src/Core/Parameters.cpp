@@ -1,12 +1,13 @@
 #include <Rcpp.h>
 
 #include "Parameters.h"
+#include "Random.h"
 #include "CellType.h"
 #include "Drug.h"
 
-Parameters::Parameters(Rcpp::List Rparams)
+Parameters::Parameters(Rcpp::List rParams)
 {
-    mParams = Rparams;
+    mParams = rParams;
 
     Rcpp::List types = mParams["cellTypes"];
     for (unsigned i = 0; i < types.size(); ++i)
@@ -21,7 +22,7 @@ Parameters::Parameters(Rcpp::List Rparams)
     }
 }
 
-CellType* Parameters::randomCellType()
+const CellType& Parameters::randomCellType()
 {
     Rcpp::NumericVector freq = mParams["cellTypeInitFreq"];
 
@@ -29,5 +30,5 @@ CellType* Parameters::randomCellType()
     unsigned i = 0;
     while (u > total) {total += freq[i++];}
 
-    return &mCellTypes[i-1];
+    return mCellTypes[i-1];
 }

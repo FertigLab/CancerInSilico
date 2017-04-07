@@ -2,49 +2,56 @@
 #define CIS_CELL_H
 
 #include <Rcpp.h>
+#include <vector>
+#include <stdint.h>
 
+#include "Drug.h"
 #include "CellType.h"
-
-enum CellPhase {INTERPHASE, MITOSIS, G0_PHASE, G1_PHASE, S_PHASE, G2_PHASE};
+#include "CellPhase.h"
 
 class Cell
 {
-private:
+protected:
 
-    // R object with all info about the cell's type
-    CellType* mCellType;    
+    // info about the cell's type
+    const CellType* mType;
 
-    // must be R object so that R functions can manipulate it
+    // length of the cell cycle in hours
     double mCycleLength;
 
     // phase in the cell cycle
     CellPhase mPhase;
 
     // whether or not a drug has been applied
-    std::vector<bool> mDrugApplied;
+    uint64_t mDrugApplied;
 
-    // calculate post-division properties
-    virtual void divide(Cell*, const Cell*) = 0;
+    // true if mitosis is complete
+    bool mReadyToDivide;
 
 public:
 
-    // constructor for initial cells
-    Cell(CellType*);
+    // constructors
+    Cell(const CellType&);
 
-    // NOT COPY CONSTRUCTOR - used for daughter cell, pass pointer to parent
-    Cell(const Cell*);
-
-    /* getters */
+    // getters
     CellPhase phase() const {return mPhase;}
-    CellType* cellType() const {return mCellType;}
+    const CellType& type() const {return *mType;}
     double cycleLength() const {return mCycleLength;}
-    virtual double area() const = 0;
-    bool drugApplied(unsigned i) {return mDrugApplied[i];}
-    
-    /* setters */   
+    bool drugApplied(unsigned i) {return (mDrugApplied >> i) & 1;}
+    bool readyToDivide() {return mReadyToDivide;}    
+
+    // setters
     void setPhase(CellPhase phase) {mPhase = phase;}
-    void setCellTpye(Rcpp::S4* type) {mCellType = type;}
     void setCycleLength(double len) {mCycleLength = len;}
+    void setCellType(const CellType& type) {mType = &type;}
+    void markDrugAsApplied(unsigned i) {mDrugApplied |= 1 << i;}
+    void setReadyToDivide(bool b) {mReadyToDivide = b;}
+
+    // go to random point in the cell cycle
+    virtual void gotoRandomCyclePoint() = 0;
+
+    // apply drug to cell
+    virtual void applyDrug(const Drug&);
 };
 
 #endif

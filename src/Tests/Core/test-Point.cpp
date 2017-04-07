@@ -1,8 +1,9 @@
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 #include <testthat.h>
+#pragma GCC diagnostic pop
 
-#include "Point.h"
-
-#define TEST_APPROX(x) Approx(x).epsilon(0.01)
+#include "../../Core/Point.h"
 
 CATCH_TEST_CASE("Testing Point.h")
 {

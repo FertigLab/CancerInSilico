@@ -2,15 +2,6 @@
 #include <cmath>
 
 #include "CellBasedModel.h"
-#include "Parameters.h"
-#include "CellPopulation.h"
-
-CellBasedModel::CellBasedModel(Parameters* par) : mParams(par) {}
-
-CellBasedModel::~CellBasedModel()
-{
-	delete mCells;
-}
 
 void CellBasedModel::run()
 {
@@ -23,14 +14,14 @@ void CellBasedModel::run()
 
         if (time >= recordTime)
         {
-            mCells->RecordPopulation();
+            recordPopulation();
             recordTime += mParams->recordIncrement();
         }
 
         if (time >= outputTime)
         {
             Rprintf("time = %.2f\n", ceil(time));
-            Rprintf("size = %d\n", mCells->size());
+            Rprintf("size = %d\n", size());
 
             outputTime += mParams->outputIncrement();
         }            
@@ -40,5 +31,5 @@ void CellBasedModel::run()
     }
 
     Rprintf("final time = %.2f\n", ceil(time));
-    Rprintf("final size = %d\n", mCells->size());
+    Rprintf("final size = %d\n", size());
 }

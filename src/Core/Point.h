@@ -34,19 +34,15 @@ struct Point
     }
 
     // default constructor
-	Point() { x = 0.0; y = 0.0;}
+	Point() {x = 0.0; y = 0.0;}
 
     // constructor given specific coordinates
-	Point(T inX, T inY)
-    {
-		x = inX;
-		y = inY;
-	}
+	Point(T inX, T inY) {x = inX; y = inY;}
 
     // euclidean distance between two points
 	double distance(const Point& other) const
     {
-		return pow(pow(x - other.x,2) + pow(y - other.y,2), 0.5);
+		return sqrt(pow(x - other.x, 2) + pow(y - other.y, 2));
 	}
 };
 

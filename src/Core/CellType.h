@@ -7,6 +7,9 @@ class CellType
 {
 private:
 
+    // name of this cell type
+    std::string mName;
+
     // numerical id of this type
     unsigned mID;
 
@@ -16,16 +19,13 @@ private:
     // distribution of cycle length
     double mCycleLength[DIST_SIZE];
 
-    // whether or not daughter cells inherit cycle length
-    bool mInheritCycle;
-
 public:
 
-    CellType(unsigned, Rcpp::S4);
+    CellType(unsigned, const Rcpp::S4&);
 
     unsigned id() const {return mID;}
     double size() const {return mSize;}
-    bool inheritCycle() const {return mInheritCycle;}
+    std::string name() const {return mName;}
     
     double cycleLength() const;
     double minCycleLength() const;

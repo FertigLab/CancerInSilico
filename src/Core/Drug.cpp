@@ -1,16 +1,19 @@
 #include <Rcpp.h>
 
 #include "Drug.h"
+#include "CellType.h"
+#include "Cell.h"
 
-Drug::Drug(unsigned id, Rcpp::S4 drug) : mID(id)
+Drug::Drug(unsigned id, const Rcpp::S4& drug)
 {
-    mTimeAdded = drug.slot("timeAdded");
-    mInheritedEffect = drug.slot("inheritedEffect");
-    mCycleLengthEffect = drug.slot("cycleLengthEffect");
+    mID = id;
+    mTimeAdded = Rcpp::as<double>(drug.slot("timeAdded"));
+    mDrugClass = drug;
 }
 
-double cycleLengthEffect(const CellType* type, double cycleLength,
+double Drug::cycleLengthEffect(const CellType& type, double cycleLength,
 CellPhase phase) const
 {
-    return mCycleLengthEffect(&type, cycleLength, phase);
+    Rcpp::Function effect = mDrugClass.slot("cycleLengthEffect");
+    return Rcpp::as<double>(effect(type.name(), cycleLength, (int) phase));
 }

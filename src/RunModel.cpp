@@ -1,29 +1,29 @@
 #include <Rcpp.h>
 
-#include "Parameters.h"
-#include "CellBasedModel.h"
+#include "Core/Parameters.h"
+#include "Core/CellBasedModel.h"
+#include "CellModels/DrasdoHohmeModel.h"
 
 void createModel(Rcpp::List rParams, Parameters*& params,
 CellBasedModel*& model)
 {
-    params = new ContinuumParameters(rParams);
-    model = new ContinuumModel(params);
+    params = new DrasdoHohmeParameters(rParams);
+    model = new DrasdoHohmeModel(
+        static_cast<DrasdoHohmeParameters*>(params));
+    Random::setSeed(params->randSeed());
 }
 
 Rcpp::List runModel(Rcpp::List rParams)
 {
-    Random::setSeed(rParams["randSeed"]);
-
     Parameters* modelParams; 
     CellBasedModel* model;
 
     createModel(rParams, modelParams, model);
-
     model->run();
 
     Rcpp::List modelOutput;
     modelOutput["cells"] = model->getCellsAsList();
-    modelOutput["params"] = modelParams->getRparameters();
+    modelOutput["params"] = modelParams->getRParameters();
     
     delete modelParams;
     delete model;

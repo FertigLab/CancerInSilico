@@ -1,23 +1,43 @@
 #ifndef CIS_CONTINUUM_MODEL_H
 #define CIS_CONTINUUM_MODEL_H
 
-#include "CellBasedModel.h"
-#include "SquareLattice.h"
-#include "Parameters.h"
+#include "../OffLatticeModel/OffLatticeCellBasedModel.h"
+#include "../OffLatticeModel/OffLatticeParameters.h"
 
-class ContinuumModel : public CellBasedModel
+#define DH_PARAMS   static_cast<DrasdoHohmeParameters*>(mParams)
+
+class DrasdoHohmeParameters : public OffLatticeParameters
 {
 private:
 
-    SquareLattice<Cell> mCellPopulation;
-    
+    // convert drasdo parameters to general off lattice model parameters
+    void processParameters() {}
+
 public:
 
-    ContinuumModel(ContinuumParameters*);
+    // constructor
+    DrasdoHohmeParameters(Rcpp::List rP) : OffLatticeParameters(rP)
+    {
+        processParameters();
+    }
 
-    void oneTimeStep(double time);
-    void updateDrugs(double time);
-    void recordPopulation();
+    // get parameters
+    double nG()             {return mParams["nG"];}
+    double epsilon()        {return mParams["epsilon"];}
+    double delta()          {return mParams["delta"];}
+};
+
+class DrasdoHohmeModel : public OffLatticeCellBasedModel
+{
+public:
+
+    DrasdoHohmeModel(DrasdoHohmeParameters* p)
+        : OffLatticeCellBasedModel(p) {}
+
+    void attemptTrial(OffLatticeCell&);
+    bool acceptTrial(Energy, Energy, unsigned, unsigned) const;
+    Energy calculateHamiltonian(const OffLatticeCell&);
+    unsigned numNeighbors(const OffLatticeCell&);
 };
 
 #endif

@@ -1,9 +1,9 @@
-#ifndef CIS_CONTINUMM_RADIUS_SOLVER_H
-#define CIS_CONTINUUM_RADIUS_SOLVER_H
+#ifndef CIS_OFF_LATTICE_RADIUS_SOLVER_H
+#define CIS_OFF_LATTICE_RADIUS_SOLVER_H
 
 #include <vector>
 
-/* used for sorting/finding */
+// used for sorting/finding
 struct GreaterThan
 {
     bool operator()(double a, double b) const
@@ -19,7 +19,7 @@ struct GreaterThan
    class provides the new Radius after the Axis has been changed. The
    calculation in done by calculating the value of the Angle given the
    Axis, and the Radius given the Angle */
-class RadiusSolver
+class OffLatticeRadiusSolver
 {
 private:
 
@@ -39,10 +39,10 @@ private:
 public:
 
     /* constructor */
-    RadiusSolver();
+    OffLatticeRadiusSolver();
 
     /* get radius given axis in O(1), perserves area of dumbell */
-    double radius(double);
+    double radius(double) const;
 };
 
 #endif

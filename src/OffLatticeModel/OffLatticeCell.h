@@ -1,49 +1,54 @@
-#ifndef CIS_CELL_HPP
-#define CIS_CELL_HPP
+#ifndef CIS_OFF_LATTICE_CELL_HPP
+#define CIS_OFF_LATTICE_CELL_HPP
 
 #include <Rcpp.h>
 
-#include "Point.h"
-#include "Cell.h"
+#include "../Core/Point.h"
+#include "../Core/Cell.h"
+#include "OffLatticeRadiusSolver.h"
 
-class ContinuumCell : public Cell
+class OffLatticeCell : public Cell
 {
 private:
 
-    Point<double> mCoordinates; // coordinates of cell center
-    double mRadius; // radius of the cell (hard boundary)
-    double mAxisLength, mAxisAngle; // axis of dumbell (used in division)
+    // radius solver for cell geometry calculations
+    static OffLatticeRadiusSolver mSolver;
+
+    // geometric properties
+    Point<double> mCoordinates;
+    double mRadius;
+    double mAxisLength, mAxisAngle;
 
 public:
 
-    // initial constructor
-    ContinuumCell(Rcpp::S4*);
+    // constructors
+    OffLatticeCell(const CellType&);
 
-    // NOT COPY CONSTRUCTOR - used for daughter cell, pass pointer to parent
-    ContinuumCell(const Cell* p) : Cell(p) {}
-
-    /* getters */
-    Point coordinates() const {return mCoordinates;}
+    // getters
+    Point<double> coordinates() const {return mCoordinates;}
     double radius() const {return mRadius;}
     double axisLength() const {return mAxisLength;}
     double axisAngle() const {return mAxisAngle;}
     double area() const  {return M_PI * pow(mRadius, 2);}
-    
-    /* setters */   
-    void setCoordinates(Point coords) {mCoordinates = coords;}
+
+    // get the two centers of the cell
+    std::pair< Point<double>, Point<double> > centers() const;    
+
+    // setters
+    void setCoordinates(Point<double> coords) {mCoordinates = coords;}
     void setRadius(double radius) {mRadius = radius;}
     void setAxisLength(double length) {mAxisLength = length;}
     void setAxisAngle(double angle) {mAxisAngle = angle;}
 
-    /* operators */
-    bool operator!=(const ContinuumCell&) const;
-    bool operator==(const ContinuumCell&) const;
-    double distance(const ContinuumCell&) const;
+    // operators
+    bool operator!=(const OffLatticeCell&) const;
+    bool operator==(const OffLatticeCell&) const;
+    double distance(const OffLatticeCell&) const;
 
-    /* undergo cell division, return daughter cell */
- 	Cell divide();
+    // process cell division
+ 	void divide(OffLatticeCell&);
 
-    /* go to random point in the cell cycle */
+    // go to random point in the cell cycle
     void gotoRandomCyclePoint();
 };
 

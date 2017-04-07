@@ -4,4 +4,8 @@
  * available in your package.
  */
 #define TESTTHAT_TEST_RUNNER
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 #include <testthat.h>
+#pragma GCC diagnostic pop
+

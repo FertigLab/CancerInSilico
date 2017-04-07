@@ -88,7 +88,11 @@ private:
 public:
     
     // constructor
+    SquareLattice() {}
     SquareLattice(double width) {mGridWidth = width;}
+
+    // set width of grid lines
+    void setWidth(double width) {mGridWidth = width;}
 
     // convenient typedef for notation
     typedef typename Lattice<T>::local_iterator LocIter;

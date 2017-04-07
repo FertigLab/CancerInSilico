@@ -14,24 +14,28 @@ protected:
 	std::vector< std::vector<double> > mPopulationRecord;
 
     Parameters* mParams;
-    std::vector<CellType> mCellTypes;
-    std::vector<Drug> mDrugs;
 
 public:
 
+    // constructors
+    CellBasedModel() {}
     CellBasedModel(Parameters* p) : mParams(p) {}
+    virtual ~CellBasedModel() {}
 
-    /* run the entire model */
+    // run the entire model
     void run();
 
-    /* return model output as R list */
+    // return model output as R list
     Rcpp::List getCellsAsList() {return Rcpp::wrap(mPopulationRecord);}
 
-    /* update the model for a single time step; must be implemented */
+    // update the model for a single time step; must be implemented
     virtual void oneTimeStep(double time) = 0;
 
-    /* record the current state of the cell population */    
+    // record the current state of the cell population
 	virtual void recordPopulation() = 0;
+
+    // number of cells in the model 
+    virtual unsigned size() const = 0;
 };
 
 #endif

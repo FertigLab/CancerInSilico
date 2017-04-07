@@ -1,133 +1,93 @@
 #include <cmath>
 #include <Rcpp.h>
 
-#include "Cell.h"
-#include "Random.h"
+#include "OffLatticeCell.h"
+#include "../Core/Random.h"
 
-// constructor for initial cells
-Cell::Cell(Point coords, Rcpp::S4* type) : Cell(type)
+OffLatticeRadiusSolver OffLatticeCell::mSolver = OffLatticeRadiusSolver();
+
+// constructor
+OffLatticeCell::OffLatticeCell(const CellType& type) : Cell(type)
 {
-    /* store variables */
-    mCoordinates = coords;
-
-    /* calculate geometric properties */
-    mRadius = pow(type->slot("size"), 0.5);
-    mAxisLength = 2 * mRadius;    
-    mAxisAngle = Random::uniform(0, 2 * M_PI);
-    mPhase = I;
-
-    // go to random point in cycle if not synced
-    if (!params->syncCellCycles())
-    {
-        gotoRandomCyclePoint();
-    }
-
-    /* get cycle length time */
-    Rcpp::Function cycleLengthDist = type->slot("cycleLength");
-    mCycleLength = Rcpp::as<double>(cycleLengthDist());
-}
-
-/* constructor for daughter cell, pass reference to parent */
-Cell::Cell(Point coords, Cell& parent)
-{
-    /* store variables */
-    mCoordinates = coords;
-    mParameters = parent.parameters();
-    mCellType = parent.cellType();
-
-    /* calculate geometric properties */
-    mRadius = pow(mCellType->slot("size"), 0.5);
+    mCoordinates = Point<double>(0.0, 0.0);
+    mRadius = sqrt(mType->size());
     mAxisLength = 2 * mRadius;
-    mAxisAngle = R::runif(0, 2 * M_PI);
-    mPhase = I;
-    
-    /* check if cycle length is inherited */
-    if (mCellType->slot("inheritCycleLength"))
-    {
-        mCycleLength = parent.cycleLength();
-    }
-    else
-    {
-        Rcpp::Function cycleLengthDist = type->slot("cycleLength");
-        mCycleLength = Rcpp::as<double>(cycleLengthDist());
-    }
+    mAxisAngle = Random::uniform(0, 2 * M_PI);
 }
 
 // undergo cell division, return daughter cell
-Cell Cell::divide()
+void OffLatticeCell::divide(OffLatticeCell& daughter)
 {
-    // store coordinates of daughter cell
-    Point daughterCoords = Point(coordinates().x - cos(axisAngle()),
-        coordinates().y - sin(axisAngle()));
+    // update coordinates
+    daughter.setCoordinates(Point<double>(mCoordinates.x
+        - cos(daughter.axisAngle()), mCoordinates.y
+        - sin(daughter.axisAngle())));
 
-    // update coordinates of parent cell
-    mCoordinates = Point(coordinates().x + cos(axisAngle()),
-        coordinates().y + sin(axisAngle())));
+    setCoordinates(Point<double>(mCoordinates.x
+        + cos(axisAngle()), mCoordinates.y
+        + sin(axisAngle())));
 
-    // reset properties of parent
-    mRadius = pow(mCellType->slot("size"), 0.5);
+    // update stats of parent
+    mRadius = sqrt(mType->size());
     mAxisLength = 2 * mRadius;
     mAxisAngle = R::runif(0, 2 * M_PI);
-    mPhase = I;
-
-    // return daughter cell
-    return Cell(daughterCoords, *this);
+    mPhase = INTERPHASE;
 }
 
 // go to random point in the cell cycle
-void Cell::gotoRandomCyclePoint()
+void OffLatticeCell::gotoRandomCyclePoint()
 {
     // random point of interphase
     if (R::runif(0,1) < 0.75)
     {
-        mRadius = R::runif(mRadius, mRadius * pow(2, 0.5));
+        mPhase = INTERPHASE;
+        mRadius = Random::uniform(sqrt(mType->size()),
+            sqrt(2 * mType->size()));
         mAxisLength = 2 * mRadius;
     }
     // random point of mitosis
     else
     {
-        mPhase = M;
-        mAxisLength = R::runif(2 * mRadius * pow(2, 0.5), 4 * mRadius);
-        mRadius = mParams->GetRadius(mAxisLength);
+        mPhase = MITOSIS;
+        mAxisLength = Random::uniform(2 * mRadius * sqrt(2), 4 * mRadius);
+        mRadius = mSolver.radius(mAxisLength);
     }
 }
 
-// calculate distance between two cells (distance between edges)
-double ContinuumCell::distance(const ContinuumCell& b) const
+std::pair< Point<double>, Point<double> > OffLatticeCell::centers() const
 {
-    // centers of the dumbells for each cell 
-    Point aCenters[2];
-    Point bCenters[2];
+    std::pair< Point<double>, Point<double> > centers;
+    
+    double xOffset = 0.5 * (mAxisLength - mRadius) * cos(mAxisAngle);
+    double yOffset = 0.5 * (mAxisLength - mRadius) * sin(mAxisAngle);
 
-    // offsets for each coordinate
-    double aX = 0.5 * (axisLength() - radius()) * cos(axisAngle());
-    double aY = 0.5 * (axisLength() - radius()) * sin(axisAngle());
-    double bX = 0.5 * (b.axisLength() - b.radius()) * cos(b.axisAngle());
-    double bY = 0.5 * (b.axisLength() - b.radius()) * sin(b.axisAngle());
+    centers.first = Point<double>(mCoordinates.x + xOffset,
+        mCoordinates.y + yOffset);
+    centers.second = Point<double>(mCoordinates.x - xOffset,
+        mCoordinates.y - yOffset);
 
-    // get centers by offsetting coordinates in each direction
-    aCenters[0] = Point(coordinates().x + aX, coordinates().y + aY);
-    aCenters[1] = Point(coordinates().x - aX, coordinates().y - aY);
-    bCenters[0] = Point(b.coordinates().x + bX, b.coordinates().y + bY);
-    bCenters[1] = Point(b.coordinates().x - bX, b.coordinates().y - bY);
-
-    // find smallest between two centers 
-    double minDist = std::numeric_limits<double>::max();
-    minDist = std::min(minDist, aCenters[0].distance(bCenters[0]));
-    minDist = std::min(minDist, aCenters[0].distance(bCenters[1]));
-    minDist = std::min(minDist, aCenters[1].distance(bCenters[0]));
-    minDist = std::min(minDist, aCenters[1].distance(bCenters[1]));
-
-    // return distance (between centers) minus the radii
-    return minDist - radius() - b.radius();
+    return centers;
 }
 
-bool ContinuumCell::operator!=(const ContinuumCell& other) const
+// calculate distance between two cells (distance between edges)
+double OffLatticeCell::distance(const OffLatticeCell& b) const
+{
+    // find smallest between two centers 
+    double minD = centers().first.distance(b.centers().first);
+    minD = std::min(minD, centers().first.distance(b.centers().second));
+    minD = std::min(minD, centers().second.distance(b.centers().first));
+    minD = std::min(minD, centers().second.distance(b.centers().second));
+
+    // return distance (between centers) minus the radii
+    return minD - radius() - b.radius();
+}
+
+bool OffLatticeCell::operator!=(const OffLatticeCell& other) const
 {
     return coordinates() != other.coordinates();
 }
 
-bool ContinuumCell::operator==(const ContinuumCell& other) const
+bool OffLatticeCell::operator==(const OffLatticeCell& other) const
 {
     return coordinates() == other.coordinates();
 }

@@ -1,8 +1,6 @@
 // [[Rcpp::depends(BH)]]
 
 #include <boost/random.hpp>
-//#include <boost/random/normal_distribution.hpp>
-//#include <boost/random/uniform.hpp>
 #include <stdint.h>
 
 #include "Random.h"
