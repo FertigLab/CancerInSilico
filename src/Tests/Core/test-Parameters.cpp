@@ -11,7 +11,7 @@
 
 CATCH_TEST_CASE("Test Parameters.h")
 {
-    Random::setSeed(1234);
+/*    Random::setSeed(1234);
 
     Rcpp::Environment pkgEnv;
     pkgEnv = Rcpp::Environment::namespace_env("CancerInSilico");
@@ -38,5 +38,5 @@ CATCH_TEST_CASE("Test Parameters.h")
     ++it;
     CATCH_REQUIRE(it == params.drugsEnd());
 
-    CATCH_REQUIRE(params.randomCellType().name() == "testType1");
+    CATCH_REQUIRE(params.randomCellType().name() == "testType1");*/
 }

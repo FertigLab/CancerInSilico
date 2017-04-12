@@ -10,14 +10,14 @@
 
 CATCH_TEST_CASE("Test Cell.h")
 {
-    Random::setSeed(1234);
+/*    Random::setSeed(1234);
 
     Rcpp::Environment pkgEnv;
     pkgEnv = Rcpp::Environment::namespace_env("CancerInSilico");
     Rcpp::S4 testCellType = pkgEnv.find("testCellType");
     Rcpp::S4 testDrug = pkgEnv.find("testDrug");
 
-/*    CellType type = CellType(0, testCellType);
+    CellType type = CellType(0, testCellType);
     Drug drug = Drug(0, testDrug);
 
     Cell cell1 = Cell(&type);

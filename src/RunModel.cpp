@@ -7,10 +7,16 @@
 void createModel(Rcpp::List rParams, Parameters*& params,
 CellBasedModel*& model)
 {
-    params = new DrasdoHohmeParameters(rParams);
-    model = new DrasdoHohmeModel(static_cast<DrasdoHohmeParameters*>
-        (params));
-    Random::setSeed(params->randSeed());
+    if (rParams["modelType"] == "DrasdoHohme")
+    {
+        params = new DrasdoHohmeParameters(rParams);
+        model = new DrasdoHohmeModel(static_cast<DrasdoHohmeParameters*>
+            (params));
+    }
+    else
+    {
+        throw std::invalid_argument("invalid model type");
+    }
 }
 
 // [[Rcpp::export]]
@@ -20,6 +26,7 @@ Rcpp::List cppRunModel(Rcpp::List rParams)
     CellBasedModel* model;
 
     createModel(rParams, modelParams, model);
+    Random::setSeed(modelParams->randSeed());
     model->run();
 
     Rcpp::List modelOutput;

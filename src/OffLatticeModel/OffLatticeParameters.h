@@ -12,13 +12,12 @@ class OffLatticeParameters : public Parameters
 public:
 
     // constructors
-    OffLatticeParameters(Rcpp::List p) : Parameters(p) {}
+    OffLatticeParameters(Rcpp::List rP) : Parameters(rP) {}
 
     // basic off lattice parameters
     double maxDeform()      {return mParams["maxDeform"];}
     double maxTranslation() {return mParams["maxTranslation"];}
     double maxRotate()      {return mParams["maxRotate"];}
-    double maxGrowth()      {return mParams["maxGrowth"];}
     
     // get the largest possible radius
     double maxRadius();

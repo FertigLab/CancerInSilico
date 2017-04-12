@@ -8,18 +8,10 @@
 
 class DrasdoHohmeParameters : public OffLatticeParameters
 {
-private:
-
-    // convert drasdo parameters to general off lattice model parameters
-    void processParameters() {}
-
 public:
 
     // constructor
-    DrasdoHohmeParameters(Rcpp::List rP) : OffLatticeParameters(rP)
-    {
-        processParameters();
-    }
+    DrasdoHohmeParameters(Rcpp::List rP) : OffLatticeParameters(rP) {}
 
     // get parameters
     double nG()             {return mParams["nG"];}

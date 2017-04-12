@@ -21,8 +21,3 @@ double CellType::cycleLength() const
 {
     return mCycleLength[Random::uniformInt(0, DIST_SIZE - 1)];
 }
-
-double CellType::minCycleLength() const
-{
-    return *std::min_element(mCycleLength, mCycleLength + DIST_SIZE);
-}

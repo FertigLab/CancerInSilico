@@ -19,5 +19,10 @@ OBJECTS =   RunModel.o \
             Tests/Core/test-Point.o \
             Tests/Core/test-Random.o \
             Tests/Core/test-SquareLattice.o \
+            Tests/OffLatticeModel/test-OffLatticeCell.o \
+            Tests/OffLatticeModel/test-OffLatticeCellBasedModel.o \
+            Tests/OffLatticeModel/test-OffLatticeParameters.o \
+            Tests/OffLatticeModel/test-OffLatticeRadiusSolver.o \
+            Tests/CellModels/test-DrasdoHohme.o \
             Tests/test-runner.o
 

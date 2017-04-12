@@ -6,19 +6,16 @@
 \title{CellModel}
 \description{
 An S4 class that contains the output of a cell simulation,
-     along with all the parameters used to generate the simulation
+ along with all the parameters used to generate the simulation
 }
 \section{Slots}{
 
 \describe{
-\item{\code{mCells}}{A list object where each row of the list describes the
-state of all the cells in the model at a given time. Each cell is
-described over 6 columns: [1] x-coordinate, [2] y-coordinate, [3]
-radius, [4] axis length, [5] axis angle, [6] growth rate. For
-instance, the x-coordinates of the first 3 cells will be in columns
-1,7,13.}
+\item{\code{cells}}{A list object that describes the state of the cells
+at each time. The state representation depends on the type of
+model run, and is accessed by the function designed for each
+model type.}
 
-\item{\code{mParameters}}{A list object containing all parameters used to run
-the model}
+\item{\code{params}}{A list object containing all parameters used in the model}
 }}
 

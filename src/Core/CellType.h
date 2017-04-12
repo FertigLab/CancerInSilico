@@ -28,7 +28,6 @@ public:
     std::string name() const {return mName;}
     
     double cycleLength() const;
-    double minCycleLength() const;
 };
 
 #endif

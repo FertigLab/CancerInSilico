@@ -34,3 +34,13 @@ VignetteBuilder:
 biocViews: MathematicalBiology, SystemsBiology, CellBiology,
     BiomedicalInformatics
 RoxygenNote: 6.0.1
+Collate: 
+    'RcppExports.R'
+    'RunCellSimulation.R'
+    'class-CellModel.R'
+    'class-CellType.R'
+    'class-DrasdoHohmeModel.R'
+    'class-Drug.R'
+    'class-CellMode.R'
+    'class-OffLatticeModel.R'
+    'documentation.R'
