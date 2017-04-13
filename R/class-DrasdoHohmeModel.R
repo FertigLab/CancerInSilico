@@ -1,69 +1,81 @@
-#' @title CellModel
-#' @description An S4 class that contains the output of a cell simulation,
-#'  along with all the parameters used to generate the simulation
-#' @slot cells A list object that describes the state of the cells
-#'  at each time. The state representation depends on the type of
-#'  model run, and is accessed by the function designed for each
-#'  model type. 
-#' @slot params A list object containing all parameters used in the model
+#' @include class-CellModel.R class-OffLatticeModel.R
+NULL
+
+library(methods)
+
+################ Class Definition ################
+
+#' @title DrasdoHohmeModel
+#' @description Implementation of an off-latice cell-based model
+#'  based on the work in Drasdo, Hohme (2003)
+#'
+#' @slot nG number of monte carlo steps between each growth trial
+#' @slot epsilon constant that controls the probability trails are accepted
+#' @slot delta controls distance over which short range interactions occur
 #' @export
-setClass('DrasdoHohmeModel', contains = 'OffLatticeModel', representation(
+setClass('DrasdoHohmeModel', contains = 'OffLatticeModel', slot = c(
     nG = 'numeric',
     epsilon = 'numeric',
-    delta = 'numeric')
-)
+    delta = 'numeric'
+))
 
-
-setMethod('processParameters',
-    signature('DrasdoHohmeModel'),
-    function(model, ...)
+setMethod('initialize', 'DrasdoHohmeModel',
+    function(.Object, nG = 28, epsilon = 10.0, delta = 0.2, ...)
     {
-        # for readability
-        p <- model@params
+        # get supplied parameters
+        .Object@nG <- nG
+        .Object@epsilon <- epsilon
+        .Object@delta <- delta
 
-        # get extra parameters
-        if (is.null(p[['nG']])) {p[['nG']] <- list(...)$nG}
-        if (is.null(p[['epsilon']])) {p[['epsilon']] <- list(...)$epsilon}
-        if (is.null(p[['delta']])) {p[['delta']] <- list(...)$delta}
+        # get min cycle length
+        types <- list(...)$cellTypes
+        if (is.null(types)) {types <- c(new('CellType', name = 'TEMP'))}
+        minCycle <- min(sapply(types, slot, name = 'minCycle'))
 
-        # check drasdo parameters
-        if (is.null(p[['nG']])) stop('missing nG')
-        if (is.null(p[['epsilon']])) stop('missing epsilon')
-        if (is.null(p[['delta']])) stop('missing delta')
+        # calculate time increment
+        t1 <- delta / (4 * nG * (4 - sqrt(2)))
+        t2 <- delta * (minCycle - 1) / (8 * nG * (sqrt(2) - 1))
+        .Object@timeIncrement <- min(t1, t2)
 
-        if (p[['nG']] <= 0) stop('invalid nG')
-        if (p[['epsilon']] <= 0) stop('invalid epsilon')
-        if (p[['delta']] <= 0) stop('invalid delta')
+        # calculate off lattice parameters
+        .Object@maxTranslation <- delta / 2
+        .Object@maxRotation <- acos((16 + delta^2 - 4 * delta) / 16)
+        .Object@maxDeformation <- 2 * min(t1,t2) * nG * (4 - sqrt(2))
 
-        # call function on top level base class
-        base <- new('CellModel', params = p)
-        p <- processParameters(base)
-
-        # get minimum cycle length
-        minCycle <- p[['cellTypes']][[1]]@minCycle
-        for (i in 1:length(p[['cellTypes']]))
-        {
-            minCycle <- min(minCycle, p[['cellTypes']][[i]]@minCycle)
-        }
-
-        # get off lattice parameters
-        e <- p[['epsilon']]
-        d <- p[['delta']]
-        ng <- p[['nG']]
-
-        t1 <- d / (4 * ng * (4 - sqrt(2)))
-        t2 <- d * (minCycle - 1) / (8 * ng * (sqrt(2) - 1))
-        p[['timeIncrement']] <- min(t1, t2)
-
-        p[['maxTranslation']] <- d / 2
-        p[['maxRotate']] <- acos((16 + d^2 - 4 * d) / 16)
-        p[['maxDeform']] <- 2 * p[['timeIncrement']] * ng * (4 - sqrt(2))
-
-        # call function on direct base class
-        base <- new('OffLatticeModel', params = p)
-        p <- processParameters(base)
-
-        # return parameters
-        return (p)        
+        # finish intialization, return object
+        .Object <- callNextMethod(.Object, ...)
+        validObject(.Object)
+        return(.Object)
     }
 )
+
+setValidity('DrasdoHohmeModel',
+    function(object)
+    {
+        if (length(object@nG) == 0)
+            "missing 'nG'"
+        else if (length(object@epsilon) == 0)
+            "missing 'epsilon'"
+        else if (length(object@delta) == 0)
+            "missing 'delta'"
+        else if (object@nG < 1)
+            "'nG' must be at least one"
+        else if (object@epsilon <= 0)
+            "'epsilon' must be greater than zero"
+        else if (object@delta <= 0)
+            "'delta' must be greater than zero"
+    }
+)
+
+##################### Methods ####################
+
+#setMethod('run', signature('DrasdoHohmeModel'),
+#    function(model)
+#    {
+#        model@cells <- NULL
+#        model@cells <- cppRunModel(model, 'DrasdoHohme')
+#        return(model)
+#    }
+#)
+
+

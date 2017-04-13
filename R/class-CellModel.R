@@ -23,7 +23,7 @@ library(methods)
 #' @slot cellTypeInitFreq initial frequency of cell types among cells
 #' @slot drugs list of Drug objects used in the model
 #' @export
-setClass('CellModel', slots = c(
+setClass('CellModel', contains = 'VIRTUAL', slots = c(
     cells = 'list',
     initialNum = 'numeric',
     runTime = 'numeric',
@@ -40,21 +40,39 @@ setClass('CellModel', slots = c(
 ))
 
 setMethod('initialize', 'CellModel',
-    function(.Object, ...)
+    function(.Object, initialNum, runTime, density,
+    boundary = TRUE, syncCycles = FALSE, randSeed = 0, 
+    outputIncrement = 4, recordIncrement = 0.1, timeIncrement = 0.001,
+    cellTypes = c(new('CellType', name='DEFAULT')), cellTypeInitFreq = c(1),
+    ...)
     {
-        if (is.null(list(...)$initialNum)) stop('missing initialNum')
-        if (is.null(list(...)$runTime)) stop('missing runTime')
-        if (is.null(list(...)$density)) stop('missing density')
-        .Object@boundary <- TRUE
-        .Object@syncCycles <- FALSE
-        .Object@randSeed <- 0
-        .Object@outputIncrement <- 4
-        .Object@recordIncrement <- 0.25
-        .Object@timeIncrement <- 0.001
-        .Object@cellTypes <- c(new('CellType', name = 'DEFAULT'))
-        .Object@cellTypeInitFreq <- c(1)
+        # store parameters, don't overwrite existing values
+        if (!length(.Object@initialNum))
+            .Object@initialNum <- initialNum
+        if (!length(.Object@runTime))
+            .Object@runTime <- runTime
+        if (!length(.Object@density))
+            .Object@density <- density
+        if (!length(.Object@boundary))
+            .Object@boundary <- boundary
+        if (!length(.Object@syncCycles))
+            .Object@syncCycles <- syncCycles
+        if (!length(.Object@randSeed))
+            .Object@randSeed <- randSeed
+        if (!length(.Object@outputIncrement))
+            .Object@outputIncrement <- outputIncrement
+        if (!length(.Object@recordIncrement))
+            .Object@recordIncrement <- recordIncrement
+        if (!length(.Object@timeIncrement))
+            .Object@timeIncrement <- timeIncrement
+        if (!length(.Object@cellTypes))
+            .Object@cellTypes <- c(new('CellType', name = 'DEFAULT'))
+        if (!length(.Object@cellTypeInitFreq))
+            .Object@cellTypeInitFreq <- c(1)
+
+        # finish intialization, return object
         .Object <- callNextMethod(.Object, ...)
-        .Object
+        return(.Object)
     }
 )
 
@@ -109,17 +127,21 @@ setValidity('CellModel',
             "cell type frequency size != cell type size"
         else if (sum(object@cellTypeInitFreq) != 1)
             "'cellTypeInitFreq' does not sum to 1"
-        else if (prod(sapply(object@drugs, isValidDrug)) == 0)
-            "not all drugs are valid"
+        else if (length(object@drugs) > 0)
+            if (prod(sapply(object@drugs, isValidDrug)) == 0)
+                "not all drugs are valid"
         else
             TRUE
     }
 )
         
-################ Generics ################
+##################### Generics ###################
 
 setGeneric('run', function(model)
     {standardGeneric('run')})
+
+setGeneric('getCellPhases', function(model, time)
+    {standardGeneric('getCellPhases')})
 
 setGeneric('getCellTypes', function(model, time)
     {standardGeneric('getCellTypes')})
@@ -133,6 +155,12 @@ setGeneric('getNumberOfCells', function(model, time)
 setGeneric('getDensity', function(model, time)
     {standardGeneric('getDensity')})
 
+setGeneric('timeToRow', function(model, time)
+    {standardGeneric('timeToRow')})
+
+setGeneric('getColumn', function(model, time, col)
+    {standardGeneric('getColumn')})
+
 setGeneric('cellSummary', function(model, time)
     {standardGeneric('cellSummary')})
 
@@ -142,7 +170,7 @@ setGeneric('plotCells', function(model, time)
 setGeneric('interactivePlot', function(model)
     {standardGeneric('interactivePlot')})
 
-################ Methods ################
+##################### Methods ####################
 
 setMethod('interactivePlot', signature('CellModel'),
     function(model)

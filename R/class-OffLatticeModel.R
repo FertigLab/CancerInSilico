@@ -14,165 +14,163 @@ library(methods)
 #' @slot maxTranslation the largest distance the center of a cell can move
 #' @slot maxRotation the largest angle a cell can rotate
 #' @export
-setClass('OffLatticeModel', contains = 'CellModel', slots = c(
+setClass('OffLatticeModel', contains = c('CellModel', 'VIRTUAL'), slots = c(
     maxDeformation = 'numeric',
     maxTranslation = 'numeric',
     maxRotation = 'numeric'
 ))
 
+setMethod('initialize', 'OffLatticeModel',
+    function(.Object, maxDeformation = 0.1, maxTranslation = 0.1,
+    maxRotation = 0.3, ...)
+    {
+        # store parameters, don't overwrite existing value
+        if (!length(.Object@maxDeformation))
+            .Object@maxDeformation <- maxDeformation
+        if (!length(.Object@maxTranslation))
+            .Object@maxTranslation <- maxTranslation
+        if (!length(.Object@maxRotation))
+            .Object@maxRotation <- maxRotation
+
+        # finish intialization, return object
+        .Object <- callNextMethod(.Object, ...)
+        return(.Object)
+    }
+)
+
+setValidity('OffLatticeModel',
+    function(object)
+    {
+        if (length(object@maxDeformation) == 0)
+            "missing 'maxDeformation'"
+        else if (length(object@maxTranslation) == 0)
+            "missing 'maxTranslation'"
+        else if (length(object@maxRotation) == 0)
+            "missing 'maxRotation'"
+        else if (object@maxDeformation <= 0)
+            "'maxDeformation' must be greater than zero"
+        else if (object@maxTranslation <= 0)
+            "'maxTranslation' must be greater than zero"
+        else if (object@maxRotation <= 0)
+            "'maxRotation' must be greater than zero"
+    }
+)
+
 ##################### Generics ###################
+
+setGeneric('getCoordinates', function(model, time)
+    {standardGeneric('getCoordinates')})
+
+setGeneric('getRadii', function(model, time)
+    {standardGeneric('getRadii')})
+
+setGeneric('getAxisLength', function(model, time)
+    {standardGeneric('getAxisLength')})
+
+setGeneric('getAxisAngle', function(model, time)
+    {standardGeneric('getAxisAngle')})
+
+setGeneric('getNumberOfNeighbors', function(model, time, cell, radius)
+    {standardGeneric('getNumberOfNeighbors')})
 
 ##################### Methods ####################
 
-setMethod('processParameters',
-    signature('OffLatticeModel'),
-    function(model, ...)
-    {
-        # for readability
-        p <- model@params
-
-        # call function on base class
-        base <- new('CellModel', params = p)
-        p <- processParameters(base)
-
-        # get extra parameters
-        if (is.null(p[['maxDeform']]))
-            {p[['maxDeform']] <- list(...)$maxDeform}
-        if (is.null(p[['maxTranslation']]))
-            {p[['maxTranslation']] <- list(...)$maxTranslation}
-        if (is.null(p[['maxRotate']]))
-            {p[['maxRotate']] <- list(...)$maxRotate}
-        
-        # check off lattice parameters
-        if (is.null(p[['maxDeform']])) stop('missing maxDeform')
-        if (is.null(p[['maxTranslation']])) stop('missing maxTranslation')
-        if (is.null(p[['maxRotate']])) stop('missing maxRotate')
-
-        if (p[['maxDeform']] <= 0) stop('invalid maxDeform')
-        if (p[['maxTranslation']] <= 0) stop('invalid maxTranslation')
-        if (p[['maxRotate']] <= 0) stop('invalid maxRotate')
-
-        # return parameters
-        return (p)
-    }
-)
-
-setMethod('timeToRow',
-    signature('OffLatticeModel'),
+setMethod('getCoordinates', signature('OffLatticeModel'),
     function(model, time)
     {
-        maxTime <- length(model@cells) * model@params[['runTime']]
-        if (time >= maxTime)
-        {
-            return (length(model@cells))
-        }
-        else
-        {
-            return (ceiling(time / model@params[['recordIncrement']]))
-        }
+
+    }
+)    
+
+setMethod('getRadii', signature('OffLatticeModel'),
+    function(model, time)
+    {
+
     }
 )
 
-setMethod('getColumn',
-    signature('OffLatticeModel'),
+setMethod('getAxisLength', signature('OffLatticeModel'),
+    function(model, time)
+    {
+
+    }
+)
+
+setMethod('getAxisAngle', signature('OffLatticeModel'),
+    function(model, time)
+    {
+
+    }
+)
+
+setMethod('getNumberOfNeighbors', signature('OffLatticeModel'),
+    function(model, time, cell, radius)
+    {
+    
+    }
+)
+
+setMethod('getCellPhases', signature('OffLatticeModel'),
+    function(model, time)
+    {
+
+    }
+)
+
+setMethod('getCellTypes', signature('OffLatticeModel'),
+    function(model, time)
+    {
+
+    }
+)
+
+setMethod('getCycleLengths', signature('OffLatticeModel'),
+    function(model, time)
+    {
+
+    }
+)
+
+setMethod('getNumberOfCells', signature('OffLatticeModel'),
+    function(model, time)
+    {
+
+    }
+)
+
+setMethod('getDensity', signature('OffLatticeModel'),
+    function(model, time)
+    {
+
+    }
+)
+
+setMethod('timeToRow', signature('OffLatticeModel'),
+    function(model, time)
+    {
+
+    }
+)
+
+setMethod('getColumn', signature('OffLatticeModel'),
+    function(model, time)
+    {
+
+    }
+)
+
+setMethod('getColumn', signature('OffLatticeModel'),
     function(model, time, col)
     {
 
     }
 )
 
-setMethod('getCellPhase',
-    signature('OffLatticeModel'),
-    function(model, id)
-    {
-
-    }
-)
-
-setMethod('getCoordinates',
-    signature('OffLatticeModel'),
+setMethod('plotCells', signature('OffLatticeModel'),
     function(model, time)
     {
-
+        
     }
 )
 
-setMethod('getRadii',
-    signature('OffLatticeModel'),
-    function(model, time)
-    {
 
-    }
-)
-
-setMethod('getAxisLength',
-    signature('OffLatticeModel'),
-    function(model, time)
-    {
-
-    }
-)
-
-setMethod('getAxisAngle',
-    signature('OffLatticeModel'),
-    function(model, time)
-    {
-
-    }
-)
-
-setMethod('getGrowthRates',
-    signature('OffLatticeModel'),
-    function(model, time)
-    {
-
-    }
-)
-
-setMethod('getCellTypes',
-    signature('OffLatticeModel'),
-    function(model, time)
-    {
-
-    }
-)
-
-setMethod('getCycleLengths',
-    signature('OffLatticeModel'),
-    function(model, time)
-    {
-
-    }
-)
-
-setMethod('getNumberOfCells',
-    signature('OffLatticeModel'),
-    function(model, time)
-    {
-
-    }
-)
-
-setMethod('getNumberOfNeighbors',
-    signature('OffLatticeModel'),
-    function(model, time, index, radius)
-    {
-
-    }
-)
-
-setMethod('getDensity',
-    signature('OffLatticeModel'),
-    function(model, time)
-    {
-
-    }
-)
-
-setMethod('plotCells',
-    signature('OffLatticeModel'),
-    function(model, time)
-    {
-
-    }
-)
