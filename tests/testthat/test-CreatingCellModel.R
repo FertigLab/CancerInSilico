@@ -47,7 +47,7 @@ test_that('default arguments',
     expect_equal(testMod@initialNum, 1)
     expect_equal(testMod@runTime, 1)
     expect_equal(testMod@density, 0.01)
-    expect_equal(testMod@boundary, TRUE)
+    expect_equal(testMod@boundary, 1)
     expect_equal(testMod@syncCycles, FALSE)
     expect_equal(testMod@randSeed, 0)
     expect_equal(testMod@outputIncrement, 4)

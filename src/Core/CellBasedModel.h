@@ -18,9 +18,8 @@ protected:
 public:
 
     // constructors
-    CellBasedModel() {}
-    CellBasedModel(Parameters* p) : mParams(p) {}
-    virtual ~CellBasedModel() {}
+    CellBasedModel(Rcpp::S4* rM) {mParams = new Parameters(rM);}
+    virtual ~CellBasedModel() {delete mParams;}
 
     // run the entire model
     void run();

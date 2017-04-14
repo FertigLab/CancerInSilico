@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include <iostream>
 
 #include "Drug.h"
 #include "CellType.h"
@@ -11,9 +12,9 @@ Drug::Drug(unsigned id, const Rcpp::S4& drug)
     mDrugClass = drug;
 }
 
-double Drug::cycleLengthEffect(const CellType& type, double cycleLength,
-CellPhase phase) const
-{
+double Drug::cycleLengthEffect(CellType type, double cycleLength) const
+{ 
+//    std::cout << type.name() << std::endl;
     Rcpp::Function effect = mDrugClass.slot("cycleLengthEffect");
-    return Rcpp::as<double>(effect(type.name(), cycleLength, (int) phase));
+    return Rcpp::as<double>(effect(Rcpp::wrap(type.name()), cycleLength));
 }

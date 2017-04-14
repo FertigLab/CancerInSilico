@@ -28,22 +28,12 @@
 #' runCancerSim(1,8)
 #' @export
 
-runCellSimulation <- function(initialNum, runTime, density = 0.01,
-                              boundary = TRUE, syncCycles = TRUE,
-                              modelType = "DrasdoHohme",
-                              ...)
+runCellSimulation <- function(initialNum, runTime, density,
+                                modelType = 'DrasdoHohme', ...)
 {
-    # store parameters in a list
-    params <- list()
-    params[['initialNum']] <- initialNum
-    params[['runTime']] <- runTime
-    params[['density']] <- density
-    params[['boundary']] <- boundary
-    params[['syncCycles']] <- syncCycles
-    params[['modelType']] <- modelType
-
     # create cell model object
-    model <- createCellModel(params, ...)
+    model <- new('DrasdoHohmeModel', initialNum = initialNum, 
+        runTime = runTime, density = density, ...);
     
     # run model and return result
     return (run(model))

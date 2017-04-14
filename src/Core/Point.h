@@ -3,7 +3,7 @@
 #ifndef CIS_POINT_H
 #define CIS_POINT_H
 
-#define TOL 0.0001
+#define TOL 0.00000001
 
 #include <cmath>
 #include <boost/functional/hash.hpp>

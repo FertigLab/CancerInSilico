@@ -69,13 +69,11 @@ setValidity('DrasdoHohmeModel',
 
 ##################### Methods ####################
 
-#setMethod('run', signature('DrasdoHohmeModel'),
-#    function(model)
-#    {
-#        model@cells <- NULL
-#        model@cells <- cppRunModel(model, 'DrasdoHohme')
-#        return(model)
-#    }
-#)
+setMethod('run', signature('DrasdoHohmeModel'),
+    function(model)
+    {
+        return (cppRunModel(model, 'DrasdoHohme'))
+    }
+)
 
 

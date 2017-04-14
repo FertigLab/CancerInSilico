@@ -7,12 +7,30 @@
 #include "Drug.h"
 #include "CellType.h"
 
+typedef std::vector<Drug>::iterator DrugIterator;
+
 class Parameters
 {
 protected:
 
-    // list of parameters from R 
-    Rcpp::List mParams;
+    // general model parameters
+    double mInitialNum;
+    double mRunTime;
+    double mDensity;
+    double mRandSeed;
+    double mOutputIncrement;
+    double mRecordIncrement;
+    double mTimeIncrement;
+    double mBoundary;
+    bool mSyncCycles;
+
+    // pointer to CellModel S4 object from R
+    Rcpp::S4* mRModel;
+
+public:
+
+    // constructor
+    Parameters(Rcpp::S4*);
 
     // drugs used in the simulation
     std::vector<Drug> mDrugs;
@@ -20,34 +38,26 @@ protected:
     // possible cell types
     std::vector<CellType> mCellTypes;
 
-public:
-
-    // constructor
-    Parameters(Rcpp::List);
-
-    // return all parameters
-    Rcpp::List getRParameters() {return mParams;}
-
-    // general model parameters
-    double initialNum()         {return mParams["initialNum"];}
-    double runTime()            {return mParams["runTime"];}
-    double density()            {return mParams["density"];}
-    double randSeed()           {return mParams["randSeed"];}
-    bool syncCycles()           {return mParams["syncCycles"];}
-    double outputIncrement()    {return mParams["outputIncrement"];}
-    double recordIncrement()    {return mParams["recordIncrement"];}
-    double timeIncrement()      {return mParams["timeIncrement"];}
-    bool boundary()    {return Rcpp::as<double>(mParams["boundary"]) >= 0.0;}
+    // get parameter values
+    double initialNum()         {return mInitialNum;}
+    double runTime()            {return mRunTime;}
+    double density()            {return mDensity;}
+    double randSeed()           {return mRandSeed;}
+    double outputIncrement()    {return mOutputIncrement;}
+    double recordIncrement()    {return mRecordIncrement;}
+    double timeIncrement()      {return mTimeIncrement;}
+    double boundary()           {return mBoundary;}
+    bool syncCycles()           {return mSyncCycles;}
 
     // iterator to drug list
-    std::vector<Drug>::iterator drugsBegin() {return mDrugs.begin();}
-    std::vector<Drug>::iterator drugsEnd() {return mDrugs.end();}
+    DrugIterator drugsBegin() {return mDrugs.begin();}
+    DrugIterator drugsEnd()   {return mDrugs.end();}
 
     // set the boundary to a numeric value
-    void setBoundary(double b) {mParams["boundary"] = b;}
+    void setBoundary(double);
 
     // get a random cell type from initial distribution
-    const CellType& randomCellType();
+    CellType randomCellType();
 };
 
 #endif

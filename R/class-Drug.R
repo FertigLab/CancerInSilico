@@ -18,7 +18,7 @@ setMethod('initialize', 'Drug',
     {
         if (is.null(list(...)$name)) stop('missing name')
         .Object@timeAdded <- 0
-        .Object@cycleLengthEffect <- function(type, len, phase) {return(len)}
+        .Object@cycleLengthEffect <- function(type, len) {return(len)}
         .Object <- callNextMethod(.Object, ...)
         .Object
     }
@@ -31,7 +31,7 @@ setValidity('Drug',
             "missing 'name'"
         else if (length(object@timeAdded) == 0)
             "missing 'timeAdded'"
-        else if (is.null(object@cycleLengthEffect(0,0,0)))   
+        else if (is.null(object@cycleLengthEffect(0,0)))   
             "missing 'cycleLengthEffect'"
         else if (object@timeAdded < 0)
             "'timeAdded' cannot be negative"

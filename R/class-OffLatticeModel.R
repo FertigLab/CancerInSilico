@@ -58,18 +58,23 @@ setValidity('OffLatticeModel',
 
 ##################### Generics ###################
 
+#' @export
 setGeneric('getCoordinates', function(model, time)
     {standardGeneric('getCoordinates')})
 
+#' @export
 setGeneric('getRadii', function(model, time)
     {standardGeneric('getRadii')})
 
+#' @export
 setGeneric('getAxisLength', function(model, time)
     {standardGeneric('getAxisLength')})
 
+#' @export
 setGeneric('getAxisAngle', function(model, time)
     {standardGeneric('getAxisAngle')})
 
+#' @export
 setGeneric('getNumberOfNeighbors', function(model, time, cell, radius)
     {standardGeneric('getNumberOfNeighbors')})
 
@@ -78,28 +83,30 @@ setGeneric('getNumberOfNeighbors', function(model, time, cell, radius)
 setMethod('getCoordinates', signature('OffLatticeModel'),
     function(model, time)
     {
-
+        xCoord <- getColumn(model, time, 1)
+        yCoord <- getColumn(model, time, 2)
+        return(matrix(c(xCoord, yCoord), nrow = length(xCoord)))
     }
 )    
 
 setMethod('getRadii', signature('OffLatticeModel'),
     function(model, time)
     {
-
+        return(getColumn(model, time, 3))
     }
 )
 
 setMethod('getAxisLength', signature('OffLatticeModel'),
     function(model, time)
     {
-
+        return(getColumn(model, time, 4))
     }
 )
 
 setMethod('getAxisAngle', signature('OffLatticeModel'),
     function(model, time)
     {
-
+        return(getColumn(model, time, 5))
     }
 )
 
@@ -113,28 +120,33 @@ setMethod('getNumberOfNeighbors', signature('OffLatticeModel'),
 setMethod('getCellPhases', signature('OffLatticeModel'),
     function(model, time)
     {
-
+        indices <- getColumn(model, time, 7)
+        phases <- c('I', 'M', 'G0', 'G1', 'S', 'G2')
+        get_phase <- function(i) phases[i+1]
+        return(sapply(indices, get_phase))
     }
 )
 
 setMethod('getCellTypes', signature('OffLatticeModel'),
     function(model, time)
     {
-
+        indices <- getColumn(model, time, 8)
+        get_type <- function(i) model@cellTypes[[i+1]]@name
+        return(sapply(indices, get_type))
     }
 )
 
 setMethod('getCycleLengths', signature('OffLatticeModel'),
     function(model, time)
     {
-
+        return(getColumn(model, time, 6))
     }
 )
 
 setMethod('getNumberOfCells', signature('OffLatticeModel'),
     function(model, time)
     {
-
+        return(sum(getRadii(model, time) > 0))
     }
 )
 
@@ -148,28 +160,62 @@ setMethod('getDensity', signature('OffLatticeModel'),
 setMethod('timeToRow', signature('OffLatticeModel'),
     function(model, time)
     {
-
-    }
-)
-
-setMethod('getColumn', signature('OffLatticeModel'),
-    function(model, time)
-    {
-
+        if (time >= model@runTime) return (length(model@cells))
+        else return (ceiling(time / model@recordIncrement))
     }
 )
 
 setMethod('getColumn', signature('OffLatticeModel'),
     function(model, time, col)
     {
-
+        row <- timeToRow(model, time)
+        indices <- seq(col, length(model@cells[[row]]), 8)
+        return (model@cells[[row]][indices])
     }
 )
 
 setMethod('plotCells', signature('OffLatticeModel'),
     function(model, time)
     {
-        
+        # get all the cell information
+        coords <- getCoordinates(model, time)
+        radii <- getRadii(model, time)
+        axis_len <- getAxisLength(model, time)
+        axis_ang <- getAxisAngle(model, time)
+
+        if (model@boundary > 0)
+        {
+            mn <- -model@boundary - 2
+            mx <- model@boundary + 2
+        }
+        else
+        {
+            mn <- min(coords) - 2
+            mx <- max(coords) + 2
+        }
+
+        # create the plot template
+        plot(c(mn, mx), c(mn, mx), main = paste("Plot of CellModel At Time",
+            time), xlab = "", ylab = "", type = "n", asp = 1)
+          
+        # get all (x,y) pairs for each of the cell centers
+        x_1 <- coords[,1] + (0.5 * axis_len - radii) * cos(axis_ang)
+        x_2 <- coords[,1] - (0.5 * axis_len - radii) * cos(axis_ang)
+        y_1 <- coords[,2] + (0.5 * axis_len - radii) * sin(axis_ang)
+        y_2 <- coords[,2] - (0.5 * axis_len - radii) * sin(axis_ang)
+
+        # combine all coordinate pairs along with the radii
+        x <- c(x_1,x_2)
+        y <- c(y_1,y_2)
+        rad <- c(radii, radii)
+    
+        # plot the cells
+        symbols(x,y, circles=rad, inches=FALSE, add=TRUE, bg="bisque4",
+            fg="bisque4")
+
+        # draw boundary
+        symbols(0, 0, circles = model@boundary, inches = FALSE, add = TRUE,
+            lwd = 2)
     }
 )
 

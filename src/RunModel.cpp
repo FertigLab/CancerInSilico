@@ -4,14 +4,12 @@
 #include "Core/CellBasedModel.h"
 #include "CellModels/DrasdoHohmeModel.h"
 
-void createModel(Rcpp::List rParams, Parameters*& params,
-CellBasedModel*& model)
+void createModel(Rcpp::S4* rModel, CellBasedModel*& cModel,
+std::string type)
 {
-    if (rParams["modelType"] == "DrasdoHohme")
+    if (!type.compare("DrasdoHohme"))
     {
-        params = new DrasdoHohmeParameters(rParams);
-        model = new DrasdoHohmeModel(static_cast<DrasdoHohmeParameters*>
-            (params));
+        cModel = new DrasdoHohmeModel(rModel);
     }
     else
     {
@@ -20,22 +18,18 @@ CellBasedModel*& model)
 }
 
 // [[Rcpp::export]]
-Rcpp::List cppRunModel(Rcpp::List rParams)
+Rcpp::S4 cppRunModel(Rcpp::S4 rModel, std::string type)
 {
-    Parameters* modelParams; 
-    CellBasedModel* model;
-
-    createModel(rParams, modelParams, model);
-    Random::setSeed(modelParams->randSeed());
-    model->run();
-
-    Rcpp::List modelOutput;
-    modelOutput["cells"] = model->getCellsAsList();
-    modelOutput["params"] = modelParams->getRParameters();
+    Random::setSeed(rModel.slot("randSeed"));
     
-    delete modelParams;
-    delete model;
-    return modelOutput;
+    CellBasedModel* cModel;
+    createModel(&rModel, cModel, type);
+    cModel->run();
+
+    rModel.slot("cells") = cModel->getCellsAsList();
+
+    delete cModel;
+    return rModel;
 }
 
 

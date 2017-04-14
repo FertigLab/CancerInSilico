@@ -229,7 +229,7 @@ const Point<double>& newPt)
 template <class T>
 T& Lattice<T>::randomValue()
 {
-    return mValues[Random::uniformInt(0, size())].second;
+    return mValues[Random::uniformInt(0, size() - 1)].second;
 }
 
 // return size of lattice

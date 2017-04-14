@@ -20,7 +20,7 @@ void CellBasedModel::run()
 
         if (time >= outputTime)
         {
-            Rprintf("time = %.2f\n", ceil(time));
+            Rprintf("time = %.2f\n", time);
             Rprintf("size = %d\n", size());
 
             outputTime += mParams->outputIncrement();
@@ -30,6 +30,6 @@ void CellBasedModel::run()
 		time += mParams->timeIncrement();
     }
 
-    Rprintf("final time = %.2f\n", ceil(time));
+    Rprintf("final time = %.2f\n", time);
     Rprintf("final size = %d\n", size());
 }

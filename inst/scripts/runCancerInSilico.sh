@@ -1,0 +1,32 @@
+#!/bin/bash -l
+
+#SBATCH
+#SBATCH --job-name=CancerInSilico
+#SBATCH --time=5:0:0
+#SBATCH --partition=shared
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mail-type=end
+#SBATCH --mail-user=tsherma4@jhu.edu
+
+if [ "$1" != "" ]; then
+    jobNum=$1
+else
+    echo missing argument
+    exit 1
+fi
+
+if [ "$2" != "" ]; then
+    totalRuns=$2
+else
+    totalRuns=1
+fi
+
+if [ "$SLURM_ARRAY_TASK_ID" != "" ]; then
+    arrayNum=$SLURM_ARRAY_TASK_ID
+else
+    arrayNum=1
+fi
+
+time Rscript ../../runCancerInSilico.R $totalRuns $arrayNum $jobNum

@@ -4,20 +4,19 @@
 #include "CellType.h"
 #include "Random.h"
 
+#define DIST_SIZE 1000
+
 CellType::CellType(unsigned id, const Rcpp::S4& type)
 {
     mID = id;
-    mSize = Rcpp::as<double>(type.slot("size"));
     mName = Rcpp::as<std::string>(type.slot("name"));
-    Rcpp::Function cl = type.slot("cycleLength");
-
-    for (unsigned i = 0; i < DIST_SIZE; ++i)
-    {
-        mCycleLength[i] = Rcpp::as<double>(cl());
-    }
+    mSize = Rcpp::as<double>(type.slot("size"));
+    mMinCycle = Rcpp::as<double>(type.slot("minCycle"));
+    mCellTypeClass = type;
 }
 
 double CellType::cycleLength() const
 {
-    return mCycleLength[Random::uniformInt(0, DIST_SIZE - 1)];
+    Rcpp::Function cl = mCellTypeClass.slot("cycleLength");
+    return Rcpp::as<double>(cl());
 }

@@ -31,5 +31,4 @@ NULL
 #' @references Subramanian, Tamayo, et al, PNAS, 102:155545, 2005; Matys et al, Nuc Ac Res, 34:D108, 2006; and Fertig et al, BMC Genomics, 13:160, 2012.
 #' @return List of gene targets for GtoM, GtoS, and Growth factor pathways.
 #' 
-
 NULL

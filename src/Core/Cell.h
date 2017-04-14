@@ -14,7 +14,7 @@ class Cell
 protected:
 
     // info about the cell's type
-    const CellType* mType;
+    CellType mType;
 
     // length of the cell cycle in hours
     double mCycleLength;
@@ -31,11 +31,11 @@ protected:
 public:
 
     // constructors
-    Cell(const CellType&);
+    Cell(CellType);
 
     // getters
     CellPhase phase() const {return mPhase;}
-    const CellType& type() const {return *mType;}
+    CellType type() const {return mType;}
     double cycleLength() const {return mCycleLength;}
     bool drugApplied(unsigned i) {return (mDrugApplied >> i) & 1;}
     bool readyToDivide() {return mReadyToDivide;}    
@@ -43,8 +43,7 @@ public:
     // setters
     void setPhase(CellPhase phase) {mPhase = phase;}
     void setCycleLength(double len) {mCycleLength = len;}
-    void setCellType(const CellType& type) {mType = &type;}
-    void markDrugAsApplied(unsigned i) {mDrugApplied |= 1 << i;}
+    void setCellType(CellType type) {mType = type;}
     void setReadyToDivide(bool b) {mReadyToDivide = b;}
 
     // go to random point in the cell cycle

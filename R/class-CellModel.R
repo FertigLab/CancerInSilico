@@ -28,7 +28,7 @@ setClass('CellModel', contains = 'VIRTUAL', slots = c(
     initialNum = 'numeric',
     runTime = 'numeric',
     density = 'numeric',
-    boundary = 'logical',
+    boundary = 'numeric',
     syncCycles = 'logical',
     randSeed = 'numeric',
     outputIncrement = 'numeric',
@@ -41,7 +41,7 @@ setClass('CellModel', contains = 'VIRTUAL', slots = c(
 
 setMethod('initialize', 'CellModel',
     function(.Object, initialNum, runTime, density,
-    boundary = TRUE, syncCycles = FALSE, randSeed = 0, 
+    boundary = 1, syncCycles = FALSE, randSeed = 0, 
     outputIncrement = 4, recordIncrement = 0.1, timeIncrement = 0.001,
     cellTypes = c(new('CellType', name='DEFAULT')), cellTypeInitFreq = c(1),
     ...)
@@ -66,9 +66,9 @@ setMethod('initialize', 'CellModel',
         if (!length(.Object@timeIncrement))
             .Object@timeIncrement <- timeIncrement
         if (!length(.Object@cellTypes))
-            .Object@cellTypes <- c(new('CellType', name = 'DEFAULT'))
+            .Object@cellTypes <- cellTypes
         if (!length(.Object@cellTypeInitFreq))
-            .Object@cellTypeInitFreq <- c(1)
+            .Object@cellTypeInitFreq <- cellTypeInitFreq
 
         # finish intialization, return object
         .Object <- callNextMethod(.Object, ...)
@@ -137,36 +137,47 @@ setValidity('CellModel',
         
 ##################### Generics ###################
 
+#' @export
 setGeneric('run', function(model)
     {standardGeneric('run')})
 
+#' @export
 setGeneric('getCellPhases', function(model, time)
     {standardGeneric('getCellPhases')})
 
+#' @export
 setGeneric('getCellTypes', function(model, time)
     {standardGeneric('getCellTypes')})
 
+#' @export
 setGeneric('getCycleLengths', function(model, time)
     {standardGeneric('getCycleLengths')})
 
+#' @export
 setGeneric('getNumberOfCells', function(model, time)
     {standardGeneric('getNumberOfCells')})
 
+#' @export
 setGeneric('getDensity', function(model, time)
     {standardGeneric('getDensity')})
 
+#' @export
 setGeneric('timeToRow', function(model, time)
     {standardGeneric('timeToRow')})
 
+#' @export
 setGeneric('getColumn', function(model, time, col)
     {standardGeneric('getColumn')})
 
+#' @export
 setGeneric('cellSummary', function(model, time)
     {standardGeneric('cellSummary')})
 
+#' @export
 setGeneric('plotCells', function(model, time)
     {standardGeneric('plotCells')})
 
+#' @export
 setGeneric('interactivePlot', function(model)
     {standardGeneric('interactivePlot')})
 

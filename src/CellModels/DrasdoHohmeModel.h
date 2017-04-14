@@ -1,5 +1,5 @@
-#ifndef CIS_CONTINUUM_MODEL_H
-#define CIS_CONTINUUM_MODEL_H
+#ifndef CIS_DRASDO_HOHME_MODEL_H
+#define CIS_DRASDO_HOHME_MODEL_H
 
 #include "../OffLatticeModel/OffLatticeCellBasedModel.h"
 #include "../OffLatticeModel/OffLatticeParameters.h"
@@ -8,23 +8,30 @@
 
 class DrasdoHohmeParameters : public OffLatticeParameters
 {
+private:
+
+    double mNG;
+    double mEpsilon;
+    double mDelta;
+
 public:
 
     // constructor
-    DrasdoHohmeParameters(Rcpp::List rP) : OffLatticeParameters(rP) {}
+    DrasdoHohmeParameters(Rcpp::S4*);
 
     // get parameters
-    double nG()             {return mParams["nG"];}
-    double epsilon()        {return mParams["epsilon"];}
-    double delta()          {return mParams["delta"];}
+    double nG()         {return mNG;}
+    double epsilon()    {return mEpsilon;}
+    double delta()      {return mDelta;}
 };
 
 class DrasdoHohmeModel : public OffLatticeCellBasedModel
 {
 public:
 
-    DrasdoHohmeModel(DrasdoHohmeParameters* p)
-        : OffLatticeCellBasedModel(p) {}
+    DrasdoHohmeModel(Rcpp::S4*);
+
+    double growthRate(OffLatticeCell&) const;
 
     void attemptTrial(OffLatticeCell&);
     bool acceptTrial(Energy, Energy, unsigned, unsigned) const;

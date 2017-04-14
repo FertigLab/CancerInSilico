@@ -24,8 +24,7 @@ protected:
 public:
 
     // constructor
-    OffLatticeCellBasedModel() {}
-    OffLatticeCellBasedModel(OffLatticeParameters*);
+    OffLatticeCellBasedModel(Rcpp::S4*);
 
     // single time step, Monte Carlo step
     void oneTimeStep(double);
@@ -46,7 +45,12 @@ public:
     bool checkOverlap(const OffLatticeCell&);
     bool checkBoundary(const OffLatticeCell&);
 
+    // iterators for cells in this model
+    CellIterator begin() {return mCellPopulation.begin();}
+    CellIterator end()   {return mCellPopulation.end();}    
+
     // do trials
+    virtual double growthRate(OffLatticeCell&) const = 0;
     void growth(OffLatticeCell&);
     void translation(OffLatticeCell&);
     void deformation(OffLatticeCell&);

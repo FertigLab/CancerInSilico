@@ -4,8 +4,8 @@
 \alias{runCellSimulation}
 \title{\code{runCancerSim} Runs a cancer simulation given parameters}
 \usage{
-runCellSimulation(initialNum, runTime, density = 0.01, boundary = TRUE,
-  syncCycles = TRUE, modelType = "DrasdoHohme", ...)
+runCellSimulation(initialNum, runTime, density, modelType = "DrasdoHohme",
+  ...)
 }
 \arguments{
 \item{initialNum}{how many cells initially}

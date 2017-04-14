@@ -4,10 +4,9 @@
 #include "CellType.h"
 
 // constructor for initial cells
-Cell::Cell(const CellType& type)
+Cell::Cell(CellType type) : mType(type)
 {
-    mType = &type;
-    mCycleLength = mType->cycleLength();
+    mCycleLength = mType.cycleLength();
     mDrugApplied = 0;
     mReadyToDivide = false;
     mPhase = INTERPHASE;
@@ -15,7 +14,7 @@ Cell::Cell(const CellType& type)
 
 void Cell::applyDrug(const Drug& drug)
 {
-    mCycleLength = drug.cycleLengthEffect(type(), cycleLength(),
-        phase());
+    mCycleLength = drug.cycleLengthEffect(type(), cycleLength());
+    mDrugApplied |= 1 << drug.id();
 }
 

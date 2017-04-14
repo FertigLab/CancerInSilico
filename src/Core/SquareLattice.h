@@ -44,8 +44,7 @@ private:
         double radius, bool end) : BaseLocalIterator<T>(lat, center, radius)
         {
             mHashedCenter = SQ_LAT->hash(center);
-            int rad = floor((radius + SQ_LAT->mGridWidth * ROOT_2)
-                / SQ_LAT->mGridWidth);
+            int rad = ceil(radius / (SQ_LAT->mGridWidth * ROOT_2)) + 1;
 
             mSearchRegion.left = mHashedCenter.x - rad;
             mSearchRegion.right = mHashedCenter.x + rad;

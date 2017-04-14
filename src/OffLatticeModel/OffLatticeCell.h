@@ -22,7 +22,7 @@ private:
 public:
 
     // constructors
-    OffLatticeCell(const CellType&);
+    OffLatticeCell(CellType);
 
     // getters
     Point<double> coordinates() const {return mCoordinates;}
@@ -36,9 +36,9 @@ public:
 
     // setters
     void setCoordinates(Point<double> coords) {mCoordinates = coords;}
-    void setRadius(double radius) {mRadius = radius;}
-    void setAxisLength(double length) {mAxisLength = length;}
     void setAxisAngle(double angle) {mAxisAngle = angle;}
+    void setRadius(double);
+    void setAxisLength(double);
 
     // operators
     bool operator!=(const OffLatticeCell&) const;

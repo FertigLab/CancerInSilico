@@ -16,7 +16,7 @@ private:
     // time this drug is added to the simulation
     double mTimeAdded;
 
-    // drug effect on cycle length
+    // needed for drug effect on cycle length
     Rcpp::S4 mDrugClass;
 
 public:
@@ -27,7 +27,7 @@ public:
     unsigned id() const {return mID;}
     double timeAdded() const {return mTimeAdded;}
     
-    double cycleLengthEffect(const CellType&, double, CellPhase) const;
+    double cycleLengthEffect(CellType, double) const;
 };
 
 #endif

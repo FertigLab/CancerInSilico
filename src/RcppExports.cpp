@@ -6,13 +6,14 @@
 using namespace Rcpp;
 
 // cppRunModel
-Rcpp::List cppRunModel(Rcpp::List rParams);
-RcppExport SEXP CancerInSilico_cppRunModel(SEXP rParamsSEXP) {
+Rcpp::S4 cppRunModel(Rcpp::S4 rModel, std::string type);
+RcppExport SEXP CancerInSilico_cppRunModel(SEXP rModelSEXP, SEXP typeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List >::type rParams(rParamsSEXP);
-    rcpp_result_gen = Rcpp::wrap(cppRunModel(rParams));
+    Rcpp::traits::input_parameter< Rcpp::S4 >::type rModel(rModelSEXP);
+    Rcpp::traits::input_parameter< std::string >::type type(typeSEXP);
+    rcpp_result_gen = Rcpp::wrap(cppRunModel(rModel, type));
     return rcpp_result_gen;
 END_RCPP
 }
