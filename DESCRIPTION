@@ -1,7 +1,7 @@
 Package: CancerInSilico
 Type: Package
 Title: An R interface for computational modeling of tumor progression
-Version: 1.2.0
+Version: 1.3.0
 Date: 2016-06-01
 Author: Thomas D. Sherman, Raymond Cheng, Elana J. Fertig
 Maintainer: Thomas D. Sherman <tsherma4@jhu.edu>, Elana J. Fertig
