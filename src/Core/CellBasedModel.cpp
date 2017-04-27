@@ -3,6 +3,11 @@
 
 #include "CellBasedModel.h"
 
+void CellBasedModel::updateRModel(Rcpp::S4* rModel)
+{
+    rModel->slot("cells") = Rcpp::wrap(mPopulationRecord);
+}
+
 void CellBasedModel::run()
 {
 	double time = 0.0;

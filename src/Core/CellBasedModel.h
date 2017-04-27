@@ -24,8 +24,8 @@ public:
     // run the entire model
     void run();
 
-    // return model output as R list
-    Rcpp::List getCellsAsList() {return Rcpp::wrap(mPopulationRecord);}
+    // update the R model
+    virtual void updateRModel(Rcpp::S4*);
 
     // update the model for a single time step; must be implemented
     virtual void oneTimeStep(double time) = 0;

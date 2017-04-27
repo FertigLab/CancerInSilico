@@ -16,7 +16,7 @@ CATCH_TEST_CASE("Testing Point.h")
         CATCH_REQUIRE(p2 < p3);
         CATCH_REQUIRE(p5 != p1);
         CATCH_REQUIRE(p3 == p4);
-        CATCH_REQUIRE(p5 == p6);
+        CATCH_REQUIRE(p5 != p6);
     }
 
     CATCH_SECTION("distance between points")

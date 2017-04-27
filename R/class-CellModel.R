@@ -186,7 +186,6 @@ setGeneric('interactivePlot', function(model)
 setMethod('interactivePlot', signature('CellModel'),
     function(model)
     {
-        # help message
         helpMSG <- paste('Basic Commands:\n',
             'b ARG = back ARG timesteps (default ARG = 1)\n',
             'n ARG = forward ARG timesteps (default ARG = 1)\n',
@@ -194,7 +193,8 @@ setMethod('interactivePlot', signature('CellModel'),
             'd ARG - change default ARG for other commands\n',
             's = summary of cells\nq = quit\nh = basic command help\n')
 
-        default_arg <- 1 # default arg value    
+        time <- 0 # start time
+        defaultArg <- 1 # default command line arg value    
         quit <- FALSE; # option to quit the plot
 
         # main loop for interactive plot
@@ -221,7 +221,7 @@ setMethod('interactivePlot', signature('CellModel'),
                 substring(read, place, nchar(read)))))
             
             cmds <- c("n","b","t","d","s","q","h") # possible commands
-            if (is.na(arg)) {arg <- default_arg}   # set default if no arg
+            if (is.na(arg)) {arg <- defaultArg}   # set default if no arg
 
             # check if valid command
             if ((cmd %in% cmds))
@@ -231,7 +231,7 @@ setMethod('interactivePlot', signature('CellModel'),
                     {time = time + arg},    # 'n' - increase time by arg
                     {time = time - arg},    # 'b' - decrease time by arg
                     {time = arg},           # 't' - go to time arg
-                    {default_arg = arg},    # 'd' - set default arg
+                    {defaultArg = arg},    # 'd' - set default arg
                     {print(cellSummary(model, time))}, # 's' - cell summary
                     {quit <- TRUE},         # 'q' - quit display
                     {print(helpMSG)}        # 'h' - display help command

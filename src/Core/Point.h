@@ -23,8 +23,9 @@ struct Point
     // close enough points within some tolerance
     bool operator==(const Point& other) const
     {
-        return (x < other.x + TOL && x > other.x - TOL)
-            && (y < other.y + TOL && y > other.y - TOL);
+/*        return (x < other.x + TOL && x > other.x - TOL)
+            && (y < other.y + TOL && y > other.y - TOL);*/
+        return x == other.x && y == other.y;
     }
 
     // default definition of !=

@@ -31,16 +31,17 @@ setMethod('initialize', 'DrasdoHohmeModel',
         types <- list(...)$cellTypes
         if (is.null(types)) {types <- c(new('CellType', name = 'TEMP'))}
         minCycle <- min(sapply(types, slot, name = 'minCycle'))
+        maxSize <- max(sapply(types, slot, name = 'size'))
 
         # calculate time increment
-        t1 <- delta / (4 * nG * (4 - sqrt(2)))
-        t2 <- delta * (minCycle - 1) / (8 * nG * (sqrt(2) - 1))
+        t1 <- delta / (sqrt(maxSize) * (nG + 1) * (4 - 2 * sqrt(2)))
+        t2 <- delta*(minCycle-2) / (4 * (nG+1) * (sqrt(2)-1))
         .Object@timeIncrement <- min(t1, t2)
 
         # calculate off lattice parameters
         .Object@maxTranslation <- delta / 2
-        .Object@maxRotation <- acos((16 + delta^2 - 4 * delta) / 16)
-        .Object@maxDeformation <- 2 * min(t1,t2) * nG * (4 - sqrt(2))
+        .Object@maxRotation <- delta * pi / 4
+        .Object@maxDeformation <- min(t1,t2) * (nG + 1) * (4 - sqrt(2))
 
         # finish intialization, return object
         .Object <- callNextMethod(.Object, ...)

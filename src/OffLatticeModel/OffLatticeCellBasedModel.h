@@ -20,6 +20,12 @@ protected:
 
     // holds all of the cells
     SquareLattice<OffLatticeCell> mCellPopulation;
+
+    // record of reject/accept given density
+    std::vector< std::vector<double> > mAcceptRecord;
+
+    // density of cell population
+    double mDensity;
     
 public:
 
@@ -34,9 +40,11 @@ public:
     void updateDrugs(double);
     void doTrial(OffLatticeCell&);
     void checkMitosis(OffLatticeCell&);
+    double density() {return mDensity;}
+    virtual void updateRModel(Rcpp::S4*);
 
     // relevant functions for attempting/accepting trials
-    virtual void attemptTrial(OffLatticeCell&) = 0;
+    virtual bool attemptTrial(OffLatticeCell&) = 0;
     virtual bool acceptTrial(Energy, Energy, unsigned, unsigned) const = 0;
     virtual Energy calculateHamiltonian(const OffLatticeCell&) = 0;
     virtual unsigned numNeighbors(const OffLatticeCell&) = 0;
@@ -50,7 +58,7 @@ public:
     CellIterator end()   {return mCellPopulation.end();}    
 
     // do trials
-    virtual double growthRate(OffLatticeCell&) const = 0;
+    virtual double maxGrowth(OffLatticeCell&) const = 0;
     void growth(OffLatticeCell&);
     void translation(OffLatticeCell&);
     void deformation(OffLatticeCell&);

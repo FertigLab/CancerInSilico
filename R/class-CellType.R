@@ -41,8 +41,8 @@ setValidity('CellType',
             "missing 'cycleLength'"
         else if (object@size < 1)
             "'size' cannot be less than 1"
-        else if (object@minCycle < 2)
-            "'minCycle' cannot be less than 2"
+        else if (object@minCycle < 4)
+            "'minCycle' cannot be less than 4"
         else
             TRUE
     }

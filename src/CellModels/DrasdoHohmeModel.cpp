@@ -17,13 +17,13 @@ DrasdoHohmeModel::DrasdoHohmeModel(Rcpp::S4* rModel)
     mParams = temp;
 }
 
-double DrasdoHohmeModel::growthRate(OffLatticeCell& cell) const
+double DrasdoHohmeModel::maxGrowth(OffLatticeCell& cell) const
 {
-    return sqrt(cell.type().size())*(sqrt(2)-1) * mParams->timeIncrement()
-        * (DH_PARAMS->nG() + 1) / (2 * cell.cycleLength());
+    return sqrt(cell.type().size()) * (sqrt(2)-1) * (DH_PARAMS->nG() + 1)
+        * mParams->timeIncrement() * 2 / (cell.cycleLength() - 2);
 }
 
-void DrasdoHohmeModel::attemptTrial(OffLatticeCell& cell)
+bool DrasdoHohmeModel::attemptTrial(OffLatticeCell& cell)
 {
     double unif = Random::uniform(0,1);
     if (cell.phase() == INTERPHASE)
@@ -31,6 +31,7 @@ void DrasdoHohmeModel::attemptTrial(OffLatticeCell& cell)
         if (unif <= (1 / (DH_PARAMS->nG() + 1)))
         {
             growth(cell);
+            return true;
         }
         else
         {
@@ -42,6 +43,7 @@ void DrasdoHohmeModel::attemptTrial(OffLatticeCell& cell)
         if (unif <= (1 / (DH_PARAMS->nG() + 1)))
         {
             deformation(cell);
+            return true;
         }
         else if ((DH_PARAMS->nG() + 1) * unif <= 1 + DH_PARAMS->nG() / 2)
         {
@@ -56,6 +58,7 @@ void DrasdoHohmeModel::attemptTrial(OffLatticeCell& cell)
     {
         throw std::runtime_error("invalid cell phase");
     }
+    return false;
 }
 
 bool DrasdoHohmeModel::acceptTrial(Energy preE, Energy postE,

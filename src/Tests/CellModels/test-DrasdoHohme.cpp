@@ -18,17 +18,21 @@ CATCH_TEST_CASE("Test DrasdoHohmeModel - basic operations")
     // test constructor
     CATCH_REQUIRE(cModel.size() == 100);
     cModel.recordPopulation();
-    Rcpp::List cellList = cModel.getCellsAsList();
+    cModel.updateRModel(&rModel);
+    Rcpp::List cellList = rModel.slot("cells");
     Rcpp::NumericVector initCells = cellList(0);
     CATCH_REQUIRE(initCells.size() == 8 * 100);
 
     CellIterator it = cModel.begin();
     for (; it != cModel.end(); ++it)
     {
+        double sz = sqrt((*it).type().size());
+    
         CATCH_REQUIRE((*it).cycleLength() == 48);
         CATCH_REQUIRE(!cModel.checkOverlap(*it));
         CATCH_REQUIRE(!cModel.checkBoundary(*it));
-        CATCH_REQUIRE(cModel.growthRate(*it) > 0);
+        CATCH_REQUIRE(cModel.maxGrowth(*it) ==
+            Approx(sz * 0.0021739).epsilon(0.0000001));
         CATCH_REQUIRE(cModel.numNeighbors(*it) <= 6);
     }
 
@@ -46,6 +50,8 @@ CATCH_TEST_CASE("Test DrasdoHohmeModel - basic operations")
     Point<double> crds = cell1.coordinates();
     CATCH_REQUIRE_NOTHROW(cModel.translation(cell1));
     CATCH_REQUIRE(cell1.coordinates() != crds);
+    CATCH_REQUIRE(cell1.coordinates().distance(crds) <=
+        Rcpp::as<double>(rModel.slot("maxTranslation")));
 
     double ang = cell2.axisAngle();
     CATCH_REQUIRE_NOTHROW(cModel.rotation(cell2));
@@ -68,9 +74,9 @@ CATCH_TEST_CASE("Test DrasdoHohmeModel - basic operations")
 
     // calculate Hamiltonian
     CATCH_REQUIRE(cModel.calculateHamiltonian(cell0).first
-        == Approx(-0.26).epsilon(0.01));
+        == Approx(-0.29).epsilon(0.01));
     CATCH_REQUIRE(cModel.calculateHamiltonian(cell1).first
-        == Approx(816.38).epsilon(0.01));
+        == Approx(1517.84).epsilon(0.01));
     CATCH_REQUIRE(cModel.calculateHamiltonian(cell2).first
         == Approx(-1.26).epsilon(0.01));
     CATCH_REQUIRE(cModel.calculateHamiltonian(cell3).first

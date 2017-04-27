@@ -31,9 +31,9 @@ public:
 
     DrasdoHohmeModel(Rcpp::S4*);
 
-    double growthRate(OffLatticeCell&) const;
+    double maxGrowth(OffLatticeCell&) const;
 
-    void attemptTrial(OffLatticeCell&);
+    bool attemptTrial(OffLatticeCell&);
     bool acceptTrial(Energy, Energy, unsigned, unsigned) const;
     Energy calculateHamiltonian(const OffLatticeCell&);
     unsigned numNeighbors(const OffLatticeCell&);

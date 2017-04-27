@@ -17,7 +17,8 @@ library(methods)
 setClass('OffLatticeModel', contains = c('CellModel', 'VIRTUAL'), slots = c(
     maxDeformation = 'numeric',
     maxTranslation = 'numeric',
-    maxRotation = 'numeric'
+    maxRotation = 'numeric',
+    acceptRecord = 'list'
 ))
 
 setMethod('initialize', 'OffLatticeModel',
@@ -161,7 +162,7 @@ setMethod('timeToRow', signature('OffLatticeModel'),
     function(model, time)
     {
         if (time >= model@runTime) return (length(model@cells))
-        else return (ceiling(time / model@recordIncrement))
+        else return (floor(time / model@recordIncrement) + 1)
     }
 )
 

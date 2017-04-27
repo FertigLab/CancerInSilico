@@ -1,5 +1,21 @@
 #include "OffLatticeCellBasedModel.h"
 
+void OffLatticeCellBasedModel::updateRModel(Rcpp::S4* rModel)
+{
+    CellBasedModel::updateRModel(rModel);
+    rModel->slot("acceptRecord") = Rcpp::wrap(mAcceptRecord);
+}
+
+// private helper function
+static Point<double> getRandomPoint(double radius)
+{
+    double dist = Random::uniform(0,1);
+    double ang = Random::uniform(0, 2 * M_PI);
+    double x = radius * sqrt(dist) * cos(ang);
+    double y = radius * sqrt(dist) * sin(ang);
+    return Point<double>(x,y);
+}
+
 OffLatticeCellBasedModel::OffLatticeCellBasedModel(Rcpp::S4* rModel)
 : CellBasedModel(rModel)
 {
@@ -20,23 +36,22 @@ OffLatticeCellBasedModel::OffLatticeCellBasedModel(Rcpp::S4* rModel)
     }
 
     // calculate boundary
+    double seedBoundary = sqrt(2 * area / M_PI);
+    mDensity = 0.5;
     if (mParams->boundary() > 0)
     {
         mParams->setBoundary(sqrt(area / (M_PI * mParams->density())));
+        seedBoundary = mParams->boundary();
+        mDensity = mParams->density();
     }
-
+    
     // place cells randomly
     std::vector<OffLatticeCell>::iterator it = defaultCells.begin();
     for (; it != defaultCells.end(); ++it)
     {
         do
         {
-            double dist = Random::uniform(0,1);
-            double ang = Random::uniform(0, 2 * M_PI);
-            double x = mParams->boundary() * sqrt(dist) * cos(ang);
-            double y = mParams->boundary() * sqrt(dist) * sin(ang);
-            
-            (*it).setCoordinates(Point<double>(x,y));
+            (*it).setCoordinates(getRandomPoint(seedBoundary));
             Rcpp::checkUserInterrupt();
 
         } while (checkOverlap(*it) || checkBoundary(*it));
@@ -92,22 +107,30 @@ void OffLatticeCellBasedModel::doTrial(OffLatticeCell& cell)
     if (preE.second) {throw std::runtime_error("infinite hamiltonian");}
     unsigned preN = numNeighbors(cell);
 
-    attemptTrial(cell);
+    bool rejected, record = attemptTrial(cell);
+    mDensity += (pow(cell.radius(), 2) - pow(orig.radius(), 2)) / 
+        pow(mParams->boundary(), 2);
     Energy postE = calculateHamiltonian(cell);
     unsigned postN = numNeighbors(cell);
 
-    if (checkOverlap(cell) || checkBoundary(cell))
+    if (checkOverlap(cell) || checkBoundary(cell) ||
+    !acceptTrial(preE, postE, preN, postN))
     {
+        mDensity += (pow(cell.radius(), 2) - pow(orig.radius(), 2)) / 
+            pow(mParams->boundary(), 2);
         cell = orig;
+        rejected = true;
     }
     else
     {
         mCellPopulation.update(orig.coordinates(), cell.coordinates());
-        if (!acceptTrial(preE, postE, preN, postN))
-        {
-            mCellPopulation.update(cell.coordinates(), orig.coordinates());
-            cell = orig;
-        }
+        rejected = false;
+    }
+
+    if (record && mParams->boundary() > 0)
+    {
+        double temp[] = {density(), rejected ? 1.0 : 0.0};
+        mAcceptRecord.push_back(std::vector<double>(temp, temp + 2));
     }
 }
 
@@ -154,7 +177,7 @@ bool OffLatticeCellBasedModel::checkBoundary(const OffLatticeCell& cell)
 
 void OffLatticeCellBasedModel::growth(OffLatticeCell& cell)
 {
-    double growth = Random::uniform(0, growthRate(cell));
+    double growth = Random::uniform(0, maxGrowth(cell));
     double sz = cell.type().size();
     cell.setRadius(std::min(sqrt(2 * sz), cell.radius() + growth));
     if (cell.radius() == sqrt(2 * sz)) {cell.setPhase(MITOSIS);}
@@ -164,7 +187,8 @@ void OffLatticeCellBasedModel::translation(OffLatticeCell& cell)
 {
     double len = OL_PARAMS->maxTranslation() * sqrt(Random::uniform(0,1));
     double dir = Random::uniform(0, 2 * M_PI);
-    cell.setCoordinates(Point<double>(len * cos(dir), len * sin(dir)));
+    cell.setCoordinates(Point<double>(cell.coordinates().x + len * cos(dir),
+        cell.coordinates().y + len * sin(dir)));
 }
 
 void OffLatticeCellBasedModel::deformation(OffLatticeCell& cell)
@@ -183,19 +207,17 @@ void OffLatticeCellBasedModel::deformation(OffLatticeCell& cell)
 
 void OffLatticeCellBasedModel::rotation(OffLatticeCell& cell)
 {
-    cell.setAxisAngle(Random::uniform(-OL_PARAMS->maxRotation(),
-        OL_PARAMS->maxRotation()));
+    double change = Random::uniform(-OL_PARAMS->maxRotation(),
+        OL_PARAMS->maxRotation());
+    cell.setAxisAngle(cell.axisAngle() + change / sqrt(cell.type().size()));
 }
 
 void OffLatticeCellBasedModel::recordPopulation()
 {
-    // the vector to hold the current population
-    std::vector<double> current;
+    std::vector<double> current; // holds current population
     
-    // cell population iterator
+    // loop through each cell, store info in current population
     CellIterator it = mCellPopulation.begin();
-  
-    // loop through each cell, store info
     for (; it != mCellPopulation.end(); ++it)
     {
         current.push_back((*it).coordinates().x);
@@ -208,7 +230,6 @@ void OffLatticeCellBasedModel::recordPopulation()
         current.push_back((*it).type().id());
     }
 
-    // add current population to record
-    mPopulationRecord.push_back(current);
+    mPopulationRecord.push_back(current); // add current pop to record
 }
 

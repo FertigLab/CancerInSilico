@@ -50,7 +50,6 @@ CATCH_TEST_CASE("Test SquareLattice.h")
     {
         CATCH_REQUIRE((*it2).val == v++);
     }
-//    CATCH_REQUIRE(v == 2);
        
     // test erase
     CATCH_REQUIRE_NOTHROW(testLat.erase(obj1.coords));
@@ -61,16 +60,27 @@ CATCH_TEST_CASE("Test SquareLattice.h")
     ++it3;
     CATCH_REQUIRE((*it3).val == 2);
 
-    // test random value
-    CATCH_REQUIRE(testLat.randomValue().val == 2);
+    // test random value - read
+    double sum = 0.0;
+    for (unsigned i = 0; i < 1000; ++i)
+    {
+        sum += testLat.randomValue().val;
+    }
+    CATCH_REQUIRE(sum == 992);
+
+    // test random value - write
     testLat.randomValue().val = 10;
-    
     SquareLattice<TestObject>::iterator it4 = testLat.begin();
-    ++it4;
     CATCH_REQUIRE((*it4).val == 10);
 
     // test update
-
+    testLat.update(obj0.coords, Point<double>(10.0,10.0));
+    SquareLattice<TestObject>::iterator it5 = testLat.begin();
+    CATCH_REQUIRE((*it5).val == 10);
+    ++it5;
+    CATCH_REQUIRE((*it5).val == 2);
+    TestObject objNA2 (10.5, 10.5, 0);
+    CATCH_REQUIRE_THROWS(testLat.insert(objNA2.coords, objNA2));
 }
 
 

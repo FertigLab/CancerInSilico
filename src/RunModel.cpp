@@ -25,8 +25,7 @@ Rcpp::S4 cppRunModel(Rcpp::S4 rModel, std::string type)
     CellBasedModel* cModel;
     createModel(&rModel, cModel, type);
     cModel->run();
-
-    rModel.slot("cells") = cModel->getCellsAsList();
+    cModel->updateRModel(&rModel);
 
     delete cModel;
     return rModel;

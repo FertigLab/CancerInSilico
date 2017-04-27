@@ -92,9 +92,9 @@ CATCH_TEST_CASE("Test OffLatticeParameters")
     CATCH_REQUIRE(params.timeIncrement() == Approx(0.0007).epsilon(0.01));
     CATCH_REQUIRE(params.boundary() == 100);
     CATCH_REQUIRE(params.syncCycles() == false); 
-    CATCH_REQUIRE(params.maxDeformation() == 0.1);
+    CATCH_REQUIRE(params.maxDeformation() == Approx(0.312).epsilon(0.01));
     CATCH_REQUIRE(params.maxTranslation() == 0.1);
-    CATCH_REQUIRE(params.maxRotation() == Approx(0.309).epsilon(0.01));
+    CATCH_REQUIRE(params.maxRotation() == Approx(0.157).epsilon(0.01));
     CATCH_REQUIRE(params.maxRadius() == 2.0);
     
     int sum = 0;
@@ -159,9 +159,9 @@ CATCH_TEST_CASE("Test DrasdoHohmeParameters")
     CATCH_REQUIRE(params.timeIncrement() == Approx(0.0007).epsilon(0.01));
     CATCH_REQUIRE(params.boundary() == 100);
     CATCH_REQUIRE(params.syncCycles() == false); 
-    CATCH_REQUIRE(params.maxDeformation() == 0.1);
+    CATCH_REQUIRE(params.maxDeformation() == Approx(0.312).epsilon(0.01));
     CATCH_REQUIRE(params.maxTranslation() == 0.1);
-    CATCH_REQUIRE(params.maxRotation() == Approx(0.309).epsilon(0.01));
+    CATCH_REQUIRE(params.maxRotation() == Approx(0.157).epsilon(0.01));
     CATCH_REQUIRE(params.maxRadius() == 2.0);
     CATCH_REQUIRE(params.nG() == 28);
     CATCH_REQUIRE(params.epsilon() == 10.0);
