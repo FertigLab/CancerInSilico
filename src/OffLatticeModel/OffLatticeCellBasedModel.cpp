@@ -17,7 +17,7 @@ static Point<double> getRandomPoint(double radius)
 }
 
 OffLatticeCellBasedModel::OffLatticeCellBasedModel(Rcpp::S4* rModel)
-: CellBasedModel(rModel)
+: CellBasedModel(rModel), mAcceptRecord(100, 0), mTrials(100, 0)
 {
     Parameters* temp = new OffLatticeParameters(rModel);
     delete mParams;
@@ -116,7 +116,7 @@ void OffLatticeCellBasedModel::doTrial(OffLatticeCell& cell)
     if (checkOverlap(cell) || checkBoundary(cell) ||
     !acceptTrial(preE, postE, preN, postN))
     {
-        mDensity += (pow(cell.radius(), 2) - pow(orig.radius(), 2)) / 
+        mDensity -= (pow(cell.radius(), 2) - pow(orig.radius(), 2)) / 
             pow(mParams->boundary(), 2);
         cell = orig;
         rejected = true;
@@ -129,8 +129,12 @@ void OffLatticeCellBasedModel::doTrial(OffLatticeCell& cell)
 
     if (record && mParams->boundary() > 0)
     {
-        double temp[] = {density(), rejected ? 1.0 : 0.0};
-        mAcceptRecord.push_back(std::vector<double>(temp, temp + 2));
+        int index = density() * 100;
+        if (index < 0 || index > 99)
+            {throw std::runtime_error("invalid index from density");}
+        int n = ++mTrials[index];
+        mAcceptRecord[index] *= (n - 1) / n;
+        mAcceptRecord[index] += (rejected ? 0.0 : 1.0) / n;
     }
 }
 

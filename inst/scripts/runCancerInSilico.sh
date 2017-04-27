@@ -17,16 +17,10 @@ else
     exit 1
 fi
 
-if [ "$2" != "" ]; then
-    totalRuns=$2
-else
-    totalRuns=1
-fi
-
 if [ "$SLURM_ARRAY_TASK_ID" != "" ]; then
     arrayNum=$SLURM_ARRAY_TASK_ID
 else
     arrayNum=1
 fi
 
-time Rscript ../../runCancerInSilico.R $totalRuns $arrayNum $jobNum
+time Rscript ../../runCancerInSilico.R $arrayNum $jobNum

@@ -22,7 +22,8 @@ protected:
     SquareLattice<OffLatticeCell> mCellPopulation;
 
     // record of reject/accept given density
-    std::vector< std::vector<double> > mAcceptRecord;
+    std::vector<double> mAcceptRecord;
+    std::vector<int> mTrials;
 
     // density of cell population
     double mDensity;

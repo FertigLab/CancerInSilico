@@ -1,48 +1,51 @@
 library(CancerInSilico)
 
 args <- commandArgs(TRUE)
-numOfRuns <- as.integer(args[1])
-arrayNum <- as.integer(args[2])
-jobName <- args[3]
+arrayNum <- as.integer(args[1])
+jobName <- args[2]
 
-#### Set Parameters ####
+#### Set Defaults ####
 
-initialNum <- rep(80, numOfRuns) 
-runTime <- rep(168, numOfRuns)
-density <- rep(0.2, numOfRuns)
-## cycleLengthDist <- rep(48, numOfRuns)
-cycleLengthDist <- replicate(numOfRuns, 20 + rexp(1000, 1/5))
-drugEffect <- replicate(numOfRuns, function(x) {return(1)})
-# drugEffect <- c(function(x) {return(runif(1,0,1))})
-inheritGrowth <- c(FALSE, TRUE)
-outputIncrement <- rep(6, numOfRuns)
-recordIncrement <- rep(0.25, numOfRuns)
-randSeed <- rep(0, numOfRuns)
-modelType <- rep("DrasdoHohme2003", numOfRuns)
-drugTime <- rep(0.0, numOfRuns)
-boundary <- rep(TRUE, numOfRuns)
-nG <- rep(8,numOfRuns)
-epsilon <- rep(10, numOfRuns)
-syncCycles <- rep(TRUE, numOfRuns)
+boundary <- 1
+syncCycles <- FALSE
+randSeed <- 0, 
+outputIncrement <- 4
+recordIncrement <- 0.1
+timeIncrement <- 0.001
+cellTypes <- c(new('CellType', name='DEFAULT'))
+cellTypeInitFreq <- c(1)
+drugs <- list()
+maxDeformation <- 0.1
+maxTranslation <- 0.1
+maxRotation <- 0.3
+nG <- 28
+epsilon <- 10.0
+delta <- 0.2
 
-########################
-
-output <- runCancerSim (initialNum=initialNum[arrayNum],
-            runTime=runTime[arrayNum],
-            density=density[arrayNum],
-            cycleLengthDist=cycleLengthDist[,arrayNum],
-            inheritGrowth=inheritGrowth[arrayNum],
-            drugEffect=drugEffect[[arrayNum]],
-            outputIncrement=outputIncrement[arrayNum],
-            recordIncrement=recordIncrement[arrayNum],
-            randSeed=randSeed[arrayNum],
-            modelType=modelType[arrayNum],
-            drugTime=drugTime[arrayNum],
-            boundary=boundary[arrayNum],
-            syncCycles=syncCycles[arrayNum],
-            nG=nG[arrayNum],
-            epsilon=epsilon[arrayNum]
-            )
+#### Set Custom Values ####
 
 
-saveRDS(output, paste("output_", jobName, "_", arrayNum, ".rds", sep=""))
+#### Run Simulation ####
+
+output <- runCellSimulation(initialNum=initialNum,
+                            runTime=runTime,
+                            density=density,
+                            boundary=boundary,
+                            syncCycles=syncCycles,
+                            randSeed=randSeed,
+                            modelType=modelType,
+                            outputIncrement=outputIncrement,
+                            recordIncrement=timeIncrement,
+                            timeIncrement=timeIncrement,
+                            cellTypes=cellTypes,
+                            cellTypeInitFreq,
+                            drugs,
+                            maxDeformation=maxDeformation,
+                            maxTranslation=maxTranslation,
+                            maxRotation=maxRotation,
+                            nG=nG,
+                            epsilon=epsilon,
+                            delta=delta
+                            )       
+
+save(output, paste("output_", jobName, "_", arrayNum, ".RData", sep=""))
