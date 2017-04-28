@@ -17,7 +17,7 @@ static Point<double> getRandomPoint(double radius)
 }
 
 OffLatticeCellBasedModel::OffLatticeCellBasedModel(Rcpp::S4* rModel)
-: CellBasedModel(rModel), mAcceptRecord(100, 0), mTrials(100, 0)
+: CellBasedModel(rModel), mAcceptRecord(100, 0.0), mTrials(100, 0)
 {
     Parameters* temp = new OffLatticeParameters(rModel);
     delete mParams;
@@ -36,13 +36,11 @@ OffLatticeCellBasedModel::OffLatticeCellBasedModel(Rcpp::S4* rModel)
     }
 
     // calculate boundary
-    double seedBoundary = sqrt(2 * area / M_PI);
-    mDensity = 0.5;
+    double seedBoundary = sqrt(area / (M_PI * mParams->density()));
+    mDensity = mParams->density();
     if (mParams->boundary() > 0)
     {
-        mParams->setBoundary(sqrt(area / (M_PI * mParams->density())));
-        seedBoundary = mParams->boundary();
-        mDensity = mParams->density();
+        mParams->setBoundary(seedBoundary);
     }
     
     // place cells randomly
@@ -104,37 +102,51 @@ void OffLatticeCellBasedModel::doTrial(OffLatticeCell& cell)
 {
     OffLatticeCell orig = cell;
     Energy preE = calculateHamiltonian(cell);
-    if (preE.second) {throw std::runtime_error("infinite hamiltonian");}
     unsigned preN = numNeighbors(cell);
 
-    bool rejected, record = attemptTrial(cell);
-    mDensity += (pow(cell.radius(), 2) - pow(orig.radius(), 2)) / 
-        pow(mParams->boundary(), 2);
-    Energy postE = calculateHamiltonian(cell);
-    unsigned postN = numNeighbors(cell);
+    bool accepted, growth = attemptTrial(cell);
 
-    if (checkOverlap(cell) || checkBoundary(cell) ||
-    !acceptTrial(preE, postE, preN, postN))
+    if (checkOverlap(cell) || checkBoundary(cell))
     {
-        mDensity -= (pow(cell.radius(), 2) - pow(orig.radius(), 2)) / 
-            pow(mParams->boundary(), 2);
         cell = orig;
-        rejected = true;
+        accepted = false;
     }
     else
     {
-        mCellPopulation.update(orig.coordinates(), cell.coordinates());
-        rejected = false;
+        mCellPopulation.update(orig.coordinates(),
+            cell.coordinates());                
+        Energy postE = calculateHamiltonian(cell);
+        unsigned postN = numNeighbors(cell);
+
+        if (!growth && !acceptTrial(preE, postE, preN, postN))
+        {
+            mCellPopulation.update(cell.coordinates(),
+                orig.coordinates());   
+            cell = orig;
+            accepted = false;
+        }   
+        else
+        {
+            accepted = true;    
+        }
     }
 
-    if (record && mParams->boundary() > 0)
+    // update density
+    if (cell.radius() > orig.radius() && accepted)
+    {
+        mDensity += (pow(cell.radius(), 2) - pow(orig.radius(), 2)) / 
+            pow(mParams->boundary(), 2);
+    }
+
+    // record trial
+    if (growth && mParams->boundary() > 0)
     {
         int index = density() * 100;
         if (index < 0 || index > 99)
             {throw std::runtime_error("invalid index from density");}
-        int n = ++mTrials[index];
-        mAcceptRecord[index] *= (n - 1) / n;
-        mAcceptRecord[index] += (rejected ? 0.0 : 1.0) / n;
+        double n = ++mTrials[index];
+        mAcceptRecord[index] *= (n - 1.0) / n;
+        mAcceptRecord[index] += (accepted ? 1.0 : 0.0) / n;
     }
 }
 
@@ -152,7 +164,8 @@ void OffLatticeCellBasedModel::checkMitosis(OffLatticeCell& cell)
 
 bool OffLatticeCellBasedModel::checkOverlap(const OffLatticeCell& cell)
 {
-    double maxSearch = 4 * OL_PARAMS->maxRadius();
+    double maxSearch = 4 * OL_PARAMS->maxRadius()
+        + OL_PARAMS->maxTranslation();
     LocalCellIterator it =
         mCellPopulation.lbegin(cell.coordinates(), maxSearch);
     LocalCellIterator endIt =

@@ -83,7 +83,7 @@ unsigned preN, unsigned postN) const
 Energy DrasdoHohmeModel::calculateHamiltonian(const OffLatticeCell& cell)
 {
     double sum = 0.0;
-    double maxSearch = cell.radius() + DH_PARAMS->maxRadius()
+    double maxSearch = 2 * cell.radius() + 2 * DH_PARAMS->maxRadius()
         + DH_PARAMS->delta();
     
     LocalCellIterator it = mCellPopulation.lbegin(
@@ -105,7 +105,7 @@ Energy DrasdoHohmeModel::calculateHamiltonian(const OffLatticeCell& cell)
 unsigned DrasdoHohmeModel::numNeighbors(const OffLatticeCell& cell)
 {
     unsigned neighbors = 0;
-    double maxSearch = cell.radius() + DH_PARAMS->maxRadius()
+    double maxSearch = 2 * cell.radius() + 2 * DH_PARAMS->maxRadius()
         + DH_PARAMS->delta();
     
     LocalCellIterator it = mCellPopulation.lbegin(

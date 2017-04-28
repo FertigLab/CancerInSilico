@@ -7,6 +7,8 @@
 #include "Drug.h"
 #include "CellType.h"
 
+//TODO Incorporate this class into model
+
 typedef std::vector<Drug>::iterator DrugIterator;
 
 class Parameters

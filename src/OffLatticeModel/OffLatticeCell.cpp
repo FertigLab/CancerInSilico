@@ -48,15 +48,13 @@ void OffLatticeCell::divide(OffLatticeCell& daughter)
 // go to random point in the cell cycle
 void OffLatticeCell::gotoRandomCyclePoint()
 {
-    // random point of interphase
-    if (Random::uniform(0,1) < 0.75)
+    if (Random::uniform(0,1) < 0.75) // random point of interphase
     {
         mPhase = INTERPHASE;
         setRadius(Random::uniform(sqrt(mType.size()),
             sqrt(2 * mType.size())));
     }
-    // random point of mitosis
-    else
+    else // random point of mitosis
     {
         mPhase = MITOSIS;
         setAxisLength(Random::uniform(sqrt(8 * mType.size()),
