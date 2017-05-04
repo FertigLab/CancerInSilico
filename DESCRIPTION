@@ -35,11 +35,13 @@ biocViews: MathematicalBiology, SystemsBiology, CellBiology,
     BiomedicalInformatics
 RoxygenNote: 6.0.1
 Collate: 
+    'CellSimulation.R'
+    'GeneExpressionSimulation.R'
     'RcppExports.R'
-    'RunCellSimulation.R'
     'class-CellModel.R'
     'class-CellType.R'
     'class-OffLatticeModel.R'
     'class-DrasdoHohmeModel.R'
     'class-Drug.R'
+    'class-Pathway.R'
     'documentation.R'

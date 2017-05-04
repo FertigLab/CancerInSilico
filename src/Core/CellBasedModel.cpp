@@ -13,6 +13,8 @@ void CellBasedModel::run()
 	double time = 0.0;
     double recordTime = 0.0, outputTime = 0.0;
 
+    Rprintf("\n");
+
     while (time <= mParams->runTime())
     {
         Rcpp::checkUserInterrupt();
@@ -20,7 +22,8 @@ void CellBasedModel::run()
         if (time >= recordTime)
         {
             recordPopulation();
-            recordTime += mParams->recordIncrement();
+            recordTime = std::min(recordTime + mParams->recordIncrement(),
+                mParams->runTime());
         }
 
         if (time >= outputTime)
@@ -28,13 +31,17 @@ void CellBasedModel::run()
             Rprintf("time = %.2f\n", floor(time));
             Rprintf("size = %d\n", size());
 
-            outputTime += mParams->outputIncrement();
+            outputTime = std::min(outputTime + mParams->outputIncrement(),
+                mParams->runTime());
         }            
 
         oneTimeStep(time);
 		time += mParams->timeIncrement();
+    
+        if (time > mParams->runTime() && time < mParams->runTime() +
+        mParams->timeIncrement())
+        {
+            time = mParams->runTime();
+        }
     }
-
-    Rprintf("final time = %.2f\n", floor(time));
-    Rprintf("final size = %d\n", size());
 }

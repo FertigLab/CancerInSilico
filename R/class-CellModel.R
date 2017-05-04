@@ -70,6 +70,12 @@ setMethod('initialize', 'CellModel',
         if (!length(.Object@cellTypeInitFreq))
             .Object@cellTypeInitFreq <- cellTypeInitFreq
 
+        # adjust time/record increment to divide runtime evenly
+        .Object@timeIncrement <- .Object@runTime /
+            ceiling(.Object@runTime / .Object@timeIncrement)
+        .Object@recordIncrement <- .Object@runTime /
+            ceiling(.Object@runTime / .Object@recordIncrement)
+
         # finish intialization, return object
         .Object <- callNextMethod(.Object, ...)
         return(.Object)
@@ -202,13 +208,9 @@ setMethod('interactivePlot', signature('CellModel'),
         {
             # correct for invalid time
             if (time > model@runTime)
-            {
                 time <- model@runTime
-            }
             else if (time < 0 || !is.numeric(time) || is.na(time))
-            {
                 time <- 0
-            }
 
             plotCells(model, time) # plot cells at current time
             read <- readline()     # get keyboard input

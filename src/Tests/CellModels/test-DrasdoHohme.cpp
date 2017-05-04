@@ -69,18 +69,16 @@ CATCH_TEST_CASE("Test DrasdoHohmeModel - basic operations")
     CATCH_REQUIRE(cModel.acceptTrial(Energy(1,0), Energy(1.001,0), 5, 5));
 
     // calculating neighbors    
-    CATCH_REQUIRE(cModel.numNeighbors(cell3) == 0);
-    CATCH_REQUIRE(cModel.numNeighbors(cell0) == 1);
+    CATCH_REQUIRE(cModel.numNeighbors(cell3) == 1);
+    CATCH_REQUIRE(cModel.numNeighbors(cell0) == 0);
 
     // calculate Hamiltonian
-    CATCH_REQUIRE(cModel.calculateHamiltonian(cell0).first
-        == Approx(-0.29).epsilon(0.01));
+    CATCH_REQUIRE(cModel.calculateHamiltonian(cell0).first == 0.0);
+    CATCH_REQUIRE(cModel.calculateHamiltonian(cell2).first == 0.0);
     CATCH_REQUIRE(cModel.calculateHamiltonian(cell1).first
-        == Approx(1517.84).epsilon(0.01));
-    CATCH_REQUIRE(cModel.calculateHamiltonian(cell2).first
-        == Approx(-1.26).epsilon(0.01));
+        == Approx(1492.14).epsilon(0.01));
     CATCH_REQUIRE(cModel.calculateHamiltonian(cell3).first
-        == Approx(0.0).epsilon(0.01));
+        == Approx(-0.97).epsilon(0.01));
 
     // attempt trial function
     CATCH_REQUIRE_NOTHROW(cModel.attemptTrial(cell0));

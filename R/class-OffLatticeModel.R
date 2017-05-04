@@ -81,6 +81,23 @@ setGeneric('getNumberOfNeighbors', function(model, time, cell, radius)
 
 ##################### Methods ####################
 
+setMethod('timeToRow', signature('OffLatticeModel'),
+    function(model, time)
+    {
+        if (time >= model@runTime) return (length(model@cells))
+        else return (floor(time / model@recordIncrement) + 1)
+    }
+)
+
+setMethod('getColumn', signature('OffLatticeModel'),
+    function(model, time, col)
+    {
+        row <- timeToRow(model, time)
+        indices <- seq(col, length(model@cells[[row]]), 8)
+        return (model@cells[[row]][indices])
+    }
+)
+
 setMethod('getCoordinates', signature('OffLatticeModel'),
     function(model, time)
     {
@@ -111,10 +128,10 @@ setMethod('getAxisAngle', signature('OffLatticeModel'),
     }
 )
 
-setMethod('getNumberOfNeighbors', signature('OffLatticeModel'),
-    function(model, time, cell, radius)
+setMethod('getCycleLengths', signature('OffLatticeModel'),
+    function(model, time)
     {
-    
+        return(getColumn(model, time, 6))
     }
 )
 
@@ -132,15 +149,7 @@ setMethod('getCellTypes', signature('OffLatticeModel'),
     function(model, time)
     {
         indices <- getColumn(model, time, 8)
-        get_type <- function(i) model@cellTypes[[i+1]]@name
-        return(sapply(indices, get_type))
-    }
-)
-
-setMethod('getCycleLengths', signature('OffLatticeModel'),
-    function(model, time)
-    {
-        return(getColumn(model, time, 6))
+        return(sapply(indices, function(i) model@cellTypes[[i+1]]@name))
     }
 )
 
@@ -154,24 +163,31 @@ setMethod('getNumberOfCells', signature('OffLatticeModel'),
 setMethod('getDensity', signature('OffLatticeModel'),
     function(model, time)
     {
-
+        radii <- getRadii(model, time)
+        if (model@boundary > 0)
+        {
+            return(sum(radii ** 2) / model@boundary ^ 2)
+        }
+        else
+        {
+            coords <- getCoordinates(model, time)
+            d <- max(sqrt(coords[,1] ** 2 + coords[,2] ** 2) + radii)
+            return(sum(radii ** 2) / (d ^ 2))
+        }
     }
 )
 
-setMethod('timeToRow', signature('OffLatticeModel'),
-    function(model, time)
+setMethod('getNumberOfNeighbors', signature('OffLatticeModel'),
+    function(model, time, cell, radius)
     {
-        if (time >= model@runTime) return (length(model@cells))
-        else return (floor(time / model@recordIncrement) + 1)
-    }
-)
-
-setMethod('getColumn', signature('OffLatticeModel'),
-    function(model, time, col)
-    {
-        row <- timeToRow(model, time)
-        indices <- seq(col, length(model@cells[[row]]), 8)
-        return (model@cells[[row]][indices])
+        num <- 0
+        cds <- getCoordinates(model, time)
+        for (i in setdiff(1:nrow(coords), cell))
+        {
+            dist2 <- (cds[i,1]-cds[cell,1])^2 + (cds[i,1]-cds[cell,1])^2
+            if (dist2 < radius^2) num <- num + 1
+        }
+        return(num)
     }
 )
 
