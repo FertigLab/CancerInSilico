@@ -182,9 +182,9 @@ setMethod('getNumberOfNeighbors', signature('OffLatticeModel'),
     {
         num <- 0
         cds <- getCoordinates(model, time)
-        for (i in setdiff(1:nrow(coords), cell))
+        for (i in setdiff(1:nrow(cds), cell))
         {
-            dist2 <- (cds[i,1]-cds[cell,1])^2 + (cds[i,1]-cds[cell,1])^2
+            dist2 <- (cds[i,1]-cds[cell,1])^2 + (cds[i,2]-cds[cell,2])^2
             if (dist2 < radius^2) num <- num + 1
         }
         return(num)

@@ -19,6 +19,10 @@ private:
     double mRadius;
     double mAxisLength, mAxisAngle;
 
+    // monte carlo acceptance record
+    std::vector<double> mAcceptRecord;
+    std::vector<double> mTrialTimePoints;
+
 public:
 
     // constructors

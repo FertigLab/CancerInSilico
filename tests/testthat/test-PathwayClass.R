@@ -13,36 +13,15 @@ test_that('Pathway Initialization',
         maxExpression=2, expressionScale = function(x,y,z) x), NA)   
 })
 
-growthExp <- function(model, cell, time)
-{
-    cycLength <- getCycleLengths(model, time)[cell]
-    return (1/exp(cycLength/20))
-}
-
-mitosisExp <- function(model, cell, time)
-{
-    window <- c(max(time - 1,0), min(time + 1, model@runTime))
-
-    a1 <-getAxisLength(model, window[1])[cell]
-    a2 <-getAxisLength(model, window[2])[cell]
-
-    if (a2 < a1) return(1)
-    else return(0)
-}
-
 test_that('Pathway Expression Function',
 {
-    pwyGrowth <- new('Pathway', genes=letters[1:26], minExpression=3,
-        maxExpression=5, expressionScale = growthExp)
-
-    pwyMitosis <- new('Pathway', genes=LETTERS[1:26], minExpression=0,
-        maxExpression=2, expressionScale = mitosisExp)
-
-#    print(getNumberOfCells(simpleModel, 5))
-#    pwyGrowth@expressionScale(simpleModel, 5, 5)
+    expect_equal(pwyMitosis@expressionScale(defaultModel, 9, 5), 1)
+    expect_equal(pwyGrowth@expressionScale(defaultModel, 5, 5), 0.14,
+        tolerance=0.01)
 })
 
 test_that('Full Expression Simulation',
 {
+
 
 })
