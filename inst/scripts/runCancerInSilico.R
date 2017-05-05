@@ -24,6 +24,23 @@ delta <- 0.2
 
 #### Set Custom Values ####
 
+typeA_dist <- seq(from = 0, to = 1, length.out = 11)
+gr_AtoB_rat_list <- seq(from = 0, to = 2, length.out = 9)
+
+# Assuming Indexing 1 to 99
+
+mtypeA_dist <- typeA_dist[floor((arrayNum- 1)/9) + 1]
+mgRate <- gr_AtoB_rat_list[((arrayNum - 1) %% 9) + 1]
+
+# Create 2 cell types : A, B
+
+ctA <- new('CellType', name='A', cycleLength <- function() {return(48)})
+ctB <- new('CellType', name='B', cycleLength <- function() {return(48)*mgRate})
+
+# Set changed params
+
+cellTypes <- c(ctA, ctB)
+cellTypeInitFreq <- c(mtypeA_dist, 1 - mtypeA_dist)
 
 #### Run Simulation ####
 
