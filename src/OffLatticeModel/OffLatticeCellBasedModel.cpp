@@ -3,7 +3,6 @@
 void OffLatticeCellBasedModel::updateRModel(Rcpp::S4* rModel)
 {
     CellBasedModel::updateRModel(rModel);
-    rModel->slot("acceptRecord") = Rcpp::wrap(mAcceptRecord);
 }
 
 // private helper function
@@ -17,7 +16,7 @@ static Point<double> getRandomPoint(double radius)
 }
 
 OffLatticeCellBasedModel::OffLatticeCellBasedModel(Rcpp::S4* rModel)
-: CellBasedModel(rModel), mAcceptRecord(100, 0.0), mTrials(100, 0)
+: CellBasedModel(rModel)
 {
     Parameters* temp = new OffLatticeParameters(rModel);
     delete mParams;
@@ -37,11 +36,7 @@ OffLatticeCellBasedModel::OffLatticeCellBasedModel(Rcpp::S4* rModel)
 
     // calculate boundary
     double seedBoundary = sqrt(area / (M_PI * mParams->density()));
-    mDensity = mParams->density();
-    if (mParams->boundary() > 0)
-    {
-        mParams->setBoundary(seedBoundary);
-    }
+    if (mParams->boundary() > 0) {mParams->setBoundary(seedBoundary);}
     
     // place cells randomly
     std::vector<OffLatticeCell>::iterator it = defaultCells.begin();
@@ -131,23 +126,8 @@ void OffLatticeCellBasedModel::doTrial(OffLatticeCell& cell)
         }
     }
 
-    // update density
-    if (cell.radius() > orig.radius() && accepted)
-    {
-        mDensity += (pow(cell.radius(), 2) - pow(orig.radius(), 2)) / 
-            pow(mParams->boundary(), 2);
-    }
-
     // record trial
-    if (growth && mParams->boundary() > 0)
-    {
-        int index = density() * 100;
-        if (index < 0 || index > 99)
-            {throw std::runtime_error("invalid index from density");}
-        double n = ++mTrials[index];
-        mAcceptRecord[index] *= (n - 1.0) / n;
-        mAcceptRecord[index] += (accepted ? 1.0 : 0.0) / n;
-    }
+    if (growth) {cell.addToTrialRecord(accepted);}
 }
 
 void OffLatticeCellBasedModel::checkMitosis(OffLatticeCell& cell)
@@ -245,6 +225,8 @@ void OffLatticeCellBasedModel::recordPopulation()
         current.push_back((*it).cycleLength());
         current.push_back((*it).phase());
         current.push_back((*it).type().id());
+        current.push_back((*it).getTrialRecord());
+        (*it).clearTrialRecord();
     }
 
     mPopulationRecord.push_back(current); // add current pop to record

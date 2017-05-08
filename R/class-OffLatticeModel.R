@@ -17,8 +17,7 @@ library(methods)
 setClass('OffLatticeModel', contains = c('CellModel', 'VIRTUAL'), slots = c(
     maxDeformation = 'numeric',
     maxTranslation = 'numeric',
-    maxRotation = 'numeric',
-    acceptRecord = 'list'
+    maxRotation = 'numeric'
 ))
 
 setMethod('initialize', 'OffLatticeModel',
@@ -76,6 +75,10 @@ setGeneric('getAxisAngle', function(model, time)
     {standardGeneric('getAxisAngle')})
 
 #' @export
+setGeneric('getContactInhibition', function(model, time)
+    {standardGeneric('getContactInhibition')})
+
+#' @export
 setGeneric('getNumberOfNeighbors', function(model, time, cell, radius)
     {standardGeneric('getNumberOfNeighbors')})
 
@@ -93,7 +96,7 @@ setMethod('getColumn', signature('OffLatticeModel'),
     function(model, time, col)
     {
         row <- timeToRow(model, time)
-        indices <- seq(col, length(model@cells[[row]]), 8)
+        indices <- seq(col, length(model@cells[[row]]), 9)
         return (model@cells[[row]][indices])
     }
 )
@@ -150,6 +153,14 @@ setMethod('getCellTypes', signature('OffLatticeModel'),
     {
         indices <- getColumn(model, time, 8)
         return(sapply(indices, function(i) model@cellTypes[[i+1]]@name))
+    }
+)
+
+setMethod('getContactInhibition', signature('OffLatticeModel'),
+    function(model, time)
+    {
+        acceptRate <- getColumn(model, time, 9)
+        return(sapply(acceptRate, function(x) 1 / x))
     }
 )
 

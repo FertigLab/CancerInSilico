@@ -31,20 +31,26 @@ mitosisExp <- function(model, cell, time)
 
 SPhaseExp <- function(model, cell, time)
 {
+    window <- c(max(time - 1, 0), min(time + 1, model@runTime))
 
+    r1 <- getRadii(model, window[1])[cell]
+    r2 <- getRadii(model, window[2])[cell]
 
+    type <- getCellTypes(model, time)[cell]
+
+    return (ifelse(r1 < sqrt(1.5 * type@size) & r2 > sqrt(1.5 * type@size),
+        1, 0))
 }
 
 contactInhibitionExp <- function(model, cell, time)
 {
-
-
+    return(getContactInhibition(model, time)[cell])
 }
 
 neighborsExp <- function(model, cell, time)
 {
-
-
+    num <- getNumberOfNeighbors(model, time, cell, 5)
+    return(num / 6)
 }
 
 getGenes <- function(str) paste(str, letters[1:26], '_')
@@ -56,12 +62,17 @@ pwyMitosis <- new('Pathway', genes = getGenes('mitosis'), minExpression = 0,
     maxExpression = 2, expressionScale = mitosisExp)
 
 pwySPhase <- new('Pathway', genes = getGenes('Sphase'), minExpression = 0,
-    maxExpression = 2, expressionScale = mitosisExp)
+    maxExpression = 2, expressionScale = SPhaseExp)
 
 pwyContactInhibition <- new('Pathway', genes=getGenes('contact_inhibition'),
-    minExpression = 0, maxExpression = 2, expressionScale = mitosisExp)
+    minExpression = 0, maxExpression = 2,
+    expressionScale = contactInhibitionExp)
 
 pwyNeighbors <- new('Pathway', genes = getGenes('neighbors'),
-    minExpression = 0, maxExpression = 2, expressionScale = mitosisExp)
+    minExpression = 0, maxExpression = 2, expressionScale = neighborsExp)
 
-save(pwyGrowth, pwyMitosis, file = 'SamplePathways.RData')
+save(pwyGrowth, pwyMitosis, pwySPhase, pwyContactInhibition, pwyNeighbors,
+    file = 'SamplePathways.RData')
+
+
+

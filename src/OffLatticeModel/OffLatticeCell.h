@@ -19,9 +19,8 @@ private:
     double mRadius;
     double mAxisLength, mAxisAngle;
 
-    // monte carlo acceptance record
-    std::vector<double> mAcceptRecord;
-    std::vector<double> mTrialTimePoints;
+    // percent of trials accepted
+    double mAcceptedTrials, mTotalTrials;
 
 public:
 
@@ -54,6 +53,11 @@ public:
 
     // go to random point in the cell cycle
     void gotoRandomCyclePoint();
+
+    // update trial record
+    void clearTrialRecord();
+    void addToTrialRecord(bool);
+    double getTrialRecord();
 };
 
 #endif

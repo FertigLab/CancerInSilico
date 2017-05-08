@@ -9,6 +9,7 @@ OffLatticeRadiusSolver OffLatticeCell::mSolver = OffLatticeRadiusSolver();
 // constructor
 OffLatticeCell::OffLatticeCell(CellType type) : Cell(type)
 {
+    clearTrialRecord();
     mCoordinates = Point<double>(0.0, 0.0);
     setRadius(sqrt(mType.size()));
     mAxisAngle = Random::uniform(0, 2 * M_PI);
@@ -99,5 +100,22 @@ bool OffLatticeCell::operator!=(const OffLatticeCell& other) const
 bool OffLatticeCell::operator==(const OffLatticeCell& other) const
 {
     return coordinates() == other.coordinates();
+}
+
+void OffLatticeCell::clearTrialRecord()
+{
+    mAcceptedTrials = 0;
+    mTotalTrials = 0;
+}
+
+void OffLatticeCell::addToTrialRecord(bool result)
+{
+    mTotalTrials++;
+    if (result) {mAcceptedTrials++;}
+}
+
+double OffLatticeCell::getTrialRecord()
+{
+    return mAcceptedTrials / mTotalTrials;
 }
 

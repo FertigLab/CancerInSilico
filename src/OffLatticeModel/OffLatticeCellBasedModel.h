@@ -21,13 +21,6 @@ protected:
     // holds all of the cells
     SquareLattice<OffLatticeCell> mCellPopulation;
 
-    // record of reject/accept given density
-    std::vector<double> mAcceptRecord;
-    std::vector<int> mTrials;
-
-    // density of cell population
-    double mDensity;
-    
 public:
 
     // constructor
@@ -41,7 +34,6 @@ public:
     void updateDrugs(double);
     void doTrial(OffLatticeCell&);
     void checkMitosis(OffLatticeCell&);
-    double density() {return mDensity;}
     virtual void updateRModel(Rcpp::S4*);
 
     // relevant functions for attempting/accepting trials
