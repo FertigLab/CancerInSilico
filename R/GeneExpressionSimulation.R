@@ -114,7 +114,7 @@ simulateError <- function(meanExp, dataSet, perError, microArray)
     return(output)
 }
 
-#TODO: clarify this error model
+#TODO: clarify this error model (limma-voom)
 NBsim <- function(pwyMean, dataSet = NULL, invChisq = TRUE)
 {
     # get number of genes and mean expression for each one
@@ -127,14 +127,9 @@ NBsim <- function(pwyMean, dataSet = NULL, invChisq = TRUE)
     # Biological variation
     BCV0 <- 0.2 + 1 / sqrt(referenceMean)
     if (invChisq)
-    {    
-        df <- 40
-        BCV <- BCV0 * sqrt(df / rchisq(nGenes, df=df))
-    }
+        BCV <- BCV0 * sqrt(40 / rchisq(nGenes, df=40))
     else
-    {
         BCV <- BCV0 * exp(rnorm(nGenes, mean=0, sd=0.25) / 2)
-    }
 
     shape <- 1 / BCV^2
     scale <- pwyMean / shape
