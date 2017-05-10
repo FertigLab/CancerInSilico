@@ -11,7 +11,7 @@ CATCH_TEST_CASE("Test DrasdoHohmeModel - basic operations")
 
     Rcpp::Environment pkgEnv;
     pkgEnv = Rcpp::Environment::namespace_env("CancerInSilico");
-    Rcpp::S4 rModel = pkgEnv.find("drugsInSystem");
+    Rcpp::S4 rModel = pkgEnv.find("modDrugs");
 
     DrasdoHohmeModel cModel (&rModel);
 
@@ -21,7 +21,7 @@ CATCH_TEST_CASE("Test DrasdoHohmeModel - basic operations")
     cModel.updateRModel(&rModel);
     Rcpp::List cellList = rModel.slot("cells");
     Rcpp::NumericVector initCells = cellList(0);
-    CATCH_REQUIRE(initCells.size() == 8 * 100);
+    CATCH_REQUIRE(initCells.size() == 9 * 100);
 
     CellIterator it = cModel.begin();
     for (; it != cModel.end(); ++it)
@@ -102,7 +102,7 @@ CATCH_TEST_CASE("Test DrasdoHohmeModel - top level functions")
 
     Rcpp::Environment pkgEnv;
     pkgEnv = Rcpp::Environment::namespace_env("CancerInSilico");
-    Rcpp::S4 rModel = pkgEnv.find("drugsInSystem");
+    Rcpp::S4 rModel = pkgEnv.find("modDrugs");
 
     DrasdoHohmeModel cModel (&rModel);
 

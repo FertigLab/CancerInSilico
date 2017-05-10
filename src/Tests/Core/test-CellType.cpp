@@ -10,7 +10,7 @@ CATCH_TEST_CASE("Test CellType.h")
 
     Rcpp::Environment pkgEnv;
     pkgEnv = Rcpp::Environment::namespace_env("CancerInSilico");
-    Rcpp::S4 model = pkgEnv.find("manyCellTypes");
+    Rcpp::S4 model = pkgEnv.find("modCellTypes");
 
     Rcpp::List types = model.slot("cellTypes");
 

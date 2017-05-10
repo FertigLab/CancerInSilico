@@ -10,7 +10,7 @@ CATCH_TEST_CASE("Test Drug.h")
 
     Rcpp::Environment pkgEnv;
     pkgEnv = Rcpp::Environment::namespace_env("CancerInSilico");
-    Rcpp::S4 model = pkgEnv.find("drugsInSystem");
+    Rcpp::S4 model = pkgEnv.find("modDrugs");
 
     Rcpp::List types = model.slot("cellTypes");
     Rcpp::List drugs = model.slot("drugs");

@@ -15,8 +15,8 @@ test_that('Pathway Initialization',
 
 test_that('Pathway Expression Function',
 {
-    expect_equal(pwyMitosis@expressionScale(defaultModel, 9, 5), 1)
-    expect_equal(pwyGrowth@expressionScale(defaultModel, 5, 5), 0.14,
+    expect_equal(pwyMitosis@expressionScale(modDefault, 9, 5), 1)
+    expect_equal(pwyGrowth@expressionScale(modDefault, 5, 5), 0.14,
         tolerance=0.01)
 })
 

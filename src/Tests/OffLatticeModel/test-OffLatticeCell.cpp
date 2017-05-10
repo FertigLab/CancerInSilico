@@ -10,8 +10,8 @@ CATCH_TEST_CASE("Test Cell")
 
     Rcpp::Environment pkgEnv;
     pkgEnv = Rcpp::Environment::namespace_env("CancerInSilico");
-    Rcpp::S4 model1 = pkgEnv.find("manyCellTypes");
-    Rcpp::S4 model2 = pkgEnv.find("drugsInSystem");
+    Rcpp::S4 model1 = pkgEnv.find("modCellTypes");
+    Rcpp::S4 model2 = pkgEnv.find("modDrugs");
 
     Rcpp::List types = model1.slot("cellTypes");
     Rcpp::List drugs = model2.slot("drugs");
@@ -87,8 +87,8 @@ CATCH_TEST_CASE("Test OffLatticeCell")
 
     Rcpp::Environment pkgEnv;
     pkgEnv = Rcpp::Environment::namespace_env("CancerInSilico");
-    Rcpp::S4 model1 = pkgEnv.find("manyCellTypes");
-    Rcpp::S4 model2 = pkgEnv.find("drugsInSystem");
+    Rcpp::S4 model1 = pkgEnv.find("modCellTypes");
+    Rcpp::S4 model2 = pkgEnv.find("modDrugs");
 
     Rcpp::List types = model1.slot("cellTypes");
     Rcpp::List drugs = model2.slot("drugs");

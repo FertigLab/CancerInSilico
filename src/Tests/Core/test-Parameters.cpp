@@ -13,7 +13,7 @@ CATCH_TEST_CASE("Test Parameters")
 
     Rcpp::Environment pkgEnv;
     pkgEnv = Rcpp::Environment::namespace_env("CancerInSilico");
-    Rcpp::S4 model = pkgEnv.find("drugsInSystem");
+    Rcpp::S4 model = pkgEnv.find("modDrugs");
 
     Parameters params (&model);
 
@@ -79,7 +79,7 @@ CATCH_TEST_CASE("Test OffLatticeParameters")
 
     Rcpp::Environment pkgEnv;
     pkgEnv = Rcpp::Environment::namespace_env("CancerInSilico");
-    Rcpp::S4 model = pkgEnv.find("drugsInSystem");
+    Rcpp::S4 model = pkgEnv.find("modDrugs");
 
     OffLatticeParameters params (&model);
 
@@ -146,7 +146,7 @@ CATCH_TEST_CASE("Test DrasdoHohmeParameters")
 
     Rcpp::Environment pkgEnv;
     pkgEnv = Rcpp::Environment::namespace_env("CancerInSilico");
-    Rcpp::S4 model = pkgEnv.find("drugsInSystem");
+    Rcpp::S4 model = pkgEnv.find("modDrugs");
 
     DrasdoHohmeParameters params (&model);
 

@@ -14,7 +14,6 @@ Drug::Drug(unsigned id, const Rcpp::S4& drug)
 
 double Drug::cycleLengthEffect(CellType type, double cycleLength) const
 { 
-//    std::cout << type.name() << std::endl;
     Rcpp::Function effect = mDrugClass.slot("cycleLengthEffect");
     return Rcpp::as<double>(effect(Rcpp::wrap(type.name()), cycleLength));
 }
