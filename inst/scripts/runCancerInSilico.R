@@ -69,4 +69,4 @@ output <- runCellSimulation(initialNum=initialNum,
                             delta=delta
                             )       
 
-save(output, paste("output_", jobName, "_", arrayNum, ".RData", sep=""))
+save(output, file=paste("output_", jobName, "_", arrayNum, ".RData", sep=""))
