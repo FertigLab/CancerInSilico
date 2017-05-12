@@ -8,7 +8,7 @@ jobName <- args[2]
 
 boundary <- 1
 syncCycles <- FALSE
-randSeed <- 0, 
+randSeed <- 0
 outputIncrement <- 4
 recordIncrement <- 0.1
 timeIncrement <- 0.001
