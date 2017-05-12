@@ -23,4 +23,4 @@ else
     arrayNum=1
 fi
 
-time Rscript ./runCancerInSilico.R $arrayNum $jobNum
+time Rscript ~/CancerInSilico/inst/scripts/runCancerInSilico.R $arrayNum $jobNum
