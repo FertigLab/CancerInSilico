@@ -18,7 +18,7 @@ combineFUN=max, singleCell=FALSE, nCells=96, perError=0.1, microArray=FALSE)
         model, sampFreq, singleCell, nCells))
 
     # combine expression matrices, add dummy genes, and shuffle order
-    meanExp <- combineGeneExpression(pathwayOutput, combineFUN))
+    meanExp <- combineGeneExpression(pathwayOutput, combineFUN)
     if (!is.null(nGenes)) meanExp <- padExpMatrix(meanExp, nGenes)
     meanExp <- meanExp[sample(nrow(meanExp)),]
 
