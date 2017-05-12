@@ -10,4 +10,4 @@ DATE=`date +%Y%m%d_%H%M%S`
 DIR=~/CancerInSilico/Output/$DATE/
 
 mkdir -p $DIR
-sbatch -D $DIR --array=1-$TOTAL_RUNS runCancerInSilico.sh $DATE
+sbatch -D $DIR --array=1-$TOTAL_RUNS ~/CancerInSilico/inst/scripts/runCancerInSilico.sh $DATE
