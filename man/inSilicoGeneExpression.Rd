@@ -4,33 +4,28 @@
 \alias{inSilicoGeneExpression}
 \title{\code{inSilicoGeneExpression}}
 \usage{
-inSilicoGeneExpression(model, singleCell = FALSE, pathways = NULL,
-  nCells = 96, fasta = NULL, ReferenceDataSet = NULL, lambda = 1/3,
-  sampFreq = 1, perError = 0.1, combineFUN = max, attrsep = " ",
-  microArray = FALSE, nGenes = NULL)
+inSilicoGeneExpression(model, pathways, sampFreq = 1, nGenes = NULL,
+  combineFUN = max, singleCell = FALSE, nCells = 96, perError = 0.1,
+  microArray = FALSE)
 }
 \arguments{
 \item{model}{a CellModel object}
 
-\item{singleCell}{logical: simulate single cell data}
-
 \item{pathways}{list of genes pathways}
-
-\item{nCells}{number of cells to use for single cell data}
-
-\item{fasta}{fasta file}
-
-\item{ReferenceDataSet}{reference gene expression data}
-
-\item{lambda}{parameter used for exponential}
 
 \item{sampFreq}{how often to generate data}
 
-\item{perError}{unknown}
+\item{nGenes}{total number of genes used (matrix padded with dummys)}
 
 \item{combineFUN}{function used to combine gene expression data}
 
-\item{attrsep}{separation character}
+\item{singleCell}{logical: simulate single cell data}
+
+\item{nCells}{number of cells to use for single cell data}
+
+\item{perError}{percent error?}
+
+\item{microArray}{true if micro array data}
 }
 \description{
 \code{inSilicoGeneExpression}

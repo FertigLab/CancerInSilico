@@ -21,8 +21,8 @@ setMethod('initialize', 'CellType',
     {
          if (is.null(list(...)$name)) stop('missing name')
         .Object@size <- 1
-        .Object@minCycle <- 48
-        .Object@cycleLength <- function() {return(48)}
+        .Object@minCycle <- 24
+        .Object@cycleLength <- function() {return(24)}
         .Object <- callNextMethod(.Object, ...)
         .Object
     }

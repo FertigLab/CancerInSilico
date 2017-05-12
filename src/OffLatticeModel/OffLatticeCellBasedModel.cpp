@@ -15,6 +15,7 @@ static Point<double> getRandomPoint(double radius)
     return Point<double>(x,y);
 }
 
+// TODO: add burn in period without any growth steps
 OffLatticeCellBasedModel::OffLatticeCellBasedModel(Rcpp::S4* rModel)
 : CellBasedModel(rModel)
 {
@@ -75,11 +76,9 @@ void OffLatticeCellBasedModel::oneMCStep()
 
 void OffLatticeCellBasedModel::updateDrugs(double time)
 {
-    // cell population iterator
     CellIterator cellIt = mCellPopulation.begin();
     for (; cellIt != mCellPopulation.end(); ++cellIt)
     {
-        // drug iterator
         std::vector<Drug>::iterator drugIt = mParams->drugsBegin();
         for (; drugIt != mParams->drugsEnd(); ++drugIt)
         {
@@ -98,7 +97,6 @@ void OffLatticeCellBasedModel::doTrial(OffLatticeCell& cell)
     OffLatticeCell orig = cell;
     Energy preE = calculateHamiltonian(cell);
     unsigned preN = numNeighbors(cell);
-
     bool accepted, growth = attemptTrial(cell);
 
     if (checkOverlap(cell) || checkBoundary(cell))
@@ -113,21 +111,15 @@ void OffLatticeCellBasedModel::doTrial(OffLatticeCell& cell)
         Energy postE = calculateHamiltonian(cell);
         unsigned postN = numNeighbors(cell);
 
-        if (!growth && !acceptTrial(preE, postE, preN, postN))
+        accepted = growth || acceptTrial(preE, postE, preN, postN);
+        if (!accepted)
         {
             mCellPopulation.update(cell.coordinates(),
                 orig.coordinates());   
             cell = orig;
-            accepted = false;
-        }   
-        else
-        {
-            accepted = true;    
-        }
+        }            
     }
-
-    // record trial
-    if (growth) {cell.addToTrialRecord(accepted);}
+    if (growth) {cell.addToTrialRecord(accepted);} //record success/failure
 }
 
 void OffLatticeCellBasedModel::checkMitosis(OffLatticeCell& cell)
@@ -226,7 +218,6 @@ void OffLatticeCellBasedModel::recordPopulation()
         current.push_back((*it).phase());
         current.push_back((*it).type().id());
         current.push_back((*it).getTrialRecord());
-        (*it).clearTrialRecord();
     }
 
     mPopulationRecord.push_back(current); // add current pop to record

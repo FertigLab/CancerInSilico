@@ -11,6 +11,7 @@ private:
     std::string mName;
 
     // numerical id of this type
+    // TODO: id's are unneccesary
     unsigned mID;
 
     // relative size of cell

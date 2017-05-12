@@ -44,6 +44,7 @@ void OffLatticeCell::divide(OffLatticeCell& daughter)
     mAxisAngle = Random::uniform(0, 2 * M_PI);
     mPhase = INTERPHASE;
     mReadyToDivide = false;
+    clearTrialRecord();
 }
 
 // go to random point in the cell cycle
@@ -110,12 +111,12 @@ void OffLatticeCell::clearTrialRecord()
 
 void OffLatticeCell::addToTrialRecord(bool result)
 {
-    mTotalTrials++;
-    if (result) {mAcceptedTrials++;}
+    mTotalTrials += 1;
+    if (result) {mAcceptedTrials += 1;}
 }
 
 double OffLatticeCell::getTrialRecord()
 {
-    return mAcceptedTrials / mTotalTrials;
+    return mTotalTrials < 5 ? 1 : mAcceptedTrials / mTotalTrials;
 }
 
