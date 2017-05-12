@@ -119,7 +119,7 @@ setValidity('CellModel',
             "'runTime must be greater than zero"
         else if (object@density <= 0)
             "'density' must greater than zero"
-        else if (object@density > 0.7)
+        else if (object@density >= 0.5)
             "'density' too high for initial seeding process"
         else if (object@outputIncrement <= 0)
             "'outputIncrement' must be greater than zero"
