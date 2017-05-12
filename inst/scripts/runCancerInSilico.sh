@@ -8,7 +8,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mail-type=end
-#SBATCH --mail-user=tsherma4@jhu.edu
+#SBATCH --mail-user=rcao5@jhu.edu
 
 if [ "$1" != "" ]; then
     jobNum=$1
@@ -23,4 +23,4 @@ else
     arrayNum=1
 fi
 
-time Rscript ../../runCancerInSilico.R $arrayNum $jobNum
+time Rscript ./runCancerInSilico.R $arrayNum $jobNum

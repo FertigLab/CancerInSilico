@@ -1,4 +1,5 @@
-library(CancerInSilico)
+library('CancerInSilico')
+library(methods)
 
 args <- commandArgs(TRUE)
 arrayNum <- as.integer(args[1])
@@ -6,9 +7,12 @@ jobName <- args[2]
 
 #### Set Defaults ####
 
+initialNum <- 80
+runTime <- 168
+density <- 0.2
 boundary <- 1
 syncCycles <- FALSE
-randSeed <- 0, 
+randSeed <- 0
 outputIncrement <- 4
 recordIncrement <- 0.1
 timeIncrement <- 0.001
@@ -34,8 +38,8 @@ mgRate <- gr_AtoB_rat_list[((arrayNum - 1) %% 9) + 1]
 
 # Create 2 cell types : A, B
 
-ctA <- new('CellType', name='A', cycleLength <- function() {return(48)})
-ctB <- new('CellType', name='B', cycleLength <- function() {return(48)*mgRate})
+ctA <- new('CellType', name='A', cycleLength=function() {return(48)})
+ctB <- new('CellType', name='B', cycleLength=function() {return(48*mgRate)})
 
 # Set changed params
 
@@ -55,8 +59,8 @@ output <- runCellSimulation(initialNum=initialNum,
                             recordIncrement=timeIncrement,
                             timeIncrement=timeIncrement,
                             cellTypes=cellTypes,
-                            cellTypeInitFreq,
-                            drugs,
+                            cellTypeInitFreq=cellTypeInitFreq,
+                            drugs=drugs,
                             maxDeformation=maxDeformation,
                             maxTranslation=maxTranslation,
                             maxRotation=maxRotation,
@@ -65,4 +69,4 @@ output <- runCellSimulation(initialNum=initialNum,
                             delta=delta
                             )       
 
-save(output, paste("output_", jobName, "_", arrayNum, ".RData", sep=""))
+save(output, file=paste("output_", jobName, "_", arrayNum, ".RData", sep=""))
