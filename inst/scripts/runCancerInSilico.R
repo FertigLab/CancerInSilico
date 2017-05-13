@@ -46,6 +46,11 @@ ctB <- new('CellType', name='B', cycleLength=function() {return(48*mgRate)})
 cellTypes <- c(ctA, ctB)
 cellTypeInitFreq <- c(mtypeA_dist, 1 - mtypeA_dist)
 
+# Sanity check for distribution and growth rate
+
+print(paste("Cell Type A dist:", mtypeA_dist))
+print(paste("GR multiplier:", mgRate))
+
 #### Run Simulation ####
 
 output <- runCellSimulation(initialNum=initialNum,
