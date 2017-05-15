@@ -1,6 +1,7 @@
 #include "DrasdoHohmeModel.h"
 #include "../Core/Random.h"
 
+// constructor for parameters
 DrasdoHohmeParameters::DrasdoHohmeParameters(Rcpp::S4* rModel)
 : OffLatticeParameters(rModel)
 {
@@ -9,22 +10,28 @@ DrasdoHohmeParameters::DrasdoHohmeParameters(Rcpp::S4* rModel)
     mDelta   = rModel->slot("delta");
 }
 
+//  constructor for model
 DrasdoHohmeModel::DrasdoHohmeModel(Rcpp::S4* rModel)
 : OffLatticeCellBasedModel(rModel)
 {
+    // create new parameters and delete old ones
+    // TODO: avoid this bad code by incorporating parameters into model
     Parameters* temp = new DrasdoHohmeParameters(rModel);
     delete mParams;
     mParams = temp;
 }
 
+// calculate the maximum growth (radius increase) possible in one time step
 double DrasdoHohmeModel::maxGrowth(OffLatticeCell& cell) const
 {
     return sqrt(cell.type().size()) * (sqrt(2)-1) * (DH_PARAMS->nG() + 1)
         * mParams->timeIncrement() * 2 / (cell.cycleLength() - 2);
 }
 
+// attemp a single monte carlo update for this cell
 bool DrasdoHohmeModel::attemptTrial(OffLatticeCell& cell)
 {
+    // nG determines how likely growth (deform) trial is
     double unif = Random::uniform(0,1);
     if (cell.phase() == INTERPHASE)
     {   
@@ -61,31 +68,34 @@ bool DrasdoHohmeModel::attemptTrial(OffLatticeCell& cell)
     return false;
 }
 
+// accept/reject trial based on change in hamiltonian (see paper)
 bool DrasdoHohmeModel::acceptTrial(Energy preE, Energy postE,
 unsigned preN, unsigned postN) const
 {
-    if (postN < preN)
+    if (postN < preN) // lost a neighbor
     {
         return false;
     }
-    else if (postE.first < preE.first)
+    else if (postE.first < preE.first) // hamiltonian decreased
     {
         return true;
     }
     else
     {
         double prob = exp(-DH_PARAMS->epsilon() * (postE.first -
-            preE.first));
+            preE.first)); // prob of acceptance, when hamiltonian increases
         return Random::uniform(0,1) < prob;
     }
 }
 
+// calculate hamiltonian locally around this cell
 Energy DrasdoHohmeModel::calculateHamiltonian(const OffLatticeCell& cell)
 {
     double sum = 0.0;
     double maxSearch = 2 * cell.radius() + 2 * DH_PARAMS->maxRadius()
-        + DH_PARAMS->delta();
+        + DH_PARAMS->delta(); // max radius needed to find neighbors
     
+    // iterate locally around this cell - within the search radius
     LocalCellIterator it = mCellPopulation.lbegin(
         cell.coordinates(), maxSearch);
     LocalCellIterator endIt = mCellPopulation.lend(
@@ -93,6 +103,7 @@ Energy DrasdoHohmeModel::calculateHamiltonian(const OffLatticeCell& cell)
 
     for (; it != endIt; ++it)
     {
+        // formula for hamiltonian taken from Drasdo, Hohme paper
         double dist = cell.distance(*it);
         if (cell != *it && dist <= DH_PARAMS->delta())
         {
@@ -102,11 +113,12 @@ Energy DrasdoHohmeModel::calculateHamiltonian(const OffLatticeCell& cell)
     return std::pair<double, bool> (sum, false);        
 }
 
+// calculate number of neighbors this cell has
 unsigned DrasdoHohmeModel::numNeighbors(const OffLatticeCell& cell)
 {
     unsigned neighbors = 0;
     double maxSearch = 2 * cell.radius() + 2 * DH_PARAMS->maxRadius()
-        + DH_PARAMS->delta();
+        + DH_PARAMS->delta(); // search radius - controlled by delta
     
     LocalCellIterator it = mCellPopulation.lbegin(
         cell.coordinates(), maxSearch);

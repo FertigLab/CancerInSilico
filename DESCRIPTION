@@ -1,8 +1,8 @@
 Package: CancerInSilico
 Type: Package
 Title: An R interface for computational modeling of tumor progression
-Version: 2.0.0
-Date: 2016-06-01
+Version: 1.99.0
+Date: 2017-05-15
 Author: Thomas D. Sherman,
     Raymond Cheng,
     Elana J. Fertig
@@ -15,12 +15,9 @@ License: GPL (>= 2)
 LazyData: true
 Imports:
     methods,
-    grDevices,
-    graphics,
-    stats
+    utils
 Depends:
-    Rcpp,
-    polyester
+    Rcpp
 LinkingTo: Rcpp,
     testthat,
     BH
@@ -28,13 +25,15 @@ Suggests:
     testthat,
     knitr,
     rmarkdown,
-	BiocStyle
-VignetteBuilder:
-    knitr
-biocViews: MathematicalBiology, SystemsBiology, CellBiology,
+    BiocStyle,
+    polyester
+VignetteBuilder: knitr
+biocViews: MathematicalBiology,
+    SystemsBiology,
+    CellBiology,
     BiomedicalInformatics
-RoxygenNote: 6.0.1
-Collate: 
+RoxygenNote: 5.0.1
+Collate:
     'CellSimulation.R'
     'GeneExpressionSimulation.R'
     'RcppExports.R'

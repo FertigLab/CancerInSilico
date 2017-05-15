@@ -1,6 +1,8 @@
 #ifndef CIS_SQUARE_LATTICE_H
 #define CIS_SQUARE_LATTICE_H
 
+// implementation of a square lattice
+
 #include <cmath>
 
 #define ROOT_2 1.414213562
@@ -40,23 +42,26 @@ private:
         // needed for permission and mGridWidth
         #define SQ_LAT ((SquareLattice*) this->mLattice)
 
+        // construct local iterator
         SquareLocalIterator(Lattice<T>* lat, const Point<double>& center,
         double radius, bool end) : BaseLocalIterator<T>(lat, center, radius)
         {
+            // get center and search radius
             mHashedCenter = SQ_LAT->hash(center);
             int rad = ceil(radius / (SQ_LAT->mGridWidth * ROOT_2)) + 1;
 
+            // contruct box to search in (contains circle of radius=rad)
             mSearchRegion.left = mHashedCenter.x - rad;
             mSearchRegion.right = mHashedCenter.x + rad;
             mSearchRegion.bottom = mHashedCenter.y - rad;
             mSearchRegion.top = mHashedCenter.y + rad;
 
-            if (end)
+            if (end) // goto end of iterator
             {
                 this->mCurrent.x = mSearchRegion.right + 1;
                 this->mCurrent.y = mSearchRegion.top;
             }
-            else
+            else // goto beginning of iterator
             {
                 this->mCurrent.x = mSearchRegion.left - 1;
                 this->mCurrent.y = mSearchRegion.bottom;
@@ -64,22 +69,26 @@ private:
             }
         }
 
+        // make copy of iterator
         BaseLocalIterator<T>* newCopy() const
             {return new SquareLocalIterator(*this);}
 
+        // increment iterator
         void operator++()
         {
             do
             {
+                // break if end reached
                 if (this->mCurrent.x > mSearchRegion.right) {break;}
         
+                // move through box, top left to bottom right corner
                 this->mCurrent.y--;
                 if (this->mCurrent.y < mSearchRegion.bottom)
                 {
                     this->mCurrent.y = mSearchRegion.top;
                     this->mCurrent.x++;
                 }
-            } while (!SQ_LAT->mGrid.count(this->mCurrent));
+            } while (!SQ_LAT->mGrid.count(this->mCurrent)); // skip blanks
         }
     };
     /******************************************************/

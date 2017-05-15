@@ -1,6 +1,8 @@
 #ifndef CIS_DRUG_H
 #define CIS_DRUG_H
 
+// contains all info about a drug and it's interactions with cells
+
 #include <Rcpp.h>
 
 #include "CellType.h"
@@ -24,9 +26,11 @@ public:
     Drug() {}
     Drug(unsigned, const Rcpp::S4&);
 
+    // getters  
     unsigned id() const {return mID;}
     double timeAdded() const {return mTimeAdded;}
     
+    // calculate effect this drug has on the cycle length of a certain cell
     double cycleLengthEffect(CellType, double) const;
 };
 

@@ -1,6 +1,8 @@
 #ifndef CIS_CELL_BASED_MODEL_H
 #define CIS_CELL_BASED_MODEL_H
 
+// top-level abstract class for a cell model
+
 #include <Rcpp.h>
 
 #include "Parameters.h"
@@ -11,8 +13,10 @@ class CellBasedModel
 {
 protected:
 
+    // record of the cell states at specified times during the simulation
 	std::vector< std::vector<double> > mPopulationRecord;
 
+    // parameters object for this model
     Parameters* mParams;
 
 public:

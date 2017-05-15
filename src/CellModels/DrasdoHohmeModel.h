@@ -1,6 +1,9 @@
 #ifndef CIS_DRASDO_HOHME_MODEL_H
 #define CIS_DRASDO_HOHME_MODEL_H
 
+// Off-Lattice Monte-Carlo cell-based model based
+// on the work of Drasdo, Hohme (2003)
+
 #include "../OffLatticeModel/OffLatticeCellBasedModel.h"
 #include "../OffLatticeModel/OffLatticeParameters.h"
 
@@ -10,6 +13,7 @@ class DrasdoHohmeParameters : public OffLatticeParameters
 {
 private:
 
+    // parameters defined in paper - control cell mechanics
     double mNG;
     double mEpsilon;
     double mDelta;
@@ -33,6 +37,7 @@ public:
 
     double maxGrowth(OffLatticeCell&) const;
 
+    // functions for attempting/accepting monte carlo trials
     bool attemptTrial(OffLatticeCell&);
     bool acceptTrial(Energy, Energy, unsigned, unsigned) const;
     Energy calculateHamiltonian(const OffLatticeCell&);

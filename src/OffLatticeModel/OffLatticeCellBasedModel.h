@@ -1,6 +1,8 @@
 #ifndef CIS_OFF_LATTICE_CELL_BASED_MODEL_H
 #define CIS_OFF_LATTICE_CELL_BASED_MODEL_H
 
+// abstract implementation of an off lattice cell model
+
 #include "../Core/CellBasedModel.h"
 #include "../Core/SquareLattice.h"
 #include "OffLatticeParameters.h"
@@ -12,6 +14,7 @@ typedef SquareLattice<OffLatticeCell>::local_iterator LocalCellIterator;
 // second element is true if infinite
 typedef std::pair<double, bool> Energy;
 
+// neccesary for accessing certain parameters
 #define OL_PARAMS  static_cast<OffLatticeParameters*>(mParams)
 
 class OffLatticeCellBasedModel : public CellBasedModel
@@ -34,7 +37,6 @@ public:
     void updateDrugs(double);
     void doTrial(OffLatticeCell&);
     void checkMitosis(OffLatticeCell&);
-    virtual void updateRModel(Rcpp::S4*);
 
     // relevant functions for attempting/accepting trials
     virtual bool attemptTrial(OffLatticeCell&) = 0;

@@ -1,6 +1,8 @@
 #ifndef CIS_CELL_TYPE_H
 #define CIS_CELL_TYPE_H
 
+// contains all info about a specific cell type
+
 #include <Rcpp.h>
 
 class CellType
@@ -27,11 +29,13 @@ public:
 
     CellType(unsigned, const Rcpp::S4&);
 
+    // getters
     std::string name() const  {return mName;}
     unsigned id() const       {return mID;}
     double size() const       {return mSize;}
     double minCycle() const   {return mMinCycle;}    
 
+    // get random cycle length based on this type's distribution
     double cycleLength() const;
 };
 

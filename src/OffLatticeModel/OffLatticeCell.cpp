@@ -15,21 +15,23 @@ OffLatticeCell::OffLatticeCell(CellType type) : Cell(type)
     mAxisAngle = Random::uniform(0, 2 * M_PI);
 }
 
+// set radius of cell - adjust axis length accordingly
 void OffLatticeCell::setRadius(double rad)
 {
     mRadius = rad;
     mAxisLength = 2 * mRadius;
 }
 
+// set axis length of cell - adjust radius accordingly
 void OffLatticeCell::setAxisLength(double len)
 {
-    mAxisLength = len;
-    double adjusted = len / sqrt(mType.size());
-    mRadius = sqrt(mType.size()) * mSolver.radius(adjusted);
     if (len < sqrt(8 * mType.size()))
     {
         throw std::invalid_argument("adjusting axis on interphase cell");
     }
+    mAxisLength = len;
+    double adjusted = len / sqrt(mType.size());
+    mRadius = sqrt(mType.size()) * mSolver.radius(adjusted);
 }
 
 // undergo cell division, return daughter cell
@@ -39,7 +41,7 @@ void OffLatticeCell::divide(OffLatticeCell& daughter)
     daughter.setCoordinates(centers().first);
     setCoordinates(centers().second);
 
-    // update stats of parent
+    // update state of parent
     setRadius(sqrt(mType.size()));
     mAxisAngle = Random::uniform(0, 2 * M_PI);
     mPhase = INTERPHASE;
@@ -65,13 +67,16 @@ void OffLatticeCell::gotoRandomCyclePoint()
     }
 }
 
+// calculate the center of each side of the 'dumbell' shape
 std::pair< Point<double>, Point<double> > OffLatticeCell::centers() const
 {
     std::pair< Point<double>, Point<double> > centers;
     
+    // offset from true center in both dimensions
     double xOffset = ((0.5 * mAxisLength) - mRadius) * cos(mAxisAngle);
     double yOffset = ((0.5 * mAxisLength) - mRadius) * sin(mAxisAngle);
 
+    // apply offset
     centers.first = Point<double>(mCoordinates.x + xOffset,
         mCoordinates.y + yOffset);
     centers.second = Point<double>(mCoordinates.x - xOffset,
@@ -103,18 +108,21 @@ bool OffLatticeCell::operator==(const OffLatticeCell& other) const
     return coordinates() == other.coordinates();
 }
 
+// clear accept/reject trail record
 void OffLatticeCell::clearTrialRecord()
 {
     mAcceptedTrials = 0;
     mTotalTrials = 0;
 }
 
+// add trial to record
 void OffLatticeCell::addToTrialRecord(bool result)
 {
     mTotalTrials += 1;
     if (result) {mAcceptedTrials += 1;}
 }
 
+// get trial record, return 1 if low number of trials done
 double OffLatticeCell::getTrialRecord()
 {
     return mTotalTrials < 5 ? 1 : mAcceptedTrials / mTotalTrials;

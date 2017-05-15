@@ -211,6 +211,7 @@ setMethod('plotCells', signature('OffLatticeModel'),
         axis_len <- getAxisLength(model, time)
         axis_ang <- getAxisAngle(model, time)
 
+        # calculate plot bounds
         if (model@boundary > 0)
         {
             mn <- -model@boundary - 2

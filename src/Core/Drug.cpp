@@ -5,6 +5,7 @@
 #include "CellType.h"
 #include "Cell.h"
 
+// construct drug with equivalent R class
 Drug::Drug(unsigned id, const Rcpp::S4& drug)
 {
     mID = id;
@@ -12,8 +13,10 @@ Drug::Drug(unsigned id, const Rcpp::S4& drug)
     mDrugClass = drug;
 }
 
+// calculate drug effect on cycle length of a cell
 double Drug::cycleLengthEffect(CellType type, double cycleLength) const
 { 
+    // call R function
     Rcpp::Function effect = mDrugClass.slot("cycleLengthEffect");
     return Rcpp::as<double>(effect(Rcpp::wrap(type.name()), cycleLength));
 }

@@ -1,6 +1,8 @@
 #ifndef CIS_PARAMETERS_H
 #define CIS_PARAMETERS_H
 
+// top-level class for cell model parameters
+
 #include <vector>
 #include <Rcpp.h>
 

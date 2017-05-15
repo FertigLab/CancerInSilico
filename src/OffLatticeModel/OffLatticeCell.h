@@ -1,6 +1,8 @@
 #ifndef CIS_OFF_LATTICE_CELL_HPP
 #define CIS_OFF_LATTICE_CELL_HPP
 
+// cell implementation for off lattice models
+
 #include <Rcpp.h>
 
 #include "../Core/Point.h"

@@ -12,6 +12,7 @@ Cell::Cell(CellType type) : mType(type)
     mPhase = INTERPHASE;
 }
 
+// apply the effect of a drug on the cell and record the action
 void Cell::applyDrug(const Drug& drug)
 {
     mCycleLength = drug.cycleLengthEffect(type(), cycleLength());

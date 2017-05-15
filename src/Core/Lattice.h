@@ -1,6 +1,8 @@
 #ifndef CIS_LATTICE_H
 #define CIS_LATTICE_H
 
+// top-level abstract class defining a 2D lattice
+
 // [[Rcpp::depends(BH)]]
 
 #pragma GCC diagnostic push
@@ -69,11 +71,11 @@ public:
     /******************************************************/
   
     /****************** local iterator ********************/
-    class local_iterator
+    class local_iterator // wraps underlying polymorphic implementation
     {
     protected:
     
-        BaseLocalIterator<T>* baseIter;
+        BaseLocalIterator<T>* baseIter; //polymorphic implementation
 
     public:
         
@@ -118,19 +120,20 @@ public:
     iterator end() {return iterator(mValues.end());}
 };
 
+// polymorphic implementation of a local iterator
 template <class T>
 class BaseLocalIterator
 {    
 protected:
     
-    Lattice<T>* mLattice;
-    GridPoint mCurrent;
-
-    Point<double> mCenter;
-    double mRadius;
+    Lattice<T>* mLattice; // pointer to lattice being searched
+    GridPoint mCurrent; // current point on lattice
+    Point<double> mCenter; // center point of search
+    double mRadius; // search radius
 
 public:
 
+    // contructor
     BaseLocalIterator(Lattice<T>* l, const Point<double>& c, double r)
         : mLattice(l), mCenter(c), mRadius(r) {}
     
@@ -139,11 +142,14 @@ public:
     virtual BaseLocalIterator* newCopy() const = 0;
     virtual void operator++() = 0;
 
+    // lookup current location in mLattice
     T& operator*()
         {return mLattice->mValues[mLattice->mGrid.at(mCurrent)].second;}
 
+    // compare position to another iterator
     bool operator!=(const BaseLocalIterator* i) const
     {
+        // can only compare to equivalently defined iterator
         if ((mCenter != i->mCenter) || (mRadius != i->mRadius))
         {
             throw std::invalid_argument("invalid iterator comparison");

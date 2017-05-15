@@ -1,6 +1,8 @@
 #ifndef CIS_CELL_H
 #define CIS_CELL_H
 
+// top-level abstract class for a cell
+
 #include <Rcpp.h>
 #include <vector>
 #include <stdint.h>

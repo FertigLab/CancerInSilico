@@ -1,9 +1,9 @@
 // [[Rcpp::depends(BH)]]
 
+// generic description of a point in 2D space, used for spatial hashing
+
 #ifndef CIS_POINT_H
 #define CIS_POINT_H
-
-#define TOL 0.00000001
 
 #include <cmath>
 #include <boost/functional/hash.hpp>
@@ -23,8 +23,6 @@ struct Point
     // close enough points within some tolerance
     bool operator==(const Point& other) const
     {
-/*        return (x < other.x + TOL && x > other.x - TOL)
-            && (y < other.y + TOL && y > other.y - TOL);*/
         return x == other.x && y == other.y;
     }
 
@@ -61,7 +59,7 @@ struct ihash : std::unary_function<Point<int>, std::size_t>
 {
     std::size_t operator() (const Point<int>& p) const
     {
-        /* use boost to hash point coordinates */
+        // use boost to hash point coordinates
         boost::hash<int> int_hash;
         return (51 + int_hash(p.x)) * 51 + int_hash(p.y);
     }

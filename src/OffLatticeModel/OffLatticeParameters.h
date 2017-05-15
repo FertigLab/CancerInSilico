@@ -1,6 +1,8 @@
 #ifndef CIS_OFF_LATTICE_PARAMETERS_H
 #define CIS_OFF_LATTICE_PARAMETERS_H
 
+// stores parameters of off lattice model
+
 #include <vector>
 #include <Rcpp.h>
 
@@ -11,13 +13,14 @@ class OffLatticeParameters : public Parameters
 {
 private:
 
+    // geometric parameters
     double mMaxDeformation;
     double mMaxTranslation;
     double mMaxRotation;
 
 public:
 
-    // constructors
+    // constructor
     OffLatticeParameters(Rcpp::S4*);
 
     // basic off lattice parameters
