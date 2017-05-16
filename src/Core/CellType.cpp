@@ -18,5 +18,13 @@ CellType::CellType(unsigned id, const Rcpp::S4& type)
 double CellType::cycleLength() const
 {
     Rcpp::Function cl = mCellTypeClass.slot("cycleLength");
-    return Rcpp::as<double>(cl());
+    double length = Rcpp::as<double>(cl());
+    if (length < mMinCycle)
+    {
+        throw std::invalid_argument("cycle length is less than minimum");
+    }
+    else
+    {
+        return Rcpp::as<double>(cl());
+    }
 }
