@@ -38,15 +38,15 @@ mtypeB_CL <- typeB_CL[((arrayNum - 1) %% 9) + 1]
 
 # Create 2 cell types : A, B
 
-ctA <- new('CellType', name='A', cycleLength=function() {return(24)})
-ctB <- new('CellType', name='B', cycleLength=function() {return(mtypeB_CL)})
+ctA <- new('CellType', name='A', cycleLength=function() {return(24)}, minCycle=24)
+ctB <- new('CellType', name='B', cycleLength=function() {return(mtypeB_CL)}, minCycle=mtypeB_CL)
 
 # Set changed params
 
 cellTypes <- c(ctA, ctB)
 cellTypeInitFreq <- c(mtypeA_dist, 1 - mtypeA_dist)
 
-# Sanity check for distribution and growth rate
+# Sanity check for distribution and cycle lengths
 
 print(paste("Cell Type A dist:", mtypeA_dist))
 print(paste("Cell Type B cycleLength:", mtypeB_CL))
