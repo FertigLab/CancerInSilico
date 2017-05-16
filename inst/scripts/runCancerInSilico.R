@@ -49,7 +49,7 @@ cellTypeInitFreq <- c(mtypeA_dist, 1 - mtypeA_dist)
 # Sanity check for distribution and growth rate
 
 print(paste("Cell Type A dist:", mtypeA_dist))
-print(paste("GR multiplier:", mgRate))
+print(paste("Cell Type B cycleLength:", mtypeB_CL))
 
 #### Run Simulation ####
 
