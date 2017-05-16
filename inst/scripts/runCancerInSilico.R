@@ -29,18 +29,17 @@ delta <- 0.2
 #### Set Custom Values ####
 
 typeA_dist <- seq(from = 0, to = 1, length.out = 11)
-gr_AtoB_rat_list <- seq(from = 0, to = 2, length.out = 9)
-gr_AtoB_rat_list[1] <- 0.085
+typeB_CL <- seq(from = 12, to = 48, length.out = 9)
 
 # Assuming Indexing 1 to 99
 
 mtypeA_dist <- typeA_dist[floor((arrayNum- 1)/9) + 1]
-mgRate <- gr_AtoB_rat_list[((arrayNum - 1) %% 9) + 1]
+mtypeB_CL <- typeB_CL[((arrayNum - 1) %% 9) + 1]
 
 # Create 2 cell types : A, B
 
-ctA <- new('CellType', name='A', cycleLength=function() {return(48)})
-ctB <- new('CellType', name='B', cycleLength=function() {return(48*mgRate)}, minCycle=4)
+ctA <- new('CellType', name='A', cycleLength=function() {return(24)})
+ctB <- new('CellType', name='B', cycleLength=function() {return(mtypeB_CL)})
 
 # Set changed params
 
