@@ -30,6 +30,7 @@ delta <- 0.2
 
 typeA_dist <- seq(from = 0, to = 1, length.out = 11)
 gr_AtoB_rat_list <- seq(from = 0, to = 2, length.out = 9)
+gr_AtoB_rat_list[1] <- 0.001
 
 # Assuming Indexing 1 to 99
 
