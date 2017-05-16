@@ -30,4 +30,3 @@ inSilicoGeneExpression(model, pathways, sampFreq = 1, nGenes = NULL,
 \description{
 \code{inSilicoGeneExpression}
 }
-

@@ -19,7 +19,9 @@ setClass('CellType', slots = c(
 setMethod('initialize', 'CellType', 
     function(.Object, ...)
     {
-         if (is.null(list(...)$name)) stop('missing name')
+        if (is.null(list(...)$name)) stop('missing name')
+        if (!is.null(list(...)$cycleLength) & is.null(list(...)$minCycle))
+            stop('set \'cycleLength\' without setting \'minCycle\'')
         .Object@size <- 1
         .Object@minCycle <- 24
         .Object@cycleLength <- function() {return(24)}

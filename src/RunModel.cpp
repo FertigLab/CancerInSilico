@@ -26,7 +26,15 @@ Rcpp::S4 cppRunModel(Rcpp::S4 rModel, std::string type)
     // create C model, run, and store in R model
     CellBasedModel* cModel;
     createModel(&rModel, cModel, type);
-    cModel->run();
+    
+    try
+    {
+        cModel->run();
+    }
+    catch (const std::exception& e)
+    {
+        Rcpp::Rcout << e.what() << std::endl;
+    }        
     cModel->updateRModel(&rModel);
 
     delete cModel;
