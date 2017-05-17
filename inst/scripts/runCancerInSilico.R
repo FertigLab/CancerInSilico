@@ -14,7 +14,7 @@ boundary <- 1
 syncCycles <- FALSE
 randSeed <- 0
 outputIncrement <- 4
-recordIncrement <- 0.1
+recordIncrement <- 0.25
 timeIncrement <- 0.001
 cellTypes <- c(new('CellType', name='DEFAULT'))
 cellTypeInitFreq <- c(1)
@@ -28,28 +28,27 @@ delta <- 0.2
 
 #### Set Custom Values ####
 
-typeA_dist <- seq(from = 0, to = 1, length.out = 11)
-typeB_CL <- seq(from = 12, to = 48, length.out = 9)
+allInitFreq_typeA <- seq(0,1,0.05)
+allCellTypes_typeB <- lapply(seq(12,48,4), function(l) new('CellType', name='B', minCycle=l, cycleLength=function() l))
 
-# Assuming Indexing 1 to 99
+dim <- c(length(allInitFreq_typeA), length(allCellTypes_typeB))
+indexArray <- array(1:prod(dim), dim)
+index <- which(indexArray==arrayNum, arr.ind=TRUE)
 
-mtypeA_dist <- typeA_dist[floor((arrayNum- 1)/9) + 1]
-mtypeB_CL <- typeB_CL[((arrayNum - 1) %% 9) + 1]
-
-# Create 2 cell types : A, B
-
+initFreq_typeA <- allInitFreq_typeA[index[1]]
+ctB <- allCellTypes_typeB[index[2]]
 ctA <- new('CellType', name='A', cycleLength=function() {return(24)}, minCycle=24)
-ctB <- new('CellType', name='B', cycleLength=function() {return(mtypeB_CL)}, minCycle=mtypeB_CL)
 
 # Set changed params
 
 cellTypes <- c(ctA, ctB)
-cellTypeInitFreq <- c(mtypeA_dist, 1 - mtypeA_dist)
+cellTypeInitFreq <- c(initFreq_typeA,1 - initFreq_typeA)
 
 # Sanity check for distribution and cycle lengths
 
-print(paste("Cell Type A dist:", mtypeA_dist))
-print(paste("Cell Type B cycleLength:", mtypeB_CL))
+print(paste("Cell Type dist:", cellTypeInitFreq))
+print(paste("Cell Type B info:", cellTypes[2]))
+
 
 #### Run Simulation ####
 
