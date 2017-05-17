@@ -1,6 +1,8 @@
 library('CancerInSilico')
 library(methods)
 
+# max arrayNum = 210
+
 args <- commandArgs(TRUE)
 arrayNum <- as.integer(args[1])
 jobName <- args[2]
@@ -42,7 +44,7 @@ ctA <- new('CellType', name='A', cycleLength=function() {return(24)}, minCycle=2
 # Set changed params
 
 cellTypes <- c(ctA, ctB)
-cellTypeInitFreq <- c(initFreq_typeA,1 - initFreq_typeA)
+cellTypeInitFreq <- c(initFreq_typeA, 1 - initFreq_typeA)
 
 # Sanity check for distribution and cycle lengths
 
