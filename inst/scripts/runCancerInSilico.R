@@ -49,7 +49,7 @@ cellTypeInitFreq <- c(initFreq_typeA, 1 - initFreq_typeA)
 # Sanity check for distribution and cycle lengths
 
 print(paste("Cell Type dist:", "A:", cellTypeInitFreq[1], "B:", cellTypeInitFreq[2]))
-print(paste("Cell Type B info:", show(cellTypes[2])))
+print(paste("Cell Type B minCycle:", slot(cellTypes[2][[1]], "minCycle")))
 
 
 #### Run Simulation ####
