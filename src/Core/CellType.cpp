@@ -25,6 +25,6 @@ double CellType::cycleLength() const
     }
     else
     {
-        return Rcpp::as<double>(cl());
+        return length;
     }
 }
