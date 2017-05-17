@@ -144,7 +144,7 @@ void OffLatticeCellBasedModel::checkMitosis(OffLatticeCell& cell)
 bool OffLatticeCellBasedModel::checkOverlap(const OffLatticeCell& cell)
 {
     double maxSearch = 4 * OL_PARAMS->maxRadius()
-        + OL_PARAMS->maxTranslation(); // search radius
+        + OL_PARAMS->maxTranslation() + 2; // search radius
     LocalCellIterator it = // iterator around cell within radius
         mCellPopulation.lbegin(cell.coordinates(), maxSearch);
     LocalCellIterator endIt =

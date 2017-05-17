@@ -12,7 +12,7 @@ void CellBasedModel::updateRModel(Rcpp::S4* rModel)
 // run the entire model
 void CellBasedModel::run()
 {
-	double time = 0.0;
+    double time = 0.0;
     double recordTime = 0.0, outputTime = 0.0;
 
     Rprintf("\n");
