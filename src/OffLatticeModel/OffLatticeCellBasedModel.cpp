@@ -15,26 +15,28 @@ static Point<double> getRandomPoint(double radius)
 OffLatticeCellBasedModel::OffLatticeCellBasedModel(Rcpp::S4* rModel)
 : CellBasedModel(rModel)
 {
-    // setup parameters and lattice structure
-    Parameters* temp = new OffLatticeParameters(rModel);
-    delete mParams;
-    mParams = temp;
+    // store parameters
+    mMaxDeformation = rModel->slot("maxDeformation");
+    mMaxTranslation = rModel->slot("maxTranslation");
+    mMaxRotation    = rModel->slot("maxRotation");
+
+    // setup lattice structure
     mCellPopulation.setWidth(sqrt(2) - 0.001);
 
     // seed default cells
     std::vector<OffLatticeCell> defaultCells;
     double area = 0.0;
-    for (unsigned i = 0; i < mParams->initialNum(); ++i)
+    for (unsigned i = 0; i < initialNum(); ++i)
     {
-        OffLatticeCell cell (mParams->randomCellType());
-        if (!mParams->syncCycles()) {cell.gotoRandomCyclePoint();}
+        OffLatticeCell cell (randomCellType());
+        if (!syncCycles()) {cell.gotoRandomCyclePoint();}
         defaultCells.push_back(cell);
         area += cell.area();
     }
 
     // calculate boundary
-    double seedBoundary = sqrt(area / (M_PI * mParams->density()));
-    if (mParams->boundary() > 0) {mParams->setBoundary(seedBoundary);}
+    double seedBoundary = sqrt(area / (M_PI * density()));
+    if (boundary() > 0) {setBoundary(seedBoundary);}
     
     // place cells randomly
     std::vector<OffLatticeCell>::iterator it = defaultCells.begin();
@@ -49,6 +51,18 @@ OffLatticeCellBasedModel::OffLatticeCellBasedModel(Rcpp::S4* rModel)
         
         mCellPopulation.insert((*it).coordinates(), *it);
     }            
+}
+
+// find largest possible radius across cell types
+double OffLatticeCellBasedModel::maxRadius()
+{
+    double maxRad = 0.0;
+    std::vector<CellType>::iterator it = mCellTypes.begin();
+    for (; it != mCellTypes.end(); ++it)
+    {
+        if (maxRad < it->size()) {maxRad = it->size();}
+    }
+    return sqrt(2 * maxRad);
 }
 
 // run model for one time step
@@ -79,14 +93,11 @@ void OffLatticeCellBasedModel::updateDrugs(double time)
     CellIterator cellIt = mCellPopulation.begin();
     for (; cellIt != mCellPopulation.end(); ++cellIt)
     {
-        std::vector<Drug>::iterator drugIt = mParams->drugsBegin();
-        for (; drugIt != mParams->drugsEnd(); ++drugIt)
+        for (unsigned i = 0; i < mDrugs.size(); ++i)
         {
-            // check if drug hasn't been applied and it's time to apply
-            if (!(*cellIt).drugApplied((*drugIt).id())
-                && time >= (*drugIt).timeAdded())
+            if (!(*cellIt).drugApplied(i) && time >= mDrugs[i].timeAdded())
             {
-                (*cellIt).applyDrug(*drugIt);
+                (*cellIt).applyDrug(i, mDrugs[i]);
             }
         }
     }
@@ -110,8 +121,8 @@ void OffLatticeCellBasedModel::doTrial(OffLatticeCell& cell)
     }
     else
     {
-        mCellPopulation.update(orig.coordinates(),
-            cell.coordinates()); //update lattice with new cell position
+        //update lattice with new cell position
+        mCellPopulation.update(orig.coordinates(), cell.coordinates());
         Energy postE = calculateHamiltonian(cell); // energy after update
         unsigned postN = numNeighbors(cell); // num neighbors after update
 
@@ -143,12 +154,11 @@ void OffLatticeCellBasedModel::checkMitosis(OffLatticeCell& cell)
 // check if cell overlaps any neighbors
 bool OffLatticeCellBasedModel::checkOverlap(const OffLatticeCell& cell)
 {
-    double maxSearch = 4 * OL_PARAMS->maxRadius()
-        + OL_PARAMS->maxTranslation(); // search radius
+    double maxSearch = 4 * maxRadius() + maxTranslation();
     LocalCellIterator it = // iterator around cell within radius
         mCellPopulation.lbegin(cell.coordinates(), maxSearch);
     LocalCellIterator endIt =
-        mCellPopulation.lend(cell.coordinates(), maxSearch);*/
+        mCellPopulation.lend(cell.coordinates(), maxSearch);
 
     for (; it != endIt; ++it)
     {
@@ -161,7 +171,7 @@ bool OffLatticeCellBasedModel::checkOverlap(const OffLatticeCell& cell)
 bool OffLatticeCellBasedModel::checkBoundary(const OffLatticeCell& cell)
 {
     Point<double> origin(0,0);
-    double b = mParams->boundary();
+    double b = boundary();
 
     // return true if cell is farther from center than the boundary line
     return (b > 0 &&
@@ -182,7 +192,7 @@ void OffLatticeCellBasedModel::growth(OffLatticeCell& cell)
 // execture translation trial (move cell)
 void OffLatticeCellBasedModel::translation(OffLatticeCell& cell)
 {
-    double len = OL_PARAMS->maxTranslation() * sqrt(Random::uniform(0,1));
+    double len = maxTranslation() * sqrt(Random::uniform(0,1));
     double dir = Random::uniform(0, 2 * M_PI);
     cell.setCoordinates(Point<double>(cell.coordinates().x + len * cos(dir),
         cell.coordinates().y + len * sin(dir)));
@@ -192,7 +202,7 @@ void OffLatticeCellBasedModel::translation(OffLatticeCell& cell)
 void OffLatticeCellBasedModel::deformation(OffLatticeCell& cell)
 {
     double deform = Random::uniform(0, sqrt(cell.type().size())
-        * OL_PARAMS->maxDeformation());
+        * maxDeformation());
     double maxAxis = sqrt(16 * cell.type().size());
 
     cell.setAxisLength(std::min(maxAxis, cell.axisLength() + deform));
@@ -206,8 +216,7 @@ void OffLatticeCellBasedModel::deformation(OffLatticeCell& cell)
 // execute rotation trial
 void OffLatticeCellBasedModel::rotation(OffLatticeCell& cell)
 {
-    double change = Random::uniform(-OL_PARAMS->maxRotation(),
-        OL_PARAMS->maxRotation());
+    double change = Random::uniform(-maxRotation(), maxRotation());
     cell.setAxisAngle(cell.axisAngle() + change / sqrt(cell.type().size()));
 }
 

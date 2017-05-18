@@ -1,41 +1,31 @@
 #include "DrasdoHohmeModel.h"
 #include "../Core/Random.h"
 
-// constructor for parameters
-DrasdoHohmeParameters::DrasdoHohmeParameters(Rcpp::S4* rModel)
-: OffLatticeParameters(rModel)
+// constructor
+DrasdoHohmeModel::DrasdoHohmeModel(Rcpp::S4* rModel)
+: OffLatticeCellBasedModel(rModel)
 {
+    // store parameters
     mNG      = rModel->slot("nG");
     mEpsilon = rModel->slot("epsilon");
     mDelta   = rModel->slot("delta");
 }
 
-//  constructor for model
-DrasdoHohmeModel::DrasdoHohmeModel(Rcpp::S4* rModel)
-: OffLatticeCellBasedModel(rModel)
-{
-    // create new parameters and delete old ones
-    // TODO: avoid this bad code by incorporating parameters into model
-    Parameters* temp = new DrasdoHohmeParameters(rModel);
-    delete mParams;
-    mParams = temp;
-}
-
 // calculate the maximum growth (radius increase) possible in one time step
 double DrasdoHohmeModel::maxGrowth(OffLatticeCell& cell) const
 {
-    return sqrt(cell.type().size()) * (sqrt(2)-1) * (DH_PARAMS->nG() + 1)
-        * mParams->timeIncrement() * 2 / (cell.cycleLength() - 2);
+    return sqrt(cell.type().size()) * (sqrt(2)-1) * (nG() + 1)
+        * timeIncrement() * 2 / (cell.cycleLength() - 2);
 }
 
-// attemp a single monte carlo update for this cell
+// attempt a single monte carlo update for this cell
 bool DrasdoHohmeModel::attemptTrial(OffLatticeCell& cell)
 {
     // nG determines how likely growth (deform) trial is
     double unif = Random::uniform(0,1);
     if (cell.phase() == INTERPHASE)
     {   
-        if (unif <= (1 / (DH_PARAMS->nG() + 1)))
+        if (unif <= 1 / (nG() + 1))
         {
             growth(cell);
             return true;
@@ -47,16 +37,16 @@ bool DrasdoHohmeModel::attemptTrial(OffLatticeCell& cell)
     }
     else if (cell.phase() == MITOSIS)
     {
-        if (unif <= (1 / (DH_PARAMS->nG() + 1)))
+        if (unif <= 1 / (nG() + 1))
         {
             deformation(cell);
             return true;
         }
-        else if ((DH_PARAMS->nG() + 1) * unif <= 1 + DH_PARAMS->nG() / 2)
+        else if ((nG() + 1) * unif <= 1 + nG() / 2)
         {
             rotation(cell);
         }
-        else if (!cell.readyToDivide())
+        else
         {
             translation(cell);
         }
@@ -82,8 +72,8 @@ unsigned preN, unsigned postN) const
     }
     else
     {
-        double prob = exp(-DH_PARAMS->epsilon() * (postE.first -
-            preE.first)); // prob of acceptance, when hamiltonian increases
+        // prob of acceptance, when hamiltonian increases
+        double prob = exp(epsilon() * (postE.first - preE.first));
         return Random::uniform(0,1) < prob;
     }
 }
@@ -92,8 +82,7 @@ unsigned preN, unsigned postN) const
 Energy DrasdoHohmeModel::calculateHamiltonian(const OffLatticeCell& cell)
 {
     double sum = 0.0;
-    double maxSearch = 2 * cell.radius() + 2 * DH_PARAMS->maxRadius()
-        + DH_PARAMS->delta(); // max radius needed to find neighbors
+    double maxSearch = 2 * cell.radius() + 2 * maxRadius() + delta();
     
     // iterate locally around this cell - within the search radius
     LocalCellIterator it = mCellPopulation.lbegin(
@@ -105,9 +94,9 @@ Energy DrasdoHohmeModel::calculateHamiltonian(const OffLatticeCell& cell)
     {
         // formula for hamiltonian taken from Drasdo, Hohme paper
         double dist = cell.distance(*it);
-        if (cell != *it && dist <= DH_PARAMS->delta())
+        if (cell != *it && dist <= delta())
         {
-            sum += pow(2 * dist / DH_PARAMS->delta() - 1, 2) - 1;
+            sum += pow(2 * dist / delta() - 1, 2) - 1;
         }
     }
     return std::pair<double, bool> (sum, false);        
@@ -117,8 +106,7 @@ Energy DrasdoHohmeModel::calculateHamiltonian(const OffLatticeCell& cell)
 unsigned DrasdoHohmeModel::numNeighbors(const OffLatticeCell& cell)
 {
     unsigned neighbors = 0;
-    double maxSearch = 2 * cell.radius() + 2 * DH_PARAMS->maxRadius()
-        + DH_PARAMS->delta(); // search radius - controlled by delta
+    double maxSearch = 2 * cell.radius() + 2 * maxRadius() + delta();
     
     LocalCellIterator it = mCellPopulation.lbegin(
         cell.coordinates(), maxSearch);
@@ -127,7 +115,7 @@ unsigned DrasdoHohmeModel::numNeighbors(const OffLatticeCell& cell)
 
     for (; it != endIt; ++it)
     {
-        if (cell != *it && cell.distance(*it) <= DH_PARAMS->delta())
+        if (cell != *it && cell.distance(*it) <= delta())
         {
             neighbors++;
         }

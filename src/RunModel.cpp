@@ -1,6 +1,5 @@
 #include <Rcpp.h>
 
-#include "Core/Parameters.h"
 #include "Core/CellBasedModel.h"
 #include "CellModels/DrasdoHohmeModel.h"
 
@@ -35,7 +34,7 @@ Rcpp::S4 cppRunModel(Rcpp::S4 rModel, std::string type)
     {
         Rcpp::Rcout << e.what() << std::endl;
     }        
-    cModel->updateRModel(&rModel);
+    rModel.slot("cells") = cModel->getCellRecord();
 
     delete cModel;
     return rModel;

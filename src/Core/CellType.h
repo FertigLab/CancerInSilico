@@ -12,8 +12,7 @@ private:
     // name of this cell type
     std::string mName;
 
-    // numerical id of this type
-    // TODO: id's are unneccesary
+    // id of the cell
     unsigned mID;
 
     // relative size of cell
@@ -27,13 +26,14 @@ private:
 
 public:
 
+    // constructor
     CellType(unsigned, const Rcpp::S4&);
 
     // getters
     std::string name() const  {return mName;}
-    unsigned id() const       {return mID;}
-    double size() const       {return mSize;}
-    double minCycle() const   {return mMinCycle;}    
+    unsigned id()      const  {return mID;}
+    double size()      const  {return mSize;}
+    double minCycle()  const  {return mMinCycle;}    
 
     // get random cycle length based on this type's distribution
     double cycleLength() const;

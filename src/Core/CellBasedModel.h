@@ -5,7 +5,6 @@
 
 #include <Rcpp.h>
 
-#include "Parameters.h"
 #include "CellType.h"
 #include "Drug.h"
 
@@ -16,20 +15,54 @@ protected:
     // record of the cell states at specified times during the simulation
 	std::vector< std::vector<double> > mPopulationRecord;
 
-    // parameters object for this model
-    Parameters* mParams;
+    // S4 class in R describing cell model
+    Rcpp::S4* mRModel;
+
+    // model parameters
+    double mInitialNum;
+    double mRunTime;
+    double mDensity;
+    double mRandSeed;
+    double mOutputIncrement;
+    double mRecordIncrement;
+    double mTimeIncrement;
+    double mBoundary;
+    bool mSyncCycles;
+
+    // drugs used in the simulation
+    std::vector<Drug> mDrugs;
+
+    // possible cell types
+    std::vector<CellType> mCellTypes;
 
 public:
 
-    // constructors
-    CellBasedModel(Rcpp::S4* rM) {mParams = new Parameters(rM);}
-    virtual ~CellBasedModel() {delete mParams;}
+    // constructor and virtual destructor
+    CellBasedModel(Rcpp::S4*);
+    virtual ~CellBasedModel() {}    
+
+    // get parameter values
+    double initialNum()         const {return mInitialNum;}
+    double runTime()            const {return mRunTime;}
+    double density()            const {return mDensity;}
+    double randSeed()           const {return mRandSeed;}
+    double outputIncrement()    const {return mOutputIncrement;}
+    double recordIncrement()    const {return mRecordIncrement;}
+    double timeIncrement()      const {return mTimeIncrement;}
+    double boundary()           const {return mBoundary;}
+    bool syncCycles()           const {return mSyncCycles;}
+
+    // set actual boundary value (passed in as T/F)
+    void setBoundary(double);
+
+    // get a random cell type from initial distribution
+    CellType randomCellType();
 
     // run the entire model
     void run();
 
     // update the R model
-    virtual void updateRModel(Rcpp::S4*);
+    Rcpp::List getCellRecord() {return Rcpp::wrap(mPopulationRecord);}
 
     // update the model for a single time step; must be implemented
     virtual void oneTimeStep(double time) = 0;

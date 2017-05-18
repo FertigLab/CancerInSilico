@@ -5,7 +5,6 @@
 
 #include "../Core/CellBasedModel.h"
 #include "../Core/SquareLattice.h"
-#include "OffLatticeParameters.h"
 #include "OffLatticeCell.h"
 
 typedef SquareLattice<OffLatticeCell>::iterator CellIterator;
@@ -14,9 +13,6 @@ typedef SquareLattice<OffLatticeCell>::local_iterator LocalCellIterator;
 // second element is true if infinite
 typedef std::pair<double, bool> Energy;
 
-// neccesary for accessing certain parameters
-#define OL_PARAMS  static_cast<OffLatticeParameters*>(mParams)
-
 class OffLatticeCellBasedModel : public CellBasedModel
 {
 protected:
@@ -24,10 +20,24 @@ protected:
     // holds all of the cells
     SquareLattice<OffLatticeCell> mCellPopulation;
 
+    // monte carlo updating parameters
+    double mMaxDeformation;
+    double mMaxTranslation;
+    double mMaxRotation;
+
 public:
 
-    // constructor
+    // constructor and virtual destructor
     OffLatticeCellBasedModel(Rcpp::S4*);
+    virtual ~OffLatticeCellBasedModel() {}
+
+    // get parameters
+    double maxDeformation() const {return mMaxDeformation;}
+    double maxTranslation() const {return mMaxTranslation;}
+    double maxRotation()    const {return mMaxRotation;}
+
+    // find largest possible radius across cell types
+    double maxRadius();    
 
     // single time step, Monte Carlo step
     void oneTimeStep(double);

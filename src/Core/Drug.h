@@ -12,9 +12,6 @@ class Drug
 {
 private:
 
-    // numerical id of this type
-    unsigned mID;
-
     // time this drug is added to the simulation
     double mTimeAdded;
 
@@ -24,14 +21,13 @@ private:
 public:
 
     Drug() {}
-    Drug(unsigned, const Rcpp::S4&);
+    Drug(const Rcpp::S4&);
 
     // getters  
-    unsigned id() const {return mID;}
     double timeAdded() const {return mTimeAdded;}
     
     // calculate effect this drug has on the cycle length of a certain cell
-    double cycleLengthEffect(CellType, double) const;
+    double cycleLengthEffect(const CellType&, double) const;
 };
 
 #endif

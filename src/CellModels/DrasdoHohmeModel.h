@@ -5,13 +5,10 @@
 // on the work of Drasdo, Hohme (2003)
 
 #include "../OffLatticeModel/OffLatticeCellBasedModel.h"
-#include "../OffLatticeModel/OffLatticeParameters.h"
 
-#define DH_PARAMS   static_cast<DrasdoHohmeParameters*>(mParams)
-
-class DrasdoHohmeParameters : public OffLatticeParameters
+class DrasdoHohmeModel : public OffLatticeCellBasedModel
 {
-private:
+protected:
 
     // parameters defined in paper - control cell mechanics
     double mNG;
@@ -20,21 +17,15 @@ private:
 
 public:
 
-    // constructor
-    DrasdoHohmeParameters(Rcpp::S4*);
-
-    // get parameters
-    double nG()         {return mNG;}
-    double epsilon()    {return mEpsilon;}
-    double delta()      {return mDelta;}
-};
-
-class DrasdoHohmeModel : public OffLatticeCellBasedModel
-{
-public:
-
+    // constructor from R class
     DrasdoHohmeModel(Rcpp::S4*);
 
+    // get parameters
+    double nG()      const  {return mNG;}
+    double epsilon() const  {return mEpsilon;}
+    double delta()   const  {return mDelta;}
+
+    // largest amount radius can grow in single step
     double maxGrowth(OffLatticeCell&) const;
 
     // functions for attempting/accepting monte carlo trials

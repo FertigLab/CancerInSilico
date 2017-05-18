@@ -55,7 +55,7 @@ test_that('default arguments',
     expect_equal(testMod@timeIncrement, 0.00589, tolerance = 1e-3)
     expect_equal(testMod@cellTypes[[1]]@name, 'DEFAULT')
     expect_equal(testMod@cellTypes[[1]]@size, 1)
-    expect_equal(testMod@cellTypes[[1]]@minCycle, 48)
+    expect_equal(testMod@cellTypes[[1]]@minCycle, 24)
     expect_false(is.null(testMod@cellTypes[[1]]@cycleLength()))
     expect_equal(testMod@cellTypeInitFreq[1], 1)
     expect_equal(testMod@maxDeformation, 0.441, tolerance = 1e-3)
