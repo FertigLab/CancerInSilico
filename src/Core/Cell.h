@@ -52,7 +52,7 @@ public:
     virtual void gotoRandomCyclePoint() = 0;
 
     // apply drug to cell
-    virtual void applyDrug(unsigned, const Drug&);
+    virtual void applyDrug(const Drug&);
 };
 
 #endif

@@ -136,6 +136,8 @@ setValidity('CellModel',
         else if (length(object@drugs) > 0)
             if (prod(sapply(object@drugs, isValidDrug)) == 0)
                 "not all drugs are valid"
+        else if (length(object@drugs) > 64)
+            "can\'t have more than 64 drugs in the simulation"
         else
             TRUE
     }

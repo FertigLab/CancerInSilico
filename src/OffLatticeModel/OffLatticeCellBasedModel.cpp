@@ -97,7 +97,7 @@ void OffLatticeCellBasedModel::updateDrugs(double time)
         {
             if (!(*cellIt).drugApplied(i) && time >= mDrugs[i].timeAdded())
             {
-                (*cellIt).applyDrug(i, mDrugs[i]);
+                (*cellIt).applyDrug(mDrugs[i]);
             }
         }
     }

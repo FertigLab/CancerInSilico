@@ -6,8 +6,9 @@
 #include "Cell.h"
 
 // construct drug with equivalent R class
-Drug::Drug(const Rcpp::S4& drug)
+Drug::Drug(unsigned id, const Rcpp::S4& drug)
 {
+    mID = id;
     mTimeAdded = Rcpp::as<double>(drug.slot("timeAdded"));
     mDrugClass = drug;
 }

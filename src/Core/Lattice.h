@@ -113,6 +113,9 @@ public:
     // number of objects in lattice
     int size() const;
 
+    // get object at specific location
+    T& at(const Point<double>&p){return mValues[mGrid.at(hash(p))].second;}
+
     // iterators
     virtual local_iterator lbegin(const Point<double>&, double) = 0;
     virtual local_iterator lend(const Point<double>&, double) = 0;
@@ -228,6 +231,7 @@ const Point<double>& newPt)
     
     removeKey(hashed);
     addKey(hash(newPt), index);
+    mValues[index].first = hash(newPt);
 }
 
 // Return a random value in the lattice

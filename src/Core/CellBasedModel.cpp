@@ -29,7 +29,7 @@ CellBasedModel::CellBasedModel(Rcpp::S4* rModel)
     Rcpp::List drugs = rModel->slot("drugs");
     for (unsigned i = 0; i < drugs.size(); ++i)
     {
-        mDrugs.push_back(drugs[i]);
+        mDrugs.push_back(Drug(i, drugs[i]));
     }
 }
 
@@ -77,17 +77,15 @@ void CellBasedModel::run()
         {
             Rprintf("time = %.2f\n", floor(time));
             Rprintf("size = %d\n", size());
-
             outputTime = std::min(outputTime + outputIncrement(),runTime());
         }            
 
         oneTimeStep(time); // run the simulation for one time step
 		time += timeIncrement();
     
-        // ensures last time step happens at end of given runTime
         if (time > runTime() && time < runTime() + timeIncrement())
         {
-            time = runTime();
+            time = runTime(); // last time step happens at end
         }
     }
 }
