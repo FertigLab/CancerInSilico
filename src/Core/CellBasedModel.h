@@ -15,6 +15,9 @@ protected:
     // record of the cell states at specified times during the simulation
 	std::vector< std::vector<double> > mPopulationRecord;
 
+    // record of the drug effect for each drug (row) and each cell (col)
+	std::vector< std::vector<double> > mDrugRecord;
+
     // S4 class in R describing cell model
     Rcpp::S4* mRModel;
 

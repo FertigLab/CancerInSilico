@@ -13,9 +13,11 @@ Cell::Cell(CellType type) : mType(type)
 }
 
 // apply the effect of a drug on the cell and record the action
-void Cell::applyDrug(const Drug& drug)
+double Cell::applyDrug(const Drug& drug)
 {
+    double oldLength = cycleLength();
     mCycleLength = drug.cycleLengthEffect(type(), cycleLength());
     mDrugApplied |= 1 << drug.id();
+    return oldLength;
 }
 
