@@ -87,7 +87,7 @@ setGeneric('getNumberOfNeighbors', function(model, time, cell, radius)
 setMethod('timeToRow', signature('OffLatticeModel'),
     function(model, time)
     {
-        if (time >= model@runTime) return (length(model@cells))
+        if (time > model@runTime | time < 0) stop('invalid time')
         else return (floor(time / model@recordIncrement) + 1)
     }
 )
@@ -151,8 +151,7 @@ setMethod('getCellPhases', signature('OffLatticeModel'),
 setMethod('getCellTypes', signature('OffLatticeModel'),
     function(model, time)
     {
-        indices <- getColumn(model, time, 8)
-        return(sapply(indices, function(i) model@cellTypes[[i+1]]@name))
+        return(getColumn(model, time, 8))
     }
 )
 
