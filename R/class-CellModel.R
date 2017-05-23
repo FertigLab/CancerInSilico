@@ -256,3 +256,11 @@ setMethod('cellSummary', signature('CellModel'),
             '\nNumber of Cells: ', getNumerOfCells(model, time), '\n'))
     }
 )
+
+setMethod('show', signature('CellModel'),
+    function(object)
+    {
+        object@cells <- list()
+        showDefault(object)
+    }
+)
