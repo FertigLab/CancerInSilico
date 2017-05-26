@@ -158,8 +158,7 @@ setMethod('getCellTypes', signature('OffLatticeModel'),
 setMethod('getContactInhibition', signature('OffLatticeModel'),
     function(model, time)
     {
-        acceptRate <- getColumn(model, time, 9)
-        return(sapply(acceptRate, function(x) 1 / x))
+        return(getColumn(model, time, 9))
     }
 )
 
