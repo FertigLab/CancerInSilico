@@ -29,14 +29,14 @@ OffLatticeCellBasedModel::OffLatticeCellBasedModel(Rcpp::S4* rModel)
     for (unsigned i = 0; i < initialNum(); ++i)
     {
         OffLatticeCell cell (randomCellType());
+        area += cell.area();
         if (!syncCycles()) {cell.gotoRandomCyclePoint();}
         defaultCells.push_back(cell);
-        area += cell.area();
     }
 
     // calculate boundary
-    double seedBoundary = sqrt(area / (M_PI * density()));
-    if (boundary() > 0) {setBoundary(seedBoundary);}
+    double seedingBoundary = sqrt(area / (M_PI * density()));
+    if (boundary() > 0) {setBoundary(seedingBoundary);}
     
     // place cells randomly
     std::vector<OffLatticeCell>::iterator it = defaultCells.begin();
@@ -44,7 +44,7 @@ OffLatticeCellBasedModel::OffLatticeCellBasedModel(Rcpp::S4* rModel)
     {
         do
         {
-            (*it).setCoordinates(getRandomPoint(seedBoundary));
+            (*it).setCoordinates(getRandomPoint(seedingBoundary));
             Rcpp::checkUserInterrupt();
 
         } while (checkOverlap(*it) || checkBoundary(*it));
