@@ -12,4 +12,3 @@ OBJECTS =   RunModel.o \
             Core/Random.o \
             Tests/Core/test-CellType.o \
             Tests/test-runner.o
-

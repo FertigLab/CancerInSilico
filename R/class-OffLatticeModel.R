@@ -87,7 +87,7 @@ setGeneric('getNumberOfNeighbors', function(model, time, cell, radius)
 setMethod('timeToRow', signature('OffLatticeModel'),
     function(model, time)
     {
-        if (time >= model@runTime) return (length(model@cells))
+        if (time > model@runTime | time < 0) stop('invalid time')
         else return (floor(time / model@recordIncrement) + 1)
     }
 )
@@ -151,16 +151,14 @@ setMethod('getCellPhases', signature('OffLatticeModel'),
 setMethod('getCellTypes', signature('OffLatticeModel'),
     function(model, time)
     {
-        indices <- getColumn(model, time, 8)
-        return(sapply(indices, function(i) model@cellTypes[[i+1]]@name))
+        return(getColumn(model, time, 8) + 1)
     }
 )
 
 setMethod('getContactInhibition', signature('OffLatticeModel'),
     function(model, time)
     {
-        acceptRate <- getColumn(model, time, 9)
-        return(sapply(acceptRate, function(x) 1 / x))
+        return(getColumn(model, time, 9))
     }
 )
 
@@ -210,6 +208,7 @@ setMethod('plotCells', signature('OffLatticeModel'),
         radii <- getRadii(model, time)
         axis_len <- getAxisLength(model, time)
         axis_ang <- getAxisAngle(model, time)
+        mitNdx <- rep(getCellPhases(model, time), 2) == 'M'
 
         # calculate plot bounds
         if (model@boundary > 0)
@@ -239,8 +238,12 @@ setMethod('plotCells', signature('OffLatticeModel'),
         rad <- c(radii, radii)
     
         # plot the cells
-        symbols(x,y, circles=rad, inches=FALSE, add=TRUE, bg="bisque4",
-            fg="bisque4")
+        if (sum(mitNdx))
+            symbols(x[mitNdx], y[mitNdx], circles=rad[mitNdx],
+                inches=FALSE, add=TRUE, bg="black", fg="black")
+        if (sum(!mitNdx))
+            symbols(x[!mitNdx], y[!mitNdx], circles=rad[!mitNdx],
+                inches=FALSE, add=TRUE, bg="bisque4", fg="bisque4")
 
         # draw boundary
         symbols(0, 0, circles = model@boundary, inches = FALSE, add = TRUE,

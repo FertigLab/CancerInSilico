@@ -11,7 +11,7 @@ Maintainer: Thomas D. Sherman <tsherma4@jhu.edu>,
 Description: The CancerInSilico package provides an R interface for running
     mathematical models of tumor progresson. This package has the underlying models
     implemented in C++ and the output and analysis features implemented in R.
-License: GPL (>= 2)
+License: GPL-2
 LazyData: true
 Imports:
     methods,
@@ -32,7 +32,7 @@ biocViews: MathematicalBiology,
     SystemsBiology,
     CellBiology,
     BiomedicalInformatics
-RoxygenNote: 6.0.1
+RoxygenNote: 5.0.1
 Collate:
     'CellSimulation.R'
     'GeneExpressionSimulation.R'
@@ -44,4 +44,3 @@ Collate:
     'class-Drug.R'
     'class-Pathway.R'
     'documentation.R'
-    'zzz.R'

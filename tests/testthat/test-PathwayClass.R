@@ -20,7 +20,7 @@ test_that('Pathway Expression Function',
         tolerance=0.01)
 })
 
-test_that('Full Expression Simulation',
+test_that('Pathway Expression Simulation',
 {
 
 

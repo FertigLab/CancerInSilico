@@ -43,10 +43,8 @@ test_that('cell model getters',
     expect_equal(sum(phases == 'I'), 956)
     expect_equal(sum(phases == 'M'),  44)
 
-    expect_equal(getCellTypes(modDefault,     0)[1], 'DEFAULT')
-    expect_equal(getCellTypes(modLongRun,     0)[1], 'DEFAULT')
-    expect_equal(getCellTypes(modLargeRun,    0)[1], 'DEFAULT')
-    expect_equal(getCellTypes(modHighDensity, 0)[1], 'DEFAULT')
+    ct <- getCellTypes(modDefault,0)
+    expect_equal(modDefault@cellTypes[[ct[1]]]@name, 'DEFAULT')
 })
 
 test_that('cell model calculations',
