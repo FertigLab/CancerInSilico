@@ -11,7 +11,6 @@
 #'             Thomas D. Sherman \email{tsherma4@jhu.edu}
 #' @docType package
 #' @name CancerInSilico
-#' @import methods
 #' @useDynLib CancerInSilico
 NULL
 

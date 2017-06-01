@@ -25,7 +25,7 @@
 #' @param ... model specific parameters (depends on modelType)
 #' @return A CellModel containing all info from the model run
 #' @examples
-#' runCancerSim(1,8)
+#' runCellSimulation(1,8,0.1)
 #' @export
 
 runCellSimulation <- function(initialNum, runTime, density,

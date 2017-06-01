@@ -52,6 +52,6 @@ to interact with the class. To see a list of available functions, there
 is a show() command implemented for CellModel objects.
 }
 \examples{
-runCancerSim(1,8)
+runCellSimulation(1,8,0.1)
 }
 
