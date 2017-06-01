@@ -15,7 +15,7 @@ Drug::Drug(unsigned id, const Rcpp::S4& drug)
 
 // calculate drug effect on cycle length of a cell
 double Drug::cycleLengthEffect(const CellType& type, double cycle) const
-{ 
+{
     // call R function
     Rcpp::Function effect = mDrugClass.slot("cycleLengthEffect");
     return Rcpp::as<double>(effect(Rcpp::wrap(type.name()), cycle));

@@ -18,6 +18,6 @@ double Cell::applyDrug(const Drug& drug)
     double oldLength = cycleLength();
     mCycleLength = drug.cycleLengthEffect(type(), cycleLength());
     mDrugApplied |= 1 << drug.id();
-    return oldLength;
+    return oldLength - mCycleLength;
 }
 

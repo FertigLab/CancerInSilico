@@ -199,7 +199,7 @@ setMethod('interactivePlot', signature('CellModel'),
             'n ARG = forward ARG timesteps (default ARG = 1)\n',
             't ARG - jump to timestep ARG (default ARG = 1)\n',
             'd ARG - change default ARG for other commands\n',
-            's = summary of cells\nq = quit\nh = basic command help\n')
+            's = summary of cells\n q = quit\n h = basic command help\n')
 
         time <- 0 # start time
         defaultArg <- 1 # default command line arg value    
@@ -213,6 +213,8 @@ setMethod('interactivePlot', signature('CellModel'),
                 time <- model@runTime
             else if (time < 0 || !is.numeric(time) || is.na(time))
                 time <- 0
+
+            time <- model@recordIncrement*ceiling(time/model@recordIncrement)
 
             plotCells(model, time) # plot cells at current time
             read <- readline()     # get keyboard input
@@ -236,9 +238,9 @@ setMethod('interactivePlot', signature('CellModel'),
                     {time = time - arg},    # 'b' - decrease time by arg
                     {time = arg},           # 't' - go to time arg
                     {defaultArg = arg},    # 'd' - set default arg
-                    {print(cellSummary(model, time))}, # 's' - cell summary
+                    {cat(cellSummary(model, time))}, # 's' - cell summary
                     {quit <- TRUE},         # 'q' - quit display
-                    {print(helpMSG)}        # 'h' - display help command
+                    {cat(helpMSG)}        # 'h' - display help command
                 )
             }
             else
@@ -252,8 +254,8 @@ setMethod('interactivePlot', signature('CellModel'),
 setMethod('cellSummary', signature('CellModel'),
     function(model, time)
     {
-        return (paste('Cell Density: ', getDensity(model, time),
-            '\nNumber of Cells: ', getNumerOfCells(model, time), '\n'))
+        return (paste('Cell Density: ', round(getDensity(model, time), 2),
+            '\nNumber of Cells: ', getNumberOfCells(model, time), '\n'))
     }
 )
 

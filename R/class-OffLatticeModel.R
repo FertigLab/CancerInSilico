@@ -208,6 +208,7 @@ setMethod('plotCells', signature('OffLatticeModel'),
         radii <- getRadii(model, time)
         axis_len <- getAxisLength(model, time)
         axis_ang <- getAxisAngle(model, time)
+        mitNdx <- rep(getCellPhases(model, time), 2) == 'M'
 
         # calculate plot bounds
         if (model@boundary > 0)
@@ -237,8 +238,12 @@ setMethod('plotCells', signature('OffLatticeModel'),
         rad <- c(radii, radii)
     
         # plot the cells
-        symbols(x,y, circles=rad, inches=FALSE, add=TRUE, bg="bisque4",
-            fg="bisque4")
+        if (sum(mitNdx))
+            symbols(x[mitNdx], y[mitNdx], circles=rad[mitNdx],
+                inches=FALSE, add=TRUE, bg="black", fg="black")
+        if (sum(!mitNdx))
+            symbols(x[!mitNdx], y[!mitNdx], circles=rad[!mitNdx],
+                inches=FALSE, add=TRUE, bg="bisque4", fg="bisque4")
 
         # draw boundary
         symbols(0, 0, circles = model@boundary, inches = FALSE, add = TRUE,

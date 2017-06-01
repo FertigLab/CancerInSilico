@@ -6,6 +6,9 @@
 
 OffLatticeRadiusSolver OffLatticeCell::mSolver = OffLatticeRadiusSolver();
 
+double sinTable[65536] = {0};
+initTable initTableInstance;
+
 // constructor
 OffLatticeCell::OffLatticeCell(CellType type) : Cell(type)
 {
@@ -13,6 +16,14 @@ OffLatticeCell::OffLatticeCell(CellType type) : Cell(type)
     mCoordinates = Point<double>(0.0, 0.0);
     setRadius(sqrt(mType.size()));
     mAxisAngle = Random::uniform(0, 2 * M_PI);
+}
+
+// set axis angle of cell
+void OffLatticeCell::setAxisAngle(double angle)
+{
+    mAxisAngle = fmod(angle, TWO_PI);
+    if (mAxisAngle < 0.0)
+        mAxisAngle += TWO_PI;
 }
 
 // set radius of cell - adjust axis length accordingly
@@ -38,6 +49,7 @@ void OffLatticeCell::setAxisLength(double len)
 void OffLatticeCell::divide(OffLatticeCell& daughter)
 {
     // update coordinates
+    updateCenters();
     daughter.setCoordinates(centers().first);
     setCoordinates(centers().second);
 
@@ -68,27 +80,25 @@ void OffLatticeCell::gotoRandomCyclePoint()
 }
 
 // calculate the center of each side of the 'dumbell' shape
-std::pair< Point<double>, Point<double> > OffLatticeCell::centers() const
+void OffLatticeCell::updateCenters() const
 {
-    std::pair< Point<double>, Point<double> > centers;
-    
     // offset from true center in both dimensions
-    double xOffset = ((0.5 * mAxisLength) - mRadius) * cos(mAxisAngle);
-    double yOffset = ((0.5 * mAxisLength) - mRadius) * sin(mAxisAngle);
+    double xOffset = ((0.5 * mAxisLength) - mRadius) * fastCos(mAxisAngle);
+    double yOffset = ((0.5 * mAxisLength) - mRadius) * fastSin(mAxisAngle);
 
     // apply offset
-    centers.first = Point<double>(mCoordinates.x + xOffset,
+    mCenters.first = Point<double>(mCoordinates.x + xOffset,
         mCoordinates.y + yOffset);
-    centers.second = Point<double>(mCoordinates.x - xOffset,
+    mCenters.second = Point<double>(mCoordinates.x - xOffset,
         mCoordinates.y - yOffset);
-
-    return centers;
 }
 
 // calculate distance between two cells (distance between edges)
 double OffLatticeCell::distance(const OffLatticeCell& b) const
 {
     // find smallest between two centers 
+    updateCenters();
+    b.updateCenters();
     double minD = centers().first.distance(b.centers().first);
     minD = std::min(minD, centers().first.distance(b.centers().second));
     minD = std::min(minD, centers().second.distance(b.centers().first));

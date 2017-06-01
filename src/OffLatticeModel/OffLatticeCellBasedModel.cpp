@@ -174,6 +174,7 @@ bool OffLatticeCellBasedModel::checkBoundary(const OffLatticeCell& cell)
     double b = boundary();
 
     // return true if cell is farther from center than the boundary line
+    cell.updateCenters();
     return (b > 0 &&
         (cell.centers().first.distance(origin) + cell.radius() > b 
         || cell.centers().second.distance(origin) + cell.radius() > b));
