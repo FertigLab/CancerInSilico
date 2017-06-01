@@ -251,9 +251,9 @@ int Lattice<T>::size() const
 
 // get value stored at location
 template <class T>
-T& at(const Point<double>& pt)
+T& Lattice<T>::at(const Point<double>& pt)
 {
-    return mValues[mGrid.at(hash(pt)) ].second;
+    return mValues[mGrid.at(hash(pt))].second;
 }
 
 #endif

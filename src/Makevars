@@ -11,4 +11,5 @@ OBJECTS =   RunModel.o \
             Core/Drug.o \
             Core/Random.o \
             Tests/Core/test-CellType.o \
+            Tests/OffLatticeModel/test-OffLatticeCell.o \
             Tests/test-runner.o
