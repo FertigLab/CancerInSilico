@@ -113,8 +113,8 @@ public:
     // number of objects in lattice
     int size() const;
 
-    // get object at specific location
-    T& at(const Point<double>&p){return mValues[mGrid.at(hash(p))].second;}
+    // get value stored at location
+    T& at(const Point<double>&);
 
     // iterators
     virtual local_iterator lbegin(const Point<double>&, double) = 0;
@@ -247,6 +247,13 @@ template <class T>
 int Lattice<T>::size() const
 {
     return mValues.size();
+}
+
+// get value stored at location
+template <class T>
+T& at(const Point<double>& pt)
+{
+    return mValues[mGrid.at(hash(pt)) ].second;
 }
 
 #endif
