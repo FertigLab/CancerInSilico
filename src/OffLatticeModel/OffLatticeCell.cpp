@@ -15,7 +15,7 @@ OffLatticeCell::OffLatticeCell(CellType type) : Cell(type)
     clearTrialRecord();
     mCoordinates = Point<double>(0.0, 0.0);
     setRadius(sqrt(mType.size()));
-    mAxisAngle = Random::uniform(0, 2 * M_PI);
+    mAxisAngle = Random::uniform(0, TWO_PI);
 }
 
 // set axis angle of cell
@@ -55,7 +55,7 @@ void OffLatticeCell::divide(OffLatticeCell& daughter)
 
     // update state of parent
     setRadius(sqrt(mType.size()));
-    mAxisAngle = Random::uniform(0, 2 * M_PI);
+    mAxisAngle = Random::uniform(0, TWO_PI);
     mPhase = INTERPHASE;
     mReadyToDivide = false;
     clearTrialRecord();

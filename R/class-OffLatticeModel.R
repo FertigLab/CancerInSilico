@@ -151,7 +151,7 @@ setMethod('getCellPhases', signature('OffLatticeModel'),
 setMethod('getCellTypes', signature('OffLatticeModel'),
     function(model, time)
     {
-        return(getColumn(model, time, 8))
+        return(getColumn(model, time, 8) + 1)
     }
 )
 

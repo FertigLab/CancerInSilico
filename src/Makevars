@@ -11,5 +11,6 @@ OBJECTS =   RunModel.o \
             Core/Drug.o \
             Core/Random.o \
             Tests/Core/test-CellType.o \
-            Tests/test-runner.o
+            Tests/test-runner.o \
+            Tests/OffLatticeModel/test-OffLatticeCell.cpp
 
