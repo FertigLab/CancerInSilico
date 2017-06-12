@@ -33,11 +33,11 @@ setValidity('Pathway',
             'missing \'maxExpression\''
         else if (!length(object@minExpression))
             'missing \'minExpression\''
-        else if (object@maxExpression <= object@minExpression)
+        else if (min(object@maxExpression) <= max(object@minExpression))
             'invalid expression range'
-        else if (object@maxExpression <= 0)
+        else if (sum(object@maxExpression <= 0) > 0)
             '\'maxExpression\' must be positive'
-        else if (object@minExpression < 0)
+        else if (sum(object@minExpression < 0) > 0)
             '\'minExpression\' must be non-negative'
         else TRUE
     }
@@ -83,12 +83,12 @@ setMethod('simulateExpression',
             # calculate gene expression
             scale <- sapply(cells, function(c)
                 pathway@expressionScale(model, c, times[t]))
-            exp <- (pathway@max - pathway@min) %*% t(scale) + pathway@min
+            exp <- (pathway@maxExpression - pathway@minExpression) %*% t(scale) + pathway@minExpression
                         
             # add expression to matrix
             cols <- (sampSize * (t-1) + 1):(sampSize * t)            
             if (singleCell) gsMatrix[,cols] <- exp
-            else gsMatrix[,cols] <- mean(exp)
+            else gsMatrix[,cols] <- rowMeans(exp)
         }
         return(gsMatrix)
     }

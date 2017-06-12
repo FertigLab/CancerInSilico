@@ -3,10 +3,10 @@ library(methods)
 
 ## Full run examples
 
-modDefault <- runCellSimulation(10,10,0.1)
-modLongRun <- runCellSimulation(5,100,0.1)
-modLargeRun <- runCellSimulation(1000,1,0.1)
-modHighDensity <- runCellSimulation(100,10,0.4)
+#modDefault <- runCellSimulation(10,10,0.1)
+#modLongRun <- runCellSimulation(5,100,0.1)
+#modLargeRun <- runCellSimulation(1000,1,0.1)
+#modHighDensity <- runCellSimulation(100,10,0.4)
 
 ## CellType examples
 
@@ -56,10 +56,12 @@ growthExp <- function(model, cell, time)
 
 mitosisExp <- function(model, cell, time)
 {
-    window <- c(max(time - 1, 0), min(time + 1, model@runTime))
+    window <- c(max(time - 2, 0), min(time + 2, model@runTime))
 
     a1 <- getAxisLength(model, window[1])[cell]
     a2 <- getAxisLength(model, window[2])[cell]
+    if (is.na(a1)) a1 <- 0
+
 
     return(ifelse(a2 < a1, 1, 0))
 }
@@ -71,7 +73,8 @@ SPhaseExp <- function(model, cell, time)
     r1 <- getRadii(model, window[1])[cell]
     r2 <- getRadii(model, window[2])[cell]
 
-    type <- getCellTypes(model, time)[cell]
+    typeNdx <- getCellTypes(model, time)[cell]
+    type <- model@cellTypes[[typeNdx]]
 
     return(ifelse(r1 < sqrt(1.5 * type@size) & r2 > sqrt(1.5 * type@size),
         1, 0))
@@ -82,29 +85,21 @@ contactInhibitionExp <- function(model, cell, time)
     return(getContactInhibition(model, time)[cell])
 }
 
-neighborsExp <- function(model, cell, time)
-{
-    num <- getNumberOfNeighbors(model, time, cell, 5)
-    return(num / 6)
-}
+getGenes <- function(str) paste(str, letters[1:26], sep='_')
+getBound <- function(mu) runif(26,mu,mu+2)
 
-getGenes <- function(str) paste(str, letters[1:26], '_')
+pwyGrowth <- new('Pathway', genes = getGenes('growth'), minExpression = getBound(1),
+    maxExpression = getBound(5), expressionScale = growthExp)
 
-pwyGrowth <- new('Pathway', genes = getGenes('growth'), minExpression = 3,
-    maxExpression = 5, expressionScale = growthExp)
+pwyMitosis <- new('Pathway', genes = getGenes('mitosis'), minExpression = getBound(3),
+    maxExpression = getBound(8), expressionScale = mitosisExp)
 
-pwyMitosis <- new('Pathway', genes = getGenes('mitosis'), minExpression = 0,
-    maxExpression = 2, expressionScale = mitosisExp)
-
-pwySPhase <- new('Pathway', genes = getGenes('Sphase'), minExpression = 0,
-    maxExpression = 2, expressionScale = SPhaseExp)
+pwySPhase <- new('Pathway', genes = getGenes('Sphase'), minExpression = getBound(0),
+    maxExpression = getBound(3), expressionScale = SPhaseExp)
 
 pwyContactInhibition <- new('Pathway', genes=getGenes('contact_inhibition'),
-    minExpression = 0, maxExpression = 2,
+    minExpression = getBound(1), maxExpression = getBound(3),
     expressionScale = contactInhibitionExp)
-
-pwyNeighbors <- new('Pathway', genes = getGenes('neighbors'),
-    minExpression = 0, maxExpression = 2, expressionScale = neighborsExp)
 
 save(pwyGrowth, pwyMitosis, pwySPhase, pwyContactInhibition, pwyNeighbors,
     file = 'SamplePathways.RData')
