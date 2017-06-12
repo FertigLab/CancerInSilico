@@ -61,21 +61,10 @@ test_that('cell model calculations',
     expect_equal(getDensity(modLargeRun,      1), 0.10, tolerance=0.01)
     expect_equal(getDensity(modHighDensity,  10), 0.46, tolerance=0.01)
 
-    expect_equal(getNumberOfNeighbors(modDefault, 0, 1, 0), 0)
-    expect_equal(getNumberOfNeighbors(modDefault, 0, 1,
-        2 * modDefault@boundary), 9)
+#    expect_equal(getNumberOfNeighbors(modDefault, 0, 1, 0), 0)
+#    expect_equal(getNumberOfNeighbors(modDefault, 0, 1,
+#        2 * modDefault@boundary), 9)
 
-    expect_equal(getNumberOfNeighbors(modLongRun, 0, 1, 0), 0)
-    expect_equal(getNumberOfNeighbors(modLongRun, 0, 1,
-        2 * modLongRun@boundary), 4)
-
-    expect_equal(getNumberOfNeighbors(modLargeRun, 0, 1, 0), 0)
-    expect_equal(getNumberOfNeighbors(modLargeRun, 0, 1,
-        2 * modLargeRun@boundary), 999)
-
-    expect_equal(getNumberOfNeighbors(modHighDensity, 0, 1, 0), 0)
-    expect_equal(getNumberOfNeighbors(modHighDensity, 0, 1,
-        2 * modHighDensity@boundary), 99)
 })
 
 

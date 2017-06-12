@@ -1,4 +1,6 @@
 #' \code{inSilicoGeneExpression}
+#' @export
+#'
 #' @param model a CellModel object
 #' @param pathways list of genes pathways
 #' @param sampFreq how often to generate data
@@ -8,8 +10,6 @@
 #' @param nCells number of cells to use for single cell data
 #' @param perError percent error?
 #' @param microArray true if micro array data
-#' @export
-#'
 inSilicoGeneExpression <- function(model, pathways, sampFreq=1, nGenes=NULL,
 combineFUN=max, singleCell=FALSE, nCells=96, perError=0.1, microArray=FALSE)
 {

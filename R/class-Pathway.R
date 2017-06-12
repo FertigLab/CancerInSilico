@@ -45,12 +45,16 @@ setValidity('Pathway',
 
 ##################### Generics ###################
 
+#' @export
+#' @docType methods
+#' @rdname simulateExpression-methods
 setGeneric('simulateExpression',
     function(pathway, model, sampFreq, singleCell = FALSE, sampSize = 0)
         {standardGeneric('simulateExpression')})
 
 ##################### Methods ####################
 
+#' @rdname simulateExpression-method
 setMethod('simulateExpression',
     signature(pathway = 'Pathway', model = 'CellModel'),
     function(pathway, model, sampFreq, singleCell, sampSize)

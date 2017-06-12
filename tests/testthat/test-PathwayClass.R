@@ -22,6 +22,5 @@ test_that('Pathway Expression Function',
 
 test_that('Pathway Expression Simulation',
 {
-
-
+    expect_equal(simulateExpression(pwyMitosis, defaultModel, 1)), 0)
 })

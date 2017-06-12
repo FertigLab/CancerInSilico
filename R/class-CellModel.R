@@ -170,6 +170,10 @@ setGeneric('getDensity', function(model, time)
     {standardGeneric('getDensity')})
 
 #' @export
+setGeneric('getLocalDensity', function(model, time, cell, radius)
+    {standardGeneric('getLocalDensity')})
+
+#' @export
 setGeneric('timeToRow', function(model, time)
     {standardGeneric('timeToRow')})
 
@@ -214,11 +218,11 @@ setMethod('interactivePlot', signature('CellModel'),
             else if (time < 0 || !is.numeric(time) || is.na(time))
                 time <- 0
 
-            time <- model@recordIncrement*ceiling(time/model@recordIncrement)
+            time <-model@recordIncrement*ceiling(time/model@recordIncrement)
 
             plotCells(model, time) # plot cells at current time
             read <- readline()     # get keyboard input
-            place <- unlist(gregexpr(" ", read))[1] # separate "command arg"
+            place <- unlist(gregexpr(" ",read))[1] # separate "command arg"
             if (place == -1) {place <- nchar(read)} # no arg given
 
             # parse command
