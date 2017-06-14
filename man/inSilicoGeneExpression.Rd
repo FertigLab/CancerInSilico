@@ -2,11 +2,11 @@
 % Please edit documentation in R/GeneExpressionSimulation.R
 \name{inSilicoGeneExpression}
 \alias{inSilicoGeneExpression}
-\title{\code{inSilicoGeneExpression}}
+\title{Simulate Gene Expression Data}
 \usage{
 inSilicoGeneExpression(model, pathways, sampFreq = 1, nGenes = NULL,
   combineFUN = max, singleCell = FALSE, nCells = 96, perError = 0.1,
-  microArray = FALSE)
+  microArray = FALSE, randSeed = 0)
 }
 \arguments{
 \item{model}{a CellModel object}
@@ -26,8 +26,14 @@ inSilicoGeneExpression(model, pathways, sampFreq = 1, nGenes = NULL,
 \item{perError}{percent error?}
 
 \item{microArray}{true if micro array data}
+
+\item{randSeed}{random seed for simulation}
+}
+\value{
+matrix of gene expression data
 }
 \description{
-\code{inSilicoGeneExpression}
+simulate gene expression data for a set of pathways, using
+ the behavior of a CellModel as the basis for the simulation
 }
 

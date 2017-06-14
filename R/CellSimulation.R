@@ -1,4 +1,5 @@
-#'\code{runCancerSim} Runs a cancer simulation given parameters
+#'\code{inSilicoCellModel} Simulates Cell Model
+#' @export
 #'
 #' @details This function provides a centralized R interface to run c++
 #' code for cell-based models implemented in this package. Standard
@@ -25,16 +26,14 @@
 #' @param ... model specific parameters (depends on modelType)
 #' @return A CellModel containing all info from the model run
 #' @examples
-#' runCellSimulation(1,8,0.1)
-#' @export
-
-runCellSimulation <- function(initialNum, runTime, density,
-                                modelType = 'DrasdoHohme', ...)
+#' inSilicoCellModel(initialNum=1, runTime=8, density=0.1)
+inSilicoCellModel <- function(initialNum, runTime, density, 
+modelType = 'DrasdoHohme', ...)
 {
     # create cell model object
     model <- new('DrasdoHohmeModel', initialNum = initialNum, 
-        runTime = runTime, density = density, ...);
+        runTime = runTime, density = density, ...)
     
     # run model and return result
-    return (run(model))
+    return(run(model))
 }

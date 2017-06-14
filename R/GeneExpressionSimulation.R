@@ -1,6 +1,8 @@
-#' \code{inSilicoGeneExpression}
+#' Simulate Gene Expression Data
 #' @export
 #'
+#' @description simulate gene expression data for a set of pathways, using
+#'  the behavior of a CellModel as the basis for the simulation
 #' @param model a CellModel object
 #' @param pathways list of genes pathways
 #' @param sampFreq how often to generate data
@@ -10,13 +12,15 @@
 #' @param nCells number of cells to use for single cell data
 #' @param perError percent error?
 #' @param microArray true if micro array data
+#' @param randSeed random seed for simulation
+#' @return matrix of gene expression data
 inSilicoGeneExpression <- function(model, pathways, sampFreq=1,
 nGenes=NULL, combineFUN=max, singleCell=FALSE, nCells=96, perError=0.1,
-microArray=FALSE)
+microArray=FALSE, randSeed=0, dataSet)
 {
     # run simulation for each pathway
-    pathwayOutput <- lapply(pathways, function(p) simulateExpression(p,
-        model, sampFreq, singleCell, nCells))
+    pathwayOutput <- lapply(pathways, function(p)
+        simulatePathwayExpression(p, model, sampFreq, singleCell, nCells))
 
     # combine expression matrices, add dummy genes, and shuffle order
     meanExp <- combineGeneExpression(pathwayOutput, combineFUN)
@@ -24,23 +28,38 @@ microArray=FALSE)
     meanExp <- meanExp[sample(nrow(meanExp)),]
 
     # add simulated error
-    return (simulateError(meanExp, pathways, fasta, dataSet, perError,
-        attrsep, microArray))
+    return (simulateError(meanExp, dataSet, perError, microArray))
 }
 
+#' Verify Gene Expression Data Set
+#' @export
+#'
+#' @description Checks a data set before it is used to calibrate the 
+#'  pathway values for min/max expression
+#' @param dataSet matrix of gene expression data where row names are genes
+#' @param genes names of all genes being simulated
+#' @return no value is return, but errors/warnings are thrown related to
+#'  potential problems in the data set
 checkDataSet <- function(dataSet, genes)
 {
     if (length(setdiff(genes, row.names(dataSet))))
         stop('dataSet does not contain all neccesary genes')
     else if (sum(is.na(unname(apply(dataSet[genes,], 2, median)))) > 0)
-        stop('dataSet has NA values for pathway genes')
+        stop('dataSet has NA values for pathway genes') #TODO: warning?
     else if (max(dataSet[!is.na(dataSet)]) > 50)
         warning('check that the data is log transformed (large max value)')
     else if (min(dataSet[!is.na(dataSet)]) < 0)
         stop('dataSet should be strictly non-negative')
 }
 
-# combine gene expression matrices according to some function
+#' Combine Gene Expression Matrices
+#' @keywords internal
+#'
+#' @description combines mutliple matrices by in a similiar way to rbind,
+#'  but combines muttiple values for a single gene by a given function
+#' @param expList list of expression matrices
+#' @param combineFUN function to use when combining multiple values
+#' @return matrix containing combined expression values
 combineGeneExpression <- function(expList, combineFUN=max)
 {
     # verify same number of columns
@@ -57,22 +76,40 @@ combineGeneExpression <- function(expList, combineFUN=max)
     # combine info from all matrices containing the gene
     for (g in allGenes)
     {
-        valid <- sapply(expLst, function(m) g %in% row.names(m))
+        valid <- sapply(expList, function(m) g %in% row.names(m))
         exp <- sapply(expList[valid], function(m) m[g,])
         output[g,] <- apply(exp, 1, combineFUN)
     }   
     return(output)
 }
 
-padExpMatrix <- function(meanExp, nGenes, dist)
+#' Add Noise to Gene Expression Matrices
+#' @export
+#'
+#' @description add genes with random expression values to the matrix
+#' @param mat matrix of gene expression values
+#' @param nGenes final number of genes in the expression matrix
+#' @param dist distribution to sample random values from
+#' @return gene expression matrix with dummy genes added in
+padExpressionMatrix <- function(mat, nGenes, distr)
 {
-    dummyExp <- matrix(nrow=max(nGenes-nrow(meanExp),0),ncol=ncol(meanExp))
-    dummyExp[] <- sample(meanExp, length(dummyExp), replace=TRUE)
+    if (nGenes <= nrow(mat)) return(mat)
+    dummyExp <- matrix(nrow=nGenes - nrow(mat), ncol=ncol(mat))
+    dummyExp[] <- sapply(1:length(dummyExp), function(x) distr())
     rownames(dummyExp) <- paste('dummy', 1:nrow(dummyExp), sep='_')
-    colnames(dummyExp) <- colnames(meanExp)
-    return(combineGeneExpression(list(meanExp, dummyExp)))
+    colnames(dummyExp) <- colnames(mat)
+    return(combineGeneExpression(list(mat, dummyExp)))
 }
 
+#' Add Simulated Error to Expression Data
+#' @export
+#'
+#' @description add noise to all values in expression matrix
+#' @param meanExp matrix of gene expression data
+#' @param dataSet matrix of gene expression data where row names are genes
+#' @param perError TODO
+#' @param microArray whether this data is RNA-seq or microarray
+#' @return gene expression matrix with error
 simulateError <- function(meanExp, dataSet, perError, microArray)
 {
     if (microArray)
@@ -84,21 +121,28 @@ simulateError <- function(meanExp, dataSet, perError, microArray)
     }
     else
     {
-        meanExp <- round(2 ^ meanExp - 1)
-        output <- apply(meanExp, 2, function(exp) NBsim(exp,dataSet,TRUE))
+        output <- apply(round(2^meanExp-1), 2, function(exp) 
+            negBinError(exp,dataSet,TRUE))
     }
     dimnames(output) <- dimnames(meanExp)
     return(output)
 }
 
-#TODO: clarify this error model (limma-voom)
-NBsim <- function(pwyMean, dataSet = NULL, invChisq = TRUE)
+#' Negative Binomial Error model
+#' @keywords internal
+#'
+#' @description #TODO
+#' @param pwyMean
+#' @param dataSet
+#' @param invChisq
+negBinError <- function(pwyMean, dataSet, invChisq=FALSE)
 {
+    if (missing(dataSet)) print('test')
     # get number of genes and mean expression for each one
-    if (!is.null(dataSet) & checkDataset(dataSet, row.names(pwyMean)))
-        {referenceMean <- pmax(round(rowMeans(2 ^ dataSet - 1)),1)}
+    if (!missing(dataSet))# & checkDataset(dataSet, row.names(pwyMean)))
+        referenceMean <- pmax(round(rowMeans(2 ^ dataSet - 1)),1)
     else
-        {referenceMean <- pmax(pwyMean,1)}
+        referenceMean <- pmax(pwyMean,1)
     nGenes <- length(referenceMean)
 
     # Biological variation
@@ -113,6 +157,6 @@ NBsim <- function(pwyMean, dataSet = NULL, invChisq = TRUE)
     lambda <- matrix(rgamma(nGenes, shape=shape, scale=scale), nGenes)
 
     # Technical variation
-    return(matrix(rpois(ngenes, lambda=lambda), nGenes))
+    return(matrix(rpois(nGenes, lambda=lambda), nGenes))
 }
 
