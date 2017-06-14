@@ -161,14 +161,14 @@ setMethod('getGrowthAcceptRate', signature('OffLatticeModel'),
 setMethod('getNumberOfCells', signature('OffLatticeModel'),
     function(model, time)
     {
-        return(sum(getRadii(model, time) > 0))
+        return(sum(getRadius(model, time) > 0))
     }
 )
 
 setMethod('getDensity', signature('OffLatticeModel'),
     function(model, time)
     {
-        radii <- getRadii(model, time)
+        radii <- getRadius(model, time)
         if (model@boundary > 0)
         {
             return(sum(radii ** 2) / model@boundary ^ 2)
@@ -212,7 +212,7 @@ setMethod('plotCells', signature('OffLatticeModel'),
     {
         # get all the cell information
         coords <- getCoordinates(model, time)
-        radii <- getRadii(model, time)
+        radii <- getRadius(model, time)
         axisLen <- getAxisLength(model, time)
         axisAng <- getAxisAngle(model, time)
         mitNdx <- rep(getCellPhases(model, time), 2) == 'M'

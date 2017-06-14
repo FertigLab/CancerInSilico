@@ -22,5 +22,9 @@ test_that('Pathway Expression Function',
 
 test_that('Pathway Expression Simulation',
 {
-    expect_equal(simulateExpression(pwyMitosis, defaultModel, 1)), 0)
+    meanExp <- simulateExpression(pwyMitosis, modDefault, 1)
+    expect_true(all(meanExp[,3] < meanExp[,4]))
+
+    meanExpSS <- simulateExpression(pwyMitosis, modDefault, 1, TRUE, 10)
+    expect_true(all(meanExpSS[,'c9_t2'] < meanExpSS[,'c9_t3']))
 })

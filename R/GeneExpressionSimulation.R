@@ -10,8 +10,9 @@
 #' @param nCells number of cells to use for single cell data
 #' @param perError percent error?
 #' @param microArray true if micro array data
-inSilicoGeneExpression <- function(model, pathways, sampFreq=1, nGenes=NULL,
-combineFUN=max, singleCell=FALSE, nCells=96, perError=0.1, microArray=FALSE)
+inSilicoGeneExpression <- function(model, pathways, sampFreq=1,
+nGenes=NULL, combineFUN=max, singleCell=FALSE, nCells=96, perError=0.1,
+microArray=FALSE)
 {
     # run simulation for each pathway
     pathwayOutput <- lapply(pathways, function(p) simulateExpression(p,
@@ -39,30 +40,6 @@ checkDataSet <- function(dataSet, genes)
         stop('dataSet should be strictly non-negative')
 }
 
-calibratePathways <- function(pathways, dataSet=NULL, distFunc=NULL)
-{
-    if (is.null(dataSet) & is.null(distFunc))
-        stop('need either a data set or a distribution to calibrate')
-
-    for (p in names(pathways))
-    {
-        if (!is.null(dataSet))
-        {
-            checkDataSet(dataSet, pathways[[p]]@genes)
-            data <- dataSet[pathways[[p]]@genes,]
-            pathways[[p]]@minExpression <- unname(apply(data, 1, min))
-            pathways[[p]]@maxExpression <- unname(apply(data, 1, max))
-        }
-        else if (!is.null(dist))
-        {
-            distribution <- distFunc(pathways[[p]])
-            pathways[[p]]@minExpression <- distribution[['min']]
-            pathways[[p]]@maxExpression <- distribution[['max']]
-        }
-    }
-    return(pathways)
-}
-
 # combine gene expression matrices according to some function
 combineGeneExpression <- function(expList, combineFUN=max)
 {
@@ -87,9 +64,9 @@ combineGeneExpression <- function(expList, combineFUN=max)
     return(output)
 }
 
-padExpMatrix <- function(meanExp, nGenes)
+padExpMatrix <- function(meanExp, nGenes, dist)
 {
-    dummyExp <- matrix(nrow=max(nGenes-nrow(meanExp),0), ncol=ncol(meanExp))
+    dummyExp <- matrix(nrow=max(nGenes-nrow(meanExp),0),ncol=ncol(meanExp))
     dummyExp[] <- sample(meanExp, length(dummyExp), replace=TRUE)
     rownames(dummyExp) <- paste('dummy', 1:nrow(dummyExp), sep='_')
     colnames(dummyExp) <- colnames(meanExp)
@@ -108,7 +85,7 @@ simulateError <- function(meanExp, dataSet, perError, microArray)
     else
     {
         meanExp <- round(2 ^ meanExp - 1)
-        output <- apply(meanExp, 2, function(exp) NBsim(exp, dataSet, TRUE))
+        output <- apply(meanExp, 2, function(exp) NBsim(exp,dataSet,TRUE))
     }
     dimnames(output) <- dimnames(meanExp)
     return(output)

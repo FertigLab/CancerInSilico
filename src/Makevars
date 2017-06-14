@@ -1,4 +1,4 @@
-PKG_CPPFLAGS = -Wall -Wextra -pedantic
+PKG_CPPFLAGS = -Wall -Wextra -pedantic -Wno-parentheses -Wno-ignored-qualifiers -Wno-unused-variable
 OBJECTS =   RunModel.o \
             RcppExports.o \
             CellModels/DrasdoHohmeModel.o \
@@ -11,5 +11,4 @@ OBJECTS =   RunModel.o \
             Core/Drug.o \
             Core/Random.o \
             Tests/Core/test-CellType.o \
-            Tests/OffLatticeModel/test-OffLatticeCell.o \
             Tests/test-runner.o

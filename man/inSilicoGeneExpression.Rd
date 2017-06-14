@@ -2,6 +2,7 @@
 % Please edit documentation in R/GeneExpressionSimulation.R
 \name{inSilicoGeneExpression}
 \alias{inSilicoGeneExpression}
+\title{\code{inSilicoGeneExpression}}
 \usage{
 inSilicoGeneExpression(model, pathways, sampFreq = 1, nGenes = NULL,
   combineFUN = max, singleCell = FALSE, nCells = 96, perError = 0.1,
@@ -25,5 +26,8 @@ inSilicoGeneExpression(model, pathways, sampFreq = 1, nGenes = NULL,
 \item{perError}{percent error?}
 
 \item{microArray}{true if micro array data}
+}
+\description{
+\code{inSilicoGeneExpression}
 }
 

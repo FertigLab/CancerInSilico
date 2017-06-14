@@ -13,7 +13,7 @@ library(methods)
 #' @slot epsilon constant that controls the probability trails are accepted
 #' @slot delta controls distance over which short range interactions occur
 #' @export
-setClass('DrasdoHohmeModel', contains = 'OffLatticeModel', slot = c(
+setClass('DrasdoHohmeModel', contains = 'OffLatticeModel', slots = c(
     nG = 'numeric',
     epsilon = 'numeric',
     delta = 'numeric'

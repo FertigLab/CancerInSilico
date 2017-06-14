@@ -19,10 +19,10 @@ test_that('cell model getters',
     expect_equal(getCoordinates(modLargeRun,   0)[1,1],  -68,tolerance=0.01)
     expect_equal(getCoordinates(modHighDensity,0)[1,1], 7.98,tolerance=0.01)
 
-    expect_equal(sum(getRadii(modDefault,     0)), 12.65, tolerance=0.01)
-    expect_equal(sum(getRadii(modLongRun,     0)),  6.08, tolerance=0.01)
-    expect_equal(sum(getRadii(modLargeRun,    0)),  1208, tolerance=0.01)
-    expect_equal(sum(getRadii(modHighDensity, 0)),   123, tolerance=0.01)
+    expect_equal(sum(getRadius(modDefault,     0)), 12.65, tolerance=0.01)
+    expect_equal(sum(getRadius(modLongRun,     0)),  6.08, tolerance=0.01)
+    expect_equal(sum(getRadius(modLargeRun,    0)),  1208, tolerance=0.01)
+    expect_equal(sum(getRadius(modHighDensity, 0)),   123, tolerance=0.01)
 
     expect_equal(sum(getAxisLength(modDefault,    0)),25.30, tolerance=0.01)
     expect_equal(sum(getAxisLength(modLongRun,    0)), 12.2, tolerance=0.01)
