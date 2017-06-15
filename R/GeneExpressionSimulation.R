@@ -16,7 +16,7 @@
 #' @return matrix of gene expression data
 inSilicoGeneExpression <- function(model, pathways, sampFreq=1,
 nGenes=NULL, combineFUN=max, singleCell=FALSE, nCells=96, perError=0.1,
-microArray=FALSE, randSeed=0, dataSet)
+microArray=FALSE, randSeed=0, dataSet=NULL)
 {
     # run simulation for each pathway
     pathwayOutput <- lapply(pathways, function(p)
@@ -25,10 +25,10 @@ microArray=FALSE, randSeed=0, dataSet)
     # combine expression matrices, add dummy genes, and shuffle order
     meanExp <- combineGeneExpression(pathwayOutput, combineFUN)
     if (!is.null(nGenes)) meanExp <- padExpMatrix(meanExp, nGenes)
-    meanExp <- meanExp[sample(nrow(meanExp)),]
+    meanExp <- simulateError(meanExp, dataSet, perError, microArray)
 
-    # add simulated error
-    return (simulateError(meanExp, dataSet, perError, microArray))
+    # shuffle order of genes
+    return (meanExp[sample(nrow(meanExp)),])
 }
 
 #' Verify Gene Expression Data Set
@@ -110,22 +110,19 @@ padExpressionMatrix <- function(mat, nGenes, distr)
 #' @param perError TODO
 #' @param microArray whether this data is RNA-seq or microarray
 #' @return gene expression matrix with error
-simulateError <- function(meanExp, dataSet, perError, microArray)
+simulateError <- function(meanExp, dataSet=NULL, perError, microArray)
 {
     if (microArray)
     {
-        error <- pmax(perError * meanExp, perError) * 
-            matrix(rnorm(length(meanExp)), nrow(meanExp), ncol(meanExp))
-        output <- meanExp + error
-        output[output < 0] <- 0
+        normalError <- matrix(rnorm(length(meanExp)), nrow=nrow(meanExp))
+        meanExp <- meanExp + pmax(perError*meanExp, perError) * normalError
+        return(pmax(meanExp, 0))
     }
     else
     {
-        output <- apply(round(2^meanExp-1), 2, function(exp) 
-            negBinError(exp,dataSet,TRUE))
+        meanExp <- round(2 ^ meanExp - 1) # convert to counts
+        return(negBinError(meanExp, dataSet))
     }
-    dimnames(output) <- dimnames(meanExp)
-    return(output)
 }
 
 #' Negative Binomial Error model
@@ -135,14 +132,20 @@ simulateError <- function(meanExp, dataSet, perError, microArray)
 #' @param pwyMean
 #' @param dataSet
 #' @param invChisq
-negBinError <- function(pwyMean, dataSet, invChisq=FALSE)
+negBinError <- function(meanExp, dataSet=NULL, invChisq=TRUE)
 {
-    if (missing(dataSet)) print('test')
+
     # get number of genes and mean expression for each one
-    if (!missing(dataSet))# & checkDataset(dataSet, row.names(pwyMean)))
-        referenceMean <- pmax(round(rowMeans(2 ^ dataSet - 1)),1)
+    if (is.null(dataSet))
+    {
+        referenceMean <- pmax(meanExp,1)
+    }
     else
-        referenceMean <- pmax(pwyMean,1)
+    {
+        checkDataSet(dataSet, row.names(meanExp))
+        dataSet <- dataSet[row.names(meanExp),]
+        referenceMean <- pmax(round(rowMeans(2 ^ dataSet - 1)),1)
+    }
     nGenes <- length(referenceMean)
 
     # Biological variation

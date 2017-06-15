@@ -64,14 +64,15 @@ test_that('Simulate Error - RNA-seq (Neg Bin)',
         simulatePathwayExpression(p, modDefault, 1))
     mat <- combineGeneExpression(pwyOutput)
 
-    matError <- simulateError(mat, perError=0.1, microArray=FALSE)
-#    negBinError(mat)
+    matError1 <- simulateError(mat, microArray=FALSE)
+#    matError2 <- simulateError(mat, dataSet=referenceGeneExpression, microArray=FALSE)
 })
 
 test_that('Simulate Gene Expression',
-{  
-#    gs <- inSilicoGeneExpression(modDefault, c(pwyMitosis, pwyGrowth),
-#        microArray=TRUE)
-#    print(gs)
+{
+    pwyGrowth <- calibratePathway(pwyGrowth, referenceGeneExpression)
+    pwyMitosis <- calibratePathway(pwyMitosis, referenceGeneExpression)
+    gs <- inSilicoGeneExpression(modDefault, c(pwyMitosis, pwyGrowth),
+    microArray=TRUE)
 })
 
