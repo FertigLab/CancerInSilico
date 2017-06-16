@@ -16,7 +16,7 @@
 #' @return matrix of gene expression data
 inSilicoGeneExpression <- function(model, pathways, sampFreq=1,
 nGenes=NULL, combineFUN=max, singleCell=FALSE, nCells=96, perError=0.1,
-microArray=FALSE, randSeed=0, dataSet)
+microArray=FALSE, randSeed=0, dataSet=NULL)
 {
     # run simulation for each pathway
     pathwayOutput <- lapply(pathways, function(p)
@@ -110,7 +110,7 @@ padExpressionMatrix <- function(mat, nGenes, distr)
 #' @param perError TODO
 #' @param microArray whether this data is RNA-seq or microarray
 #' @return gene expression matrix with error
-simulateError <- function(meanExp, dataSet, perError, microArray)
+simulateError <- function(meanExp, dataSet=NULL, perError, microArray)
 {
     if (microArray)
     {
@@ -135,11 +135,10 @@ simulateError <- function(meanExp, dataSet, perError, microArray)
 #' @param pwyMean
 #' @param dataSet
 #' @param invChisq
-negBinError <- function(pwyMean, dataSet, invChisq=FALSE)
+negBinError <- function(pwyMean, dataSet=NULL, invChisq=FALSE)
 {
-    if (missing(dataSet)) print('test')
     # get number of genes and mean expression for each one
-    if (!missing(dataSet))# & checkDataset(dataSet, row.names(pwyMean)))
+    if (!is.null(dataSet))# & checkDataset(dataSet, row.names(pwyMean)))
         referenceMean <- pmax(round(rowMeans(2 ^ dataSet - 1)),1)
     else
         referenceMean <- pmax(pwyMean,1)
@@ -159,4 +158,3 @@ negBinError <- function(pwyMean, dataSet, invChisq=FALSE)
     # Technical variation
     return(matrix(rpois(nGenes, lambda=lambda), nGenes))
 }
-
