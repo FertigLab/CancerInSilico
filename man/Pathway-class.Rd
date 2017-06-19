@@ -2,9 +2,8 @@
 % Please edit documentation in R/class-Pathway.R
 \docType{class}
 \name{Pathway-class}
-\alias{Pathway}
 \alias{Pathway-class}
-\alias{Pathway-valid}
+\alias{initialize,Pathway-method}
 \title{Pathway Class}
 \usage{
 \S4method{initialize}{Pathway}(.Object, ...)
@@ -13,8 +12,6 @@
 Describes the basic properties of a gene pathway
 
 Pathway Class Constructor
-
-Pathway Valid Object Check
 }
 \section{Slots}{
 

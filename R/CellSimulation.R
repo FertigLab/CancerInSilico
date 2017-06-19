@@ -1,4 +1,4 @@
-#'\code{inSilicoCellModel} Simulates Cell Model
+#' Simulates Cell Model
 #' @export
 #'
 #' @details This function provides a centralized R interface to run c++

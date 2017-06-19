@@ -129,22 +129,21 @@ simulateError <- function(meanExp, dataSet=NULL, perError, microArray)
 #' @keywords internal
 #'
 #' @description #TODO
-#' @param pwyMean
+#' @param meanExp matrix of mean expression data
 #' @param dataSet
 #' @param invChisq
 negBinError <- function(meanExp, dataSet=NULL, invChisq=TRUE)
 {
-
     # get number of genes and mean expression for each one
     if (is.null(dataSet))
     {
-        referenceMean <- pmax(meanExp,1)
+        referenceMean <- pmax(rowMeans(meanExp),1)
     }
     else
     {
         checkDataSet(dataSet, row.names(meanExp))
         dataSet <- dataSet[row.names(meanExp),]
-        referenceMean <- pmax(round(rowMeans(2 ^ dataSet - 1)),1)
+        referenceMean <- pmax(rowMeans(round(2 ^ dataSet - 1)),1)
     }
     nGenes <- length(referenceMean)
 
@@ -156,7 +155,7 @@ negBinError <- function(meanExp, dataSet=NULL, invChisq=TRUE)
         BCV <- BCV0 * exp(rnorm(nGenes, mean=0, sd=0.25) / 2)
 
     shape <- 1 / BCV^2
-    scale <- pwyMean / shape
+    scale <- meanExp / shape
     lambda <- matrix(rgamma(nGenes, shape=shape, scale=scale), nGenes)
 
     # Technical variation

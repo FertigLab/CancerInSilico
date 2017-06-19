@@ -65,7 +65,7 @@ test_that('Simulate Error - RNA-seq (Neg Bin)',
     mat <- combineGeneExpression(pwyOutput)
 
     matError1 <- simulateError(mat, microArray=FALSE)
-#    matError2 <- simulateError(mat, dataSet=referenceGeneExpression, microArray=FALSE)
+    matError2 <- simulateError(mat, dataSet=referenceGeneExpression, microArray=FALSE)
 })
 
 test_that('Simulate Gene Expression',
