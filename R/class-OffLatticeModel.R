@@ -182,25 +182,51 @@ setMethod('getDensity', signature('OffLatticeModel'),
 setMethod('getLocalDensity', signature('OffLatticeModel'),
     function(model, time, cell, radius)
     {
-#        coords <- getCoordinates(model, time)
-#        axisLen <- getAxisLength(model, time)
-#        axisAng <- getAxisAngle(model, time)
-#        rad <- getRadius(model, time)
-#        types <- getCellTypes(model, time)
-#        cellSize <- sapply(types, function(i) model@cellTypes[[i]]@size)
-#
-#        ndx <- setdiff(1:getNumberOfCells(model, time), cell)
-#        x_1 <- coords[ndx,1] + (0.5 * axisLen - rad) * cos(axisAng)
-#        x_2 <- coords[ndx,1] - (0.5 * axisLen - rad) * cos(axisAng)
-#        y_1 <- coords[ndx,2] + (0.5 * axisLen - rad) * sin(axisAng)
-#        y_2 <- coords[ndx,2] - (0.5 * axisLen - rad) * sin(axisAng)
-#
-#        dist <- function(a, b) (a[1] - b[1])^2 + (a[2] - b[2])^2
-#
-#        d1 <- apply(cbind(x_1, y_1), 1, dist, b=coords[cell,]) - rad[ndx]
-#        d2 <- apply(cbind(x_2, y_2), 1, dist, b=coords[cell,]) - rad[ndx] - 
-#        d <- c(d1, d2)
-#        w <- c(rep(1, length(d1)), 1 - axisLen / sqrt(16 * cellSize))
+        # subset to nearby cells
+        cells <- setdiff(1:getNumberOfCells(model, time), cell)
+        cells <- cells[sapply(cells, function(c)
+        {
+            sizeA <- model@cellTypes[[getCellType(model, time, cell)]]@size
+            sizeB <- model@cellTypes[[getCellType(model, time, c)]]@size
+        
+            posA <- getCoordinates(model, time, cell)
+            posB <- getCoordinates(model, time, c)
+
+            dist <- sqrt((posA[1] - posB[1])^2 + (posA[2] - posB[2])^2)
+            return(dist - 2 * (sqrt(sizeA) + sqrt(sizeB)) < radius)
+        })]
+
+        # generate uniform grid of points within radius
+        dist <- seq(0,1,0.01)
+        ang <- dist * 2 * pi
+        allCombo <- expand.grid(dist, ang)
+        localGrid <- matrix(nrow=nrow(allCombo), ncol=2) 
+        localGrid[,1] <- radius * sqrt(allCombo[,1]) * cos(allCombo[,2])
+        localGrid[,2] <- radius * sqrt(allCombo[,1]) * sin(allCombo[,2])
+
+        # return true if point inside cell
+        inside <- function(c, p)
+        {
+            coords <- getCoordinates(model, time, c)
+            rad <- getRadius(model, time, c)
+            axisLen <- getAxisLength(model, time, c)
+            axisAng <- getAxisAngle(model, time, c)
+    
+            x1 <- coords[1] + (0.5 * axisLen - rad) * cos(axisAng)  
+            y1 <- coords[2] + (0.5 * axisLen - rad) * sin(axisAng)
+            x2 <- coords[1] - (0.5 * axisLen - rad) * cos(axisAng)
+            y2 <- coords[2] - (0.5 * axisLen - rad) * sin(axisAng)
+
+            dist2 <- min((x1-p[1])^2+(y1-p[2])^2, (x2-p[1])^2+(y2-p[2])^2)
+            return(dist2 < rad ^ 2)            
+        }
+
+        # calculate proportion of points inside of a cell
+        # TODO: include points outside boundary in density
+        numPoints <- sum(apply(localGrid, 1, function(p)
+            sum(sapply(cells, inside, p=p)) > 0))
+        numPointsBase <- sum(apply(localGrid, 1, function(p) inside(cell, p)))
+        return(numPoints / (nrow(localGrid) - numPointsBase))
     }
 )
 

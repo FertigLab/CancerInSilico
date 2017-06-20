@@ -4,7 +4,7 @@
 \alias{inSilicoGeneExpression}
 \title{Simulate Gene Expression Data}
 \usage{
-inSilicoGeneExpression(model, pathways, sampFreq = 1, nGenes = NULL,
+inSilicoGeneExpression(model, pathways, sampFreq = 1, nDummyGenes = NULL,
   combineFUN = max, singleCell = FALSE, nCells = 96, perError = 0.1,
   microArray = TRUE, randSeed = 0, dataSet = NULL)
 }
@@ -14,8 +14,6 @@ inSilicoGeneExpression(model, pathways, sampFreq = 1, nGenes = NULL,
 \item{pathways}{list of genes pathways}
 
 \item{sampFreq}{how often to generate data}
-
-\item{nGenes}{total number of genes used (matrix padded with dummys)}
 
 \item{combineFUN}{function used to combine gene expression data}
 
@@ -28,6 +26,8 @@ inSilicoGeneExpression(model, pathways, sampFreq = 1, nGenes = NULL,
 \item{microArray}{true if micro array data}
 
 \item{randSeed}{random seed for simulation}
+
+\item{nGenes}{total number of genes used (matrix padded with dummys)}
 }
 \value{
 matrix of gene expression data

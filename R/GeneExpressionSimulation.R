@@ -15,20 +15,21 @@
 #' @param randSeed random seed for simulation
 #' @return matrix of gene expression data
 inSilicoGeneExpression <- function(model, pathways, sampFreq=1,
-nGenes=NULL, combineFUN=max, singleCell=FALSE, nCells=96, perError=0.1,
+nDummyGenes=NULL, combineFUN=max, singleCell=FALSE, nCells=96, perError=0.1,
 microArray=TRUE, randSeed=0, dataSet=NULL)
 {
     # run simulation for each pathway
-    pathwayOutput <- lapply(pathways, function(p)
+    pathwayActivity <- lapply(pathways, function(p)
         simulatePathwayExpression(p, model, sampFreq, singleCell, nCells))
 
     # combine expression matrices, add dummy genes, and shuffle order
     meanExp <- combineGeneExpression(pathwayOutput, combineFUN)
-    if (!is.null(nGenes)) meanExp <- padExpMatrix(meanExp, nGenes)
+    if (!is.null(nDummyGenes))
+        meanExp <- padExpressionMatrix(meanExp, nDummyGenes)
     exp <- simulateError(meanExp, dataSet, perError, microArray)
 
-    # shuffle order of genes
-    return (exp[sample(nrow(exp)),])
+    # return pathway activity, return expression with gene order shuffled
+    return (list(pathwayOutput, exp[sample(nrow(exp)),]))
 }
 
 #' Verify Gene Expression Data Set
@@ -91,10 +92,9 @@ combineGeneExpression <- function(expList, combineFUN=max)
 #' @param nGenes final number of genes in the expression matrix
 #' @param dist distribution to sample random values from
 #' @return gene expression matrix with dummy genes added in
-padExpressionMatrix <- function(mat, nGenes, distr)
+padExpressionMatrix <- function(mat, nDummyGenes, distr)
 {
-    if (nGenes <= nrow(mat)) return(mat)
-    dummyExp <- matrix(nrow=nGenes - nrow(mat), ncol=ncol(mat))
+    dummyExp <- matrix(nrow=nDummyGenes, ncol=ncol(mat))
     dummyExp[] <- sapply(1:length(dummyExp), function(x) distr())
     rownames(dummyExp) <- paste('dummy', 1:nrow(dummyExp), sep='_')
     colnames(dummyExp) <- colnames(mat)

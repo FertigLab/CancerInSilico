@@ -30,8 +30,10 @@ test_that('cell model calculations',
 
     expect_equal(getDensity(modDefault, 0), 0.153, tolerance=0.01)
     expect_equal(getDensity(modDefault, 10), 0.205, tolerance=0.01)
-
-    # TODO: test local density
 })
 
+test_that('local density',
+{
+
+})
 

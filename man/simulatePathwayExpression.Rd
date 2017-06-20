@@ -2,28 +2,19 @@
 % Please edit documentation in R/class-Pathway.R
 \name{simulatePathwayExpression}
 \alias{simulatePathwayExpression}
-\title{Simulate Mean Expression for a Pathway}
+\title{simulate gene expression data for a single pathway}
 \usage{
-simulatePathwayExpression(pathway, model, sampFreq, singleCell = FALSE,
-  sampSize = 0)
+simulatePathwayExpression(pathway, activity)
 }
 \arguments{
-\item{pathway}{a 'Pathway' object}
-
-\item{model}{a 'CellModel' object}
-
-\item{sampFreq}{time in between samples of gene expression}
-
-\item{singleCell}{simulate single cell data}
-
-\item{sampleSize}{number of cells to sample in the case of single cell}
+\item{pathway}{object of 'Pathway' class}
 }
 \value{
-matrix of gene expression data for this pathway
+scale applied to min/max expression values of the pathway
 }
 \description{
-simulates gene expression data for a single pathway,
- does not incorporate an error model
+applies given pathway activity to the gene expression
+ ranges to produce simulated gene expression data
 }
 \keyword{internal}
 

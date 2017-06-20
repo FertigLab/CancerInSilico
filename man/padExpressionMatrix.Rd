@@ -4,7 +4,7 @@
 \alias{padExpressionMatrix}
 \title{Add Noise to Gene Expression Matrices}
 \usage{
-padExpressionMatrix(mat, nGenes, distr)
+padExpressionMatrix(mat, nDummyGenes, distr)
 }
 \arguments{
 \item{mat}{matrix of gene expression values}
