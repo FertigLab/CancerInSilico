@@ -10,18 +10,18 @@ test_that('cell model getters',
     expect_equal(getNumberOfCells(modHighDensity, 0),  100)
 
     expect_equal(getNumberOfCells(modDefault, 10), 15)
-    expect_equal(getCoordinates(modDefault, 0)[1,1], -6.74, tolerance=0.01)
-    expect_equal(sum(getRadius(modDefault, 0)), 12.3, tolerance=0.01)
-    expect_equal(sum(getAxisLength(modDefault, 0)), 26.4, tolerance=0.01)
-    expect_equal(sum(getAxisAngle(modDefault, 0)), 29.5, tolerance=0.01)
-    expect_equal(mean(getCycleLengths(modDefault, 0)), 24)
+    expect_equal(getCoordinates(modDefault, 0, 1)[1], -6.74, tolerance=0.01)
+    expect_equal(getRadius(modDefault, 0, 1), 1.35, tolerance=0.01)
+    expect_equal(getAxisLength(modDefault, 0, 1), 2.7, tolerance=0.01)
+    expect_equal(getAxisAngle(modDefault, 0, 1), 3.72, tolerance=0.01)
+    expect_equal(getCycleLength(modDefault, 0, 1), 24)
 
-    phases <- getCellPhases(modLargeRun, 0)
+    phases <- sapply(1:1000, getCellPhase, model=modLargeRun, time=0)
     expect_equal(sum(phases == 'I'), 904)
     expect_equal(sum(phases == 'M'), 96)
 
-    ct <- getCellTypes(modDefault, 0)
-    expect_equal(modDefault@cellTypes[[ct[1]]]@name, 'DEFAULT')
+    ct <- getCellType(modDefault, 0, 1)
+    expect_equal(modDefault@cellTypes[[ct]]@name, 'DEFAULT')
 })
 
 test_that('cell model calculations',

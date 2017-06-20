@@ -3,10 +3,10 @@ library(methods)
 
 ## Full run examples
 
-modDefault <- runCellSimulation(10,10,0.1)
-modLongRun <- runCellSimulation(5,100,0.1)
-modLargeRun <- runCellSimulation(1000,1,0.1)
-modHighDensity <- runCellSimulation(100,10,0.3)
+modDefault <- inSilicoCellModel(10,10,0.1)
+modLongRun <- inSilicoCellModel(5,100,0.1)
+modLargeRun <- inSilicoCellModel(1000,1,0.1)
+modHighDensity <- inSilicoCellModel(100,10,0.3)
 
 c1 <- new('CellType', name='DEFAULT', size=1, minCycle=48,
     cycleLength=function() 48)
@@ -44,7 +44,7 @@ geneNamesGrowth <- c('A2M','ACAT1','AGT','BACE1','C2','C7','CASP4','CCL19','CCL2
 
 growthExp <- function(model, cell, time)
 {
-    cycLength <- getCycleLengths(model, time)[cell]
+    cycLength <- getCycleLength(model, time, cell)
     return(exp(-1 * cycLength / 24))
 }
 
@@ -52,8 +52,8 @@ mitosisExp <- function(model, cell, time)
 {
     window <- c(max(time - 2, 0), min(time + 2, model@runTime))
 
-    a1 <- getAxisLength(model, window[1])[cell]
-    a2 <- getAxisLength(model, window[2])[cell]
+    a1 <- getAxisLength(model, window[1], cell)
+    a2 <- getAxisLength(model, window[2], cell)
     if (is.na(a1)) a1 <- 0
 
 
@@ -64,11 +64,10 @@ SPhaseExp <- function(model, cell, time)
 {
     window <- c(max(time - 1, 0), min(time + 1, model@runTime))
 
-    r1 <- getRadii(model, window[1])[cell]
-    r2 <- getRadii(model, window[2])[cell]
+    r1 <- getRadius(model, window[1], cell)
+    r2 <- getRadius(model, window[2], cell)
 
-    typeNdx <- getCellTypes(model, time)[cell]
-    type <- model@cellTypes[[typeNdx]]
+    type <- model@cellTypes[[getCellType(model, time, cell)]]
 
     return(ifelse(r1 < sqrt(1.5 * type@size) & r2 > sqrt(1.5 * type@size),
         1, 0))
@@ -76,7 +75,7 @@ SPhaseExp <- function(model, cell, time)
 
 contactInhibitionExp <- function(model, cell, time)
 {
-    return(getContactInhibition(model, time)[cell])
+    return(getGrowthAcceptRate(model, time, cell))
 }
 
 pwyGrowth <- new('Pathway', genes = geneNamesGrowth,

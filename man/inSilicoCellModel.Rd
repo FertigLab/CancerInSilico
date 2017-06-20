@@ -2,7 +2,7 @@
 % Please edit documentation in R/CellSimulation.R
 \name{inSilicoCellModel}
 \alias{inSilicoCellModel}
-\title{\code{inSilicoCellModel} Simulates Cell Model}
+\title{Simulates Cell Model}
 \usage{
 inSilicoCellModel(initialNum, runTime, density, modelType = "DrasdoHohme",
   ...)
@@ -39,7 +39,7 @@ cycle-length as parents}
 A CellModel containing all info from the model run
 }
 \description{
-\code{inSilicoCellModel} Simulates Cell Model
+Simulates Cell Model
 }
 \details{
 This function provides a centralized R interface to run c++

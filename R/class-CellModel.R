@@ -150,20 +150,20 @@ setGeneric('run', function(model)
     {standardGeneric('run')})
 
 #' @export
-setGeneric('getCellPhases', function(model, time)
-    {standardGeneric('getCellPhases')})
-
-#' @export
-setGeneric('getCellTypes', function(model, time)
-    {standardGeneric('getCellTypes')})
-
-#' @export
-setGeneric('getCycleLengths', function(model, time)
-    {standardGeneric('getCycleLengths')})
-
-#' @export
 setGeneric('getNumberOfCells', function(model, time)
     {standardGeneric('getNumberOfCells')})
+
+#' @export
+setGeneric('getCellPhase', function(model, time, cell)
+    {standardGeneric('getCellPhase')})
+
+#' @export
+setGeneric('getCellType', function(model, time, cell)
+    {standardGeneric('getCellType')})
+
+#' @export
+setGeneric('getCycleLength', function(model, time, cell)
+    {standardGeneric('getCycleLength')})
 
 #' @export
 setGeneric('getDensity', function(model, time)
@@ -178,8 +178,8 @@ setGeneric('timeToRow', function(model, time)
     {standardGeneric('timeToRow')})
 
 #' @export
-setGeneric('getColumn', function(model, time, col)
-    {standardGeneric('getColumn')})
+setGeneric('getEntry', function(model, time, cell, col)
+    {standardGeneric('getEntry')})
 
 #' @export
 setGeneric('cellSummary', function(model, time)
@@ -255,7 +255,7 @@ setMethod('interactivePlot', signature('CellModel'),
     }
 )
 
-setMethod('cellSummary', signature('CellModel'),
+setMethod('cellSummary', signature(model='CellModel'),
     function(model, time)
     {
         return (paste('Cell Density: ', round(getDensity(model, time), 2),

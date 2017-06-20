@@ -16,7 +16,7 @@
 #' @return matrix of gene expression data
 inSilicoGeneExpression <- function(model, pathways, sampFreq=1,
 nGenes=NULL, combineFUN=max, singleCell=FALSE, nCells=96, perError=0.1,
-microArray=FALSE, randSeed=0, dataSet=NULL)
+microArray=TRUE, randSeed=0, dataSet=NULL)
 {
     # run simulation for each pathway
     pathwayOutput <- lapply(pathways, function(p)
@@ -25,10 +25,10 @@ microArray=FALSE, randSeed=0, dataSet=NULL)
     # combine expression matrices, add dummy genes, and shuffle order
     meanExp <- combineGeneExpression(pathwayOutput, combineFUN)
     if (!is.null(nGenes)) meanExp <- padExpMatrix(meanExp, nGenes)
-    meanExp <- simulateError(meanExp, dataSet, perError, microArray)
+    exp <- simulateError(meanExp, dataSet, perError, microArray)
 
     # shuffle order of genes
-    return (meanExp[sample(nrow(meanExp)),])
+    return (exp[sample(nrow(exp)),])
 }
 
 #' Verify Gene Expression Data Set

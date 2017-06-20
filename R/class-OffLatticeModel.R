@@ -59,28 +59,28 @@ setValidity('OffLatticeModel',
 ##################### Generics ###################
 
 #' @export
-setGeneric('getCoordinates', function(model, time)
+setGeneric('getCoordinates', function(model, time, cell)
     {standardGeneric('getCoordinates')})
 
 #' @export
-setGeneric('getRadius', function(model, time)
+setGeneric('getRadius', function(model, time, cell)
     {standardGeneric('getRadius')})
 
 #' @export
-setGeneric('getAxisLength', function(model, time)
+setGeneric('getAxisLength', function(model, time, cell)
     {standardGeneric('getAxisLength')})
 
 #' @export
-setGeneric('getAxisAngle', function(model, time)
+setGeneric('getAxisAngle', function(model, time, cell)
     {standardGeneric('getAxisAngle')})
 
 #' @export
-setGeneric('getGrowthAcceptRate', function(model, time)
+setGeneric('getGrowthAcceptRate', function(model, time, cell)
     {standardGeneric('getGrowthAcceptRate')})
 
 ##################### Methods ####################
 
-setMethod('timeToRow', signature('OffLatticeModel'),
+setMethod('timeToRow', signature(model='OffLatticeModel'),
     function(model, time)
     {
         if (time > model@runTime | time < 0) stop('invalid time')
@@ -88,87 +88,84 @@ setMethod('timeToRow', signature('OffLatticeModel'),
     }
 )
 
-setMethod('getColumn', signature('OffLatticeModel'),
-    function(model, time, col)
+setMethod('getEntry', signature(model='OffLatticeModel'),
+    function(model, time, cell, col)
     {
         row <- timeToRow(model, time)
-        indices <- seq(col, length(model@cells[[row]]), 9)
-        return (model@cells[[row]][indices])
+        col <- col + 9 * (cell - 1)
+        return(model@cells[[row]][col])
     }
 )
 
-setMethod('getCoordinates', signature('OffLatticeModel'),
-    function(model, time)
+setMethod('getCoordinates', signature(model='OffLatticeModel'),
+    function(model, time, cell)
     {
-        xCoord <- getColumn(model, time, 1)
-        yCoord <- getColumn(model, time, 2)
-        return(matrix(c(xCoord, yCoord), nrow = length(xCoord)))
+        return(c(getEntry(model,time,cell,1), getEntry(model,time,cell,2)))
     }
 )    
 
-setMethod('getRadius', signature('OffLatticeModel'),
-    function(model, time)
+setMethod('getRadius', signature(model='OffLatticeModel'),
+    function(model, time, cell)
     {
-        return(getColumn(model, time, 3))
+        return(getEntry(model, time, cell, 3))
     }
 )
 
-setMethod('getAxisLength', signature('OffLatticeModel'),
-    function(model, time)
+setMethod('getAxisLength', signature(model='OffLatticeModel'),
+    function(model, time, cell)
     {
-        return(getColumn(model, time, 4))
+        return(getEntry(model, time, cell, 4))
     }
 )
 
-setMethod('getAxisAngle', signature('OffLatticeModel'),
-    function(model, time)
+setMethod('getAxisAngle', signature(model='OffLatticeModel'),
+    function(model, time, cell)
     {
-        return(getColumn(model, time, 5))
+        return(getEntry(model, time, cell, 5))
     }
 )
 
-setMethod('getCycleLengths', signature('OffLatticeModel'),
-    function(model, time)
+setMethod('getCycleLength', signature(model='OffLatticeModel'),
+    function(model, time, cell)
     {
-        return(getColumn(model, time, 6))
+        return(getEntry(model, time, cell, 6))
     }
 )
 
-setMethod('getCellPhases', signature('OffLatticeModel'),
-    function(model, time)
+setMethod('getCellPhase', signature(model='OffLatticeModel'),
+    function(model, time, cell)
     {
-        indices <- getColumn(model, time, 7)
         phases <- c('I', 'M', 'G0', 'G1', 'S', 'G2')
-        get_phase <- function(i) phases[i+1]
-        return(sapply(indices, get_phase))
+        return(phases[getEntry(model, time, cell, 7)+1])
     }
 )
 
-setMethod('getCellTypes', signature('OffLatticeModel'),
-    function(model, time)
+setMethod('getCellType', signature(model='OffLatticeModel'),
+    function(model, time, cell)
     {
-        return(getColumn(model, time, 8) + 1)
+        return(getEntry(model, time, cell, 8) + 1)
     }
 )
 
 setMethod('getGrowthAcceptRate', signature('OffLatticeModel'),
-    function(model, time)
+    function(model, time, cell)
     {
-        return(getColumn(model, time, 9))
+        return(getEntry(model, time, cell, 9))
     }
 )
 
 setMethod('getNumberOfCells', signature('OffLatticeModel'),
     function(model, time)
     {
-        return(sum(getRadius(model, time) > 0))
+        return(length(model@cells[[timeToRow(model, time)]]) / 9)
     }
 )
 
 setMethod('getDensity', signature('OffLatticeModel'),
     function(model, time)
     {
-        radii <- getRadius(model, time)
+        nCells <- getNumberOfCells(model, time)
+        radii <- sapply(1:nCells, getRadius, model=model, time=time)
         if (model@boundary > 0)
         {
             return(sum(radii ** 2) / model@boundary ^ 2)
@@ -211,11 +208,13 @@ setMethod('plotCells', signature('OffLatticeModel'),
     function(model, time)
     {
         # get all the cell information
-        coords <- getCoordinates(model, time)
-        radii <- getRadius(model, time)
-        axisLen <- getAxisLength(model, time)
-        axisAng <- getAxisAngle(model, time)
-        mitNdx <- rep(getCellPhases(model, time), 2) == 'M'
+        nCells <- getNumberOfCells(model, time)
+        coords <- sapply(1:nCells, getCoordinates, model=model, time=time)
+        radii <- sapply(1:nCells, getRadius, model=model, time=time)
+        axisLen <- sapply(1:nCells, getAxisLength, model=model, time=time)
+        axisAng <- sapply(1:nCells, getAxisAngle, model=model, time=time)
+        phases <- sapply(1:nCells, getCellPhase, model=model, time=time)
+        mitNdx <- rep(phases, 2) == 'M'
 
         # calculate plot bounds
         mn <- ifelse(model@boundary > 0, -model@boundary-2, min(coords)-2)
@@ -226,10 +225,10 @@ setMethod('plotCells', signature('OffLatticeModel'),
             time), xlab="", ylab="", type="n", asp=1)
           
         # get all (x,y) pairs for each of the cell centers
-        x_1 <- coords[,1] + (0.5 * axisLen - radii) * cos(axisAng)
-        x_2 <- coords[,1] - (0.5 * axisLen - radii) * cos(axisAng)
-        y_1 <- coords[,2] + (0.5 * axisLen - radii) * sin(axisAng)
-        y_2 <- coords[,2] - (0.5 * axisLen - radii) * sin(axisAng)
+        x_1 <- coords[1,] + (0.5 * axisLen - radii) * cos(axisAng)
+        x_2 <- coords[1,] - (0.5 * axisLen - radii) * cos(axisAng)
+        y_1 <- coords[2,] + (0.5 * axisLen - radii) * sin(axisAng)
+        y_2 <- coords[2,] - (0.5 * axisLen - radii) * sin(axisAng)
 
         # combine all coordinate pairs along with the radii
         x <- c(x_1,x_2)

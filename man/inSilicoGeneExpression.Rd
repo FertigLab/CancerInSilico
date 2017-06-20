@@ -6,7 +6,7 @@
 \usage{
 inSilicoGeneExpression(model, pathways, sampFreq = 1, nGenes = NULL,
   combineFUN = max, singleCell = FALSE, nCells = 96, perError = 0.1,
-  microArray = FALSE, randSeed = 0, dataSet = NULL)
+  microArray = TRUE, randSeed = 0, dataSet = NULL)
 }
 \arguments{
 \item{model}{a CellModel object}
