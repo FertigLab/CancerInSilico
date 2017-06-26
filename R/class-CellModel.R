@@ -173,6 +173,9 @@ setGeneric('getDensity', function(model, time)
 setGeneric('getLocalDensity', function(model, time, cell, radius)
     {standardGeneric('getLocalDensity')})
 
+setGeneric('getCellDistance', function(model, time, cellA, cellB)
+    {standardGeneric('getCellDistance')})
+
 #' @export
 setGeneric('timeToRow', function(model, time)
     {standardGeneric('timeToRow')})

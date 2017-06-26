@@ -1,4 +1,4 @@
-#' Simulate Gene Expression Data
+#' simulate gene expression data
 #' @export
 #'
 #' @description simulate gene expression data for a set of pathways, using
@@ -13,29 +13,33 @@
 #' @param perError percent error?
 #' @param microArray true if micro array data
 #' @param randSeed random seed for simulation
-#' @return matrix of gene expression data
+#' @return list of pathway activity and gene expression
 inSilicoGeneExpression <- function(model, pathways, sampFreq=1,
-nDummyGenes=NULL, combineFUN=max, singleCell=FALSE, nCells=96, perError=0.1,
-microArray=TRUE, randSeed=0, dataSet=NULL)
+nDummyGenes=NULL, dummyDist=function() runif(1,2,14), combineFUN=max,
+singleCell=FALSE, nCells=96, perError=0.1, microArray=TRUE,
+randSeed=0, dataSet=NULL)
 {
     # run simulation for each pathway
-    pathwayActivity <- lapply(pathways, function(p)
-        simulatePathwayExpression(p, model, sampFreq, singleCell, nCells))
+    pwyActivity <- lapply(pathways, function(p)
+        simulatePathwayActivity(p, model, sampFreq, singleCell, nCells))
+    pwyExpression <- lapply(1:length(pathways), function(i)
+        simulatePathwayExpression(pathways[[i]], pwyActivity[[i]]))
 
     # combine expression matrices, add dummy genes, and shuffle order
-    meanExp <- combineGeneExpression(pathwayOutput, combineFUN)
+    meanExp <- combineGeneExpression(pwyExpression, combineFUN)
     if (!is.null(nDummyGenes))
-        meanExp <- padExpressionMatrix(meanExp, nDummyGenes)
+        meanExp <- padExpressionMatrix(meanExp, nDummyGenes, dummyDist)
     exp <- simulateError(meanExp, dataSet, perError, microArray)
 
     # return pathway activity, return expression with gene order shuffled
-    return (list(pathwayOutput, exp[sample(nrow(exp)),]))
+    exp <- exp[sample(nrow(exp)),]
+    return (list(pathways=pwyActivity, expression=exp))
 }
 
-#' Verify Gene Expression Data Set
+#' verify gene expression data set is valid for this package
 #' @export
 #'
-#' @description Checks a data set before it is used to calibrate the 
+#' @description checks a data set before it is used to calibrate the 
 #'  pathway values for min/max expression
 #' @param dataSet matrix of gene expression data where row names are genes
 #' @param genes names of all genes being simulated
@@ -101,7 +105,7 @@ padExpressionMatrix <- function(mat, nDummyGenes, distr)
     return(combineGeneExpression(list(mat, dummyExp)))
 }
 
-#' Add Simulated Error to Expression Data
+#' add simulated error to expression data
 #' @export
 #'
 #' @description add noise to all values in expression matrix
@@ -114,7 +118,7 @@ simulateError <- function(meanExp, dataSet=NULL, perError, microArray)
 {
     if (microArray)
     {
-        normalError <- matrix(rnorm(length(meanExp)), nrow=nrow(meanExp))
+        normalError <- matrix(rnorm(length(meanExp)), ncol=ncol(meanExp))
         meanExp <- meanExp + pmax(perError*meanExp, perError) * normalError
         return(pmax(meanExp, 0))
     }

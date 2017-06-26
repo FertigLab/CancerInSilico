@@ -82,10 +82,12 @@ pwyGrowth <- new('Pathway', genes = geneNamesGrowth,
     expressionScale = growthExp)
 
 pwyMitosis <- new('Pathway', genes = geneNamesGtoM,
-    expressionScale = mitosisExp)
+    expressionScale = mitosisExp)#, transformMidpoint = 0.1,
+#    transformSlope = 5 / 0.2)
 
 pwySPhase <- new('Pathway', genes = geneNamesGtoS,
-    expressionScale = SPhaseExp)
+    expressionScale = SPhaseExp)#, transformMidpoint = 0.1,
+#    transformSlope = 5 / 0.2)
 
 pwyContactInhibition <- new('Pathway', genes = geneNamesProx,
     expressionScale = contactInhibitionExp)

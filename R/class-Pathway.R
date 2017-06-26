@@ -26,7 +26,8 @@ NULL
 #'  by the state of the model
 #' @slot minExpression minimum expression value for each gene (vector)
 #' @slot maxExpression maximum expression value for each gene (vector)
-#' @slot transformScale parameter for transforming bulk data
+#' @slot transformSlope parameter for transforming bulk data
+#' @slot transformMidpoint parameter for transforming bulk data
 setClass('Pathway', slots = c(
     genes = 'character',
     expressionScale = 'function',
@@ -57,14 +58,13 @@ setValidity('Pathway',
     {
         if (!length(object@genes))
             'no genes'
-        if (length(pathway@genes) != length(pathway@minExpression))
+        if (length(object@genes) != length(object@minExpression))
             'minExpression length doesn\'t match number of genes'
-        if (length(pathway@genes) != length(pathway@maxExpression))
+        if (length(object@genes) != length(object@maxExpression))
             'maxExpression length doesn\'t match number of genes'
-        if (is.null(pathway@transformSlope))
-            'transformSlope has not been set'
-        if (is.null(pathway@transformMidpoint))
-            'transformMidpoint has not been set'
+        if (length(object@transformSlope) & !length(object@transformMidpoint)
+        |  !length(object@transformSlope) & length(object@transformMidpoint))
+            'need both/neither of transformSlope and transformMidpoint'
     }
 )
 
@@ -85,28 +85,39 @@ singleCell=FALSE, sampSize=0)
 {
     # check parameters
     if (sampFreq <= 0) stop('invalid sampling frequency')
-    if (!singleCell) {sampSize <- 1}
+    if (!length(pathway@minExpression)) stop('pathway not calibrated')
+    if (!length(pathway@maxExpression)) stop('pathway not calibrated')
+    if (!singleCell) sampSize <- 1
     else if (sampSize < 1) stop('invalid sample size for single cell')
 
     # find closest, valid, sampling frequency
-    sampFreq <- model@recordIncrement *
-        ceiling(sampFreq / model@recordIncrement)
+    freq <- model@recordIncrement * ceiling(sampFreq / model@recordIncrement)
 
     # loop through each time
     scaleVector <- c()
-    times <- seq(0, model@runTime, sampFreq)
-    for (t in 1:length(times))
+    times <- seq(0, model@runTime, freq)
+    for (t in times)
     {
         # determine which cells to calculate expression for
-        cells <- 1:getNumberOfCells(model, times[t])
+        cells <- 1:getNumberOfCells(model, t)
         if (singleCell) cells <- sort(sample(cells, sampSize))
 
         # calculate scale and add to matrix
-        scale <- sapply(cells, function(c)
-            pathway@expressionScale(model, c, times[t]))
-        if (singleCell) scaleVector <- c(scaleVector, scale)
-        else scaleVector <- c(scaleVector, 1 / (1 + exp(-transformScale * 
-            (mean(scale) - transformMidpoint))))
+        scale <- sapply(cells, pathway@expressionScale, model=model, time=t)
+        if (singleCell)
+        {
+            scaleVector <- c(scaleVector, scale)
+        }
+        else if (length(pathway@transformSlope))
+        {
+            logistic <- function(k, x0, x) 1 / (1 + exp(-k * (x - x0)))
+            scaleVector <- c(scaleVector, logistic(pathway@transformSlope,
+                pathway@transformMidpoint, mean(scale)))
+        }
+        else
+        {
+            scaleVector <- c(scaleVector, mean(scale))
+        }
     }
 
     # add names of each cell/time combination
@@ -126,30 +137,29 @@ singleCell=FALSE, sampSize=0)
 #' @description applies given pathway activity to the gene expression
 #'  ranges to produce simulated gene expression data
 #' @param pathway object of 'Pathway' class
-#' @scale vector of pathway activity in [0,1]
+#' @param activity named vector of pathway activity in [0,1]
 #' @return scale applied to min/max expression values of the pathway
 simulatePathwayExpression <- function(pathway, activity)
 {
     gsMatrix <- matrix(0, length(pathway@genes), length(activity))
     rownames(gsMatrix) <- pathway@genes
     colnames(gsMatrix) <- names(activity)
-    for (c in 1:length(scale))
+    for (col in 1:length(activity))
     {
-        exp <- (pathway@maxExpression - pathway@minExpression) *
-            scale[r] + pathway@minExpression
-        gsMatrix[,c] <- exp
+        gsMatrix[,col] <- (pathway@maxExpression - pathway@minExpression) *
+            activity[col] + pathway@minExpression
     }
     return(gsMatrix)
 }
 
-#' Calibrate Pathway with Data
+#' calibrate pathway with data
 #' @export
 #'
 #' @description sets the min and max values for each gene in a pathway
 #'  based on a data set
 #' @param pathway a 'Pathway' object
 #' @param dataSet reference data set
-#' @return pathway with min/max values set
+#' @return pathway with min/max values for expression based on data set
 calibratePathway <- function(pathway, dataSet)
 {
     if (missing(dataSet)) stop('need a data set')

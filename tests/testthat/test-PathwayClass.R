@@ -20,10 +20,12 @@ test_that('Pathway Expression Simulation',
 {
     pwyMitosis@minExpression <- runif(length(pwyMitosis@genes), 2,4)
     pwyMitosis@maxExpression <- runif(length(pwyMitosis@genes), 6,8)
-    meanExp <- simulatePathwayExpression(pwyMitosis, modDefault, 1)
+    activity <- simulatePathwayActivity(pwyMitosis, modDefault, 1)
+    meanExp <- simulatePathwayExpression(pwyMitosis, activity)
     expect_true(all(meanExp[,2] < meanExp[,3]))
 
-    meanExpSS <- simulatePathwayExpression(pwyMitosis,modDefault,1,TRUE,10)
+    activitySS <- simulatePathwayActivity(pwyMitosis, modDefault, 1, T, 10)
+    meanExpSS <- simulatePathwayExpression(pwyMitosis, activitySS)
     expect_true(all(meanExpSS[,'c9_t1'] < meanExpSS[,'c9_t2']))
 })
 

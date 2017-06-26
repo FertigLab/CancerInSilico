@@ -37,6 +37,8 @@ by the state of the model}
 
 \item{\code{maxExpression}}{maximum expression value for each gene (vector)}
 
-\item{\code{transformScale}}{parameter for transforming bulk data}
+\item{\code{transformSlope}}{parameter for transforming bulk data}
+
+\item{\code{transformMidpoint}}{parameter for transforming bulk data}
 }}
 

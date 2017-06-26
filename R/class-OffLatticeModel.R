@@ -179,30 +179,62 @@ setMethod('getDensity', signature('OffLatticeModel'),
     }
 )
 
+setMethod('getCellDistance', signature(model='OffLatticeModel'),
+    function(model, time, cellA, cellB)
+    {
+        centers <- function(model, time, cell)
+        {
+            crds <- getCoordinates(model, time, cell)
+            rad <- getRadius(model, time, cell)
+            axisLen <- getAxisLength(model, time, cell)
+            axisAng <- getAxisAngle(model, time, cell)
+            
+            x1 <- crds[1] + (0.5 * axisLen - rad) * cos(axisAng)
+            y1 <- crds[2] + (0.5 * axisLen - rad) * sin(axisAng)
+            x2 <- crds[1] - (0.5 * axisLen - rad) * cos(axisAng)
+            y2 <- crds[2] - (0.5 * axisLen - rad) * sin(axisAng)
+            return(matrix(c(x1,x2,y1,y2), ncol=2))
+        }
+
+        cA <- centers(model, time, cellA)
+        cB <- centers(model, time, cellB)
+
+        minDist <- (cA[1,1]-cB[1,1])^2 + (cA[1,2]-cB[1,2])^2
+        minDist <- min(minDist, (cA[1,1]-cB[2,1])^2 + (cA[1,2]-cB[2,2])^2)
+        minDist <- min(minDist, (cA[2,1]-cB[1,1])^2 + (cA[2,2]-cB[1,2])^2)
+        minDist <- min(minDist, (cA[2,1]-cB[1,1])^2 + (cA[2,2]-cB[1,2])^2)
+        return(sqrt(minDist) - getRadius(model, time, cellA) - 
+            getRadius(model, time, cellB))
+    }
+)
+
 setMethod('getLocalDensity', signature('OffLatticeModel'),
     function(model, time, cell, radius)
     {
+        # cell info
+        nCells <- getNumberOfCells(model, time)
+        coords <- sapply(1:nCells, getCoordinates, model=model, time=time)
+        radii <- sapply(1:nCells, getRadius, model=model, time=time)
+        axisLen <- sapply(1:nCells, getAxisLength, model=model, time=time)
+        axisAng <- sapply(1:nCells, getAxisAngle, model=model, time=time)
+        size <- sapply(1:nCells, function(c)
+            model@cellTypes[[getCellType(model, time, c)]]@size)
+
         # subset to nearby cells
-        cells <- setdiff(1:getNumberOfCells(model, time), cell)
+        cells <- setdiff(1:nCells, cell)
         cells <- cells[sapply(cells, function(c)
-        {
-            sizeA <- model@cellTypes[[getCellType(model, time, cell)]]@size
-            sizeB <- model@cellTypes[[getCellType(model, time, c)]]@size
-        
-            posA <- getCoordinates(model, time, cell)
-            posB <- getCoordinates(model, time, c)
+            getCellDistance(model, time, cell, c) + radii[cell] < radius)]
 
-            dist <- sqrt((posA[1] - posB[1])^2 + (posA[2] - posB[2])^2)
-            return(dist - 2 * (sqrt(sizeA) + sqrt(sizeB)) < radius)
-        })]
-
-        # generate uniform grid of points within radius
-        dist <- seq(0,1,0.01)
-        ang <- dist * 2 * pi
-        allCombo <- expand.grid(dist, ang)
-        localGrid <- matrix(nrow=nrow(allCombo), ncol=2) 
-        localGrid[,1] <- radius * sqrt(allCombo[,1]) * cos(allCombo[,2])
-        localGrid[,2] <- radius * sqrt(allCombo[,1]) * sin(allCombo[,2])
+        # generate uniform grid of points
+        width <- seq(-radius, radius, length.out=20)
+        allComb <- expand.grid(width, width)
+        allComb <- allComb[allComb[,1]^2 + allComb[,2]^2 > radii[cell]^2,]
+        allComb <- allComb[allComb[,1]^2 + allComb[,2]^2 < radius^2,]
+        localGrid <- matrix(nrow=nrow(allComb), ncol=2)
+        localGrid[,1] <- coords[1,cell] + allComb[,1]
+        localGrid[,2] <- coords[2,cell] + allComb[,2]
+        localGrid <- localGrid[apply(localGrid, 1, function(p)
+            p[1]^2 + p[2]^2 < model@boundary^2),]
 
         # return true if point inside cell
         inside <- function(c, p)
@@ -212,21 +244,33 @@ setMethod('getLocalDensity', signature('OffLatticeModel'),
             axisLen <- getAxisLength(model, time, c)
             axisAng <- getAxisAngle(model, time, c)
     
-            x1 <- coords[1] + (0.5 * axisLen - rad) * cos(axisAng)  
+            x1 <- coords[1] + (0.5 * axisLen - rad) * cos(axisAng)
             y1 <- coords[2] + (0.5 * axisLen - rad) * sin(axisAng)
             x2 <- coords[1] - (0.5 * axisLen - rad) * cos(axisAng)
             y2 <- coords[2] - (0.5 * axisLen - rad) * sin(axisAng)
 
             dist2 <- min((x1-p[1])^2+(y1-p[2])^2, (x2-p[1])^2+(y2-p[2])^2)
-            return(dist2 < rad ^ 2)            
+            return(dist2 < rad ^ 2)
         }
+          
+        # get all (x,y) pairs for each of the cell centers
+#        x1 <- coords[1,] + (0.5 * axisLen - radii) * cos(axisAng)
+#        x2 <- coords[1,] - (0.5 * axisLen - radii) * cos(axisAng)
+#        y1 <- coords[2,] + (0.5 * axisLen - radii) * sin(axisAng)
+#        y2 <- coords[2,] - (0.5 * axisLen - radii) * sin(axisAng)
+#        x <- c(x1,x2)
+#        y <- c(y1,y2)
+#        rad <- c(radii, radii)
+
+        # trim grid for boundary
+
 
         # calculate proportion of points inside of a cell
-        # TODO: include points outside boundary in density
         numPoints <- sum(apply(localGrid, 1, function(p)
             sum(sapply(cells, inside, p=p)) > 0))
-        numPointsBase <- sum(apply(localGrid, 1, function(p) inside(cell, p)))
-        return(numPoints / (nrow(localGrid) - numPointsBase))
+        print(numPoints)
+        print(nrow(localGrid))
+        return(numPoints / nrow(localGrid))
     }
 )
 
@@ -251,14 +295,14 @@ setMethod('plotCells', signature('OffLatticeModel'),
             time), xlab="", ylab="", type="n", asp=1)
           
         # get all (x,y) pairs for each of the cell centers
-        x_1 <- coords[1,] + (0.5 * axisLen - radii) * cos(axisAng)
-        x_2 <- coords[1,] - (0.5 * axisLen - radii) * cos(axisAng)
-        y_1 <- coords[2,] + (0.5 * axisLen - radii) * sin(axisAng)
-        y_2 <- coords[2,] - (0.5 * axisLen - radii) * sin(axisAng)
+        x1 <- coords[1,] + (0.5 * axisLen - radii) * cos(axisAng)
+        x2 <- coords[1,] - (0.5 * axisLen - radii) * cos(axisAng)
+        y1 <- coords[2,] + (0.5 * axisLen - radii) * sin(axisAng)
+        y2 <- coords[2,] - (0.5 * axisLen - radii) * sin(axisAng)
 
         # combine all coordinate pairs along with the radii
-        x <- c(x_1,x_2)
-        y <- c(y_1,y_2)
+        x <- c(x1,x2)
+        y <- c(y1,y2)
         rad <- c(radii, radii)
     
         # plot the cells
@@ -274,5 +318,6 @@ setMethod('plotCells', signature('OffLatticeModel'),
             lwd = 2)
     }
 )
+
 
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/GeneExpressionSimulation.R
 \name{checkDataSet}
 \alias{checkDataSet}
-\title{Verify Gene Expression Data Set}
+\title{verify gene expression data set is valid for this package}
 \usage{
 checkDataSet(dataSet, genes)
 }
@@ -16,7 +16,7 @@ no value is return, but errors/warnings are thrown related to
  potential problems in the data set
 }
 \description{
-Checks a data set before it is used to calibrate the 
+checks a data set before it is used to calibrate the 
  pathway values for min/max expression
 }
 

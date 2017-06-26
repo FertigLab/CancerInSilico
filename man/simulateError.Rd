@@ -2,7 +2,7 @@
 % Please edit documentation in R/GeneExpressionSimulation.R
 \name{simulateError}
 \alias{simulateError}
-\title{Add Simulated Error to Expression Data}
+\title{add simulated error to expression data}
 \usage{
 simulateError(meanExp, dataSet = NULL, perError, microArray)
 }

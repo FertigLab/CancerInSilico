@@ -2,7 +2,7 @@
 % Please edit documentation in R/GeneExpressionSimulation.R
 \name{inSilicoGeneExpression}
 \alias{inSilicoGeneExpression}
-\title{Simulate Gene Expression Data}
+\title{simulate gene expression data}
 \usage{
 inSilicoGeneExpression(model, pathways, sampFreq = 1, nDummyGenes = NULL,
   combineFUN = max, singleCell = FALSE, nCells = 96, perError = 0.1,
@@ -30,7 +30,7 @@ inSilicoGeneExpression(model, pathways, sampFreq = 1, nDummyGenes = NULL,
 \item{nGenes}{total number of genes used (matrix padded with dummys)}
 }
 \value{
-matrix of gene expression data
+list of pathway activity and gene expression
 }
 \description{
 simulate gene expression data for a set of pathways, using

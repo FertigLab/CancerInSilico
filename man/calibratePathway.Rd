@@ -2,7 +2,7 @@
 % Please edit documentation in R/class-Pathway.R
 \name{calibratePathway}
 \alias{calibratePathway}
-\title{Calibrate Pathway with Data}
+\title{calibrate pathway with data}
 \usage{
 calibratePathway(pathway, dataSet)
 }
@@ -12,7 +12,7 @@ calibratePathway(pathway, dataSet)
 \item{dataSet}{reference data set}
 }
 \value{
-pathway with min/max values set
+pathway with min/max values for expression based on data set
 }
 \description{
 sets the min and max values for each gene in a pathway

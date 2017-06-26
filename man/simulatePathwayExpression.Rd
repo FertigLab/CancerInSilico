@@ -8,6 +8,8 @@ simulatePathwayExpression(pathway, activity)
 }
 \arguments{
 \item{pathway}{object of 'Pathway' class}
+
+\item{activity}{named vector of pathway activity in [0,1]}
 }
 \value{
 scale applied to min/max expression values of the pathway
