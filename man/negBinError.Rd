@@ -8,6 +8,10 @@ negBinError(meanExp, dataSet = NULL, invChisq = TRUE)
 }
 \arguments{
 \item{meanExp}{matrix of mean expression data}
+
+\item{dataSet}{reference data set of gene expression}
+
+\item{invChisq}{use chi-squared distribution}
 }
 \description{
 #TODO

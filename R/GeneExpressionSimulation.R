@@ -16,7 +16,7 @@
 #' @return list of pathway activity and gene expression
 inSilicoGeneExpression <- function(model, pathways, sampFreq=1,
 nDummyGenes=NULL, dummyDist=function() runif(1,2,14), combineFUN=max,
-singleCell=FALSE, nCells=96, perError=0.1, microArray=TRUE,
+singleCell=FALSE, nCells=50, perError=0.1, microArray=TRUE,
 randSeed=0, dataSet=NULL)
 {
     # run simulation for each pathway
@@ -134,8 +134,8 @@ simulateError <- function(meanExp, dataSet=NULL, perError, microArray)
 #'
 #' @description #TODO
 #' @param meanExp matrix of mean expression data
-#' @param dataSet
-#' @param invChisq
+#' @param dataSet reference data set of gene expression
+#' @param invChisq use chi-squared distribution
 negBinError <- function(meanExp, dataSet=NULL, invChisq=TRUE)
 {
     # get number of genes and mean expression for each one

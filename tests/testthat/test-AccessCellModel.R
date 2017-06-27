@@ -38,6 +38,6 @@ test_that('local density',
     mod@cells[[1]][1:5] <- c(0, 0, 1, 2, 0)
     mod@cells[[1]][10:14] <- c(2, 2, 1, 2, 0)
     expect_equal(getLocalDensity(mod, 0, 1, 2), 0.022, tol=0.01)
-    expect_equal(getLocalDensity(modDefault, 5, 4, 4), 0.58, tol=0.01)
+    expect_equal(getLocalDensity(modDefault, 5, 4, 4), 0.569, tol=0.01)
 })
 

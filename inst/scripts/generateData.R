@@ -45,7 +45,7 @@ geneNamesGrowth <- c('A2M','ACAT1','AGT','BACE1','C2','C7','CASP4','CCL19','CCL2
 growthExp <- function(model, cell, time)
 {
     cycLength <- getCycleLength(model, time, cell)
-    return(exp(-1 * cycLength / 24))
+    return(exp(-1 * cycLength / 48))
 }
 
 mitosisExp <- function(model, cell, time)
@@ -75,19 +75,19 @@ SPhaseExp <- function(model, cell, time)
 
 contactInhibitionExp <- function(model, cell, time)
 {
-    return(getGrowthAcceptRate(model, time, cell))
+    return(getLocalDensity(model, time, cell, 3.3))
 }
 
 pwyGrowth <- new('Pathway', genes = geneNamesGrowth,
     expressionScale = growthExp)
 
 pwyMitosis <- new('Pathway', genes = geneNamesGtoM,
-    expressionScale = mitosisExp)#, transformMidpoint = 0.1,
-#    transformSlope = 5 / 0.2)
+    expressionScale = mitosisExp, transformMidpoint = 0.05,
+    transformSlope = 5 / 0.1)
 
 pwySPhase <- new('Pathway', genes = geneNamesGtoS,
-    expressionScale = SPhaseExp)#, transformMidpoint = 0.1,
-#    transformSlope = 5 / 0.2)
+    expressionScale = SPhaseExp, transformMidpoint = 0.05,
+    transformSlope = 5 / 0.1)
 
 pwyContactInhibition <- new('Pathway', genes = geneNamesProx,
     expressionScale = contactInhibitionExp)

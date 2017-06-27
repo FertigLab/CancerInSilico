@@ -213,7 +213,7 @@ setMethod('getLocalDensity', signature('OffLatticeModel'),
     {
         # generate uniform grid of points within radius, outside cell
         cellRadius <- getRadius(model, time, cell)
-        width <- seq(-radius, radius, length.out=100)
+        width <- seq(-radius, radius, length.out=10)
         allComb <- expand.grid(width, width)
         allComb <- allComb[allComb[,1]^2 + allComb[,2]^2 > cellRadius^2,]
         allComb <- allComb[allComb[,1]^2 + allComb[,2]^2 < radius^2,]
@@ -230,6 +230,7 @@ setMethod('getLocalDensity', signature('OffLatticeModel'),
         cells <- setdiff(1:getNumberOfCells(model, time), cell)
         cells <- cells[sapply(cells, function(c) cellRadius +
             getCellDistance(model, time, cell, c) < radius)]
+        if (!length(cells)) return(0)
 
         # cell info
         coords <- sapply(cells, getCoordinates, model=model, time=time)
@@ -249,7 +250,7 @@ setMethod('getLocalDensity', signature('OffLatticeModel'),
         rad <- c(radii, radii)
 
         # calculate proportion of points inside of a cell
-        insideCell <- function(p) (x-p[1])^2 + (y-p[2])^2 - rad^2 < 0
+        insideCell <- function(p) ifelse(min((x-p[1])^2 + (y-p[2])^2 - rad^2) < 0, 1, 0)
         numPoints <- sum(apply(localGrid, 1, insideCell))
         return(numPoints / nrow(localGrid))
     }

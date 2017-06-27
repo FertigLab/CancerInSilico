@@ -87,8 +87,7 @@ singleCell=FALSE, sampSize=0)
     if (sampFreq <= 0) stop('invalid sampling frequency')
     if (!length(pathway@minExpression)) stop('pathway not calibrated')
     if (!length(pathway@maxExpression)) stop('pathway not calibrated')
-    if (!singleCell) sampSize <- 1
-    else if (sampSize < 1) stop('invalid sample size for single cell')
+    if (sampSize < 1) stop('invalid sample size')
 
     # find closest, valid, sampling frequency
     freq <- model@recordIncrement * ceiling(sampFreq / model@recordIncrement)
@@ -99,8 +98,7 @@ singleCell=FALSE, sampSize=0)
     for (t in times)
     {
         # determine which cells to calculate expression for
-        cells <- 1:getNumberOfCells(model, t)
-        if (singleCell) cells <- sort(sample(cells, sampSize))
+        cells <- sort(sample(1:getNumberOfCells(model, t), sampSize))
 
         # calculate scale and add to matrix
         scale <- sapply(cells, pathway@expressionScale, model=model, time=t)

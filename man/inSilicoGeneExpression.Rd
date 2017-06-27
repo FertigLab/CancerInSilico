@@ -5,8 +5,9 @@
 \title{simulate gene expression data}
 \usage{
 inSilicoGeneExpression(model, pathways, sampFreq = 1, nDummyGenes = NULL,
-  combineFUN = max, singleCell = FALSE, nCells = 96, perError = 0.1,
-  microArray = TRUE, randSeed = 0, dataSet = NULL)
+  dummyDist = function() runif(1, 2, 14), combineFUN = max,
+  singleCell = FALSE, nCells = 50, perError = 0.1, microArray = TRUE,
+  randSeed = 0, dataSet = NULL)
 }
 \arguments{
 \item{model}{a CellModel object}
