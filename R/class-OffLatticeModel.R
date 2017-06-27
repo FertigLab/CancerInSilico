@@ -211,65 +211,46 @@ setMethod('getCellDistance', signature(model='OffLatticeModel'),
 setMethod('getLocalDensity', signature('OffLatticeModel'),
     function(model, time, cell, radius)
     {
-        # cell info
-        nCells <- getNumberOfCells(model, time)
-        coords <- sapply(1:nCells, getCoordinates, model=model, time=time)
-        radii <- sapply(1:nCells, getRadius, model=model, time=time)
-        axisLen <- sapply(1:nCells, getAxisLength, model=model, time=time)
-        axisAng <- sapply(1:nCells, getAxisAngle, model=model, time=time)
-        size <- sapply(1:nCells, function(c)
-            model@cellTypes[[getCellType(model, time, c)]]@size)
-
-        # subset to nearby cells
-        cells <- setdiff(1:nCells, cell)
-        cells <- cells[sapply(cells, function(c)
-            getCellDistance(model, time, cell, c) + radii[cell] < radius)]
-
-        # generate uniform grid of points
-        width <- seq(-radius, radius, length.out=20)
+        # generate uniform grid of points within radius, outside cell
+        cellRadius <- getRadius(model, time, cell)
+        width <- seq(-radius, radius, length.out=100)
         allComb <- expand.grid(width, width)
-        allComb <- allComb[allComb[,1]^2 + allComb[,2]^2 > radii[cell]^2,]
+        allComb <- allComb[allComb[,1]^2 + allComb[,2]^2 > cellRadius^2,]
         allComb <- allComb[allComb[,1]^2 + allComb[,2]^2 < radius^2,]
+
+        # put grid in matrix and exclude points outside the boundary
+        cellCoords <- getCoordinates(model, time, cell)
         localGrid <- matrix(nrow=nrow(allComb), ncol=2)
-        localGrid[,1] <- coords[1,cell] + allComb[,1]
-        localGrid[,2] <- coords[2,cell] + allComb[,2]
+        localGrid[,1] <- cellCoords[1] + allComb[,1]
+        localGrid[,2] <- cellCoords[2] + allComb[,2]
         localGrid <- localGrid[apply(localGrid, 1, function(p)
             p[1]^2 + p[2]^2 < model@boundary^2),]
 
-        # return true if point inside cell
-        inside <- function(c, p)
-        {
-            coords <- getCoordinates(model, time, c)
-            rad <- getRadius(model, time, c)
-            axisLen <- getAxisLength(model, time, c)
-            axisAng <- getAxisAngle(model, time, c)
-    
-            x1 <- coords[1] + (0.5 * axisLen - rad) * cos(axisAng)
-            y1 <- coords[2] + (0.5 * axisLen - rad) * sin(axisAng)
-            x2 <- coords[1] - (0.5 * axisLen - rad) * cos(axisAng)
-            y2 <- coords[2] - (0.5 * axisLen - rad) * sin(axisAng)
+        # nearby cells
+        cells <- setdiff(1:getNumberOfCells(model, time), cell)
+        cells <- cells[sapply(cells, function(c) cellRadius +
+            getCellDistance(model, time, cell, c) < radius)]
 
-            dist2 <- min((x1-p[1])^2+(y1-p[2])^2, (x2-p[1])^2+(y2-p[2])^2)
-            return(dist2 < rad ^ 2)
-        }
-          
+        # cell info
+        coords <- sapply(cells, getCoordinates, model=model, time=time)
+        radii <- sapply(cells, getRadius, model=model, time=time)
+        axisLen <- sapply(cells, getAxisLength, model=model, time=time)
+        axisAng <- sapply(cells, getAxisAngle, model=model, time=time)
+        size <- sapply(cells, function(c)
+            model@cellTypes[[getCellType(model, time, c)]]@size)
+
         # get all (x,y) pairs for each of the cell centers
-#        x1 <- coords[1,] + (0.5 * axisLen - radii) * cos(axisAng)
-#        x2 <- coords[1,] - (0.5 * axisLen - radii) * cos(axisAng)
-#        y1 <- coords[2,] + (0.5 * axisLen - radii) * sin(axisAng)
-#        y2 <- coords[2,] - (0.5 * axisLen - radii) * sin(axisAng)
-#        x <- c(x1,x2)
-#        y <- c(y1,y2)
-#        rad <- c(radii, radii)
-
-        # trim grid for boundary
-
+        x1 <- coords[1,] + (0.5 * axisLen - radii) * cos(axisAng)
+        x2 <- coords[1,] - (0.5 * axisLen - radii) * cos(axisAng)
+        y1 <- coords[2,] + (0.5 * axisLen - radii) * sin(axisAng)
+        y2 <- coords[2,] - (0.5 * axisLen - radii) * sin(axisAng)
+        x <- c(x1,x2)
+        y <- c(y1,y2)
+        rad <- c(radii, radii)
 
         # calculate proportion of points inside of a cell
-        numPoints <- sum(apply(localGrid, 1, function(p)
-            sum(sapply(cells, inside, p=p)) > 0))
-        print(numPoints)
-        print(nrow(localGrid))
+        insideCell <- function(p) (x-p[1])^2 + (y-p[2])^2 - rad^2 < 0
+        numPoints <- sum(apply(localGrid, 1, insideCell))
         return(numPoints / nrow(localGrid))
     }
 )

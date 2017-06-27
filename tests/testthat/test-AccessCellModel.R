@@ -35,10 +35,9 @@ test_that('cell model calculations',
 test_that('local density',
 {
     mod <- inSilicoCellModel(2, 1, 0.1, recordIncrement=0.5)
-#    mod@cells[[1]][1:5] <- c(0, 0, 1.349706, 2.699413, 0)
-#    mod@cells[[1]][11:15] <- c(0, 0, 1.056009, 2.112018, 0)
     mod@cells[[1]][1:5] <- c(0, 0, 1, 2, 0)
     mod@cells[[1]][10:14] <- c(2, 2, 1, 2, 0)
-    expect_equal(getLocalDensity(mod, 0, 1, 3), 0.5)
+    expect_equal(getLocalDensity(mod, 0, 1, 2), 0.022, tol=0.01)
+    expect_equal(getLocalDensity(modDefault, 5, 4, 4), 0.58, tol=0.01)
 })
 
