@@ -21,7 +21,7 @@ randSeed=0, dataSet=NULL)
 {
     # run simulation for each pathway
     pwyActivity <- lapply(pathways, function(p)
-        simulatePathwayActivity(p, model, sampFreq, singleCell, nCells))
+        simulatePathwayActivity(p, model, sampFreq, nCells, singleCell))
     pwyExpression <- lapply(1:length(pathways), function(i)
         simulatePathwayExpression(pathways[[i]], pwyActivity[[i]]))
 

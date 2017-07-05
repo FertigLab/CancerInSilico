@@ -80,8 +80,8 @@ setValidity('Pathway',
 #' @param singleCell simulate single cell activity
 #' @param sampleSize number of cells to sample in the case of single cell
 #' @return vector with values in [0,1] indicatin pathway activity
-simulatePathwayActivity <- function(pathway, model, sampFreq,
-singleCell=FALSE, sampSize=0)
+simulatePathwayActivity <- function(pathway, model, sampFreq, sampSize,
+singleCell=FALSE)
 {
     # check parameters
     if (sampFreq <= 0) stop('invalid sampling frequency')

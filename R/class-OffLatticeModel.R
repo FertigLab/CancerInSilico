@@ -211,48 +211,57 @@ setMethod('getCellDistance', signature(model='OffLatticeModel'),
 setMethod('getLocalDensity', signature('OffLatticeModel'),
     function(model, time, cell, radius)
     {
-        # generate uniform grid of points within radius, outside cell
-        cellRadius <- getRadius(model, time, cell)
-        width <- seq(-radius, radius, length.out=10)
-        allComb <- expand.grid(width, width)
-        allComb <- allComb[allComb[,1]^2 + allComb[,2]^2 > cellRadius^2,]
-        allComb <- allComb[allComb[,1]^2 + allComb[,2]^2 < radius^2,]
+        dis <- function(a,b) sqrt((a[1]-b[1])^2 + (a[2]-b[2])^2)
 
-        # put grid in matrix and exclude points outside the boundary
-        cellCoords <- getCoordinates(model, time, cell)
-        localGrid <- matrix(nrow=nrow(allComb), ncol=2)
-        localGrid[,1] <- cellCoords[1] + allComb[,1]
-        localGrid[,2] <- cellCoords[2] + allComb[,2]
-        localGrid <- localGrid[apply(localGrid, 1, function(p)
-            p[1]^2 + p[2]^2 < model@boundary^2),]
+        # generate grid around point
+        genGrid <- function(p1, rad, p2=NULL)
+        {
+            width <- seq(-rad, rad, length.out=10)
+            grid <- as.matrix(unname(expand.grid(width, width)))
+            grid <- grid[apply(grid, 1, dis, b=c(0,0)) < rad,]
+            grid <- t(t(grid) + p1)
 
-        # nearby cells
+            if (!is.null(p2))
+                grid <- grid[apply(grid, 1, dis, b=p1) < apply(grid, 1, dis, b=p2),]
+            return(grid)
+        }
+
+        # find nearby cells
         cells <- setdiff(1:getNumberOfCells(model, time), cell)
-        cells <- cells[sapply(cells, function(c) cellRadius +
+        cells <- cells[sapply(cells, function(c) getRadius(model, time, cell) +
             getCellDistance(model, time, cell, c) < radius)]
         if (!length(cells)) return(0)
 
-        # cell info
+        # get cell info
         coords <- sapply(cells, getCoordinates, model=model, time=time)
-        radii <- sapply(cells, getRadius, model=model, time=time)
+        rad <- sapply(cells, getRadius, model=model, time=time)
         axisLen <- sapply(cells, getAxisLength, model=model, time=time)
         axisAng <- sapply(cells, getAxisAngle, model=model, time=time)
-        size <- sapply(cells, function(c)
-            model@cellTypes[[getCellType(model, time, c)]]@size)
+        type <- sapply(cells, getCellType, model=model, time=time)
+        sz <- sapply(type, function(t) model@cellTypes[[t]]@size)
 
-        # get all (x,y) pairs for each of the cell centers
-        x1 <- coords[1,] + (0.5 * axisLen - radii) * cos(axisAng)
-        x2 <- coords[1,] - (0.5 * axisLen - radii) * cos(axisAng)
-        y1 <- coords[2,] + (0.5 * axisLen - radii) * sin(axisAng)
-        y2 <- coords[2,] - (0.5 * axisLen - radii) * sin(axisAng)
-        x <- c(x1,x2)
-        y <- c(y1,y2)
-        rad <- c(radii, radii)
+        # find cell center coordinates
+        term <- 0.5 * axisLen - rad
+        p1 <- cbind(coords[1]+term*cos(axisAng), coords[2]+term*sin(axisAng))
+        p2 <- cbind(coords[1]-term*cos(axisAng), coords[2]-term*sin(axisAng))
 
-        # calculate proportion of points inside of a cell
-        insideCell <- function(p) ifelse(min((x-p[1])^2 + (y-p[2])^2 - rad^2) < 0, 1, 0)
-        numPoints <- sum(apply(localGrid, 1, insideCell))
-        return(numPoints / nrow(localGrid))
+        grid <- matrix(nrow=0, ncol=2)
+        for (c in 1:length(cells))
+        {
+            if (all.equal(2 * rad[c], axisLen[c], tol=1e-3) == TRUE)
+                grid <- rbind(grid, genGrid(coords[,c], rad[c]))
+            else
+                grid <- rbind(grid, rbind(genGrid(p1[c,], rad[c], p2[c,]),
+                    genGrid(p2[c,], rad[c], p1[c,])))
+        }
+
+        # check points for being in radius, return proportion of area
+        cellCoords <- getCoordinates(model, time, cell)
+        numPoints <- apply(grid, 1, function(p) dis(p, cellCoords) < radius)
+        prop <- sum(numPoints) / nrow(grid)
+        area <- sapply(1:length(cells), function(c) ifelse(all.equal(2*rad[c],
+            axisLen[c], tol=1e-3)==TRUE, rad[c]^2, 2*sz[c]))
+        return(prop * sum(area) / (radius^2 - getRadius(model, time, cell)^2))
     }
 )
 

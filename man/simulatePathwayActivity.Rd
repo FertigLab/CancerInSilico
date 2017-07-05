@@ -4,8 +4,8 @@
 \alias{simulatePathwayActivity}
 \title{simulate pathway activity based in model behavior}
 \usage{
-simulatePathwayActivity(pathway, model, sampFreq, singleCell = FALSE,
-  sampSize = 0)
+simulatePathwayActivity(pathway, model, sampFreq, sampSize,
+  singleCell = FALSE)
 }
 \arguments{
 \item{pathway}{a 'Pathway' object}

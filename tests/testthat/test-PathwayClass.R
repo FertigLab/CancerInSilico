@@ -12,7 +12,7 @@ test_that('Pathway Initialization',
 test_that('Pathway Expression Function',
 {
     expect_equal(pwyMitosis@expressionScale(modDefault, 9, 5), 1)
-    expect_equal(pwyGrowth@expressionScale(modDefault, 5, 5), 0.368,
+    expect_equal(pwyGrowth@expressionScale(modDefault, 5, 5), 0.607,
         tolerance=0.01)
 })
 
@@ -20,11 +20,11 @@ test_that('Pathway Expression Simulation',
 {
     pwyMitosis@minExpression <- runif(length(pwyMitosis@genes), 2,4)
     pwyMitosis@maxExpression <- runif(length(pwyMitosis@genes), 6,8)
-    activity <- simulatePathwayActivity(pwyMitosis, modDefault, 1)
+    activity <- simulatePathwayActivity(pwyMitosis, modDefault, 1, 10)
     meanExp <- simulatePathwayExpression(pwyMitosis, activity)
     expect_true(all(meanExp[,2] < meanExp[,3]))
 
-    activitySS <- simulatePathwayActivity(pwyMitosis, modDefault, 1, T, 10)
+    activitySS <- simulatePathwayActivity(pwyMitosis, modDefault, 1, 10, T)
     meanExpSS <- simulatePathwayExpression(pwyMitosis, activitySS)
     expect_true(all(meanExpSS[,'c9_t1'] < meanExpSS[,'c9_t2']))
 })

@@ -31,7 +31,7 @@ test_that('Pad Expression Matrix',
     pwyOutput <- lapply(list(pwyGrowth, pwyMitosis), function(p)
     {
         p <- calibratePathway(p, referenceGeneExpression)
-        activity <- simulatePathwayActivity(p, modDefault, 1)
+        activity <- simulatePathwayActivity(p, modDefault, 1, 10)
         return(simulatePathwayExpression(p, activity))
     })
 
@@ -51,7 +51,7 @@ test_that('Simulate Error - microarray',
     pwyOutput <- lapply(list(pwyGrowth, pwyMitosis), function(p)
     {
         p <- calibratePathway(p, referenceGeneExpression)
-        activity <- simulatePathwayActivity(p, modDefault, 1)
+        activity <- simulatePathwayActivity(p, modDefault, 1, 10)
         return(simulatePathwayExpression(p, activity))
     })
     mat <- combineGeneExpression(pwyOutput)
@@ -66,7 +66,7 @@ test_that('Simulate Error - RNA-seq (Neg Bin)',
     pwyOutput <- lapply(list(pwyGrowth, pwyMitosis), function(p)
     {
         p <- calibratePathway(p, referenceGeneExpression)
-        activity <- simulatePathwayActivity(p, modDefault, 1)
+        activity <- simulatePathwayActivity(p, modDefault, 1, 10)
         return(simulatePathwayExpression(p, activity))
     })
     mat <- combineGeneExpression(pwyOutput)
@@ -87,7 +87,7 @@ test_that('Simulate Gene Expression',
     pwyGrowth <- calibratePathway(pwyGrowth, referenceGeneExpression)
     pwyMitosis <- calibratePathway(pwyMitosis, referenceGeneExpression)
     gs <- inSilicoGeneExpression(modDefault, c(pwyMitosis, pwyGrowth),
-    microArray=TRUE)
+    microArray=TRUE, nCells=10)
     expect_equal(nrow(gs$expression), 546)
     expect_equal(ncol(gs$expression), 11)
 })
