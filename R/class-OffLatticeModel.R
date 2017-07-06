@@ -80,22 +80,14 @@ setGeneric('getGrowthAcceptRate', function(model, time, cell)
 
 ##################### Methods ####################
 
-setMethod('timeToRow', signature(model='OffLatticeModel'),
-    function(model, time)
+getEntry <- function(model, time, cell, col)
     {
         if (time > model@runTime | time < 0) stop('invalid time')
-        else return (floor(time / model@recordIncrement) + 1)
-    }
-)
-
-setMethod('getEntry', signature(model='OffLatticeModel'),
-    function(model, time, cell, col)
-    {
-        row <- timeToRow(model, time)
+        else row <- floor(time / model@recordIncrement) + 1
         col <- col + 9 * (cell - 1)
         return(model@cells[[row]][col])
     }
-)
+#)
 
 setMethod('getCoordinates', signature(model='OffLatticeModel'),
     function(model, time, cell)
@@ -157,7 +149,9 @@ setMethod('getGrowthAcceptRate', signature('OffLatticeModel'),
 setMethod('getNumberOfCells', signature('OffLatticeModel'),
     function(model, time)
     {
-        return(length(model@cells[[timeToRow(model, time)]]) / 9)
+        if (time > model@runTime | time < 0) stop('invalid time')
+        else row <- floor(time / model@recordIncrement) + 1
+        return(length(model@cells[[row]]) / 9)
     }
 )
 
@@ -227,8 +221,9 @@ setMethod('getLocalDensity', signature('OffLatticeModel'),
         }
 
         # find nearby cells
+        cellRad <- getRadius(model, time, cell)
         cells <- setdiff(1:getNumberOfCells(model, time), cell)
-        cells <- cells[sapply(cells, function(c) getRadius(model, time, cell) +
+        cells <- cells[sapply(cells, function(c) cellRad +
             getCellDistance(model, time, cell, c) < radius)]
         if (!length(cells)) return(0)
 
@@ -261,7 +256,7 @@ setMethod('getLocalDensity', signature('OffLatticeModel'),
         prop <- sum(numPoints) / nrow(grid)
         area <- sapply(1:length(cells), function(c) ifelse(all.equal(2*rad[c],
             axisLen[c], tol=1e-3)==TRUE, rad[c]^2, 2*sz[c]))
-        return(prop * sum(area) / (radius^2 - getRadius(model, time, cell)^2))
+        return(prop * sum(area) / (radius^2 - cellRad^2))
     }
 )
 
