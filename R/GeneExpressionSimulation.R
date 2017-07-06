@@ -122,7 +122,7 @@ simulateError <- function(meanExp, dataSet=NULL, perError, microArray)
         meanExp <- meanExp + pmax(perError*meanExp, perError) * normalError
         return(pmax(meanExp, 0))
     }
-    else
+    else #single cell must be rna-seq
     {
         meanExp <- round(2 ^ meanExp - 1) # convert to counts
         return(negBinError(meanExp, dataSet))
