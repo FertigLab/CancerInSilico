@@ -11,4 +11,8 @@ OBJECTS =   RunModel.o \
             Core/Drug.o \
             Core/Random.o \
             Tests/Core/test-CellType.o \
+            Tests/Core/test-Drug.o \
+            Tests/Core/test-Point.o \
+            Tests/Core/test-Random.o \
+            Tests/Core/test-SquareLattice.o \
             Tests/test-runner.o

@@ -20,13 +20,35 @@ double Random::normal(double mean, double var)
 
 int Random::uniformInt(int a, int b)
 {
-    boost::random::uniform_int_distribution<> dist(a,b);
-    return dist(rng);
+    if (a > b)
+    {
+        throw std::invalid_argument("uniformInt: invalid range\n");
+    }
+    else if (a == b)
+    {
+        return a;
+    }
+    else
+    {
+        boost::random::uniform_int_distribution<> dist(a,b);
+        return dist(rng);
+    }
 }
 
 double Random::uniform(double a, double b)
 {
-    boost::random::uniform_real_distribution<> dist(a,b);
-    return dist(rng);
+    if (a > b)
+    {
+        throw std::invalid_argument("uniform: invalid range\n");
+    }
+    else if (a == b)
+    {
+        return a;
+    }
+    else
+    {
+        boost::random::uniform_real_distribution<> dist(a,b);
+        return dist(rng);
+    }
 }
 

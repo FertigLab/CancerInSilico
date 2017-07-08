@@ -13,9 +13,76 @@ struct TestObject
     {}
 };
 
+#define TEST_OBJ(x,y,v) Point<double>(x,y), TestObject(x,y,v)
+
 CATCH_TEST_CASE("Test SquareLattice.h")
 {
     Random::setSeed(0);
+
+    CATCH_SECTION("Square Lattice Constructor - default")
+    {
+        SquareLattice<TestObject> testLat;
+
+        CATCH_REQUIRE(testLat.size() == 0);
+        CATCH_REQUIRE_THROWS(testLat.randomValue());
+        CATCH_REQUIRE_THROWS(testLat.at(Point<double>(0,0)));
+    }
+
+    CATCH_SECTION("Square Lattice Constructor - width")
+    {
+        SquareLattice<TestObject> testLat(1.0);
+
+        CATCH_REQUIRE(testLat.size() == 0);
+        CATCH_REQUIRE_THROWS(testLat.randomValue());
+        CATCH_REQUIRE_THROWS(testLat.at(Point<double>(0,0)));
+    }
+
+    CATCH_SECTION("Square Lattice with one element")
+    {
+        SquareLattice<TestObject> testLat(1.0);
+
+        // insert object
+        testLat.insert(TEST_OBJ(0,0,34));
+        CATCH_REQUIRE(testLat.size() == 1);
+        CATCH_REQUIRE(testLat.at(Point<double>(0,0)).val == 34);
+        CATCH_REQUIRE(testLat.randomValue().val == 34);
+    
+        // handle collision on insert
+        CATCH_REQUIRE_THROWS(testLat.insert(TEST_OBJ(0,0,0)));
+        CATCH_REQUIRE_THROWS(testLat.insert(TEST_OBJ(0.5,0,0)));
+        CATCH_REQUIRE_THROWS(testLat.insert(TEST_OBJ(-0.5,0,0)));
+        CATCH_REQUIRE_THROWS(testLat.insert(TEST_OBJ(0,0.5,0)));
+        CATCH_REQUIRE_THROWS(testLat.insert(TEST_OBJ(0,-0.5,0)));
+
+        // move object
+        testLat.update(Point<double>(0,0), Point<double>(1,1));
+        CATCH_REQUIRE(testLat.size() == 1);
+        CATCH_REQUIRE(testLat.at(Point<double>(1,1)).val == 34);
+        CATCH_REQUIRE_THROWS(testLat.at(Point<double>(0,0)));
+
+        // erase object
+        testLat.erase(Point<double>(1,1));
+        CATCH_REQUIRE(testLat.size() == 0);
+        CATCH_REQUIRE_THROWS(testLat.at(Point<double>(1,1)));
+    }
+
+    CATCH_SECTION("Square Lattice with two elements")
+    {
+        SquareLattice<TestObject> testLat(1.0);
+
+        testLat.insert(TEST_OBJ(0,0,34));
+        testLat.insert(TEST_OBJ(2,2,42));
+
+    }
+
+    CATCH_SECTION("Square Lattice with many elements")
+    {
+
+
+    }
+
+
+#if 0
 
     SquareLattice<TestObject> testLat (1.0);
 
@@ -81,6 +148,7 @@ CATCH_TEST_CASE("Test SquareLattice.h")
     CATCH_REQUIRE((*it5).val == 2);
     TestObject objNA2 (10.5, 10.5, 0);
     CATCH_REQUIRE_THROWS(testLat.insert(objNA2.coords, objNA2));
+#endif
 }
 
 

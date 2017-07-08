@@ -30,8 +30,8 @@ modDrugs <- new('DrasdoHohmeModel', initialNum=100, runTime=4, density=0.4,
     randSeed=0, outputIncrement=4, recordIncrement=0.1, syncCycle=FALSE,
     cellTypes=c(c1,c2), cellTypeInitFreq=c(0.5,0.5), drugs=c(d1,d2,d3,d4))
 
-save(modDefault, modLongRun, modLargeRun, modHighDensity, modCellTypes,
-    modDrugs, file = 'SampleModels.RData')
+save(modDefault, modLongRun, modLargeRun, modHighDensity, modDrugs,
+    file = 'SampleModels.RData')
 
 ## Pathway examples
 

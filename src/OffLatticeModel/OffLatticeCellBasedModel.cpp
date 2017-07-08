@@ -21,7 +21,7 @@ OffLatticeCellBasedModel::OffLatticeCellBasedModel(Rcpp::S4* rModel)
     mMaxRotation    = rModel->slot("maxRotation");
 
     // setup lattice structure
-    mCellPopulation.setWidth(sqrt(2) - 0.001);
+    mCellPopulation.setWidth(sqrt(3 / 2) - 0.001);
 
     // seed default cells
     std::vector<OffLatticeCell> defaultCells;

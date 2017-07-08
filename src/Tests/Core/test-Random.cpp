@@ -9,7 +9,9 @@ CATCH_TEST_CASE("Test Random.h")
     Random::setSeed(0);
     
     CATCH_REQUIRE(Random::uniformInt(5,10) == 8);
-
+    CATCH_REQUIRE(Random::uniformInt(7,7) == 7);
+    CATCH_REQUIRE(Random::uniform(7.5,7.5) == 7.5);
+      
     int imin = 10, imax = 0;
     double dmin = 10.0, dmax = 0.0;
 
