@@ -73,7 +73,7 @@ private:
         BaseLocalIterator<T>* newCopy() const
             {return new SquareLocalIterator(*this);}
 
-        // increment iterator
+        // increment iterator, TODO: parallize computations over this grid
         void operator++()
         {
             do

@@ -1,2 +1,2 @@
 library(CancerInSilico)
-x <- runCellSimulation(24,6,0.1)
+x <- inSilicoCellModel(24,6,0.1)

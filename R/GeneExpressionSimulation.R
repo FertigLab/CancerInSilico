@@ -29,7 +29,7 @@ randSeed=0, dataSet=NULL)
     meanExp <- combineGeneExpression(pwyExpression, combineFUN)
     if (!is.null(nDummyGenes))
         meanExp <- padExpressionMatrix(meanExp, nDummyGenes, dummyDist)
-    exp <- simulateError(meanExp, dataSet, perError, microArray)
+    exp <- simulateError(meanExp, dataSet, perError, microArray, singleCell)
 
     # return pathway activity, return expression with gene order shuffled
     exp <- exp[sample(nrow(exp)),]
@@ -114,15 +114,16 @@ padExpressionMatrix <- function(mat, nDummyGenes, distr)
 #' @param perError TODO
 #' @param microArray whether this data is RNA-seq or microarray
 #' @return gene expression matrix with error
-simulateError <- function(meanExp, dataSet=NULL, perError, microArray)
+simulateError <- function(meanExp, dataSet=NULL, perError,
+microArray, singleCell)
 {
-    if (microArray)
+    if (microArray & !singleCell)
     {
         normalError <- matrix(rnorm(length(meanExp)), ncol=ncol(meanExp))
         meanExp <- meanExp + pmax(perError*meanExp, perError) * normalError
         return(pmax(meanExp, 0))
     }
-    else #single cell must be rna-seq
+    else
     {
         meanExp <- round(2 ^ meanExp - 1) # convert to counts
         return(negBinError(meanExp, dataSet))

@@ -73,6 +73,7 @@ test_that('Simulate Error - RNA-seq (Neg Bin)',
 
     matError1 <- simulateError(mat, microArray=FALSE)
     expect_equal(nrow(matError1), 546)
+    print(matError1[1:10,])
 #    expect_equal(ncol(matError1), 11)
 
     matError2 <- simulateError(mat, dataSet=referenceGeneExpression, 
@@ -82,7 +83,7 @@ test_that('Simulate Error - RNA-seq (Neg Bin)',
 
 })
 
-test_that('Simulate Gene Expression',
+test_that('Simulate Gene Expression - microarray',
 {
     pwyGrowth <- calibratePathway(pwyGrowth, referenceGeneExpression)
     pwyMitosis <- calibratePathway(pwyMitosis, referenceGeneExpression)
@@ -91,4 +92,13 @@ test_that('Simulate Gene Expression',
     expect_equal(nrow(gs$expression), 546)
     expect_equal(ncol(gs$expression), 11)
 })
+
+test_that('Simulate Gene Expression - single cell',
+{
+    pwyGrowth <- calibratePathway(pwyGrowth, referenceGeneExpression)
+    pwyMitosis <- calibratePathway(pwyMitosis, referenceGeneExpression)
+    gs <- inSilicoGeneExpression(modDefault, c(pwyMitosis, pwyGrowth),
+    microArray=FALSE, nCells=10)
+})
+
 
