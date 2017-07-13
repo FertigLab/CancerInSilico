@@ -6,7 +6,7 @@
 \usage{
 inSilicoGeneExpression(model, pathways, sampFreq = 1, nDummyGenes = NULL,
   dummyDist = function() runif(1, 2, 14), combineFUN = max,
-  singleCell = FALSE, nCells = 50, perError = 0.1, microArray = TRUE,
+  singleCell = FALSE, nCells = 50, perError = 0.1, RNAseq = FALSE,
   randSeed = 0, dataSet = NULL)
 }
 \arguments{
@@ -24,11 +24,11 @@ inSilicoGeneExpression(model, pathways, sampFreq = 1, nDummyGenes = NULL,
 
 \item{perError}{percent error?}
 
-\item{microArray}{true if micro array data}
-
 \item{randSeed}{random seed for simulation}
 
 \item{nGenes}{total number of genes used (matrix padded with dummys)}
+
+\item{microArray}{true if micro array data}
 }
 \value{
 list of pathway activity and gene expression

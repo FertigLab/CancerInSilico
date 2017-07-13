@@ -16,7 +16,7 @@
 #' @return list of pathway activity and gene expression
 inSilicoGeneExpression <- function(model, pathways, sampFreq=1,
 nDummyGenes=NULL, dummyDist=function() runif(1,2,14), combineFUN=max,
-singleCell=FALSE, nCells=50, perError=0.1, microArray=TRUE,
+singleCell=FALSE, nCells=50, perError=0.1, RNAseq=FALSE,
 randSeed=0, dataSet=NULL)
 {
     # run simulation for each pathway
@@ -29,7 +29,7 @@ randSeed=0, dataSet=NULL)
     meanExp <- combineGeneExpression(pwyExpression, combineFUN)
     if (!is.null(nDummyGenes))
         meanExp <- padExpressionMatrix(meanExp, nDummyGenes, dummyDist)
-    exp <- simulateError(meanExp, dataSet, perError, microArray, singleCell)
+    exp <- simulateError(meanExp, perError, RNAseq, singleCell)
 
     # return pathway activity, return expression with gene order shuffled
     exp <- exp[sample(nrow(exp)),]
@@ -110,59 +110,64 @@ padExpressionMatrix <- function(mat, nDummyGenes, distr)
 #'
 #' @description add noise to all values in expression matrix
 #' @param meanExp matrix of gene expression data
-#' @param dataSet matrix of gene expression data where row names are genes
 #' @param perError TODO
-#' @param microArray whether this data is RNA-seq or microarray
+#' @param RNAseq whether this data is RNA-seq or microarray
 #' @return gene expression matrix with error
-simulateError <- function(meanExp, dataSet=NULL, perError,
-microArray, singleCell)
+simulateError <- function(meanExp, perError, RNAseq=FALSE, singleCell=FALSE,
+polyester=FALSE, fasta=NULL)
 {
-    if (microArray & !singleCell)
+    if (RNAseq & singleCell) # splatter
     {
+        if (polyester) stop('polyester is not for single cell data')
+        meanExp <- round(2 ^ meanExp - 1) # convert to counts
+#        params <- splatter::splatEstimate(meanExp)
+#        return(splatter::splatSimulate(params, dropout.present = FALSE))
+    }
+    else if (RNAseq & !singleCell) # polyester or limma-voom
+    {
+        if (polyester)
+        {
+            if (is.null(fasta))
+                stop('missing FASTA file')
+        }
+        else # limma-voom
+        {
+            return(limmaVoomError(meanExp))
+        }
+    }
+    else # microarray - normal error model
+    {
+        if (singleCell) stop('can\'t generate microarray data for single cell')
+        if (polyester) stop('polyester is only for RNA-seq data')
         normalError <- matrix(rnorm(length(meanExp)), ncol=ncol(meanExp))
         meanExp <- meanExp + pmax(perError*meanExp, perError) * normalError
         return(pmax(meanExp, 0))
     }
-    else
-    {
-        meanExp <- round(2 ^ meanExp - 1) # convert to counts
-        return(negBinError(meanExp, dataSet))
-    }
 }
 
-#' Negative Binomial Error model
+#' Negative Binomial Error model from limma voom
 #' @keywords internal
 #'
-#' @description #TODO
+#' @description using the methods in limma-voom paper, simulate final counts
+#'  from matrix of expected counts
 #' @param meanExp matrix of mean expression data
-#' @param dataSet reference data set of gene expression
 #' @param invChisq use chi-squared distribution
-negBinError <- function(meanExp, dataSet=NULL, invChisq=TRUE)
+#' @reference voom: precision weights unlock linear model analysis tools for
+#'  RNA-seq read counts
+limmaVoomError <- function(meanExp, invChisq=TRUE)
 {
-    # get number of genes and mean expression for each one
-    if (is.null(dataSet))
-    {
-        referenceMean <- pmax(rowMeans(meanExp),1)
-    }
-    else
-    {
-        checkDataSet(dataSet, row.names(meanExp))
-        dataSet <- dataSet[row.names(meanExp),]
-        referenceMean <- pmax(rowMeans(round(2 ^ dataSet - 1)),1)
-    }
-    nGenes <- length(referenceMean)
-
     # Biological variation
-    BCV0 <- 0.2 + 1 / sqrt(referenceMean)
+    BCV0 <- 0.2 + 1 / (sqrt(meanExp) + 0.0001)
     if (invChisq)
-        BCV <- BCV0 * sqrt(40 / rchisq(nGenes, df=40))
+        BCV <- BCV0 * sqrt(40 / rchisq(nrow(meanExp), df=40))
     else
-        BCV <- BCV0 * exp(rnorm(nGenes, mean=0, sd=0.25) / 2)
+        BCV <- BCV0 * exp(rnorm(nrow(meanExp), mean=0, sd=0.25) / 2)
 
     shape <- 1 / BCV^2
     scale <- meanExp / shape
-    lambda <- matrix(rgamma(nGenes, shape=shape, scale=scale), nGenes)
+    lambda <- matrix(rgamma(length(meanExp), shape=shape, scale=scale),
+        nrow=nrow(meanExp))
 
     # Technical variation
-    return(matrix(rpois(nGenes, lambda=lambda), nGenes))
+    return(matrix(rpois(length(lambda), lambda=lambda), nrow=nrow(lambda)))
 }

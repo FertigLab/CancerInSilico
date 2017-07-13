@@ -13,25 +13,33 @@ Description: The CancerInSilico package provides an R interface for running
     implemented in C++ and the output and analysis features implemented in R.
 License: GPL-2
 LazyData: true
+Depends:
+    Rcpp,
+    R
 Imports:
     methods,
-    utils
-Depends:
-    Rcpp
-LinkingTo: Rcpp,
+    utils,
+    splatter,
+    polyester
+LinkingTo:
+    Rcpp,
     testthat,
     BH
 Suggests:
     testthat,
     knitr,
     rmarkdown,
-    BiocStyle,
-    polyester
+    BiocStyle
+Enhances: BiocParallel
 VignetteBuilder: knitr
-biocViews: MathematicalBiology,
+biocViews:
+    MathematicalBiology,
     SystemsBiology,
     CellBiology,
-    BiomedicalInformatics
+    BiomedicalInformatics,
+    GeneExpression,
+    RNASeq,
+    SingleCell
 RoxygenNote: 5.0.1
 Collate:
     'CellSimulation.R'

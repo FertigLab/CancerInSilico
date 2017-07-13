@@ -4,16 +4,15 @@
 \alias{simulateError}
 \title{add simulated error to expression data}
 \usage{
-simulateError(meanExp, dataSet = NULL, perError, microArray)
+simulateError(meanExp, perError, RNAseq = FALSE, singleCell = FALSE,
+  polyester = FALSE, fasta = NULL)
 }
 \arguments{
 \item{meanExp}{matrix of gene expression data}
 
-\item{dataSet}{matrix of gene expression data where row names are genes}
-
 \item{perError}{TODO}
 
-\item{microArray}{whether this data is RNA-seq or microarray}
+\item{RNAseq}{whether this data is RNA-seq or microarray}
 }
 \value{
 gene expression matrix with error

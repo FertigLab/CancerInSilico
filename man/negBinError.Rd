@@ -2,19 +2,18 @@
 % Please edit documentation in R/GeneExpressionSimulation.R
 \name{negBinError}
 \alias{negBinError}
-\title{Negative Binomial Error model}
+\title{Negative Binomial Error model from limma voom}
 \usage{
-negBinError(meanExp, dataSet = NULL, invChisq = TRUE)
+negBinError(meanExp, invChisq = TRUE)
 }
 \arguments{
 \item{meanExp}{matrix of mean expression data}
 
-\item{dataSet}{reference data set of gene expression}
-
 \item{invChisq}{use chi-squared distribution}
 }
 \description{
-#TODO
+using the methods in limma-voom paper, simulate final counts
+ from matrix of expected counts
 }
 \keyword{internal}
 
