@@ -1,0 +1,8 @@
+library(splatter)
+
+
+splatSimulateExtended <- function()
+{
+    
+    
+}

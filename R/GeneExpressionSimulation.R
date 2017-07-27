@@ -114,21 +114,19 @@ padExpressionMatrix <- function(mat, nDummyGenes, distr)
 #' @param RNAseq whether this data is RNA-seq or microarray
 #' @return gene expression matrix with error
 simulateError <- function(meanExp, perError, RNAseq=FALSE, singleCell=FALSE,
-polyester=FALSE, fasta=NULL)
+fasta=NULL)
 {
     if (RNAseq & singleCell) # splatter
     {
-        if (polyester) stop('polyester is not for single cell data')
+        if (!is.null(fasta)) stop('polyester is not for single cell data')
         meanExp <- round(2 ^ meanExp - 1) # convert to counts
 #        params <- splatter::splatEstimate(meanExp)
 #        return(splatter::splatSimulate(params, dropout.present = FALSE))
     }
     else if (RNAseq & !singleCell) # polyester or limma-voom
     {
-        if (polyester)
+        if (!is.null(fasta)) # polyester
         {
-            if (is.null(fasta))
-                stop('missing FASTA file')
         }
         else # limma-voom
         {
@@ -138,7 +136,7 @@ polyester=FALSE, fasta=NULL)
     else # microarray - normal error model
     {
         if (singleCell) stop('can\'t generate microarray data for single cell')
-        if (polyester) stop('polyester is only for RNA-seq data')
+        if (!is.null(fasta)) stop('polyester is only for RNA-seq data')
         normalError <- matrix(rnorm(length(meanExp)), ncol=ncol(meanExp))
         meanExp <- meanExp + pmax(perError*meanExp, perError) * normalError
         return(pmax(meanExp, 0))
