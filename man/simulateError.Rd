@@ -5,7 +5,7 @@
 \title{add simulated error to expression data}
 \usage{
 simulateError(meanExp, perError, RNAseq = FALSE, singleCell = FALSE,
-  polyester = FALSE, fasta = NULL)
+  fasta = NULL)
 }
 \arguments{
 \item{meanExp}{matrix of gene expression data}
