@@ -130,23 +130,23 @@ simulateWithSplatter <- function(pathways, activity, params)
 
         # match cells to reference data        
         matchedCols <- c()
-        colError <- 0
         for (i in 1:length(activity[[p]]))
         {
             diff <- abs(100 * activity[[p]][i] - refData@phenoData@data$Step)
-            matchedCols[i] <- sample(which(diff < 5), 1)
-            colError <- colError + diff[matchedCols[i]]
+            candidates <- which(diff < 5)
+            if (length(candidates) > 0)
+                matchedCols[i] <- sample(candidates, 1)
+            else
+                matchedCols[i] <- which.min(diff)
         } 
 
         # match genes to reference data
         matchedRows <- c()
-        rowError <- 0
         for (i in 1:length(pathways[[p]]@genes))
         {
             meanExp <- (pathways[[p]]@maxExpression[i] - pathways[[p]]@minExpression[i]) / 2
             diff <- abs(refData@featureData@data$BaseGeneMean - meanExp)
             matchedRows[i] <- which.min(diff)
-            rowError <- rowError + min(diff)
         }
 
         # return final expression matrix
