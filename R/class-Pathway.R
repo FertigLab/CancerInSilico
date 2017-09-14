@@ -1,4 +1,4 @@
-library(methods)
+ library(methods)
 
 #' @include class-CellModel.R
 NULL
@@ -98,7 +98,9 @@ singleCell=FALSE)
     for (t in times)
     {
         # determine which cells to calculate expression for
-        cells <- sort(sample(1:getNumberOfCells(model, t), sampSize))
+        total <- getNumberOfCells(model, t)
+        cells <- sort(sample(1:total, sampSize, replace=(total < sampSize)))
+        if (total < sampSize) warning('total population smaller than nCells')
 
         # calculate scale and add to matrix
         scale <- sapply(cells, pathway@expressionScale, model=model, time=t)
@@ -127,27 +129,6 @@ singleCell=FALSE)
 
     # return vector of expression scale
     return(scaleVector)
-}
-
-#' simulate gene expression data for a single pathway
-#' @keywords internal
-#'
-#' @description applies given pathway activity to the gene expression
-#'  ranges to produce simulated gene expression data
-#' @param pathway object of 'Pathway' class
-#' @param activity named vector of pathway activity in [0,1]
-#' @return scale applied to min/max expression values of the pathway
-simulatePathwayExpression <- function(pathway, activity)
-{
-    gsMatrix <- matrix(0, length(pathway@genes), length(activity))
-    rownames(gsMatrix) <- pathway@genes
-    colnames(gsMatrix) <- names(activity)
-    for (col in 1:length(activity))
-    {
-        gsMatrix[,col] <- (pathway@maxExpression - pathway@minExpression) *
-            activity[col] + pathway@minExpression
-    }
-    return(gsMatrix)
 }
 
 #' calibrate pathway with data

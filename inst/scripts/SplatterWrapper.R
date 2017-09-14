@@ -67,4 +67,126 @@ testSplatter <- function()
     splatSimulateExtended(list(pwy1, pwy2), NULL)
 }
 
+library(splatter)
+data('sc_example_counts')
+params <- splatEstimate(sc_example_counts)
+sim <- splatSimulate(params, dropout.present = FALSE)
+sim@featureData@data
+
+
+params <- newSplatParams()
+paramValues <- list(
+  #nGroups = 1,
+  groupCells = 10,
+  mean.shape = 0.6,
+  mean.rate = 0.3,
+  lib.loc = 11,
+  lib.scale = 0.2,
+  out.prob = 0,
+  out.facLoc = 4,
+  out.facScale = 0.5,
+  de.prob = 0,
+  de.downProb = 0,
+  de.facLoc = 0.1,
+  de.facScale = 0.4,
+  bcv.common = 0,
+  bcv.df = 1,
+  dropout.present = FALSE,
+  dropout.mid = 0,
+  dropout.shape = -1,
+  path.from = 0,
+  path.length = 1,
+  path.skew = 0.5,
+  path.nonlinearProb = 0.1,
+  path.sigmaFac = 0.8,
+  nGenes = 10,
+  #nCells = 10,
+  seed = 827593
+)
+params <- setParams(params, update = paramValues)
+sim <- splatSimulate(params, method = "single")
+
+mat <- counts(sim)
+mat <- sim@assayData$BaseCellMeans
+geneMin <- apply(mat, 1, min)
+geneMax <- apply(mat, 1, max)
+mat2 <- matrix(nrow=10, ncol=10)
+
+for (r in 1:10)
+{
+  mat2[r,] <- (mat[r,] - geneMin[r]) / (geneMax[r] - geneMin[r])
+}
+mat
+geneMin
+geneMax
+mat2
+apply(mat2, 2, mean)
+apply(mat2, 2, sd)
+
+getPathwayActivity <- function(sim, id=1)
+{
+  gene1 <- sim@assayData$BaseCellMeans[id,]
+  #gene1 <- sim@assayData$TrueCounts[id,]
+  return((gene1 - min(gene1)) / (max(gene1) - min(gene1)))
+}
+getPathwayActivity(sim)
+
+
+library(splatter)
+sim <- splatSimulate(nGenes=5, groupCells=5, dropout.present=TRUE, out.prob=0.5)
+mat <- counts(sim)
+mat
+sim@assayData$BaseCellMeans
+sim@assayData$TrueCounts
+sim@featureData@data$BaseGeneMean
+sim@phenoData@data$ExpLibSize
+
+round(getPathwayActivity(sim,5), 4)
+
+params <- newSplatParams()
+params <- setParam(params, "nGenes", 10)
+params <- setParam(params, "groupCells", 10)
+means <- rgamma(params@nGenes, shape = params@mean.shape,
+   rate = params@mean.rate)
+means
+sim@featureData@data$BaseGeneMean
+counts <- matrix(rnbinom(params@nGenes * params@nCells, mu = means,
+    size = 1 / params@bcv.common), nrow = params@nGenes)
+counts
+
+sim <- simpleSimulate(nCells=10, nGenes=10)
+counts(sim)
+
+sim <- splatSimulate(nGenes=1000, groupCells=100, mean.shape = 1.0,
+                     mean.rate = 0.3)
+mat <- counts(sim)
+mat <- sim@featureData@data$BaseGeneMean
+gene_means <- mat #rowMeans(mat)
+plot(density(rgamma(1e6, shape = 1.0, rate = 0.3)), col='red')
+lines(density(gene_means))
+
+sim@featureData@data$BaseGeneMean[1:10]
+sim@featureData@data$GeneMean[1:10]
+
+
+# notes
+
+# pathway sim function takes single time
+# loop over times in GeneExpression code
+
+# method
+# for each pathway, at each sample (time)
+#   - fit gamma distribution to expression range parameter
+#   - simulate base expression with minimal possible variance
+#   - @assayData$BaseCellMeans contains "pathway activity"
+#   - line up genes based on mean expression
+#   - line up cells based on pathway activity
+#   - simulate all other effects directly
+# alternatively, do full simulation and match genes & cells by
+#   looking at intermediate data
+
+# params to estimate from data
+#   - dropout 
+
+
 

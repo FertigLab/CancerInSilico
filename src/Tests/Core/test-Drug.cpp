@@ -1,10 +1,10 @@
 #include <Rcpp.h>
 
-#include "../TestHeader.h"
+#include "../catch.h"
 #include "../../Core/Random.h"
 #include "../../Core/Drug.h"
 
-CATCH_TEST_CASE("Test Drug.h")
+TEST_CASE("Test Drug.h")
 {
     Random::setSeed(0);
 
@@ -23,18 +23,18 @@ CATCH_TEST_CASE("Test Drug.h")
     Drug drug2 (2, drugs(2)); // HALF_DEFAULT_TYPE
     Drug drug3 (3, drugs(3)); // ADD_LATE
 
-    CATCH_REQUIRE(drug0.timeAdded() == 0);
-    CATCH_REQUIRE(drug1.timeAdded() == 0);
-    CATCH_REQUIRE(drug2.timeAdded() == 0);
-    CATCH_REQUIRE(drug3.timeAdded() == 6);
+    REQUIRE(drug0.timeAdded() == 0);
+    REQUIRE(drug1.timeAdded() == 0);
+    REQUIRE(drug2.timeAdded() == 0);
+    REQUIRE(drug3.timeAdded() == 6);
 
-    CATCH_REQUIRE(drug0.cycleLengthEffect(type0, 48) == 48);
-    CATCH_REQUIRE(drug1.cycleLengthEffect(type0, 48) == 24);
-    CATCH_REQUIRE(drug2.cycleLengthEffect(type0, 48) == 24);
-    CATCH_REQUIRE(drug3.cycleLengthEffect(type0, 48) == 48);
+    REQUIRE(drug0.cycleLengthEffect(type0, 48) == 48);
+    REQUIRE(drug1.cycleLengthEffect(type0, 48) == 24);
+    REQUIRE(drug2.cycleLengthEffect(type0, 48) == 24);
+    REQUIRE(drug3.cycleLengthEffect(type0, 48) == 48);
 
-    CATCH_REQUIRE(drug0.cycleLengthEffect(type1, 48) == 48);
-    CATCH_REQUIRE(drug1.cycleLengthEffect(type1, 48) == 24);
-    CATCH_REQUIRE(drug2.cycleLengthEffect(type1, 48) == 48);
-    CATCH_REQUIRE(drug3.cycleLengthEffect(type1, 48) == 48);
+    REQUIRE(drug0.cycleLengthEffect(type1, 48) == 48);
+    REQUIRE(drug1.cycleLengthEffect(type1, 48) == 24);
+    REQUIRE(drug2.cycleLengthEffect(type1, 48) == 48);
+    REQUIRE(drug3.cycleLengthEffect(type1, 48) == 48);
 }

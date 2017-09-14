@@ -4,31 +4,12 @@
 \alias{inSilicoGeneExpression}
 \title{simulate gene expression data}
 \usage{
-inSilicoGeneExpression(model, pathways, sampFreq = 1, nDummyGenes = NULL,
-  dummyDist = function() runif(1, 2, 14), combineFUN = max,
-  singleCell = FALSE, nCells = 50, perError = 0.1, RNAseq = FALSE,
-  randSeed = 0, dataSet = NULL)
+inSilicoGeneExpression(model, pathways, params = new("GeneExpressionParams"))
 }
 \arguments{
 \item{model}{a CellModel object}
 
 \item{pathways}{list of genes pathways}
-
-\item{sampFreq}{how often to generate data}
-
-\item{combineFUN}{function used to combine gene expression data}
-
-\item{singleCell}{logical: simulate single cell data}
-
-\item{nCells}{number of cells to use for single cell data}
-
-\item{perError}{percent error?}
-
-\item{randSeed}{random seed for simulation}
-
-\item{nGenes}{total number of genes used (matrix padded with dummys)}
-
-\item{microArray}{true if micro array data}
 }
 \value{
 list of pathway activity and gene expression

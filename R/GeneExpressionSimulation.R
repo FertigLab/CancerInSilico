@@ -5,35 +5,37 @@
 #'  the behavior of a CellModel as the basis for the simulation
 #' @param model a CellModel object
 #' @param pathways list of genes pathways
-#' @param sampFreq how often to generate data
-#' @param nGenes total number of genes used (matrix padded with dummys)
-#' @param combineFUN function used to combine gene expression data
-#' @param singleCell logical: simulate single cell data
-#' @param nCells number of cells to use for single cell data
-#' @param perError percent error?
-#' @param microArray true if micro array data
-#' @param randSeed random seed for simulation
 #' @return list of pathway activity and gene expression
-inSilicoGeneExpression <- function(model, pathways, sampFreq=1,
-nDummyGenes=NULL, dummyDist=function() runif(1,2,14), combineFUN=max,
-singleCell=FALSE, nCells=50, perError=0.1, RNAseq=FALSE,
-randSeed=0, dataSet=NULL)
+inSilicoGeneExpression <- function(model, pathways,
+params=new('GeneExpressionParams'))
 {
-    # run simulation for each pathway
+    # calculate activity in each pathway at every sample point
     pwyActivity <- lapply(pathways, function(p)
-        simulatePathwayActivity(p, model, sampFreq, nCells, singleCell))
-    pwyExpression <- lapply(1:length(pathways), function(i)
-        simulatePathwayExpression(pathways[[i]], pwyActivity[[i]]))
+        simulatePathwayActivity(p, model, params@sampleFreq,
+        params@nCells, params@singleCell))
 
-    # combine expression matrices, add dummy genes, and shuffle order
-    meanExp <- combineGeneExpression(pwyExpression, combineFUN)
-    if (!is.null(nDummyGenes))
-        meanExp <- padExpressionMatrix(meanExp, nDummyGenes, dummyDist)
-    exp <- simulateError(meanExp, perError, RNAseq, singleCell)
+    # simulate gene expression
+    if (params@RNAseq & params@singleCell)
+        exp <- simulateWithSplatter(pathways, pwyActivity, params)
+    else if (params@RNAseq & !params@singleCell & is.null(params@fasta))
+        exp <- simulateWithLimmaVoom(pathways, pwyActivity, params)
+    else if (params@RNAseq & !params@singleCell & !is.null(params@fasta))
+        exp <- simulateWithPolyester(pathways, pwyActivity, params)
+    else
+        exp <- simulateMicroArray(pathways, pwyActivity, params)
 
-    # return pathway activity, return expression with gene order shuffled
-    exp <- exp[sample(nrow(exp)),]
-    return (list(pathways=pwyActivity, expression=exp))
+    # pad expression matrix with dummy genes
+    if (params@nDummyGenes > 0)
+    {
+        dummyExp <- t(sapply(1:params@nDummyGenes, function(x)
+            params@dummyDist(ncol(exp))))
+        rownames(dummyExp) <- paste('dummy', 1:nrow(dummyExp), sep='_')
+        colnames(dummyExp) <- colnames(exp)
+        exp <- rbind(exp, dummyExp)
+    }
+
+    # return raw pathway activity as well as expression matrix
+    return(list(pathways=pwyActivity, expression=exp))
 }
 
 #' verify gene expression data set is valid for this package
@@ -51,8 +53,6 @@ checkDataSet <- function(dataSet, genes)
         stop('dataSet does not contain all neccesary genes')
     else if (sum(is.na(unname(apply(dataSet[genes,], 2, median)))) > 0)
         stop('dataSet has NA values for pathway genes') #TODO: warning?
-    else if (max(dataSet[!is.na(dataSet)]) > 50)
-        warning('check that the data is log transformed (large max value)')
     else if (min(dataSet[!is.na(dataSet)]) < 0)
         stop('dataSet should be strictly non-negative')
 }
@@ -75,7 +75,7 @@ combineGeneExpression <- function(expList, combineFUN=max)
     # initalize matrix
     allGenes <- unique(unlist(lapply(expList, row.names)))
     output <- matrix(nrow = length(allGenes), ncol = nCols[1]) 
-    row.names(output) <- allGenes
+    rownames(output) <- allGenes
     colnames(output) <- colnames(expList[[1]])
  
     # combine info from all matrices containing the gene
@@ -88,84 +88,104 @@ combineGeneExpression <- function(expList, combineFUN=max)
     return(output)
 }
 
-#' Add Noise to Gene Expression Matrices
-#' @export
-#'
-#' @description add genes with random expression values to the matrix
-#' @param mat matrix of gene expression values
-#' @param nGenes final number of genes in the expression matrix
-#' @param dist distribution to sample random values from
-#' @return gene expression matrix with dummy genes added in
-padExpressionMatrix <- function(mat, nDummyGenes, distr)
+simulateWithSplatter <- function(pathways, activity, params)
 {
-    dummyExp <- matrix(nrow=nDummyGenes, ncol=ncol(mat))
-    dummyExp[] <- sapply(1:length(dummyExp), function(x) distr())
-    rownames(dummyExp) <- paste('dummy', 1:nrow(dummyExp), sep='_')
-    colnames(dummyExp) <- colnames(mat)
-    return(combineGeneExpression(list(mat, dummyExp)))
-}
-
-#' add simulated error to expression data
-#' @export
-#'
-#' @description add noise to all values in expression matrix
-#' @param meanExp matrix of gene expression data
-#' @param perError TODO
-#' @param RNAseq whether this data is RNA-seq or microarray
-#' @return gene expression matrix with error
-simulateError <- function(meanExp, perError, RNAseq=FALSE, singleCell=FALSE,
-fasta=NULL)
-{
-    if (RNAseq & singleCell) # splatter
+    # common splatter parameters
+    splatParams <- params@splatParams
+    splatParams <- splatter::setParam(splatParams, "groupCells", 200)
+    splatParams <- splatter::setParam(splatParams, "path.nonlinearProb", 0)
+    splatParams <- splatter::setParam(splatParams, "path.skew", 0.5)
+    splatParams <- splatter::setParam(splatParams, "de.prob", 1)
+    splatParams <- splatter::setParam(splatParams, "de.downProb", 0)
+    
+    # simulate expression for each pathway
+    exp <- list()
+    for (p in 1:length(pathways))
     {
-        if (!is.null(fasta)) stop('polyester is not for single cell data')
-        meanExp <- round(2 ^ meanExp - 1) # convert to counts
-#        params <- splatter::splatEstimate(meanExp)
-#        return(splatter::splatSimulate(params, dropout.present = FALSE))
-    }
-    else if (RNAseq & !singleCell) # polyester or limma-voom
-    {
-        if (!is.null(fasta)) # polyester
+        # create dummy matrix of gene expression ranges
+        totalGenes <- 10000
+        rep <- max(floor(totalGenes / length(pathways[[p]]@genes)), 1)
+        dummy <- matrix(nrow=(rep * length(pathways[[p]]@genes)),
+            ncol=length(activity[[p]]))
+        for (g in 1:length(pathways[[p]]@genes))
         {
+            dummy[(rep*(g-1)+1):(rep*g),] <- floor(runif(ncol(dummy) * rep,
+                pathways[[p]]@minExpression[g], pathways[[p]]@maxExpression[g]))
         }
-        else # limma-voom
+
+        # normalize dummy matrix to library size
+        dummyLibSizes <- colSums(dummy)
+        dummyLibMed <- median(dummyLibSizes)
+        dummyNormCounts <- t(t(dummy) / dummyLibSizes * dummyLibMed)
+        dummyNormCounts <- dummyNormCounts[rowSums(dummyNormCounts > 0) > 1, ]
+
+        # combine given parameters with mean and lib size estimates
+        splatParams <- splatter::setParam(splatParams, "nGenes", nrow(dummy))
+        splatParams <- splatter:::splatEstMean(dummyNormCounts, splatParams)
+        splatParams <- splatter:::splatEstLib(dummy, splatParams)
+
+        # simulate reference data
+        refData <- splatter::splatSimulate(splatParams, method='paths',
+            verbose=FALSE)
+
+        # match cells to reference data        
+        matchedCols <- c()
+        colError <- 0
+        for (i in 1:length(activity[[p]]))
         {
-            return(limmaVoomError(meanExp))
+            diff <- abs(100 * activity[[p]][i] - refData@phenoData@data$Step)
+            matchedCols[i] <- which.min(diff)
+            colError <- colError + min(diff)
+        } 
+
+        # match genes to reference data
+        matchedRows <- c()
+        rowError <- 0
+        for (i in 1:length(pathways[[p]]@genes))
+        {
+            meanExp <- (pathways[[p]]@maxExpression[i] - pathways[[p]]@minExpression[i]) / 2
+            diff <- abs(refData@featureData@data$BaseGeneMean - meanExp)
+            matchedRows[i] <- which.min(diff)
+            rowError <- rowError + min(diff)
         }
+
+        # return final expression matrix
+        exp[[p]] <- scater::counts(refData)[matchedRows, matchedCols]
+        rownames(exp[[p]]) <- pathways[[p]]@genes
+        colnames(exp[[p]]) <- names(activity[[p]])
     }
-    else # microarray - normal error model
-    {
-        if (singleCell) stop('can\'t generate microarray data for single cell')
-        if (!is.null(fasta)) stop('polyester is only for RNA-seq data')
-        normalError <- matrix(rnorm(length(meanExp)), ncol=ncol(meanExp))
-        meanExp <- meanExp + pmax(perError*meanExp, perError) * normalError
-        return(pmax(meanExp, 0))
-    }
+
+    # combine expression from all pathways
+    return(combineGeneExpression(exp, params@combineFUN))
 }
 
-#' Negative Binomial Error model from limma voom
-#' @keywords internal
-#'
-#' @description using the methods in limma-voom paper, simulate final counts
-#'  from matrix of expected counts
-#' @param meanExp matrix of mean expression data
-#' @param invChisq use chi-squared distribution
-#' @reference voom: precision weights unlock linear model analysis tools for
-#'  RNA-seq read counts
-limmaVoomError <- function(meanExp, invChisq=TRUE)
+simulateWithPolyester <- function()
 {
-    # Biological variation
-    BCV0 <- 0.2 + 1 / (sqrt(meanExp) + 0.0001)
-    if (invChisq)
-        BCV <- BCV0 * sqrt(40 / rchisq(nrow(meanExp), df=40))
-    else
-        BCV <- BCV0 * exp(rnorm(nrow(meanExp), mean=0, sd=0.25) / 2)
-
-    shape <- 1 / BCV^2
-    scale <- meanExp / shape
-    lambda <- matrix(rgamma(length(meanExp), shape=shape, scale=scale),
-        nrow=nrow(meanExp))
-
-    # Technical variation
-    return(matrix(rpois(length(lambda), lambda=lambda), nrow=nrow(lambda)))
+    stop('not implemented')
 }
+
+simulateWithLimmaVoom <- function()
+{
+    stop('not implemented')
+}
+
+simulateMicroArray <- function(pathways, activity, params)
+{
+    exp <- list()
+    for (p in 1:length(pathways))
+    {
+        pwy <- pathways[[p]]
+        mat <- (pwy@maxExpression - pwy@minExpression) %*% t(activity[[p]])
+            + pwy@minExpression
+        rownames(mat) <- pwy@genes
+        colnames(mat) <- names(activity[[p]])
+        exp[[p]] <- mat
+    }
+
+    meanExp <- combineGeneExpression(exp)
+    error <- matrix(rnorm(length(meanExp)), ncol=ncol(meanExp))
+    exp <- meanExp + pmax(params@perError * meanExp, params@perError) * error
+    return(pmax(exp, 0))
+}
+
+

@@ -16,19 +16,6 @@ test_that('Pathway Expression Function',
         tolerance=0.01)
 })
 
-test_that('Pathway Expression Simulation',
-{
-    pwyMitosis@minExpression <- runif(length(pwyMitosis@genes), 2,4)
-    pwyMitosis@maxExpression <- runif(length(pwyMitosis@genes), 6,8)
-    activity <- simulatePathwayActivity(pwyMitosis, modDefault, 1, 10)
-    meanExp <- simulatePathwayExpression(pwyMitosis, activity)
-    expect_true(all(meanExp[,2] < meanExp[,3]))
-
-    activitySS <- simulatePathwayActivity(pwyMitosis, modDefault, 1, 10, T)
-    meanExpSS <- simulatePathwayExpression(pwyMitosis, activitySS)
-    expect_true(all(meanExpSS[,'c9_t1'] < meanExpSS[,'c9_t2']))
-})
-
 test_that('Calibrate Pathways',
 {  
     pwyMitosis <- calibratePathway(pwyMitosis, referenceGeneExpression)

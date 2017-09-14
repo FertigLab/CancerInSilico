@@ -2,6 +2,10 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 cppRunModel <- function(rModel, type) {
-    .Call('CancerInSilico_cppRunModel', PACKAGE = 'CancerInSilico', rModel, type)
+    .Call('_CancerInSilico_cppRunModel', PACKAGE = 'CancerInSilico', rModel, type)
+}
+
+run_catch_unit_tests <- function() {
+    .Call('_CancerInSilico_run_catch_unit_tests', PACKAGE = 'CancerInSilico')
 }
 

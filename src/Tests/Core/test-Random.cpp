@@ -1,16 +1,16 @@
-#include "../TestHeader.h"
+#include "../catch.h"
 #include "../../Core/Random.h"
 
 #include <algorithm>
 #include <cmath>
 
-CATCH_TEST_CASE("Test Random.h")
+TEST_CASE("Test Random.h")
 {
     Random::setSeed(0);
     
-    CATCH_REQUIRE(Random::uniformInt(5,10) == 8);
-    CATCH_REQUIRE(Random::uniformInt(7,7) == 7);
-    CATCH_REQUIRE(Random::uniform(7.5,7.5) == 7.5);
+    REQUIRE(Random::uniformInt(5,10) == 8);
+    REQUIRE(Random::uniformInt(7,7) == 7);
+    REQUIRE(Random::uniform(7.5,7.5) == 7.5);
       
     int imin = 10, imax = 0;
     double dmin = 10.0, dmax = 0.0;
@@ -30,11 +30,11 @@ CATCH_TEST_CASE("Test Random.h")
         mean += norm[i];
     }
         
-    CATCH_REQUIRE(imin == 0);
-    CATCH_REQUIRE(imax == 10);
+    REQUIRE(imin == 0);
+    REQUIRE(imax == 10);
     
-    CATCH_REQUIRE(dmin < 0.1);
-    CATCH_REQUIRE(dmax > 10 - 0.1);
+    REQUIRE(dmin < 0.1);
+    REQUIRE(dmax > 10 - 0.1);
 
     mean /= 1000;
     for (unsigned i = 0; i < 1000; ++i)
@@ -42,8 +42,8 @@ CATCH_TEST_CASE("Test Random.h")
         var += pow(norm[i] - mean, 2);
     }
     var /= 1000;
-    CATCH_REQUIRE(mean == Approx(0).epsilon(0.025));
-    CATCH_REQUIRE(var == Approx(1).epsilon(0.025));
+    REQUIRE(mean == Approx(0).epsilon(0.025));
+    REQUIRE(var == Approx(1).epsilon(0.025));
 }
 
 

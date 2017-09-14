@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // cppRunModel
 Rcpp::S4 cppRunModel(Rcpp::S4 rModel, std::string type);
-RcppExport SEXP CancerInSilico_cppRunModel(SEXP rModelSEXP, SEXP typeSEXP) {
+RcppExport SEXP _CancerInSilico_cppRunModel(SEXP rModelSEXP, SEXP typeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -16,4 +16,25 @@ BEGIN_RCPP
     rcpp_result_gen = Rcpp::wrap(cppRunModel(rModel, type));
     return rcpp_result_gen;
 END_RCPP
+}
+// run_catch_unit_tests
+int run_catch_unit_tests();
+RcppExport SEXP _CancerInSilico_run_catch_unit_tests() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(run_catch_unit_tests());
+    return rcpp_result_gen;
+END_RCPP
+}
+
+static const R_CallMethodDef CallEntries[] = {
+    {"_CancerInSilico_cppRunModel", (DL_FUNC) &_CancerInSilico_cppRunModel, 2},
+    {"_CancerInSilico_run_catch_unit_tests", (DL_FUNC) &_CancerInSilico_run_catch_unit_tests, 0},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_CancerInSilico(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
 }

@@ -1,5 +1,3 @@
-library(methods)
-
 #' @title CellType
 #' @description The properties of a cell type
 #'

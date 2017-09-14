@@ -11,6 +11,7 @@
 #'             Thomas D. Sherman \email{tsherma4@jhu.edu}
 #' @docType package
 #' @name CancerInSilico
+#' @importClassesFrom splatter SplatParams
 #' @useDynLib CancerInSilico
 NULL
 
@@ -24,3 +25,8 @@ NULL
 #' @return List of gene targets for GtoM, GtoS, and Growth factor pathways.
 #' 
 NULL
+
+run_cpp_unit_tests <- function()
+{
+    run_catch_unit_tests()
+}
