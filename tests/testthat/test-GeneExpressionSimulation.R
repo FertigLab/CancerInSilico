@@ -30,8 +30,14 @@ test_that('Simulate Gene Expression - microarray',
 {
     pwyGrowth <- calibratePathway(pwyGrowth, referenceGeneExpression)
     pwyMitosis <- calibratePathway(pwyMitosis, referenceGeneExpression)
-    gs <- inSilicoGeneExpression(modDefault, c(pwyMitosis, pwyGrowth),
-        RNAseq=FALSE, nCells=10)
+
+    params <- new('GeneExpressionParams')
+    params@RNAseq <- FALSE
+    params@singleCell <- FALSE
+    params@nCells <- 10
+
+    gs <- inSilicoGeneExpression(modDefault, c(pwyMitosis, pwyGrowth), params)
+
     expect_equal(nrow(gs$expression), 546)
     expect_equal(ncol(gs$expression), 11)
 })

@@ -17,9 +17,9 @@ params=new('GeneExpressionParams'))
     # simulate gene expression
     if (params@RNAseq & params@singleCell)
         exp <- simulateWithSplatter(pathways, pwyActivity, params)
-    else if (params@RNAseq & !params@singleCell & is.null(params@fasta))
+    else if (params@RNAseq & !params@singleCell & !length(params@fasta))
         exp <- simulateWithLimmaVoom(pathways, pwyActivity, params)
-    else if (params@RNAseq & !params@singleCell & !is.null(params@fasta))
+    else if (params@RNAseq & !params@singleCell & length(params@fasta))
         exp <- simulateWithPolyester(pathways, pwyActivity, params)
     else
         exp <- simulateMicroArray(pathways, pwyActivity, params)
@@ -92,7 +92,7 @@ simulateWithSplatter <- function(pathways, activity, params)
 {
     # common splatter parameters
     splatParams <- params@splatParams
-    splatParams <- splatter::setParam(splatParams, "groupCells", 200)
+    splatParams <- splatter::setParam(splatParams, "groupCells", 500)
     splatParams <- splatter::setParam(splatParams, "path.nonlinearProb", 0)
     splatParams <- splatter::setParam(splatParams, "path.skew", 0.5)
     splatParams <- splatter::setParam(splatParams, "de.prob", 1)
@@ -134,8 +134,8 @@ simulateWithSplatter <- function(pathways, activity, params)
         for (i in 1:length(activity[[p]]))
         {
             diff <- abs(100 * activity[[p]][i] - refData@phenoData@data$Step)
-            matchedCols[i] <- which.min(diff)
-            colError <- colError + min(diff)
+            matchedCols[i] <- sample(which(diff < 5), 1)
+            colError <- colError + diff[matchedCols[i]]
         } 
 
         # match genes to reference data
@@ -159,14 +159,38 @@ simulateWithSplatter <- function(pathways, activity, params)
     return(combineGeneExpression(exp, params@combineFUN))
 }
 
-simulateWithPolyester <- function()
+simulateWithPolyester <- function(pathways, activity, params)
 {
     stop('not implemented')
 }
 
-simulateWithLimmaVoom <- function()
+simulateWithLimmaVoom <- function(pathways, activity, params)
 {
-    stop('not implemented')
+    simError <- function(mu)
+    {
+        nGenes <- length(mu)
+        mu.ref <- pmax(mu,1)
+        BCV0 <- 0.2 + 1 / sqrt(mu.ref)
+        df.BCV <- 40
+        BCV <- BCV0 * sqrt(df.BCV / rchisq(nGenes, df=df.BCV))
+        shape <- 1 / BCV^2
+        scale <- mu / shape
+        rpois(nGenes, lambda=rgamma(nGenes, shape=shape, scale=scale))
+    }
+
+    exp <- list()
+    for (p in 1:length(pathways))
+    {
+        pwy <- pathways[[p]]
+        mat <- (pwy@maxExpression - pwy@minExpression) %*% t(activity[[p]])
+            + pwy@minExpression
+        rownames(mat) <- pwy@genes
+        colnames(mat) <- names(activity[[p]])
+        exp[[p]] <- mat
+    }
+    meanExp <- combineGeneExpression(exp)
+    meanExp[] <- pmax(apply(meanExp, 2, simError), 0)
+    return(meanExp)
 }
 
 simulateMicroArray <- function(pathways, activity, params)
