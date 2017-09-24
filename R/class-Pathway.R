@@ -100,7 +100,7 @@ singleCell=FALSE)
         # determine which cells to calculate expression for
         total <- getNumberOfCells(model, t)
         cells <- sort(sample(1:total, sampSize, replace=(total < sampSize)))
-        if (total < sampSize) warning('total population smaller than nCells')
+        #if (total < sampSize) warning('total population smaller than nCells')
 
         # calculate scale and add to matrix
         scale <- sapply(cells, pathway@expressionScale, model=model, time=t)
