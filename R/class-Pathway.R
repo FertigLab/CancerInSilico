@@ -107,6 +107,8 @@ singleCell=FALSE)
         if (singleCell)
         {
             scaleVector <- c(scaleVector, scale)
+            names(scaleVector) <- c(names(scaleVector),
+                paste('c', cells, '_t', t, sep=''))
         }
         else if (length(pathway@transformSlope))
         {
@@ -117,15 +119,9 @@ singleCell=FALSE)
         else
         {
             scaleVector <- c(scaleVector, mean(scale))
+            names(scaleVector) <- c(names(scaleVector), paste('t', t, sep=''))
         }
     }
-
-    # add names of each cell/time combination
-    if (!singleCell)
-        names(scaleVector) <- paste('t', times, sep='_')
-    else
-        names(scaleVector) <- apply(expand.grid(cells, times), 1,
-            function(r) paste('c', r[1], '_t', r[2], sep=''))
 
     # return vector of expression scale
     return(scaleVector)
