@@ -106,9 +106,9 @@ singleCell=FALSE)
         scale <- sapply(cells, pathway@expressionScale, model=model, time=t)
         if (singleCell)
         {
+            old <- names(scaleVector)
             scaleVector <- c(scaleVector, scale)
-            names(scaleVector) <- c(names(scaleVector),
-                paste('c', cells, '_t', t, sep=''))
+            names(scaleVector) <- c(old, paste('c', cells, '_t', t, sep=''))
         }
         else if (length(pathway@transformSlope))
         {
@@ -118,8 +118,9 @@ singleCell=FALSE)
         }
         else
         {
+            old <- names(scaleVector)
             scaleVector <- c(scaleVector, mean(scale))
-            names(scaleVector) <- c(names(scaleVector), paste('t', t, sep=''))
+            names(scaleVector) <- c(old, paste('t', t, sep=''))
         }
     }
 
