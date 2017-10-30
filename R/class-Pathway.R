@@ -124,7 +124,7 @@ singleCell=FALSE)
     if (!singleCell)
         names(scaleVector) <- paste('t', times, sep='_')
     else
-        names(scaleVector) <- apply(expand.grid(1:sampSize,times), 1,
+        names(scaleVector) <- apply(expand.grid(cells, times), 1,
             function(r) paste('c', r[1], '_t', r[2], sep=''))
 
     # return vector of expression scale
