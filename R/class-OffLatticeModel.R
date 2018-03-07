@@ -166,7 +166,7 @@ setMethod('getDensity', signature('OffLatticeModel'),
         }
         else
         {
-            coords <- getCoordinates(model, time)
+            coords <- getCoordinates(model, time) # TODO need sapply across cells
             d <- max(sqrt(coords[,1] ** 2 + coords[,2] ** 2) + radii)
             return(sum(radii ** 2) / (d ^ 2))
         }
