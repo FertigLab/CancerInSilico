@@ -29,8 +29,8 @@ OffLatticeCellBasedModel::OffLatticeCellBasedModel(Rcpp::S4* rModel)
     for (unsigned i = 0; i < initialNum(); ++i)
     {
         OffLatticeCell cell (randomCellType());
-        area += cell.area();
         if (!syncCycles()) {cell.gotoRandomCyclePoint();}
+        area += cell.area();
         defaultCells.push_back(cell);
     }
 

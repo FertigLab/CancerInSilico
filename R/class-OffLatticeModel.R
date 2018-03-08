@@ -162,12 +162,12 @@ setMethod('getDensity', signature('OffLatticeModel'),
         radii <- sapply(1:nCells, getRadius, model=model, time=time)
         if (model@boundary > 0)
         {
-            return(sum(radii ** 2) / model@boundary ^ 2)
+            return(sum(radii ** 2) / (model@boundary ^ 2))
         }
         else
         {
-            coords <- getCoordinates(model, time) # TODO need sapply across cells
-            d <- max(sqrt(coords[,1] ** 2 + coords[,2] ** 2) + radii)
+            coords <- sapply(1:nCells, getCoordinates, model=model, time=time)
+            d <- max(sqrt(coords[1,] ** 2 + coords[2,] ** 2) + radii)
             return(sum(radii ** 2) / (d ^ 2))
         }
     }
