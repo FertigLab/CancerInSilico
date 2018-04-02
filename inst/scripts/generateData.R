@@ -51,26 +51,19 @@ growthExp <- function(model, cell, time)
 mitosisExp <- function(model, cell, time)
 {
     window <- c(max(time - 2, 0), min(time + 2, model@runTime))
-
     a1 <- getAxisLength(model, window[1], cell)
     a2 <- getAxisLength(model, window[2], cell)
     if (is.na(a1)) a1 <- 0
-
-
     return(ifelse(a2 < a1, 1, 0))
 }
 
 SPhaseExp <- function(model, cell, time)
 {
     window <- c(max(time - 1, 0), min(time + 1, model@runTime))
-
     r1 <- getRadius(model, window[1], cell)
     r2 <- getRadius(model, window[2], cell)
-
     type <- model@cellTypes[[getCellType(model, time, cell)]]
-
-    return(ifelse(r1 < sqrt(1.5 * type@size) & r2 > sqrt(1.5 * type@size),
-        1, 0))
+    ifelse(r1 < sqrt(1.5 * type@size) & r2 > sqrt(1.5 * type@size), 1, 0)
 }
 
 contactInhibitionExp <- function(model, cell, time)
