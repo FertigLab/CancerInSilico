@@ -6,7 +6,7 @@
 \title{CellModel}
 \description{
 The top-level CellModel class. All other cell model
- classes inherit from this in some way
+classes inherit from this in some way
 }
 \section{Slots}{
 

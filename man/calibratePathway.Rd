@@ -16,6 +16,6 @@ pathway with min/max values for expression based on data set
 }
 \description{
 sets the min and max values for each gene in a pathway
- based on a data set
+based on a data set
 }
 

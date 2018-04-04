@@ -27,6 +27,7 @@
 #' @return A CellModel containing all info from the model run
 #' @examples
 #' inSilicoCellModel(initialNum=1, runTime=8, density=0.1)
+#' @importFrom methods new
 inSilicoCellModel <- function(initialNum, runTime, density, 
 modelType = 'DrasdoHohme', ...)
 {

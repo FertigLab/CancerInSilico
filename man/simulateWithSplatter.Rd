@@ -6,7 +6,16 @@
 \usage{
 simulateWithSplatter(meanExp, params)
 }
-\description{
-Single Cell RNA-seq Error Mpdel
+\arguments{
+\item{meanExp}{matrix of mean expression values}
+
+\item{params}{GenExpressionParams object}
 }
+\value{
+matrix with error model incorporated
+}
+\description{
+adds both the limma-voom error model and calculates dropout
+}
+\keyword{internal}
 

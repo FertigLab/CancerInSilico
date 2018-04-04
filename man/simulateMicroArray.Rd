@@ -6,7 +6,17 @@
 \usage{
 simulateMicroArray(meanExp, params)
 }
-\description{
-Bulk MicroArray Error Model
+\arguments{
+\item{meanExp}{matrix of mean expression values}
+
+\item{params}{GenExpressionParams object}
 }
+\value{
+matrix with error model incorporated
+}
+\description{
+adds a normally distributed error across the entire expression
+matrix
+}
+\keyword{internal}
 

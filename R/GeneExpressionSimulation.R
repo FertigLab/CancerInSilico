@@ -2,7 +2,7 @@
 #' @export
 #'
 #' @description simulate gene expression data for a set of pathways, using
-#'  the behavior of a CellModel as the basis for the simulation
+#' the behavior of a CellModel as the basis for the simulation
 #' @param model a CellModel object
 #' @param pathways list of genes pathways
 #' @return list of pathway activity and gene expression
@@ -43,11 +43,12 @@ params=new('GeneExpressionParams'))
 #' @export
 #'
 #' @description checks a data set before it is used to calibrate the 
-#'  pathway values for min/max expression
+#' pathway values for min/max expression
 #' @param dataSet matrix of gene expression data where row names are genes
 #' @param genes names of all genes being simulated
 #' @return no value is return, but errors/warnings are thrown related to
-#'  potential problems in the data set
+#' potential problems in the data set
+#' @importFrom stats median
 checkDataSet <- function(dataSet, genes)
 {
     if (length(setdiff(genes, row.names(dataSet))))
@@ -62,7 +63,7 @@ checkDataSet <- function(dataSet, genes)
 #' @keywords internal
 #'
 #' @description combines mutliple matrices by in a similiar way to rbind,
-#'  but combines muttiple values for a single gene by a given function
+#' but combines muttiple values for a single gene by a given function
 #' @param expList list of expression matrices
 #' @param combineFUN function to use when combining multiple values
 #' @return matrix containing combined expression values
@@ -78,7 +79,7 @@ combineGeneExpression <- function(expList, combineFUN=max)
     output <- matrix(nrow = length(allGenes), ncol = nCols[1]) 
     rownames(output) <- allGenes
     colnames(output) <- colnames(expList[[1]])
- 
+
     # combine info from all matrices containing the gene
     for (g in allGenes)
     {
@@ -113,6 +114,14 @@ getMeanExp <- function(pathways, activity)
 }
 
 #' Bulk MicroArray Error Model
+#' @keywords internal
+#'
+#' @description adds a normally distributed error across the entire expression
+#' matrix
+#' @param meanExp matrix of mean expression values
+#' @param params GenExpressionParams object
+#' @return matrix with error model incorporated
+#' @importFrom stats rnorm
 simulateMicroArray <- function(meanExp, params)
 {
     error <- matrix(rnorm(length(meanExp)), ncol=ncol(meanExp))
@@ -120,31 +129,54 @@ simulateMicroArray <- function(meanExp, params)
     return(pmax(exp, 0))
 }
 
+#' Error Model found in Limma-Voom
+#' @keywords internal
+#'
+#' @description Core error model presented in original voom paper, used for 
+#' multiple RNA-seq simulations
+#' @param mu mean expression matrix
+#' @param bcvCommon biological variation parameter
+#' @param bcvDF degrees of freedom for the chisq distribution
+#' @return list of the cell means and the simulated counts
+#' @importFrom stats rpois rgamma rchisq
 voomErrorModel <- function(mu, bcvCommon, bcvDF)
 {
     mu <- floor(mu) + 1
     nGenes <- nrow(mu)
-    nCells <- ncol(mu)
     bcv <- (bcvCommon + (1 / sqrt(mu))) * sqrt(bcvDF / rchisq(nGenes, df=bcvDF))
     shape <- 1 / bcv^2
     scale <- mu / shape
-    cellMeans <- matrix(rgamma(nGenes * nCells, shape=shape, scale=scale), nrow=nGenes)
-    trueCounts <- matrix(rpois(nGenes * nCells, lambda=cellMeans), nrow=nGenes)
+    cellMeans <- matrix(rgamma(length(mu), shape=shape, scale=scale),
+        nrow=nGenes)
+    trueCounts <- matrix(rpois(length(mu), lambda=cellMeans), nrow=nGenes)
     return(list("cellMeans"=cellMeans, "trueCounts"=floor(pmax(trueCounts, 0))))
 }
 
 #' Bulk RNA-seq Error Model
+#' @keywords internal
+#'
+#' @description adds the limma-voom error model to the data
+#' @param meanExp matrix of mean expression values
+#' @param params GenExpressionParams object
+#' @return matrix with error model incorporated
 simulateWithLimmaVoom <- function(meanExp, params)
 {
     voomErrorModel(meanExp, params@bcvCommon, params@bcvDF)$trueCounts
 }
 
 #' Single Cell RNA-seq Error Mpdel
+#' @keywords internal
+#'
+#' @description adds both the limma-voom error model and calculates dropout
+#' @param meanExp matrix of mean expression values
+#' @param params GenExpressionParams object
+#' @return matrix with error model incorporated
+#' @importFrom stats rbinom
 simulateWithSplatter <- function(meanExp, params)
 {
     exp <- voomErrorModel(meanExp, params@bcvCommon, params@bcvDF)
     counts <- exp$trueCounts
-    if (params@dropout)
+    if (params@dropoutPresent)
     {
         # Generate probabilites based on expression
         logistic <- function(x, x0, k) 1 / (1 + exp(-k * (x - x0)))
@@ -155,7 +187,7 @@ simulateWithSplatter <- function(meanExp, params)
         })
         
         # Decide which counts to keep
-        keep <- matrix(rbinom(nCells*nGenes, 1, 1 - prob), nrow=nrow(exp$cellMeans))
+        keep <- matrix(rbinom(length(counts), 1, 1 - prob), nrow=nrow(counts))
         counts <- counts * keep
     }
     return(counts)

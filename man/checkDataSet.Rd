@@ -13,10 +13,10 @@ checkDataSet(dataSet, genes)
 }
 \value{
 no value is return, but errors/warnings are thrown related to
- potential problems in the data set
+potential problems in the data set
 }
 \description{
 checks a data set before it is used to calibrate the 
- pathway values for min/max expression
+pathway values for min/max expression
 }
 

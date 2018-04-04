@@ -1,4 +1,4 @@
- library(methods)
+library(methods)
 
 #' @include class-CellModel.R
 NULL
@@ -12,18 +12,18 @@ NULL
 #'
 #' @description Describes the basic properties of a gene pathway
 #' @details expressionScale is a function that accepts three arguments:
-#'  model, cell, and time. It should return a number in [0,1] that describes
-#'  how active the genes are in this pathway for a given cell in the model
-#'  at a given time. In bulk data, the pathway activity is averaged
-#'  and transformed by 1 / (1 + exp(-k * (x - M))) where 
-#'  k = transformSlope and M = transformMidpoint.
-#'  The scale determines how expressed genes in this pathway are. i.e.
-#'  and scale of 0 means all genes will have minExpression value and a scale
-#'  of 1 means all genes will have maxExpression value. In between these
-#'  values the gene expression scales linearly.
+#' model, cell, and time. It should return a number in [0,1] that describes
+#' how active the genes are in this pathway for a given cell in the model
+#' at a given time. In bulk data, the pathway activity is averaged
+#' and transformed by 1 / (1 + exp(-k * (x - M))) where 
+#' k = transformSlope and M = transformMidpoint.
+#' The scale determines how expressed genes in this pathway are. i.e.
+#' and scale of 0 means all genes will have minExpression value and a scale
+#' of 1 means all genes will have maxExpression value. In between these
+#' values the gene expression scales linearly.
 #' @slot genes names of genes in the pathway
 #' @slot expressionScale function descibing how this pathway is affected
-#'  by the state of the model
+#' by the state of the model
 #' @slot minExpression minimum expression value for each gene (vector)
 #' @slot maxExpression maximum expression value for each gene (vector)
 #' @slot transformSlope parameter for transforming bulk data
@@ -38,7 +38,10 @@ setClass('Pathway', slots = c(
 ))
 
 #' Pathway Class Constructor
-#' @rdname Pathway-class 
+#' @rdname Pathway-class
+#' @param .Object Pathway object
+#' @param ... extra arguments for constructor
+#' @return constructed object
 setMethod('initialize', 'Pathway',
     function(.Object, ...)
     {
@@ -132,7 +135,7 @@ singleCell=FALSE)
 #' @export
 #'
 #' @description sets the min and max values for each gene in a pathway
-#'  based on a data set
+#' based on a data set
 #' @param pathway a 'Pathway' object
 #' @param dataSet reference data set
 #' @return pathway with min/max values for expression based on data set

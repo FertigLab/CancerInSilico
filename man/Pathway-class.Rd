@@ -8,6 +8,14 @@
 \usage{
 \S4method{initialize}{Pathway}(.Object, ...)
 }
+\arguments{
+\item{.Object}{Pathway object}
+
+\item{...}{extra arguments for constructor}
+}
+\value{
+constructed object
+}
 \description{
 Describes the basic properties of a gene pathway
 
@@ -15,15 +23,15 @@ Pathway Class Constructor
 }
 \details{
 expressionScale is a function that accepts three arguments:
- model, cell, and time. It should return a number in [0,1] that describes
- how active the genes are in this pathway for a given cell in the model
- at a given time. In bulk data, the pathway activity is averaged
- and transformed by 1 / (1 + exp(-k * (x - M))) where 
- k = transformSlope and M = transformMidpoint.
- The scale determines how expressed genes in this pathway are. i.e.
- and scale of 0 means all genes will have minExpression value and a scale
- of 1 means all genes will have maxExpression value. In between these
- values the gene expression scales linearly.
+model, cell, and time. It should return a number in [0,1] that describes
+how active the genes are in this pathway for a given cell in the model
+at a given time. In bulk data, the pathway activity is averaged
+and transformed by 1 / (1 + exp(-k * (x - M))) where 
+k = transformSlope and M = transformMidpoint.
+The scale determines how expressed genes in this pathway are. i.e.
+and scale of 0 means all genes will have minExpression value and a scale
+of 1 means all genes will have maxExpression value. In between these
+values the gene expression scales linearly.
 }
 \section{Slots}{
 

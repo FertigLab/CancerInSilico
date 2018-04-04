@@ -6,7 +6,16 @@
 \usage{
 simulateWithLimmaVoom(meanExp, params)
 }
-\description{
-Bulk RNA-seq Error Model
+\arguments{
+\item{meanExp}{matrix of mean expression values}
+
+\item{params}{GenExpressionParams object}
 }
+\value{
+matrix with error model incorporated
+}
+\description{
+adds the limma-voom error model to the data
+}
+\keyword{internal}
 

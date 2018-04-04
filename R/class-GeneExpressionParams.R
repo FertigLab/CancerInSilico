@@ -41,6 +41,9 @@ setMethod("initialize", "GeneExpressionParams",
         .Object@perError <- 0.1
         .Object@bcvCommon <- 0.2
         .Object@bcvDF <- 40
+        .Object@dropoutPresent <- FALSE
+        .Object@dropoutMid <- 0
+        .Object@dropoutShape <- -1
 
         .Object <- callNextMethod(.Object, ...)
         .Object

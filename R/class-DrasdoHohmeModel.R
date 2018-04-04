@@ -7,7 +7,7 @@ library(methods)
 
 #' @title DrasdoHohmeModel
 #' @description Implementation of an off-latice cell-based model
-#'  based on the work in Drasdo, Hohme (2003)
+#' based on the work in Drasdo, Hohme (2003)
 #'
 #' @slot nG number of monte carlo steps between each growth trial
 #' @slot epsilon constant that controls the probability trails are accepted
@@ -19,6 +19,8 @@ setClass('DrasdoHohmeModel', contains = 'OffLatticeModel', slots = c(
     delta = 'numeric'
 ))
 
+#' DrasdoHohmeModel Constructor
+#' @importFrom methods slot validObject
 setMethod('initialize', 'DrasdoHohmeModel',
     function(.Object, nG = 28, epsilon = 10.0, delta = 0.2, ...)
     {

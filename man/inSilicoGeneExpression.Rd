@@ -16,6 +16,6 @@ list of pathway activity and gene expression
 }
 \description{
 simulate gene expression data for a set of pathways, using
- the behavior of a CellModel as the basis for the simulation
+the behavior of a CellModel as the basis for the simulation
 }
 

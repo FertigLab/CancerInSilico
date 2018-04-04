@@ -4,11 +4,11 @@ library(methods)
 
 #' @title CellModel
 #' @description The top-level CellModel class. All other cell model
-#'  classes inherit from this in some way
+#' classes inherit from this in some way
 #' @slot cells A list object that describes the state of the cells
-#'  at each time. The state representation depends on the type of
-#'  model run, and is accessed by the function designed for each
-#'  model type. 
+#' at each time. The state representation depends on the type of
+#' model run, and is accessed by the function designed for each
+#' model type. 
 #' @slot initialNum number of cells at time 0
 #' @slot runTime number of model hours to run the simulation
 #' @slot density initial density of cells
@@ -17,7 +17,7 @@ library(methods)
 #' @slot randSeed random seed used for both R and C++ functions
 #' @slot outputIncrement how often simulation info is displayed
 #' @slot recordIncrement how often cell info is recorded (controls size
-#'  of resulting CellModel object
+#' of resulting CellModel object
 #' @slot timeIncrement controls how fine the model timestep is
 #' @slot cellTypes list of CellType objects used in the model
 #' @slot cellTypeInitFreq initial frequency of cell types among cells
@@ -39,6 +39,10 @@ setClass('CellModel', contains = 'VIRTUAL', slots = c(
     drugs = 'list'
 ))
 
+#' Constructor for CellModel
+#' @importFrom methods callNextMethod
+#' @param .Object CellModel object
+#' @inheritParams inSilicoCellModel
 setMethod('initialize', 'CellModel',
     function(.Object, initialNum, runTime, density,
     boundary = 1, syncCycles = FALSE, randSeed = 0, 

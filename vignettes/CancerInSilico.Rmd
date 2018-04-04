@@ -5,11 +5,11 @@ date: "`r doc_date()`"
 package: "`r pkg_ver('CancerInSilico')`"
 bibliography: References.bib
 vignette: >
-  %\VignetteIndexEntry{The CancerInSilico Package}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+    %\VignetteIndexEntry{The CancerInSilico Package}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
 output: 
-  BiocStyle::html_document
+    BiocStyle::html_document
 ---
 
 ```{r include=FALSE, cache=FALSE}
@@ -36,12 +36,15 @@ population. We also set the output increment here to minimize verbosity and
 the seed to allow for reproducibility.
 
 ```{r}
-simple_mod <- suppressMessages(inSilicoCellModel(initialNum=30, runTime=72, density=0.1, outputIncrement=24, randSeed=123))
+simple_mod <- suppressMessages(inSilicoCellModel(initialNum=30, runTime=72,
+    density=0.1, outputIncrement=24, randSeed=123))
 ```
 
 ## Plot CellModel Object
 
-This creates a model object that can be used to generate gene expression data. It is also possible to view the model results directly throught the *plotCells* function.
+This creates a model object that can be used to generate gene expression data.
+It is also possible to view the model results directly throught the *plotCells*
+function.
 
 ```{r}
 plotCells(simple_mod, time=0)
@@ -49,7 +52,8 @@ plotCells(simple_mod, time=36)
 plotCells(simple_mod, time=72)
 ```
 
-The plots are colored according to cell phase - cells in interphase are colored gray and cells in mitosis are colored black.
+The plots are colored according to cell phase - cells in interphase are colored
+gray and cells in mitosis are colored black.
 
 ## Query Cell Information
 
@@ -93,7 +97,8 @@ mitosisExpression <- function(model, cell, time)
     ifelse(getCellPhase(model, time, cell) == "M", 1, 0)
 }
 
-pwyMitosis <- new("Pathway", genes=mitosisGeneNames, expressionScale=mitosisExpression)
+pwyMitosis <- new("Pathway", genes=mitosisGeneNames,
+    expressionScale=mitosisExpression)
 ```
 
 We define a second pathway for contact inhibition and define it's activity in
@@ -105,7 +110,8 @@ contactInhibitionExpression <- function(model, cell, time)
 {
     getLocalDensity(model, time, cell, 3.3)
 }
-pwyContactInhibition <- new("Pathway", genes=contactInhibitionGeneNames, expressionScale=contactInhibitionExpression)
+pwyContactInhibition <- new("Pathway", genes=contactInhibitionGeneNames,
+    expressionScale=contactInhibitionExpression)
 ```
 
 ## Calibrate Gene Expression Range
@@ -164,7 +170,8 @@ heatmap.2(gene_exp$expression[!ndx,],
     trace="none", hclust=function(x) hclust(x,method="complete"),
     distfun=function(x) as.dist((1-cor(t(x)))/2), 
     Colv=FALSE, dendrogram="row",
-    RowSideColors = ifelse(rownames(gene_exp$expression[!ndx,]) %in% mitosisGeneNames, "orange", "blue"),
+    RowSideColors = ifelse(rownames(gene_exp$expression[!ndx,]) %in%
+        mitosisGeneNames, "orange", "blue"),
     labRow = FALSE, labCol = seq(0,72,6),
     main="Bulk Gene Expression from Simple Cell Simulation")
 ```
@@ -250,8 +257,10 @@ Here we create a drug that cuts proliferation rates in half by doubling the
 cell cycle length. It is added at 24 hours into the simulation.
 
 ```{r}
-drug <- new("Drug", name="Drug_A", timeAdded=24, cycleLengthEffect=function(type, length) length * 2)
-drug_mod <- suppressMessages(inSilicoCellModel(initialNum=30, runTime=72, density=0.1, drugs=c(drug), outputIncrement=24, randSeed=123))
+drug <- new("Drug", name="Drug_A", timeAdded=24,
+    cycleLengthEffect=function(type, length) length * 2)
+drug_mod <- suppressMessages(inSilicoCellModel(initialNum=30, runTime=72,
+    density=0.1, drugs=c(drug), outputIncrement=24, randSeed=123))
 
 # hours in simulation
 times <- 0:simple_mod@runTime
@@ -260,7 +269,8 @@ times <- 0:simple_mod@runTime
 nCells <- sapply(times, getNumberOfCells, model=simple_mod)
 nCells_drug <- sapply(times, getNumberOfCells, model=drug_mod)
 plot(times, nCells, type="l", xlab="hour", ylab="number of cells")
-lines(times, nCells_drug, type="l", xlab="hour", ylab="number of cells", col="red")
+lines(times, nCells_drug, type="l", xlab="hour", ylab="number of cells",
+    col="red")
 ```
 
 # Cell Types
@@ -277,7 +287,8 @@ field *minCycle*.
 
 ```{r}
 type_A <- new("CellType", name="A", minCycle=16, cycleLength=function() 16)
-fast_cells_mod <- suppressMessages(inSilicoCellModel(initialNum=30, runTime=72, density=0.1, cellTypes=c(type_A), outputIncrement=24, randSeed=123))
+fast_cells_mod <- suppressMessages(inSilicoCellModel(initialNum=30, runTime=72,
+    density=0.1, cellTypes=c(type_A), outputIncrement=24, randSeed=123))
 
 # hours in simulation
 times <- 0:simple_mod@runTime
@@ -286,7 +297,8 @@ times <- 0:simple_mod@runTime
 nCells <- sapply(times, getNumberOfCells, model=simple_mod)
 nCells_fast <- sapply(times, getNumberOfCells, model=fast_cells_mod)
 plot(times, nCells, type="l", xlab="hour", ylab="number of cells")
-lines(times, nCells_fast, type="l", xlab="hour", ylab="number of cells", col="red")
+lines(times, nCells_fast, type="l", xlab="hour", ylab="number of cells",
+    col="red")
 ```
 
 ## Adding Multiple Cell Types
@@ -298,9 +310,13 @@ we use a random *cycleLength* function to provide more variance within the cell
 types.
 
 ```{r}
-type_B <- new("CellType", name="B", size=1, minCycle=16, cycleLength=function() 16 + rexp(1,1/4))
-type_C <- new("CellType", name="C", size=1, minCycle=32, cycleLength=function() 32 + rexp(1,1/4))
-two_types_mod <- suppressMessages(inSilicoCellModel(initialNum=30, runTime=72, density=0.1, cellTypes=c(type_B, type_C), cellTypeInitFreq=c(0.4,0.6), outputIncrement=24, randSeed=123))
+type_B <- new("CellType", name="B", size=1, minCycle=16,
+    cycleLength=function() 16 + rexp(1,1/4))
+type_C <- new("CellType", name="C", size=1, minCycle=32,
+    cycleLength=function() 32 + rexp(1,1/4))
+two_types_mod <- suppressMessages(inSilicoCellModel(initialNum=30, runTime=72,
+    density=0.1, cellTypes=c(type_B, type_C), cellTypeInitFreq=c(0.4,0.6),
+    outputIncrement=24, randSeed=123))
 ```
 
 # Simulating Single Cell Gene Expression Data
@@ -316,8 +332,10 @@ B_genes <- paste("b.", letters[1:20], sep="")
 C_genes <- paste("c.", letters[1:20], sep="")
 
 # pathway behavior
-pwy_B <- new("Pathway", genes=B_genes, expressionScale=function(model, cell, time) ifelse(getCellType(model, time, cell) == 1, 1, 0))
-pwy_C <- new("Pathway", genes=C_genes, expressionScale=function(model, cell, time) ifelse(getCellType(model, time, cell) == 2, 1, 0))
+pwy_B <- new("Pathway", genes=B_genes, expressionScale=
+    function(model, cell, time) ifelse(getCellType(model, time, cell)==1, 1, 0))
+pwy_C <- new("Pathway", genes=C_genes, expressionScale=
+    function(model, cell, time) ifelse(getCellType(model, time, cell)==2, 1, 0))
 
 # calibrate pathways
 geneMeans <- rexp(length(c(B_genes, C_genes)), 1/20)
@@ -341,7 +359,8 @@ params@RNAseq <- TRUE
 params@singleCell <- TRUE
 params@nCells <- 10
 params@sampleFreq <- 12
-params@splatParams <- splatter::setParam(params@splatParams, "dropout.present", TRUE)
+params@splatParams <- splatter::setParam(params@splatParams, "dropout.present",
+    TRUE)
 ge <- inSilicoGeneExpression(two_types_mod, c(pwy_B, pwy_C), params)
 ```
 
@@ -350,11 +369,14 @@ ge <- inSilicoGeneExpression(two_types_mod, c(pwy_B, pwy_C), params)
 We can visualize the single cell plots with the *Rtsne* package.
 
 ```{r}
-cells <- unname(sapply(colnames(ge$expression), function(x) strsplit(x,"_")[[1]][1]))
+cells <- unname(sapply(colnames(ge$expression), function(x)
+    strsplit(x,"_")[[1]][1]))
 cells <- as.numeric(gsub("c", "", cells))
-type <- sapply(cells, getCellType, model=two_types_mod, time=two_types_mod@runTime)
+type <- sapply(cells, getCellType, model=two_types_mod,
+    time=two_types_mod@runTime)
 
-tsne_out <- Rtsne(t(ge$expression), dims=3, initial_dims=3, perplexity=5, theta=0.5, pca=TRUE, max_iter=500, verbose=TRUE)
+tsne_out <- Rtsne(t(ge$expression), dims=3, initial_dims=3, perplexity=5,
+    theta=0.5, pca=TRUE, max_iter=500, verbose=TRUE)
 open3d()
 plot3d(tsne_out$Y, col=type, xlab="", ylab="", zlab="")
 ```

@@ -6,7 +6,7 @@
 \title{DrasdoHohmeModel}
 \description{
 Implementation of an off-latice cell-based model
- based on the work in Drasdo, Hohme (2003)
+based on the work in Drasdo, Hohme (2003)
 }
 \section{Slots}{
 

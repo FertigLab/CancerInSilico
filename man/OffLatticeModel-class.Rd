@@ -6,8 +6,8 @@
 \title{OffLatticeModel}
 \description{
 General description of an off-lattice cell-based model.
- not quite a full implementation, but contains much of the neccesary
- structure for models of this type
+not quite a full implementation, but contains much of the neccesary
+structure for models of this type
 }
 \section{Slots}{
 

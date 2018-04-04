@@ -7,8 +7,8 @@ library(methods)
 
 #' @title OffLatticeModel
 #' @description General description of an off-lattice cell-based model.
-#'  not quite a full implementation, but contains much of the neccesary
-#'  structure for models of this type
+#' not quite a full implementation, but contains much of the neccesary
+#' structure for models of this type
 #'
 #' @slot maxDeformation the largest distance the axis of a cell can increase
 #' @slot maxTranslation the largest distance the center of a cell can move
@@ -216,7 +216,7 @@ setMethod('getLocalDensity', signature('OffLatticeModel'),
             grid <- t(t(grid) + p1)
 
             if (!is.null(p2))
-                grid <- grid[apply(grid, 1, dis, b=p1) < apply(grid, 1, dis, b=p2),]
+                grid <- grid[apply(grid,1,dis,b=p1) < apply(grid,1,dis,b=p2),]
             return(grid)
         }
 
@@ -279,7 +279,7 @@ setMethod('plotCells', signature('OffLatticeModel'),
         # create the plot template
         plot(c(mn, mx), c(mn, mx), main=paste("Plot of CellModel At Time",
             time), xlab="", ylab="", type="n", asp=1)
-          
+
         # get all (x,y) pairs for each of the cell centers
         x1 <- coords[1,] + (0.5 * axisLen - radii) * cos(axisAng)
         x2 <- coords[1,] - (0.5 * axisLen - radii) * cos(axisAng)

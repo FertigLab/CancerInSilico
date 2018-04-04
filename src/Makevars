@@ -1,4 +1,4 @@
-PKG_CPPFLAGS = -Wall -Wextra -pedantic -Wno-parentheses -Wno-ignored-qualifiers -Wno-unused-variable
+PKG_CPPFLAGS = 
 OBJECTS =   RunModel.o \
             RcppExports.o \
             CellModels/DrasdoHohmeModel.o \
