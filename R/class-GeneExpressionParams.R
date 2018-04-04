@@ -10,21 +10,24 @@
 #' @slot microArray true if micro array data
 #' @slot randSeed random seed for simulation
 #' @export
-setClass('GeneExpressionParams', slots = c(
-    sampleFreq = 'numeric',
-    RNAseq = 'logical',
-    singleCell = 'logical',
-    nCells = 'numeric',
-    nDummyGenes = 'numeric',
-    dummyDist = 'function',
-    combineFUN = 'function',
-    randSeed = 'numeric',
-    fasta = 'character',
-    perError = 'numeric',
-    splatParams = 'SplatParams'
+setClass("GeneExpressionParams", slots = c(
+    sampleFreq = "numeric",
+    RNAseq = "logical",
+    singleCell = "logical",
+    nCells = "numeric",
+    nDummyGenes = "numeric",
+    dummyDist = "function",
+    combineFUN = "function",
+    randSeed = "numeric",
+    perError = "numeric",
+    bcvCommon = "numeric",
+    bcvDF = "numeric",
+    dropoutPresent = "logical",
+    dropoutMid = "numeric",
+    dropoutShape = "numeric"
 ))
 
-setMethod('initialize', 'GeneExpressionParams', 
+setMethod("initialize", "GeneExpressionParams", 
     function(.Object, ...)
     {
         .Object@sampleFreq <- 1
@@ -35,9 +38,9 @@ setMethod('initialize', 'GeneExpressionParams',
         .Object@dummyDist <- function(N) rep(0, N)
         .Object@combineFUN <- max
         .Object@randSeed <- 0
-        .Object@fasta <- character(0)
         .Object@perError <- 0.1
-        .Object@splatParams <- splatter::newSplatParams()
+        .Object@bcvCommon <- 0.2
+        .Object@bcvDF <- 40
 
         .Object <- callNextMethod(.Object, ...)
         .Object
