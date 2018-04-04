@@ -15,6 +15,9 @@ output:
 ```{r include=FALSE, cache=FALSE}
 library(CancerInSilico)
 library(gplots)
+library(Rtsne)
+library(viridis)
+library(rgl)
 ```
 
 # Introduction
@@ -33,7 +36,7 @@ population. We also set the output increment here to minimize verbosity and
 the seed to allow for reproducibility.
 
 ```{r}
-cell_mod <- suppressMessages(inSilicoCellModel(initialNum=30, runTime=72, density=0.1, outputIncrement=24, randSeed=123))
+simple_mod <- suppressMessages(inSilicoCellModel(initialNum=30, runTime=72, density=0.1, outputIncrement=24, randSeed=123))
 ```
 
 ## Plot CellModel Object
@@ -41,9 +44,9 @@ cell_mod <- suppressMessages(inSilicoCellModel(initialNum=30, runTime=72, densit
 This creates a model object that can be used to generate gene expression data. It is also possible to view the model results directly throught the *plotCells* function.
 
 ```{r}
-plotCells(cell_mod, time=0)
-plotCells(cell_mod, time=36)
-plotCells(cell_mod, time=72)
+plotCells(simple_mod, time=0)
+plotCells(simple_mod, time=36)
+plotCells(simple_mod, time=72)
 ```
 
 The plots are colored according to cell phase - cells in interphase are colored gray and cells in mitosis are colored black.
@@ -51,18 +54,19 @@ The plots are colored according to cell phase - cells in interphase are colored 
 ## Query Cell Information
 
 *inSilicoCellModel* outputs a *CellModel* that comes with getter functions to
-query information about the model.
+query information about the model. Here we use *getNumberOfCells* and
+*getDensity* to plot the size and density of the population over time.
 
 ```{r}
 # hours in simulation
-times <- 0:cell_mod@runTime
+times <- 0:simple_mod@runTime
 
 # plot number of cells over time
-nCells <- sapply(times, getNumberOfCells, model=cell_mod)
+nCells <- sapply(times, getNumberOfCells, model=simple_mod)
 plot(times, nCells, type="l", xlab="hour", ylab="number of cells")
 
 # plot population density over time
-den <- sapply(times, getDensity, model=cell_mod)
+den <- sapply(times, getDensity, model=simple_mod)
 plot(times, den, type="l", xlab="hour", ylab="population density")
 ```
 
@@ -77,10 +81,10 @@ Gene pathways provide the link between the cell model and the gene expression
 simulation. A *CancerInSilico* pathway must define a function detailing how the
 state of the cell model effects the activity of that pathway. For example, a 
 pathway related to cellular division would be more active in cells under going
-mitosis. To capture this we define a function *mitosisExpression* which takes
-the CellModel object, the cell ID, and the current time (all pathway expression
-functions take these arguments), and returns a 1 if the cell is currently in 
-mitosis and 0 otherwise.
+mitosis and less active in cells in interphase. To capture this we define a
+function *mitosisExpression* which takes the CellModel object, the cell ID,
+and the current time (all pathway expression functions take these arguments),
+and returns a 1 if the cell is currently in mitosis and 0 otherwise.
 
 ```{r}
 mitosisGeneNames <- paste("m_", letters[1:20], sep="")
@@ -108,23 +112,21 @@ pwyContactInhibition <- new("Pathway", genes=contactInhibitionGeneNames, express
 
 Pathways define how active genes are, but we need a reference point to generate
 actual expression values. The *calibratePathway* function takes a pathway
-and a reference data set as it's arguments, and returns a calibrated pathway.
+and a reference data set as it's arguments and returns a calibrated pathway.
 Calling *inSilicoGeneExpression* on a non-calibrated pathway will throw an
 error. The reference data set contains genes along the rows and samples along
 the columns. All the genes in the pathway must be found in the *rownames* of the
-data set.
+data set. Here we use a simulated data set.
 
 ```{r}
-# calibrate mitosis genes
-geneMeans <- rexp(length(mitosisGeneNames), 1/20)
+# create simulated data set
+allGenes <- c(mitosisGeneNames, contactInhibitionGeneNames)
+geneMeans <- rexp(length(allGenes), 1/20)
 data <- t(pmax(sapply(geneMeans, rnorm, n=25, sd=2), 0))
-rownames(data) <- mitosisGeneNames
-pwyMitosis <- calibratePathway(pwyMitosis, data)
+rownames(data) <- allGenes
 
-# calibrate contact inhibition genes
-geneMeans <- rexp(length(contactInhibitionGeneNames), 1/20)
-data <- t(pmax(sapply(geneMeans, rnorm, n=25, sd=2), 0))
-rownames(data) <- contactInhibitionGeneNames
+# calibrate pathways
+pwyMitosis <- calibratePathway(pwyMitosis, data)
 pwyContactInhibition <- calibratePathway(pwyContactInhibition, data)
 ```
 
@@ -144,10 +146,16 @@ params@perError <- 0.1 # parameter for simulated noise
 params@randSeed <- 123 # control this for reporducibility
 
 pwys <- c(pwyMitosis, pwyContactInhibition)
-gene_exp <- inSilicoGeneExpression(cell_mod, pwys, params)
+gene_exp <- inSilicoGeneExpression(simple_mod, pwys, params)
 ```
 
 ## Visualize Gene Expression Data
+
+Using the *heatmap.2* function we can visualize our simulated gene expression
+data. Here we color the rows with mitosis genes as orange and the contact
+inhibition genes as blue. Notice how mitosis genes are active in a cyclical
+pattern, and contact inhibition genes grow more active over time, as the
+population gets more dense.
 
 ```{r}
 ndx <- apply(gene_exp$expression, 1, var) == 0 # remove zero variance rows
@@ -164,7 +172,11 @@ heatmap.2(gene_exp$expression[!ndx,],
 ## Visualize Pathway Activity
 
 *inSilicoGeneExpression* returns the raw pathway activity that the gene 
-expression data is based on.
+expression data is based on. This allows us to see exactly how our
+*expressionScale* functions are working with the model. Note how mitosis
+activity increases near the end of the model - this is exactly the opposite
+effect we would expect as contact inhibition gets stronger. The next section
+explores this issue.
 
 ```{r}
 # mitosis
@@ -175,17 +187,27 @@ lines(seq(0,72,6), gene_exp$pathways[[2]], col="blue")
 
 ## Accounting for Model Effects
 
+In the previous section we saw the mitosis genes grow more active when they
+should be repressed. This is due to the way we defined the *expressionScale*
+function for *pwyMitosis*. In the model, cells get stuck in mitosis trying to 
+divide but unable to due to the density of the population. This results in a 
+build up of cells in the mitosis phase that are unable to progress. Therefore,
+a more accurate measure of mitosis would be when the cell sucessfully completes
+a division. We acheive this by checking if the axis of the cell shrinks, a 
+property that is specific to off-lattice cell models. Now we can see a sharp
+drop in mitosis activity near the end of the model.
+
 ```{r}
 pwyMitosis@expressionScale = function(model, cell, time)
 {
     window <- c(max(time - 2, 0), min(time + 2, model@runTime))
     a1 <- getAxisLength(model, window[1], cell)
     a2 <- getAxisLength(model, window[2], cell)
-    if (is.na(a1)) a1 <- 0
+    if (is.na(a1)) a1 <- 0 # in case cell was just born
     return(ifelse(a2 < a1, 1, 0))
 }
 pwys <- c(pwyMitosis, pwyContactInhibition)
-gene_exp <- inSilicoGeneExpression(cell_mod, pwys, params)
+gene_exp <- inSilicoGeneExpression(simple_mod, pwys, params)
 # mitosis
 plot(seq(0,72,6), gene_exp$pathways[[1]], type="l", col="orange", ylim=c(0,1))
 # contact inhibition
@@ -194,11 +216,21 @@ lines(seq(0,72,6), gene_exp$pathways[[2]], col="blue")
 
 ## Normalize Pathway Activity
 
+Notice that the maximum activity for the mitosis pathway is around 0.2 instead
+of 1. Again, this is due to the way we defined mitosis activity. There will
+never be close to 100% of the cells dividing so the activity is capped at a
+lower value. This isn't neccesarily an error, but if the user wishes to
+normalize the pathway activity to [0,1], they can use the logistic
+transformation parameters provided in the *Pathway* class. If the slope and 
+midpoint are set, then the function
+*f(x) = 1 / (1 + exp(-slope(x - midpoint)))* is applied to the raw pathway
+acticvity - allowing for a smooth normalization.
+
 ```{r}
 pwyMitosis@transformMidpoint = 0.1  
 pwyMitosis@transformSlope = 5 / 0.1
 pwys <- c(pwyMitosis, pwyContactInhibition)
-gene_exp <- inSilicoGeneExpression(cell_mod, pwys, params)
+gene_exp <- inSilicoGeneExpression(simple_mod, pwys, params)
 # mitosis
 plot(seq(0,72,6), gene_exp$pathways[[1]], type="l", col="orange", ylim=c(0,1))
 # contact inhibition
@@ -210,10 +242,121 @@ lines(seq(0,72,6), gene_exp$pathways[[2]], col="blue")
 *inSilicoCellModel* supports drugs that function by supressing proliferation. A
 list of Drug objects can be passed to this function. These objects define a
 function to calculate the effect of the drug and the time at which the drug
-is added.
+is added. The *cycleLengthEffect* field of the Drug object is a function that
+takes two parameters, cell type and cell cycle length. It returns the new cell
+cycle length.
 
-# Multiple Cell Types
+Here we create a drug that cuts proliferation rates in half by doubling the 
+cell cycle length. It is added at 24 hours into the simulation.
+
+```{r}
+drug <- new("Drug", name="Drug_A", timeAdded=24, cycleLengthEffect=function(type, length) length * 2)
+drug_mod <- suppressMessages(inSilicoCellModel(initialNum=30, runTime=72, density=0.1, drugs=c(drug), outputIncrement=24, randSeed=123))
+
+# hours in simulation
+times <- 0:simple_mod@runTime
+
+# plot number of cells over time
+nCells <- sapply(times, getNumberOfCells, model=simple_mod)
+nCells_drug <- sapply(times, getNumberOfCells, model=drug_mod)
+plot(times, nCells, type="l", xlab="hour", ylab="number of cells")
+lines(times, nCells_drug, type="l", xlab="hour", ylab="number of cells", col="red")
+```
+
+# Cell Types
+
+## Adding a Single Cell Type
+
+The mean cycle length of the cells in *inSilicoCellModel* is set to 24 hours by
+default. To change this we need to pass in a CellType object to the function.
+The *CellType* class allows for more fine grained control of the cellular
+properties in the simulation. The *cycleLength* field of the class is a function
+which takes no arguments and returns the target cycle length of a cell of this
+type. Note that the model also requires a minimum possible cycle length in the
+field *minCycle*.
+
+```{r}
+type_A <- new("CellType", name="A", minCycle=16, cycleLength=function() 16)
+fast_cells_mod <- suppressMessages(inSilicoCellModel(initialNum=30, runTime=72, density=0.1, cellTypes=c(type_A), outputIncrement=24, randSeed=123))
+
+# hours in simulation
+times <- 0:simple_mod@runTime
+
+# plot number of cells over time
+nCells <- sapply(times, getNumberOfCells, model=simple_mod)
+nCells_fast <- sapply(times, getNumberOfCells, model=fast_cells_mod)
+plot(times, nCells, type="l", xlab="hour", ylab="number of cells")
+lines(times, nCells_fast, type="l", xlab="hour", ylab="number of cells", col="red")
+```
+
+## Adding Multiple Cell Types
+
+*inSilicoCellModel* also allows the user to pass a list of cell types. In this
+case we must also provide the *cellTypeInitFreq* argument which specifies the
+initial proportions of each cell type when the population is seeded. Note that
+we use a random *cycleLength* function to provide more variance within the cell
+types.
+
+```{r}
+type_B <- new("CellType", name="B", size=1, minCycle=16, cycleLength=function() 16 + rexp(1,1/4))
+type_C <- new("CellType", name="C", size=1, minCycle=32, cycleLength=function() 32 + rexp(1,1/4))
+two_types_mod <- suppressMessages(inSilicoCellModel(initialNum=30, runTime=72, density=0.1, cellTypes=c(type_B, type_C), cellTypeInitFreq=c(0.4,0.6), outputIncrement=24, randSeed=123))
+```
 
 # Simulating Single Cell Gene Expression Data
+
+## Cell Type Pathways
+
+In order to simulate gene expression data related to the cell types, we need
+to define pathways with activity based on the type of the cell.
+
+```{r}
+# gene names
+B_genes <- paste("b.", letters[1:20], sep="")
+C_genes <- paste("c.", letters[1:20], sep="")
+
+# pathway behavior
+pwy_B <- new("Pathway", genes=B_genes, expressionScale=function(model, cell, time) ifelse(getCellType(model, time, cell) == 1, 1, 0))
+pwy_C <- new("Pathway", genes=C_genes, expressionScale=function(model, cell, time) ifelse(getCellType(model, time, cell) == 2, 1, 0))
+
+# calibrate pathways
+geneMeans <- rexp(length(c(B_genes, C_genes)), 1/20)
+data <- t(pmax(sapply(geneMeans, rnorm, n=25, sd=2), 0))
+rownames(data) <- c(B_genes, C_genes)
+pwy_B <- calibratePathway(pwy_B, data)
+pwy_C <- calibratePathway(pwy_C, data)
+```
+
+## Simulating Single Cell RNA-seq
+
+Now that we have our pathways, we call *inSilicoGeneExpression* in the same
+way as before, the only difference is the *GeneExpressionParams* object. In this
+case we set *RNAseq* and *singleCell* to be true, and then we also must pass
+a *splatParams* object since *CancerInSilico* user *splatter* to generate
+single cell data.
+
+```{r}
+params <- new('GeneExpressionParams')
+params@RNAseq <- TRUE
+params@singleCell <- TRUE
+params@nCells <- 10
+params@sampleFreq <- 12
+params@splatParams <- splatter::setParam(params@splatParams, "dropout.present", TRUE)
+ge <- inSilicoGeneExpression(two_types_mod, c(pwy_B, pwy_C), params)
+```
+
+## Visualize Data
+
+We can visualize the single cell plots with the *Rtsne* package.
+
+```{r}
+cells <- unname(sapply(colnames(ge$expression), function(x) strsplit(x,"_")[[1]][1]))
+cells <- as.numeric(gsub("c", "", cells))
+type <- sapply(cells, getCellType, model=two_types_mod, time=two_types_mod@runTime)
+
+tsne_out <- Rtsne(t(ge$expression), dims=3, initial_dims=3, perplexity=5, theta=0.5, pca=TRUE, max_iter=500, verbose=TRUE)
+open3d()
+plot3d(tsne_out$Y, col=type, xlab="", ylab="", zlab="")
+```
 
 # References

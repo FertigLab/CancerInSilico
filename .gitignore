@@ -54,7 +54,6 @@ cmdtest.R
 
 *.log
 *.Rhistory
-*.html
 
 **.DS_Store
 *.Rapp.history
