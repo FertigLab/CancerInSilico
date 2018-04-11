@@ -5,6 +5,7 @@
 #' the behavior of a CellModel as the basis for the simulation
 #' @param model a CellModel object
 #' @param pathways list of genes pathways
+#' @param params GeneExpressionParams object
 #' @return list of pathway activity and gene expression
 inSilicoGeneExpression <- function(model, pathways,
 params=new('GeneExpressionParams'))
@@ -49,6 +50,8 @@ params=new('GeneExpressionParams'))
 #' @return no value is return, but errors/warnings are thrown related to
 #' potential problems in the data set
 #' @importFrom stats median
+#' @examples
+#' data(referenceGeneExpression)
 checkDataSet <- function(dataSet, genes)
 {
     if (length(setdiff(genes, row.names(dataSet))))
@@ -149,6 +152,8 @@ voomErrorModel <- function(mu, bcvCommon, bcvDF)
     cellMeans <- matrix(rgamma(length(mu), shape=shape, scale=scale),
         nrow=nGenes)
     trueCounts <- matrix(rpois(length(mu), lambda=cellMeans), nrow=nGenes)
+    rownames(trueCounts) <- rownames(mu)
+    colnames(trueCounts) <- colnames(mu)
     return(list("cellMeans"=cellMeans, "trueCounts"=floor(pmax(trueCounts, 0))))
 }
 

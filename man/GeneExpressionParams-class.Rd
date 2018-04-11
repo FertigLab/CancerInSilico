@@ -10,20 +10,32 @@ Parameters for simulating gene expression
 \section{Slots}{
 
 \describe{
-\item{\code{sampFreq}}{how often to generate data}
+\item{\code{sampleFreq}}{how often to generate data}
 
-\item{\code{nGenes}}{total number of genes used (matrix padded with dummys)}
+\item{\code{RNAseq}}{generate RNA-seq data}
+
+\item{\code{singleCell}}{generate single cell data}
+
+\item{\code{nCells}}{number of cells to sample at each time point}
+
+\item{\code{nDummyGenes}}{number of dummy genes}
+
+\item{\code{dummyDist}}{function to determine expression of dummy genes}
 
 \item{\code{combineFUN}}{function used to combine gene expression data}
 
-\item{\code{singleCell}}{logical: simulate single cell data}
+\item{\code{randSeed}}{random seed}
 
-\item{\code{nCells}}{number of cells to use for single cell data}
+\item{\code{perError}}{error for normal error model}
 
-\item{\code{perError}}{percent error?}
+\item{\code{bcvCommon}}{error for voom error model}
 
-\item{\code{microArray}}{true if micro array data}
+\item{\code{bcvDF}}{degrees of freedom for voom error model}
 
-\item{\code{randSeed}}{random seed for simulation}
+\item{\code{dropoutPresent}}{whether to simulate dropout in single cell data}
+
+\item{\code{dropoutMid}}{parameter for dropout distribution}
+
+\item{\code{dropoutShape}}{parameter for dropout distribution}
 }}
 

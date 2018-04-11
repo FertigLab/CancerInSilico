@@ -12,28 +12,11 @@ inSilicoCellModel(initialNum, runTime, density, modelType = "DrasdoHohme",
 
 \item{runTime}{how long the simulation runs in real cellular time (hours)}
 
-\item{density}{the density the cells are seeded at}
+\item{density}{initial density of cell population}
 
 \item{modelType}{the name of the cell-based model to use}
 
 \item{...}{model specific parameters (depends on modelType)}
-
-\item{cellTypes}{an array of S4 objects (each representing a different
-cell type)}
-
-\item{cycleLengthDist}{cycle time distribution}
-
-\item{drugEffect}{distribution of drug effects}
-
-\item{inheritGrowth}{whether or not daughter cells have the same
-cycle-length as parents}
-
-\item{outputIncrement}{time increment to print status at}
-
-\item{randSeed}{seed for the model}
-
-\item{cycleSyncProb}{the probability of cells being seed in interphase
-(not mitosis)}
 }
 \value{
 A CellModel containing all info from the model run

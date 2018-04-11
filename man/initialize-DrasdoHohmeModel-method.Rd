@@ -8,6 +8,20 @@
 \S4method{initialize}{DrasdoHohmeModel}(.Object, nG = 28, epsilon = 10,
   delta = 0.2, ...)
 }
+\arguments{
+\item{.Object}{DrasdoHohmeModel object}
+
+\item{nG}{number of trials per growth trial}
+
+\item{epsilon}{model parameter}
+
+\item{delta}{small scale interaction distance}
+
+\item{...}{extra parameters}
+}
+\value{
+initialized cell model
+}
 \description{
 DrasdoHohmeModel Constructor
 }

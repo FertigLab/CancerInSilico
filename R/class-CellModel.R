@@ -2,7 +2,7 @@ library(methods)
 
 ################ Class Definition ################
 
-#' @title CellModel
+#' CellModel
 #' @description The top-level CellModel class. All other cell model
 #' classes inherit from this in some way
 #' @slot cells A list object that describes the state of the cells
@@ -40,15 +40,28 @@ setClass('CellModel', contains = 'VIRTUAL', slots = c(
 ))
 
 #' Constructor for CellModel
-#' @importFrom methods callNextMethod
 #' @param .Object CellModel object
-#' @inheritParams inSilicoCellModel
+#' @param initialNum initial number of cells
+#' @param runTime run time of the model in hours
+#' @param density initial density of the cell population
+#' @param boundary impose a physical boundary on the cells
+#' @param syncCycles synchronization all cells to the same point in the cycle
+#' @param randSeed random seed
+#' @param outputIncrement how often (model hours) to print simulation status
+#' @param recordIncrement how oftern (model hours) to record cell information
+#' @param timeIncrement internal time step (model hours) used by the model
+#' @param cellTypes list of CellType objects
+#' @param cellTypeInitFreq initial proportions of all cell types
+#' @param drugs list of Drug objects
+#' @param ... model specific parameters
+#' @return initialized cell model object
+#' @importFrom methods callNextMethod
 setMethod('initialize', 'CellModel',
     function(.Object, initialNum, runTime, density,
     boundary = 1, syncCycles = FALSE, randSeed = 0, 
     outputIncrement = 4, recordIncrement = 0.1, timeIncrement = 0.001,
     cellTypes = c(new('CellType', name='DEFAULT')), cellTypeInitFreq = c(1),
-    ...)
+    drugs = list(), ...)
     {
         # store parameters, don't overwrite existing values
         if (!length(.Object@initialNum))
@@ -73,6 +86,8 @@ setMethod('initialize', 'CellModel',
             .Object@cellTypes <- cellTypes
         if (!length(.Object@cellTypeInitFreq))
             .Object@cellTypeInitFreq <- cellTypeInitFreq
+        if (!length(.Object@drugs))
+            .Object@drugs <- drugs
 
         # adjust time/record increment to divide runtime evenly
         .Object@timeIncrement <- .Object@runTime /
@@ -149,52 +164,166 @@ setValidity('CellModel',
         
 ##################### Generics ###################
 
+#' run a cell model
 #' @export
+#' @docType methods
+#' @rdname run-methods
+#'
+#' @param model cell model object
+#' @return cell model object with simulation info
+#' @examples
+#' data(SampleModels)
+#' run(modDefault)
 setGeneric('run', function(model)
     {standardGeneric('run')})
 
+#' get number of cells in the model at a given time
 #' @export
+#' @docType methods
+#' @rdname getNumberOfCells-methods
+#'
+#' @param model cell model object
+#' @param time hour of the model to query
+#' @return number of cells
+#' @examples
+#' data(SampleModels)
+#' getNumberOfCells(modDefault, modDefault@runTime)
 setGeneric('getNumberOfCells', function(model, time)
     {standardGeneric('getNumberOfCells')})
 
+#' get density of the cell population at a given time
 #' @export
-setGeneric('getCellPhase', function(model, time, cell)
-    {standardGeneric('getCellPhase')})
-
-#' @export
-setGeneric('getCellType', function(model, time, cell)
-    {standardGeneric('getCellType')})
-
-#' @export
-setGeneric('getCycleLength', function(model, time, cell)
-    {standardGeneric('getCycleLength')})
-
-#' @export
+#' @docType methods
+#' @rdname getDensity-methods
+#'
+#' @param model cell model object
+#' @param time hour of the model to query
+#' @return density
+#' @examples
+#' data(SampleModels)
+#' getDensity(modDefault, modDefault@runTime)
 setGeneric('getDensity', function(model, time)
     {standardGeneric('getDensity')})
 
+#' get phase of a cell at a given time
 #' @export
+#' @docType methods
+#' @rdname getCellPhase-methods
+#'
+#' @param model cell model object
+#' @param time hour of the model to query
+#' @param cell id of cell to query
+#' @return cell phase
+#' @examples
+#' data(SampleModels)
+#' getCellPhase(modDefault, modDefault@runTime, 1)
+setGeneric('getCellPhase', function(model, time, cell)
+    {standardGeneric('getCellPhase')})
+
+#' get type of a cell at a given time
+#' @export
+#' @docType methods
+#' @rdname getCellType-methods
+#'
+#' @param model cell model object
+#' @param time hour of the model to query
+#' @param cell id of cell to query
+#' @return cell type
+#' @examples
+#' data(SampleModels)
+#' getCellType(modDefault, modDefault@runTime, 1)
+setGeneric('getCellType', function(model, time, cell)
+    {standardGeneric('getCellType')})
+
+#' get cycle length of a cell at a given time
+#' @export
+#' @docType methods
+#' @rdname getCycleLength-methods
+#'
+#' @param model cell model object
+#' @param time hour of the model to query
+#' @param cell id of cell to query
+#' @return cycle length in hours
+#' @examples
+#' data(SampleModels)
+#' getCycleLength(modDefault, modDefault@runTime, 1)
+setGeneric('getCycleLength', function(model, time, cell)
+    {standardGeneric('getCycleLength')})
+
+#' get neighborhood density around a cell at a given time
+#' @export
+#' @docType methods
+#' @rdname getLocalDensity-methods
+#'
+#' @param model cell model object
+#' @param time hour of the model to query
+#' @param cell id of cell to query
+#' @param radius distance to search for neighboring cells
+#' @return density
+#' @examples
+#' data(SampleModels)
+#' getLocalDensity(modDefault, modDefault@runTime, 1, 3.3)
 setGeneric('getLocalDensity', function(model, time, cell, radius)
     {standardGeneric('getLocalDensity')})
 
+#' get distance between two cells
 #' @export
+#' @docType methods
+#' @rdname getCellDistance-methods
+#'
+#' @param model cell model object
+#' @param time hour of the model to query
+#' @param cellA id of cell to query
+#' @param cellB id of cell to query
+#' @return distance between cellA and cellB
+#' @examples
+#' data(SampleModels)
+#' getCellDistance(modDefault, modDefault@runTime, 1, 2)
 setGeneric('getCellDistance', function(model, time, cellA, cellB)
     {standardGeneric('getCellDistance')})
 
+#' summary of cell model at a given time
 #' @export
+#' @docType methods
+#' @rdname cellSummary-methods
+#'
+#' @param model cell model object
+#' @param time hour of the model to query
+#' @return string containing summary of model
+#' @examples
+#' data(SampleModels)
+#' cellSummary(modDefault, modDefault@runTime)
 setGeneric('cellSummary', function(model, time)
     {standardGeneric('cellSummary')})
 
+#' plot cell population at a given time
 #' @export
+#' @docType methods
+#' @rdname plotCells-methods
+#'
+#' @param model cell model object
+#' @param time hour of the model to query
+#' @return plot
+#' @examples
+#' data(SampleModels)
+#' plotCells(modDefault, modDefault@runTime)
 setGeneric('plotCells', function(model, time)
     {standardGeneric('plotCells')})
 
+#' plot the cell population and interactively scroll through time points
 #' @export
+#' @docType methods
+#' @rdname interactivePlot-methods
+#'
+#' @param model cell model object
+#' @return plot
 setGeneric('interactivePlot', function(model)
     {standardGeneric('interactivePlot')})
 
 ##################### Methods ####################
 
+#' @rdname interactivePlot-methods
+#' @aliases interactivePlot
 setMethod('interactivePlot', signature('CellModel'),
     function(model)
     {
@@ -255,6 +384,8 @@ setMethod('interactivePlot', signature('CellModel'),
     }
 )
 
+#' @rdname cellSummary-methods
+#' @aliases cellSummary
 setMethod('cellSummary', signature(model='CellModel'),
     function(model, time)
     {
@@ -263,6 +394,7 @@ setMethod('cellSummary', signature(model='CellModel'),
     }
 )
 
+#' @importFrom methods showDefault
 setMethod('show', signature('CellModel'),
     function(object)
     {

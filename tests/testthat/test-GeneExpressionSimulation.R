@@ -1,7 +1,9 @@
 context('Testing Gene Expression Simulation')
 
 test_that('Check Data Set',
-{  
+{
+    data(ReferenceGeneExpression)  
+    data(SamplePathways)
     geneNames <- unique(c(pwyGrowth@genes, pwyContactInhibition@genes,
         pwyMitosis@genes, pwySPhase@genes))
     expect_warning(checkDataSet(referenceGeneExpression, geneNames), NA)

@@ -20,6 +20,12 @@ setClass('DrasdoHohmeModel', contains = 'OffLatticeModel', slots = c(
 ))
 
 #' DrasdoHohmeModel Constructor
+#' @param .Object DrasdoHohmeModel object
+#' @param nG number of trials per growth trial
+#' @param epsilon model parameter
+#' @param delta small scale interaction distance
+#' @param ... extra parameters
+#' @return initialized cell model
 #' @importFrom methods slot validObject
 setMethod('initialize', 'DrasdoHohmeModel',
     function(.Object, nG = 28, epsilon = 10.0, delta = 0.2, ...)
@@ -72,6 +78,8 @@ setValidity('DrasdoHohmeModel',
 
 ##################### Methods ####################
 
+#' @rdname run-methods
+#' @aliases run
 setMethod('run', signature('DrasdoHohmeModel'),
     function(model)
     {

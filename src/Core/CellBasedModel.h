@@ -59,7 +59,7 @@ public:
     void setBoundary(double);
 
     // get a random cell type from initial distribution
-    CellType randomCellType();
+    CellType randomCellType(unsigned ndx);
 
     // run the entire model
     void run();

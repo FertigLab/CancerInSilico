@@ -20,6 +20,13 @@ setClass('OffLatticeModel', contains = c('CellModel', 'VIRTUAL'), slots = c(
     maxRotation = 'numeric'
 ))
 
+#' Off-Lattice Model Constructor
+#' @param .Object OffLatticeModel object
+#' @param maxDeformation maximum growth of interphase cell
+#' @param maxTranslation maximum movement of cell
+#' @param maxRotation maximim rotation of mitosis cell
+#' @param ... model specific parameters
+#' @return initialized cell model
 setMethod('initialize', 'OffLatticeModel',
     function(.Object, maxDeformation = 0.1, maxTranslation = 0.1,
     maxRotation = 0.3, ...)
@@ -58,25 +65,65 @@ setValidity('OffLatticeModel',
 
 ##################### Generics ###################
 
+#' get coordinates of a cell at a given time
 #' @export
+#' @docType methods
+#' @rdname getCoordinates-methods
+#'
+#' @param model cell model object
+#' @param time hour of the model to query
+#' @param cell id of cell to query
+#' @return pair of (x,y) coordinates
+#' @examples
+#' data(SampleModels)
+#' getCoordinates(modDefault, modDefault@runTime, 1)
 setGeneric('getCoordinates', function(model, time, cell)
     {standardGeneric('getCoordinates')})
 
+#' get cell radius at a given time
 #' @export
+#' @docType methods
+#' @rdname getRadius-methods
+#'
+#' @param model cell model object
+#' @param time hour of the model to query
+#' @param cell id of cell to query
+#' @return radius of cell
+#' @examples
+#' data(SampleModels)
+#' getRadius(modDefault, modDefault@runTime, 1)
 setGeneric('getRadius', function(model, time, cell)
     {standardGeneric('getRadius')})
 
+#' get cell axis length at a given time
 #' @export
+#' @docType methods
+#' @rdname getAxisLength-methods
+#'
+#' @param model cell model object
+#' @param time hour of the model to query
+#' @param cell id of cell to query
+#' @return axis length
+#' @examples
+#' data(SampleModels)
+#' getAxisLength(modDefault, modDefault@runTime, 1)
 setGeneric('getAxisLength', function(model, time, cell)
     {standardGeneric('getAxisLength')})
 
+#' get cell axis angle at a given time
 #' @export
+#' @docType methods
+#' @rdname getAxisAngle-methods
+#'
+#' @param model cell model object
+#' @param time hour of the model to query
+#' @param cell id of cell to query
+#' @return axis angle
+#' @examples
+#' data(SampleModels)
+#' getAxisAngle(modDefault, modDefault@runTime, 1)
 setGeneric('getAxisAngle', function(model, time, cell)
     {standardGeneric('getAxisAngle')})
-
-#' @export
-setGeneric('getGrowthAcceptRate', function(model, time, cell)
-    {standardGeneric('getGrowthAcceptRate')})
 
 ##################### Methods ####################
 
@@ -87,8 +134,9 @@ getEntry <- function(model, time, cell, col)
         col <- col + 9 * (cell - 1)
         return(model@cells[[row]][col])
     }
-#)
 
+#' @rdname getCoordinates-methods
+#' @aliases getCoordinates
 setMethod('getCoordinates', signature(model='OffLatticeModel'),
     function(model, time, cell)
     {
@@ -96,6 +144,8 @@ setMethod('getCoordinates', signature(model='OffLatticeModel'),
     }
 )    
 
+#' @rdname getRadius-methods
+#' @aliases getRadius
 setMethod('getRadius', signature(model='OffLatticeModel'),
     function(model, time, cell)
     {
@@ -103,6 +153,8 @@ setMethod('getRadius', signature(model='OffLatticeModel'),
     }
 )
 
+#' @rdname getAxisLength-methods
+#' @aliases getAxisLength
 setMethod('getAxisLength', signature(model='OffLatticeModel'),
     function(model, time, cell)
     {
@@ -110,6 +162,8 @@ setMethod('getAxisLength', signature(model='OffLatticeModel'),
     }
 )
 
+#' @rdname getAxisAngle-methods
+#' @aliases getAxisAngle
 setMethod('getAxisAngle', signature(model='OffLatticeModel'),
     function(model, time, cell)
     {
@@ -117,6 +171,8 @@ setMethod('getAxisAngle', signature(model='OffLatticeModel'),
     }
 )
 
+#' @rdname getCycleLength-methods
+#' @aliases getCycleLength
 setMethod('getCycleLength', signature(model='OffLatticeModel'),
     function(model, time, cell)
     {
@@ -124,6 +180,8 @@ setMethod('getCycleLength', signature(model='OffLatticeModel'),
     }
 )
 
+#' @rdname getCellPhase-methods
+#' @aliases getCellPhase
 setMethod('getCellPhase', signature(model='OffLatticeModel'),
     function(model, time, cell)
     {
@@ -132,6 +190,8 @@ setMethod('getCellPhase', signature(model='OffLatticeModel'),
     }
 )
 
+#' @rdname getCellType-methods
+#' @aliases getCellType
 setMethod('getCellType', signature(model='OffLatticeModel'),
     function(model, time, cell)
     {
@@ -139,13 +199,8 @@ setMethod('getCellType', signature(model='OffLatticeModel'),
     }
 )
 
-setMethod('getGrowthAcceptRate', signature('OffLatticeModel'),
-    function(model, time, cell)
-    {
-        return(getEntry(model, time, cell, 9))
-    }
-)
-
+#' @rdname getNumberOfCells-methods
+#' @aliases getNumberOfCells
 setMethod('getNumberOfCells', signature('OffLatticeModel'),
     function(model, time)
     {
@@ -155,6 +210,8 @@ setMethod('getNumberOfCells', signature('OffLatticeModel'),
     }
 )
 
+#' @rdname getDensity-methods
+#' @aliases getDensity
 setMethod('getDensity', signature('OffLatticeModel'),
     function(model, time)
     {
@@ -173,6 +230,8 @@ setMethod('getDensity', signature('OffLatticeModel'),
     }
 )
 
+#' @rdname getCellDistance-methods
+#' @aliases getCellDistance
 setMethod('getCellDistance', signature(model='OffLatticeModel'),
     function(model, time, cellA, cellB)
     {
@@ -202,6 +261,8 @@ setMethod('getCellDistance', signature(model='OffLatticeModel'),
     }
 )
 
+#' @rdname getLocalDensity-methods
+#' @aliases getLocalDensity
 setMethod('getLocalDensity', signature('OffLatticeModel'),
     function(model, time, cell, radius)
     {
@@ -260,6 +321,9 @@ setMethod('getLocalDensity', signature('OffLatticeModel'),
     }
 )
 
+#' @rdname plotCells-methods
+#' @aliases plotCells
+#' @importFrom graphics plot symbols
 setMethod('plotCells', signature('OffLatticeModel'),
     function(model, time)
     {

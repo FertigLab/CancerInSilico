@@ -35,6 +35,72 @@ NULL
 #' 
 NULL
 
+#' gene expression data for genes in sample pathways
+#' @docType data
+#' @name referenceGeneExpression
+#' @usage referenceGeneExpression
+NULL
+
+#' sample cell model
+#' @docType data
+#' @name modDefault
+#' @usage modDefault
+NULL
+
+#' sample cell model
+#' @docType data
+#' @name modLargeRun
+#' @usage modLargeRun
+NULL
+
+#' sample cell model
+#' @docType data
+#' @name modLongRun
+#' @usage modLongRun
+NULL
+
+#' sample cell model
+#' @docType data
+#' @name modHighDensity
+#' @usage modHighDensity
+NULL
+
+#' sample cell model
+#' @docType data
+#' @name modCellTypes
+#' @usage modCellTypes
+NULL
+
+#' sample cell model
+#' @docType data
+#' @name modDrugs
+#' @usage modDrugs
+NULL
+
+#' sample pathway
+#' @docType data
+#' @name pwyGrowth
+#' @usage pwyGrowth
+NULL
+
+#' sample pathway
+#' @docType data
+#' @name pwyMitosis
+#' @usage pwyMitosis
+NULL
+
+#' sample pathway
+#' @docType data
+#' @name pwySPhase
+#' @usage pwySPhase
+NULL
+
+#' sample pathway
+#' @docType data
+#' @name pwyContactInhibition
+#' @usage pwyContactInhibition
+NULL
+
 run_cpp_unit_tests <- function()
 {
     run_catch_unit_tests()

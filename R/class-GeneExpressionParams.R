@@ -1,15 +1,21 @@
 #' @title GeneExpressionParams
-#' @description Parameters for simulating gene expression
-#'
-#' @slot sampFreq how often to generate data
-#' @slot nGenes total number of genes used (matrix padded with dummys)
-#' @slot combineFUN function used to combine gene expression data
-#' @slot singleCell logical: simulate single cell data
-#' @slot nCells number of cells to use for single cell data
-#' @slot perError percent error?
-#' @slot microArray true if micro array data
-#' @slot randSeed random seed for simulation
 #' @export
+#'
+#' @description Parameters for simulating gene expression
+#' @slot sampleFreq how often to generate data
+#' @slot RNAseq generate RNA-seq data
+#' @slot singleCell generate single cell data
+#' @slot nCells number of cells to sample at each time point
+#' @slot nDummyGenes number of dummy genes
+#' @slot dummyDist function to determine expression of dummy genes
+#' @slot combineFUN function used to combine gene expression data
+#' @slot randSeed random seed
+#' @slot perError error for normal error model
+#' @slot bcvCommon error for voom error model
+#' @slot bcvDF degrees of freedom for voom error model
+#' @slot dropoutPresent whether to simulate dropout in single cell data
+#' @slot dropoutMid parameter for dropout distribution
+#' @slot dropoutShape parameter for dropout distribution
 setClass("GeneExpressionParams", slots = c(
     sampleFreq = "numeric",
     RNAseq = "logical",

@@ -19,4 +19,7 @@ potential problems in the data set
 checks a data set before it is used to calibrate the 
 pathway values for min/max expression
 }
+\examples{
+data(referenceGeneExpression)
+}
 

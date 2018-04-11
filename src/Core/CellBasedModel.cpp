@@ -41,11 +41,14 @@ void CellBasedModel::setBoundary(double b)
 }
 
 // get random cell type based on given frequency
-CellType CellBasedModel::randomCellType()
+CellType CellBasedModel::randomCellType(unsigned ndx)
 {
     // get distribution of cell types
     Rcpp::NumericVector freq = mRModel->slot("cellTypeInitFreq");
-    double total = 0.0, u = Random::uniform(0,1);
+    unsigned nCells = mRModel->slot("initialNum");
+    
+    double u = (double)ndx / (double)nCells;
+    double total = 0.0;
     unsigned i = 0;
 
     // increment until correct bin is found

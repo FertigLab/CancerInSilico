@@ -10,6 +10,8 @@ inSilicoGeneExpression(model, pathways, params = new("GeneExpressionParams"))
 \item{model}{a CellModel object}
 
 \item{pathways}{list of genes pathways}
+
+\item{params}{GeneExpressionParams object}
 }
 \value{
 list of pathway activity and gene expression

@@ -8,6 +8,8 @@
  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
  */
+#include <Rcpp.h>
+
 #ifndef TWOBLUECUBES_SINGLE_INCLUDE_CATCH_HPP_INCLUDED
 #define TWOBLUECUBES_SINGLE_INCLUDE_CATCH_HPP_INCLUDED
 
@@ -7705,10 +7707,10 @@ namespace Catch {
 
 #ifndef CATCH_CONFIG_NOSTDOUT // If you #define this you must implement these functions
     std::ostream& cout() {
-        return std::cout;
+        return Rcpp::Rcout;
     }
     std::ostream& cerr() {
-        return std::cerr;
+        return Rcpp::Rcerr;
     }
     std::ostream& clog() {
         return std::clog;
@@ -11537,7 +11539,7 @@ int main (int argc, char * const argv[]) {
 #endif
 
 #define INFO( msg ) INTERNAL_CATCH_INFO( "INFO", msg )
-#define WARN( msg ) INTERNAL_CATCH_MSG( "WARN", Catch::ResultWas::Warning, Catch::ResultDisposition::ContinueOnFailure, msg )
+//#define WARN( msg ) INTERNAL_CATCH_MSG( "WARN", Catch::ResultWas::Warning, Catch::ResultDisposition::ContinueOnFailure, msg )
 #define SCOPED_INFO( msg ) INTERNAL_CATCH_INFO( "INFO", msg )
 #define CAPTURE( msg ) INTERNAL_CATCH_INFO( "CAPTURE", #msg " := " << Catch::toString(msg) )
 #define SCOPED_CAPTURE( msg ) INTERNAL_CATCH_INFO( "CAPTURE", #msg " := " << Catch::toString(msg) )
