@@ -250,6 +250,21 @@ setGeneric('getCellType', function(model, time, cell)
 setGeneric('getCycleLength', function(model, time, cell)
     {standardGeneric('getCycleLength')})
 
+#' get rate of growth acceptance of a given cell at a given time
+#' @export
+#' @docType methods
+#' @rdname getTrialAcceptRate-methods
+#'
+#' @param model cell model object
+#' @param time hour of the model to query
+#' @param cell id of cell to query
+#' @return acceptance rate
+#' @examples
+#' data(SampleModels)
+#' getTrialAcceptRate(modDefault, modDefault@runTime, 1)
+setGeneric('getTrialAcceptRate', function(model, time, cell)
+    {standardGeneric('getTrialAcceptRate')})
+
 #' get neighborhood density around a cell at a given time
 #' @export
 #' @docType methods

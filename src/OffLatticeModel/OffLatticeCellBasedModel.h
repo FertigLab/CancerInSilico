@@ -32,7 +32,6 @@ public:
     virtual ~OffLatticeCellBasedModel() {}
 
     // get parameters
-    double maxDeformation() const {return mMaxDeformation;}
     double maxTranslation() const {return mMaxTranslation;}
     double maxRotation()    const {return mMaxRotation;}
 
@@ -64,6 +63,7 @@ public:
 
     // do trials
     virtual double maxGrowth(OffLatticeCell&) const = 0;
+    virtual double maxDeformation(OffLatticeCell&) const = 0;
     void growth(OffLatticeCell&);
     void translation(OffLatticeCell&);
     void deformation(OffLatticeCell&);

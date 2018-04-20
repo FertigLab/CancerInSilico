@@ -12,8 +12,6 @@ structure for models of this type
 \section{Slots}{
 
 \describe{
-\item{\code{maxDeformation}}{the largest distance the axis of a cell can increase}
-
 \item{\code{maxTranslation}}{the largest distance the center of a cell can move}
 
 \item{\code{maxRotation}}{the largest angle a cell can rotate}

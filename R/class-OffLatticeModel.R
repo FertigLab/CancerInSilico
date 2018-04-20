@@ -10,30 +10,24 @@ library(methods)
 #' not quite a full implementation, but contains much of the neccesary
 #' structure for models of this type
 #'
-#' @slot maxDeformation the largest distance the axis of a cell can increase
 #' @slot maxTranslation the largest distance the center of a cell can move
 #' @slot maxRotation the largest angle a cell can rotate
 #' @export
 setClass('OffLatticeModel', contains = c('CellModel', 'VIRTUAL'), slots = c(
-    maxDeformation = 'numeric',
     maxTranslation = 'numeric',
     maxRotation = 'numeric'
 ))
 
 #' Off-Lattice Model Constructor
 #' @param .Object OffLatticeModel object
-#' @param maxDeformation maximum growth of interphase cell
 #' @param maxTranslation maximum movement of cell
 #' @param maxRotation maximim rotation of mitosis cell
 #' @param ... model specific parameters
 #' @return initialized cell model
 setMethod('initialize', 'OffLatticeModel',
-    function(.Object, maxDeformation = 0.1, maxTranslation = 0.1,
-    maxRotation = 0.3, ...)
+    function(.Object, maxTranslation = 0.1, maxRotation = 0.3, ...)
     {
         # store parameters, don't overwrite existing value
-        if (!length(.Object@maxDeformation))
-            .Object@maxDeformation <- maxDeformation
         if (!length(.Object@maxTranslation))
             .Object@maxTranslation <- maxTranslation
         if (!length(.Object@maxRotation))
@@ -48,14 +42,10 @@ setMethod('initialize', 'OffLatticeModel',
 setValidity('OffLatticeModel',
     function(object)
     {
-        if (length(object@maxDeformation) == 0)
-            "missing 'maxDeformation'"
-        else if (length(object@maxTranslation) == 0)
+        if (length(object@maxTranslation) == 0)
             "missing 'maxTranslation'"
         else if (length(object@maxRotation) == 0)
             "missing 'maxRotation'"
-        else if (object@maxDeformation <= 0)
-            "'maxDeformation' must be greater than zero"
         else if (object@maxTranslation <= 0)
             "'maxTranslation' must be greater than zero"
         else if (object@maxRotation <= 0)
@@ -196,6 +186,15 @@ setMethod('getCellType', signature(model='OffLatticeModel'),
     function(model, time, cell)
     {
         return(getEntry(model, time, cell, 8) + 1)
+    }
+)
+
+#' @rdname getTrialAcceptRate-methods
+#' @aliases getTrialAcceptRate
+setMethod('getTrialAcceptRate', signature(model='OffLatticeModel'),
+    function(model, time, cell)
+    {
+        return(getEntry(model, time, cell, 9))
     }
 )
 

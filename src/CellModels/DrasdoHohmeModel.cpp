@@ -14,8 +14,15 @@ DrasdoHohmeModel::DrasdoHohmeModel(Rcpp::S4* rModel)
 // calculate the maximum growth (radius increase) possible in one time step
 double DrasdoHohmeModel::maxGrowth(OffLatticeCell& cell) const
 {
-    return sqrt(cell.type().size()) * (sqrt(2)-1) * (nG() + 1)
-        * timeIncrement() * 2 / (cell.cycleLength() - 2);
+    return 2 * timeIncrement() * nG() * sqrt(cell.type().size())
+        * (sqrt(2) - 1) / (cell.cycleLength() - 2);
+}
+
+// calculate the maximum deformation (axis increase) possible in one time step
+double DrasdoHohmeModel::maxDeformation(OffLatticeCell& cell) const
+{
+    return 2 * timeIncrement() * nG() * sqrt(cell.type().size())
+        * (2 - sqrt(2));
 }
 
 // attempt a single monte carlo update for this cell
@@ -25,7 +32,7 @@ bool DrasdoHohmeModel::attemptTrial(OffLatticeCell& cell)
     double unif = Random::uniform(0,1);
     if (cell.phase() == INTERPHASE)
     {   
-        if (unif <= 1 / (nG() + 1))
+        if (unif <= 1 / nG())
         {
             growth(cell);
             return true;
@@ -37,12 +44,12 @@ bool DrasdoHohmeModel::attemptTrial(OffLatticeCell& cell)
     }
     else if (cell.phase() == MITOSIS)
     {
-        if (unif <= 1 / (nG() + 1))
+        if (unif <= 1 / nG())
         {
             deformation(cell);
             return true;
         }
-        else if ((nG() + 1) * unif <= 1 + nG() / 2)
+        else if (nG() * unif <= 1 + nG() / 2)
         {
             rotation(cell);
         }

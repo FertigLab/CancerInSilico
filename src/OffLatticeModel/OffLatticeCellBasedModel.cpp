@@ -16,7 +16,6 @@ OffLatticeCellBasedModel::OffLatticeCellBasedModel(Rcpp::S4* rModel)
 : CellBasedModel(rModel)
 {
     // store parameters
-    mMaxDeformation = rModel->slot("maxDeformation");
     mMaxTranslation = rModel->slot("maxTranslation");
     mMaxRotation    = rModel->slot("maxRotation");
 
@@ -202,8 +201,7 @@ void OffLatticeCellBasedModel::translation(OffLatticeCell& cell)
 // execute deformation trial, if max axis hit, get ready to divide
 void OffLatticeCellBasedModel::deformation(OffLatticeCell& cell)
 {
-    double deform = Random::uniform(0, sqrt(cell.type().size())
-        * maxDeformation());
+    double deform = Random::uniform(0, maxDeformation(cell));
     double maxAxis = sqrt(16 * cell.type().size());
 
     cell.setAxisLength(std::min(maxAxis, cell.axisLength() + deform));

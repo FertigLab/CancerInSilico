@@ -42,14 +42,13 @@ setMethod('initialize', 'DrasdoHohmeModel',
         maxSize <- max(sapply(types, slot, name = 'size'))
 
         # calculate time increment
-        t1 <- delta / (sqrt(maxSize) * (nG + 1) * (4 - 2 * sqrt(2)))
-        t2 <- delta*(minCycle-2) / (4 * (nG+1) * (sqrt(2)-1))
+        t1 <- delta / (2 * nG * sqrt(maxSize) * (2 - sqrt(2)))
+        t2 <- delta * (minCycle - 2) / (4 * nG * sqrt(maxSize) * (sqrt(2)-1))
         .Object@timeIncrement <- min(t1, t2)
 
         # calculate off lattice parameters
         .Object@maxTranslation <- delta / 2
-        .Object@maxRotation <- delta * pi / 4
-        .Object@maxDeformation <- min(t1,t2) * (nG + 1) * (4 - sqrt(2))
+        .Object@maxRotation <- asin(delta / (4 * sqrt(maxSize)))
 
         # finish intialization, return object
         .Object <- callNextMethod(.Object, ...)

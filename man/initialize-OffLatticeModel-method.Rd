@@ -5,13 +5,11 @@
 \alias{initialize,OffLatticeModel-method}
 \title{Off-Lattice Model Constructor}
 \usage{
-\S4method{initialize}{OffLatticeModel}(.Object, maxDeformation = 0.1,
-  maxTranslation = 0.1, maxRotation = 0.3, ...)
+\S4method{initialize}{OffLatticeModel}(.Object, maxTranslation = 0.1,
+  maxRotation = 0.3, ...)
 }
 \arguments{
 \item{.Object}{OffLatticeModel object}
-
-\item{maxDeformation}{maximum growth of interphase cell}
 
 \item{maxTranslation}{maximum movement of cell}
 

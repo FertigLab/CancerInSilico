@@ -30,11 +30,6 @@ test_that('object validity check',
         "greater than zero"))
     testMod@timeIncrement <- 1
 
-    testMod@maxDeformation <- -1
-    expect_error(validObject(testMod), paste("'maxDeformation' must be",
-        "greater than zero"))
-    testMod@maxDeformation <- 1
-
     testMod@nG <- -1
     expect_error(validObject(testMod), "'nG' must be at least one")
 })
@@ -58,9 +53,8 @@ test_that('default arguments',
     expect_equal(testMod@cellTypes[[1]]@minCycle, 24)
     expect_false(is.null(testMod@cellTypes[[1]]@cycleLength()))
     expect_equal(testMod@cellTypeInitFreq[1], 1)
-    expect_equal(testMod@maxDeformation, 0.441, tolerance = 1e-3)
     expect_equal(testMod@maxTranslation, 0.1)
-    expect_equal(testMod@maxRotation, 0.157, tolerance = 1e-3)
+    expect_equal(testMod@maxRotation, 0.05, tolerance = 1e-3)
     expect_equal(testMod@nG, 28)
     expect_equal(testMod@epsilon, 10)
     expect_equal(testMod@delta, 0.2)
@@ -69,15 +63,14 @@ test_that('default arguments',
 test_that('drasdo parameter calculations',
 {
     testMod <- new('DrasdoHohmeModel', initialNum = 1, runTime = 1,
-        density = 0.01, nG = 10, delta = 0.4, maxDeformation = 1,
-        maxTranslation = 1, maxRotation = 1, timeIncrement = 1)
+        density = 0.01, nG = 10, delta = 0.4, maxTranslation = 1,
+        maxRotation = 1, timeIncrement = 1)
     
     expect_equal(testMod@nG, 10)
     expect_equal(testMod@delta, 0.4)
-    expect_equal(testMod@maxDeformation, 0.883, tolerance = 1e-3)
     expect_equal(testMod@maxTranslation, 0.2)
-    expect_equal(testMod@maxRotation, 0.314, tolerance = 1e-3)
-    expect_equal(testMod@timeIncrement, 0.031, tolerance = 1e-3)
+    expect_equal(testMod@maxRotation, 0.1, tolerance = 1e-3)
+    expect_equal(testMod@timeIncrement, 0.0333, tolerance = 1e-3)
 })
 
 

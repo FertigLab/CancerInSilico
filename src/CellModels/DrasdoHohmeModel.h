@@ -27,6 +27,7 @@ public:
 
     // largest amount radius can grow in single step
     double maxGrowth(OffLatticeCell&) const;
+    double maxDeformation(OffLatticeCell&) const;
 
     // functions for attempting/accepting monte carlo trials
     bool attemptTrial(OffLatticeCell&);
