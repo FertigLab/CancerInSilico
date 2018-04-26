@@ -13,18 +13,9 @@ Description: The CancerInSilico package provides an R interface for running
     from the results. This package has the underlying models implemented in C++ 
     and the output and analysis features implemented in R.
 License: GPL-2
-<<<<<<< Updated upstream
 Depends: R (>= 3.4), Rcpp
-Imports: stats, methods, graphics
-LinkingTo: Rcpp, BH
-Suggests: testthat, knitr, rmarkdown, BiocStyle
-=======
-LazyData: true
-Depends:
-    Rcpp,
-    methods
 Imports:
-    utils
+    methods, utils, graphics, stats
 LinkingTo: Rcpp,
     BH
 Suggests:
@@ -33,8 +24,8 @@ Suggests:
     rmarkdown,
     BiocStyle,
     Rtsne,
-    viridis
->>>>>>> Stashed changes
+    viridis,
+    rgl
 VignetteBuilder: knitr
 biocViews: MathematicalBiology,
     SystemsBiology,
