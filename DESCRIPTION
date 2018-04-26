@@ -6,7 +6,7 @@ Date: 2018-04-06
 Author: Thomas D. Sherman,
     Raymond Cheng,
     Elana J. Fertig
-Maintainer: Thomas D. Sherman <tsherma4@jhu.edu>,
+Maintainer: Thomas D. Sherman <tomsherman159@gmail.com>,
     Elana J. Fertig <ejfertig@jhmi.edu>
 Description: The CancerInSilico package provides an R interface for running
     mathematical models of tumor progresson and generating gene expression data
