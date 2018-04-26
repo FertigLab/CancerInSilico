@@ -41,7 +41,6 @@ biocViews: MathematicalBiology,
     SingleCell
 RoxygenNote: 5.0.1
 Collate:
-    'CancerModels.R'
     'CellSimulation.R'
     'GeneExpressionSimulation.R'
     'RcppExports.R'
