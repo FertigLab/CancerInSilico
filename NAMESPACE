@@ -27,6 +27,7 @@ exportClasses(Drug)
 exportClasses(GeneExpressionParams)
 exportClasses(OffLatticeModel)
 exportClasses(Pathway)
+<<<<<<< Updated upstream
 importFrom(graphics,plot)
 importFrom(graphics,symbols)
 importFrom(methods,callNextMethod)
@@ -40,4 +41,6 @@ importFrom(stats,rchisq)
 importFrom(stats,rgamma)
 importFrom(stats,rnorm)
 importFrom(stats,rpois)
+=======
+>>>>>>> Stashed changes
 useDynLib(CancerInSilico)
