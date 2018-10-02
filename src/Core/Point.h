@@ -33,16 +33,22 @@ struct Point
     }
 
     // default constructor
-	Point() {x = 0.0; y = 0.0;}
+	Point() : x(0.0), y(0.0) {}
 
     // constructor given specific coordinates
-	Point(T inX, T inY) {x = inX; y = inY;}
+	Point(T inX, T inY) : x(inX), y(inY) {}
+
+    // squared euclidean distance between two points
+	double distance2(const Point& other) const
+    {
+		return (x - other.x) * (x - other.x) + (y - other.y) * (y - other.y);
+	}
 
     // euclidean distance between two points
-	double distance(const Point& other) const
+    double distance(const Point& other) const
     {
-		return sqrt(pow(x - other.x, 2) + pow(y - other.y, 2));
-	}
+        return sqrt(distance2(other));
+    }
 };
 
 // neccesary for boost::unordered_map

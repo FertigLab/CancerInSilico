@@ -99,13 +99,16 @@ double OffLatticeCell::distance(const OffLatticeCell& b) const
     // find smallest between two centers 
     updateCenters();
     b.updateCenters();
-    double minD = centers().first.distance(b.centers().first);
-    minD = std::min(minD, centers().first.distance(b.centers().second));
-    minD = std::min(minD, centers().second.distance(b.centers().first));
-    minD = std::min(minD, centers().second.distance(b.centers().second));
+
+    // squared distances
+    double AA = centers().first.distance2(b.centers().first);
+    double AB = centers().first.distance2(b.centers().second);
+    double BA = centers().second.distance2(b.centers().first);
+    double BB = centers().second.distance2(b.centers().second);
+    double minD2 = std::min(std::min(AA, AB), std::min(BA, BB));
 
     // return distance (between centers) minus the radii
-    return minD - radius() - b.radius();
+    return sqrt(minD2) - radius() - b.radius();
 }
 
 bool OffLatticeCell::operator!=(const OffLatticeCell& other) const
