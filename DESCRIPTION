@@ -1,7 +1,7 @@
 Package: CancerInSilico
 Type: Package
 Title: An R interface for computational modeling of tumor progression
-Version: 2.1.0
+Version: 2.1.1
 Date: 2018-04-06
 Author: Thomas D. Sherman,
     Raymond Cheng,
@@ -39,7 +39,7 @@ biocViews: MathematicalBiology,
     GeneExpression,
     RNASeq,
     SingleCell
-RoxygenNote: 5.0.1
+RoxygenNote: 6.1.0
 Collate:
     'CellSimulation.R'
     'GeneExpressionSimulation.R'

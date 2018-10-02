@@ -10,4 +10,3 @@ pwyMitosis
 \description{
 sample pathway
 }
-

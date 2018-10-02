@@ -32,8 +32,7 @@ public:
     // functions for attempting/accepting monte carlo trials
     bool attemptTrial(OffLatticeCell&);
     bool acceptTrial(Energy, Energy, unsigned, unsigned) const;
-    Energy calculateHamiltonian(const OffLatticeCell&);
-    unsigned numNeighbors(const OffLatticeCell&);
+    NeighborInfo getNeighborInfo(const OffLatticeCell&);
 };
 
 #endif

@@ -18,4 +18,3 @@ matrix with error model incorporated
 adds both the limma-voom error model and calculates dropout
 }
 \keyword{internal}
-

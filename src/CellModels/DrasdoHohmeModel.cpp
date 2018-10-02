@@ -86,11 +86,12 @@ unsigned preN, unsigned postN) const
 }
 
 // calculate hamiltonian locally around this cell
-Energy DrasdoHohmeModel::calculateHamiltonian(const OffLatticeCell& cell)
+NeighborInfo DrasdoHohmeModel::getNeighborInfo(const OffLatticeCell& cell)
 {
-    double sum = 0.0;
     double maxSearch = 2 * cell.radius() + 2 * maxRadius() + delta();
-    
+    double en = 0.0;
+    unsigned neighbors = 0;
+
     // iterate locally around this cell - within the search radius
     LocalCellIterator it = mCellPopulation.lbegin(
         cell.coordinates(), maxSearch);
@@ -99,33 +100,17 @@ Energy DrasdoHohmeModel::calculateHamiltonian(const OffLatticeCell& cell)
 
     for (; it != endIt; ++it)
     {
-        // formula for hamiltonian taken from Drasdo, Hohme paper
-        double dist = cell.distance(*it);
-        if (cell != *it && dist <= delta())
+        if (cell != *it)
         {
-            sum += pow(2 * dist / delta() - 1, 2) - 1;
+            double dist = cell.distance(*it);
+            if (dist <= delta())
+            {
+                neighbors++;
+
+                // formula for hamiltonian taken from Drasdo, Hohme paper
+                en += pow(2 * dist / delta() - 1, 2) - 1;
+            }
         }
     }
-    return std::pair<double, bool> (sum, false);        
-}
-
-// calculate number of neighbors this cell has
-unsigned DrasdoHohmeModel::numNeighbors(const OffLatticeCell& cell)
-{
-    unsigned neighbors = 0;
-    double maxSearch = 2 * cell.radius() + 2 * maxRadius() + delta();
-    
-    LocalCellIterator it = mCellPopulation.lbegin(
-        cell.coordinates(), maxSearch);
-    LocalCellIterator endIt = mCellPopulation.lend(
-        cell.coordinates(), maxSearch);
-
-    for (; it != endIt; ++it)
-    {
-        if (cell != *it && cell.distance(*it) <= delta())
-        {
-            neighbors++;
-        }
-    }
-    return neighbors;
+    return NeighborInfo(en, false, neighbors);
 }

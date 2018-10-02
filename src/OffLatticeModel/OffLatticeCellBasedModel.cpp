@@ -107,8 +107,9 @@ void OffLatticeCellBasedModel::doTrial(OffLatticeCell& cell)
 {
     // store current state of energy/cell/num neighbors
     OffLatticeCell orig = cell;
-    Energy preE = calculateHamiltonian(cell);
-    unsigned preN = numNeighbors(cell);
+    NeighborInfo nInfo = getNeighborInfo(cell);
+    Energy preE = nInfo.energy;
+    unsigned preN = nInfo.nNeighbors;
 
     bool accepted, growth = attemptTrial(cell); // attempt the trial
 
@@ -122,8 +123,9 @@ void OffLatticeCellBasedModel::doTrial(OffLatticeCell& cell)
     {
         //update lattice with new cell position
         mCellPopulation.update(orig.coordinates(), cell.coordinates());
-        Energy postE = calculateHamiltonian(cell); // energy after update
-        unsigned postN = numNeighbors(cell); // num neighbors after update
+        NeighborInfo nInfo = getNeighborInfo(cell);
+        Energy postE = nInfo.energy;
+        unsigned postN = nInfo.nNeighbors;
 
         // auto accept growth, otherwise accept based on energy change
         accepted = growth || acceptTrial(preE, postE, preN, postN);

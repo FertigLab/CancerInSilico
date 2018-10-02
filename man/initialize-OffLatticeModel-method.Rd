@@ -23,4 +23,3 @@ initialized cell model
 \description{
 Off-Lattice Model Constructor
 }
-

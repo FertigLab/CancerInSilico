@@ -25,4 +25,3 @@ plot cell population at a given time
 data(SampleModels)
 plotCells(modDefault, modDefault@runTime)
 }
-

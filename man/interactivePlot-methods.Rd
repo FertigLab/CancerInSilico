@@ -19,4 +19,3 @@ plot
 \description{
 plot the cell population and interactively scroll through time points
 }
-

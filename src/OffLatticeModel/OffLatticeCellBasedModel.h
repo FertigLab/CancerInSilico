@@ -13,6 +13,16 @@ typedef SquareLattice<OffLatticeCell>::local_iterator LocalCellIterator;
 // second element is true if infinite
 typedef std::pair<double, bool> Energy;
 
+struct NeighborInfo
+{
+    Energy energy;
+    unsigned nNeighbors;
+
+    NeighborInfo(float e, bool inf, unsigned n)
+        : energy(std::pair<double, bool>(e, inf)), nNeighbors(n)
+    {} 
+};
+
 class OffLatticeCellBasedModel : public CellBasedModel
 {
 protected:
@@ -50,8 +60,7 @@ public:
     // relevant functions for attempting/accepting trials
     virtual bool attemptTrial(OffLatticeCell&) = 0;
     virtual bool acceptTrial(Energy, Energy, unsigned, unsigned) const = 0;
-    virtual Energy calculateHamiltonian(const OffLatticeCell&) = 0;
-    virtual unsigned numNeighbors(const OffLatticeCell&) = 0;
+    virtual NeighborInfo getNeighborInfo(const OffLatticeCell&) = 0;
 
     // check hard conditions on cell placement
     bool checkOverlap(const OffLatticeCell&);

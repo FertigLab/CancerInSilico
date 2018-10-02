@@ -6,10 +6,10 @@
 \title{Constructor for CellModel}
 \usage{
 \S4method{initialize}{CellModel}(.Object, initialNum, runTime, density,
-  boundary = 1, syncCycles = FALSE, randSeed = 0, outputIncrement = 4,
-  recordIncrement = 0.1, timeIncrement = 0.001,
-  cellTypes = c(new("CellType", name = "DEFAULT")), cellTypeInitFreq = c(1),
-  drugs = list(), ...)
+  boundary = 1, syncCycles = FALSE, randSeed = 0,
+  outputIncrement = 4, recordIncrement = 0.1, timeIncrement = 0.001,
+  cellTypes = c(new("CellType", name = "DEFAULT")),
+  cellTypeInitFreq = c(1), drugs = list(), ...)
 }
 \arguments{
 \item{.Object}{CellModel object}
@@ -46,4 +46,3 @@ initialized cell model object
 \description{
 Constructor for CellModel
 }
-

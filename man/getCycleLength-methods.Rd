@@ -27,4 +27,3 @@ get cycle length of a cell at a given time
 data(SampleModels)
 getCycleLength(modDefault, modDefault@runTime, 1)
 }
-

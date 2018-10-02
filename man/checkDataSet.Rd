@@ -22,4 +22,3 @@ pathway values for min/max expression
 \examples{
 data(referenceGeneExpression)
 }
-

@@ -10,4 +10,3 @@ pwyGrowth
 \description{
 sample pathway
 }
-

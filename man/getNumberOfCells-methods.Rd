@@ -25,4 +25,3 @@ get number of cells in the model at a given time
 data(SampleModels)
 getNumberOfCells(modDefault, modDefault@runTime)
 }
-

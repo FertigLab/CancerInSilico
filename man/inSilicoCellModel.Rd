@@ -4,8 +4,8 @@
 \alias{inSilicoCellModel}
 \title{Simulates Cell Model}
 \usage{
-inSilicoCellModel(initialNum, runTime, density, modelType = "DrasdoHohme",
-  ...)
+inSilicoCellModel(initialNum, runTime, density,
+  modelType = "DrasdoHohme", ...)
 }
 \arguments{
 \item{initialNum}{how many cells initially}
@@ -37,4 +37,3 @@ is a show() command implemented for CellModel objects.
 \examples{
 inSilicoCellModel(initialNum=1, runTime=8, density=0.1)
 }
-

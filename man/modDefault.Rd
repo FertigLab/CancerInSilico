@@ -10,4 +10,3 @@ modDefault
 \description{
 sample cell model
 }
-

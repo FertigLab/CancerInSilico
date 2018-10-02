@@ -19,4 +19,3 @@ calculates the mean expression values for each gene and sample
 by combining the pathway activity with the gene expression range
 }
 \keyword{internal}
-
