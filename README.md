@@ -6,7 +6,7 @@ The CancerInSilico package provides an R interface for running mathematical mode
 
 # Installing CancerInSilico
 
-*CancerInSilico* is a bioconductor R package and so the release version can
+*CancerInSilico* is a bioconductor R package ([link](https://bioconductor.org/packages/CancerInSilico)) and so the release version can
 be installed as follows:
 
 ```
