@@ -30,7 +30,8 @@ Suggests:
     BiocStyle,
     Rtsne,
     viridis,
-    rgl
+    rgl,
+    gplots
 VignetteBuilder: knitr
 biocViews: MathematicalBiology,
     SystemsBiology,
