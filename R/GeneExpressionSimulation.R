@@ -169,7 +169,7 @@ simulateWithLimmaVoom <- function(meanExp, params)
     voomErrorModel(meanExp, params@bcvCommon, params@bcvDF)$trueCounts
 }
 
-#' Single Cell RNA-seq Error Mpdel
+#' Single Cell RNA-seq Error Model
 #' @keywords internal
 #'
 #' @description adds both the limma-voom error model and calculates dropout
