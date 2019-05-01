@@ -12,6 +12,7 @@
 #' @docType package
 #' @name CancerInSilico
 #' @import utils
+#' @importFrom Rcpp evalCpp
 #' @useDynLib CancerInSilico
 NULL
 
