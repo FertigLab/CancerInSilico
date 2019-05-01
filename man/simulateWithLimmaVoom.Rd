@@ -18,4 +18,3 @@ matrix with error model incorporated
 adds the limma-voom error model to the data
 }
 \keyword{internal}
-

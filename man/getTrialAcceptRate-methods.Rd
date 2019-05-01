@@ -27,4 +27,3 @@ get rate of growth acceptance of a given cell at a given time
 data(SampleModels)
 getTrialAcceptRate(modDefault, modDefault@runTime, 1)
 }
-

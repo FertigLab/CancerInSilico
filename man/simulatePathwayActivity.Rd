@@ -25,4 +25,3 @@ vector with values in [0,1] indicatin pathway activity
 simulates pathway activity over the course of a cell model
 }
 \keyword{internal}
-

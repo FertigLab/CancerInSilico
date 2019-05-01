@@ -10,4 +10,3 @@ modCellTypes
 \description{
 sample cell model
 }
-

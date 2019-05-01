@@ -4,7 +4,8 @@
 \alias{inSilicoGeneExpression}
 \title{simulate gene expression data}
 \usage{
-inSilicoGeneExpression(model, pathways, params = new("GeneExpressionParams"))
+inSilicoGeneExpression(model, pathways,
+  params = new("GeneExpressionParams"))
 }
 \arguments{
 \item{model}{a CellModel object}
@@ -20,4 +21,3 @@ list of pathway activity and gene expression
 simulate gene expression data for a set of pathways, using
 the behavior of a CellModel as the basis for the simulation
 }
-

@@ -19,4 +19,3 @@ adds a normally distributed error across the entire expression
 matrix
 }
 \keyword{internal}
-

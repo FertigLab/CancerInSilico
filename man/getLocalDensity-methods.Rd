@@ -29,4 +29,3 @@ get neighborhood density around a cell at a given time
 data(SampleModels)
 getLocalDensity(modDefault, modDefault@runTime, 1, 3.3)
 }
-

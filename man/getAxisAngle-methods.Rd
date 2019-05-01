@@ -27,4 +27,3 @@ get cell axis angle at a given time
 data(SampleModels)
 getAxisAngle(modDefault, modDefault@runTime, 1)
 }
-

@@ -25,4 +25,3 @@ summary of cell model at a given time
 data(SampleModels)
 cellSummary(modDefault, modDefault@runTime)
 }
-

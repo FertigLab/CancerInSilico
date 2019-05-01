@@ -27,4 +27,3 @@ get phase of a cell at a given time
 data(SampleModels)
 getCellPhase(modDefault, modDefault@runTime, 1)
 }
-

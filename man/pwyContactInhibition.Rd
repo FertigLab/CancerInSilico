@@ -10,4 +10,3 @@ pwyContactInhibition
 \description{
 sample pathway
 }
-

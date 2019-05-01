@@ -27,4 +27,3 @@ get cell axis length at a given time
 data(SampleModels)
 getAxisLength(modDefault, modDefault@runTime, 1)
 }
-

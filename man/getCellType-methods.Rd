@@ -27,4 +27,3 @@ get type of a cell at a given time
 data(SampleModels)
 getCellType(modDefault, modDefault@runTime, 1)
 }
-

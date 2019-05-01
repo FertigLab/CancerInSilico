@@ -23,4 +23,3 @@ run a cell model
 data(SampleModels)
 run(modDefault)
 }
-

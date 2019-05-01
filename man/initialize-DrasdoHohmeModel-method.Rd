@@ -25,4 +25,3 @@ initialized cell model
 \description{
 DrasdoHohmeModel Constructor
 }
-

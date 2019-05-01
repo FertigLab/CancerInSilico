@@ -25,4 +25,3 @@ get density of the cell population at a given time
 data(SampleModels)
 getDensity(modDefault, modDefault@runTime)
 }
-

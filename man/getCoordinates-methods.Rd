@@ -27,4 +27,3 @@ get coordinates of a cell at a given time
 data(SampleModels)
 getCoordinates(modDefault, modDefault@runTime, 1)
 }
-

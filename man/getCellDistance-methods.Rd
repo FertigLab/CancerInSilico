@@ -29,4 +29,3 @@ get distance between two cells
 data(SampleModels)
 getCellDistance(modDefault, modDefault@runTime, 1, 2)
 }
-

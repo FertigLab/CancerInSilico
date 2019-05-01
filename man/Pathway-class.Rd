@@ -18,8 +18,6 @@ constructed object
 }
 \description{
 Describes the basic properties of a gene pathway
-
-Pathway Class Constructor
 }
 \details{
 expressionScale is a function that accepts three arguments:

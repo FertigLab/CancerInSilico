@@ -21,4 +21,3 @@ Core error model presented in original voom paper, used for
 multiple RNA-seq simulations
 }
 \keyword{internal}
-

@@ -2,7 +2,7 @@
 % Please edit documentation in R/GeneExpressionSimulation.R
 \name{simulateWithSplatter}
 \alias{simulateWithSplatter}
-\title{Single Cell RNA-seq Error Mpdel}
+\title{Single Cell RNA-seq Error Model}
 \usage{
 simulateWithSplatter(meanExp, params)
 }
@@ -18,4 +18,3 @@ matrix with error model incorporated
 adds both the limma-voom error model and calculates dropout
 }
 \keyword{internal}
-

@@ -1,4 +1,4 @@
-# CancerInSilico
+# CancerInSilico Version: 2.1.0
 
 [![Bioc](https://bioconductor.org/images/logo_bioconductor.gif)](https://bioconductor.org/packages/CancerInSilico)
 [![downloads](https://bioconductor.org/shields/downloads/release/CancerInSilico.svg)](http://bioconductor.org/packages/stats/bioc/CancerInSilico/)

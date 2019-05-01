@@ -19,4 +19,3 @@ combines mutliple matrices by in a similiar way to rbind,
 but combines muttiple values for a single gene by a given function
 }
 \keyword{internal}
-

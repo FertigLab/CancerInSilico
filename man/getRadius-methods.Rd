@@ -27,4 +27,3 @@ get cell radius at a given time
 data(SampleModels)
 getRadius(modDefault, modDefault@runTime, 1)
 }
-
