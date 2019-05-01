@@ -1,3 +1,4 @@
+^.travis.yml
 ^inst/scripts/
 
 ^src/CancerInSilico.so
