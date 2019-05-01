@@ -40,7 +40,8 @@ biocViews: MathematicalBiology,
     GeneExpression,
     RNASeq,
     SingleCell
-RoxygenNote: 5.0.1
+RoxygenNote: 6.1.1
+Encoding: UTF-8
 Collate:
     'CellSimulation.R'
     'GeneExpressionSimulation.R'
